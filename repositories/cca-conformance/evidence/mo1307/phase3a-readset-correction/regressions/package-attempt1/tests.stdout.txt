@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: package metadata and deterministic nonrecursive bindings
+ok 1 - package metadata and deterministic nonrecursive bindings
+  ---
+  duration_ms: 343.3648
+  type: 'test'
+  ...
+# Subtest: unexpected member is rejected without refreshing the binding
+ok 2 - unexpected member is rejected without refreshing the binding
+  ---
+  duration_ms: 192.3994
+  type: 'test'
+  ...
+# Subtest: changed shipped source fails exact distribution binding
+ok 3 - changed shipped source fails exact distribution binding
+  ---
+  duration_ms: 231.3288
+  type: 'test'
+  ...
+# Subtest: schema drift cannot be hidden by rebuilding manifests
+ok 4 - schema drift cannot be hidden by rebuilding manifests
+  ---
+  duration_ms: 216.7134
+  type: 'test'
+  ...
+# Subtest: constants drift cannot be hidden by rebuilding manifests
+ok 5 - constants drift cannot be hidden by rebuilding manifests
+  ---
+  duration_ms: 230.0163
+  type: 'test'
+  ...
+# Subtest: dependencies, lifecycle hooks, extra exports and traversal allowlist are rejected
+ok 6 - dependencies, lifecycle hooks, extra exports and traversal allowlist are rejected
+  ---
+  duration_ms: 976.0683
+  type: 'test'
+  ...
+# Subtest: network and external imports are rejected before manifest regeneration
+ok 7 - network and external imports are rejected before manifest regeneration
+  ---
+  duration_ms: 756.7014
+  type: 'test'
+  ...
+# Subtest: missing fixed helper and mutated manifest rows are rejected
+ok 8 - missing fixed helper and mutated manifest rows are rejected
+  ---
+  duration_ms: 675.2346
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3738.9031

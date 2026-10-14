@@ -1,0 +1,913 @@
+MemoryOS 1.3
+MO-1306 PROVIDER-NEUTRAL CI/CD INTEGRATION
+
+PHASE 3A FINAL PUBLICATION BLOCKER DIAGNOSTIC
+MISSING-INPUT OPERATIONAL PUBLICATION
+TARGETED ROOT-CAUSE RESOLUTION
+
+==================================================
+0. PRIMARY DIRECTIVE
+==================================================
+
+THIS IS NOT A PHASE 3A RESTART.
+
+Do not rerun the eight native groups that already passed.
+
+Do not perform GitHub hosted certification yet.
+
+Do not modify production code in this task.
+
+Do not create another worktree.
+
+Diagnose exactly why the missing-input operational publication path transformed:
+
+INPUT_ERROR / exit 11
+
+into:
+
+ARTIFACT_ERROR / exit 17
+
+and left an incomplete two-file bundle.
+
+The objective is to determine whether this is:
+
+A. engineering harness/setup defect;
+B. stale/incorrect test expectation;
+C. deterministic product publication defect;
+D. filesystem/environment transient;
+E. another precisely evidenced cause.
+
+Do not assume which one.
+
+==================================================
+1. WORKSPACE
+==================================================
+
+Continue exclusively in:
+
+C:\Users\melsa\Documents\Codex\cca-mo1306-3a-refresh
+
+Branch:
+
+mo1306/phase3a-refresh
+
+Expected HEAD:
+
+f236c4a2f94d8cd8e763aaa4bd6c52d703429692
+
+Historical HEAD must remain unchanged unless this task explicitly creates an
+evidence-only diagnostic commit.
+
+Treat main READ ONLY.
+
+Current production authority:
+
+C3C:
+39d83316f7c72d6cb49f8b6cde36c1bfa833112a
+
+C3CB:
+701d48ee2012675966360dda775ab13013c09ab9
+
+Do not modify C3CB.
+
+==================================================
+2. PRESERVE THE FAILED ATTEMPT
+==================================================
+
+Read and preserve completely:
+
+repositories/cca-conformance/evidence/mo1306/phase3a-final/final/REPORT.md
+
+repositories/cca-conformance/evidence/mo1306/phase3a-final/final/execution-receipt.json
+
+and all referenced native/publication evidence.
+
+Preserve disposition:
+
+MO-1306 PHASE 3A NATIVE CERTIFICATION BLOCKED
+
+Do not overwrite or promote it.
+
+==================================================
+3. ACCEPTED RESULTS ARE FROZEN
+==================================================
+
+Treat these eight successful groups as retained evidence unless dependency
+analysis proves they are affected:
+
+timely helper
+
+late-helper rejection
+
+FAIL
+
+CNE
+
+generate
+
+cleanup
+
+Correction A topology
+
+installed integrity
+
+plus retained:
+
+CLI correction control
+
+semantic parity.
+
+Do not rerun them merely for completeness.
+
+==================================================
+4. EXACT FAILED CASE
+==================================================
+
+Reconstruct the exact failed missing-input case from preserved evidence.
+
+Record:
+
+exact argv
+
+cwd
+
+environment
+
+configuration
+
+input path
+
+output root
+
+attempt/run identity
+
+pre-existing output state
+
+filesystem permissions
+
+installed package path
+
+Node path
+
+expected bundle
+
+actual bundle
+
+stdout
+
+stderr
+
+exit code
+
+machine error
+
+stage
+
+publication state.
+
+No new execution yet.
+
+==================================================
+5. EXPECTED CONTRACT
+==================================================
+
+Independently establish from frozen contract/source/tests whether missing input
+MUST produce:
+
+INPUT_ERROR
+
+exit 11
+
+and exactly four complete operational files.
+
+Do not trust the test expectation merely because it exists.
+
+Identify the authoritative requirement and exact expected filenames/content
+classes.
+
+If the frozen contract does NOT require the asserted four-file publication:
+
+STOP.
+
+Report:
+
+MO-1306 PHASE 3A PUBLICATION EXPECTATION BLOCKED
+
+Do not modify product or test silently.
+
+==================================================
+6. ACTUAL FAILURE CHAIN
+==================================================
+
+Trace the preserved failed execution from:
+
+input acquisition failure
+
+→ INPUT_ERROR / MO1306_INPUT_READ / 11
+
+→ publication attempt
+
+→ artifact write operation
+
+→ MO1306_ARTIFACT_WRITE
+
+→ ARTIFACT_ERROR / 17
+
+→ partial result/evidence files
+
+→ no artifacts manifest
+
+→ no completion marker.
+
+Identify the exact first failing filesystem/API operation.
+
+Do not stop analysis at MO1306_ARTIFACT_WRITE.
+
+==================================================
+7. FIRST FAILING OPERAND
+==================================================
+
+Capture exact failure operands where available:
+
+target path
+
+parent path
+
+temporary path
+
+operation type
+
+error code
+
+errno
+
+Windows error
+
+existing path type
+
+permissions/ACL
+
+reparse status
+
+path length
+
+whether parent existed
+
+whether a file/directory collision existed.
+
+If existing diagnostics omit these details, add diagnostic-only engineering
+instrumentation in the 3A tooling/harness.
+
+Do NOT alter production behavior.
+
+==================================================
+8. PUBLICATION SOURCE AUDIT
+==================================================
+
+Read the exact C3CB publication implementation.
+
+Trace the operational-error bundle path separately from semantic success/fail
+publication.
+
+Determine how it writes:
+
+result
+
+evidence
+
+artifact manifest
+
+completion marker
+
+temporary/pending files
+
+directories.
+
+Identify cleanup/rollback semantics after a publication write failure.
+
+==================================================
+9. COMPARE PASSING PUBLICATION PATHS
+==================================================
+
+Compare the failed missing-input path against the already-passing:
+
+PASS publication
+
+FAIL publication
+
+CNE publication
+
+late-terminal no-publication
+
+generate output.
+
+Determine the minimal control-flow/filesystem difference.
+
+Do not rerun those cases yet.
+
+Use source and preserved evidence first.
+
+==================================================
+10. COMPARE PREVIOUS PHASE EVIDENCE
+==================================================
+
+Search retained Phase 1/2/3 evidence for successful missing-input operational
+publication using the same or byte-identical publication implementation.
+
+Classify any reusable witness by exact:
+
+source identity
+
+distribution identity
+
+publication code identity
+
+harness identity
+
+filesystem setup.
+
+Do not infer equivalence from similar filenames.
+
+==================================================
+11. OUTPUT ROOT STATE
+==================================================
+
+Inspect how the failed test prepared its output root.
+
+Determine whether:
+
+directory existed
+
+parent existed
+
+root was reused
+
+stale files existed
+
+pending directory existed
+
+permissions differed
+
+path was deleted too early
+
+cleanup raced publication
+
+test fixture intentionally omitted a required directory
+
+another case reused the same output location.
+
+==================================================
+12. HARNESS AUDIT
+==================================================
+
+Audit the Phase 3A final harness for the failed case.
+
+Specifically check:
+
+setup ordering
+
+directory creation
+
+cleanup ordering
+
+temporary-root lifecycle
+
+missing-input fixture creation/removal
+
+output-root creation
+
+process start timing
+
+post-process collection
+
+parallelism
+
+path reuse
+
+finally blocks.
+
+Determine whether the harness itself made publication impossible.
+
+==================================================
+13. PRODUCT VS HARNESS OWNERSHIP
+==================================================
+
+For every directory/path required by the frozen product contract classify who
+must create it:
+
+CALLER_REQUIRED
+
+PRODUCT_REQUIRED
+
+HARNESS_ONLY
+
+PREEXISTING_PACKAGE
+
+TEMPORARY_INTERNAL.
+
+This classification is critical.
+
+A harness failure to satisfy a documented caller precondition is not a product
+defect.
+
+A product failure to create a product-owned path is a product defect.
+
+==================================================
+14. PATH / WINDOWS AUDIT
+==================================================
+
+For the exact failing path check:
+
+length
+
+normalization
+
+drive
+
+case
+
+reserved names
+
+ADS syntax
+
+reparse points
+
+junctions
+
+ACLs
+
+read-only state
+
+open handles
+
+antivirus/security interference evidence if available.
+
+Do not blame Windows without evidence.
+
+==================================================
+15. PROCESS / HANDLE AUDIT
+==================================================
+
+Determine whether another owned process or the harness retained a handle that
+could prevent the failed write/rename.
+
+Use bounded Windows-native observation.
+
+No third-party tools required.
+
+==================================================
+16. CONTROLLED REPRODUCTION
+==================================================
+
+After completing static/evidence analysis, run ONE faithful reproduction of
+the failed missing-input case with diagnostic instrumentation.
+
+Use:
+
+same installed C3CB package
+
+same Node
+
+same arguments
+
+same expected setup
+
+fresh isolated output root.
+
+Do not change product bytes.
+
+Record all filesystem operations necessary to identify the first failure.
+
+==================================================
+17. REPRODUCTION DECISION
+==================================================
+
+If the faithful fresh reproduction PASSES:
+
+do not immediately declare transient.
+
+Compare exact original/fresh environmental and harness state.
+
+Run at most TWO additional bounded repetitions if necessary to classify the
+difference.
+
+Maximum faithful reproductions:
+
+3.
+
+No blind retries.
+
+==================================================
+18. HARNESS DEFECT PATH
+==================================================
+
+If root cause is proven to be engineering harness/setup:
+
+correct ONLY the Phase 3A engineering harness/tooling.
+
+Do not change product.
+
+Add a regression proving the original harness defect.
+
+Preserve the original failed observation.
+
+Then rerun ONLY:
+
+missing-input publication case
+
+and any directly dependent publication validator.
+
+If it passes, continue to section 25.
+
+==================================================
+19. STALE EXPECTATION PATH
+==================================================
+
+If frozen authority proves the expected four-file INPUT_ERROR bundle is wrong:
+
+do NOT rewrite expectation inside this task.
+
+Preserve evidence and STOP with:
+
+MO-1306 PHASE 3A PUBLICATION EXPECTATION BLOCKED
+
+State exact contract contradiction.
+
+==================================================
+20. PRODUCT DEFECT PATH
+==================================================
+
+If C3CB product code deterministically violates the frozen publication contract:
+
+do NOT modify product in this worktree.
+
+Produce a minimal reproducible product-defect record.
+
+Identify:
+
+exact source site
+
+root cause
+
+expected behavior
+
+actual behavior
+
+smallest likely correction surface
+
+affected evidence.
+
+STOP with:
+
+MO-1306 PHASE 3A PUBLICATION PRODUCT BLOCKER
+
+A separate main correction will then be authorized.
+
+==================================================
+21. ENVIRONMENT TRANSIENT PATH
+==================================================
+
+Classify ENVIRONMENT_TRANSIENT only with concrete evidence such as:
+
+temporary file lock
+
+security product interference
+
+host interruption
+
+resource exhaustion
+
+external process collision
+
+or equivalent.
+
+A single subsequent PASS is insufficient.
+
+==================================================
+22. PARTIAL BUNDLE SAFETY
+==================================================
+
+Regardless of root cause, verify the failed partial state cannot be mistaken
+for complete publication.
+
+Current preserved state reportedly has:
+
+result
+
+evidence
+
+no artifacts manifest
+
+no completion marker.
+
+Verify all consumers reject this as incomplete.
+
+This is a safety property, not a substitute for fixing the publication gate.
+
+==================================================
+23. FAILURE ATOMICITY
+==================================================
+
+Determine whether frozen publication contract requires cleanup of partial files
+after write failure.
+
+If yes, include that in defect classification.
+
+If no, document that partial files are permitted but completion remains
+fail-closed.
+
+Do not invent atomicity requirements.
+
+==================================================
+24. EVIDENCE
+==================================================
+
+Create a dedicated diagnostic evidence set containing:
+
+historical failed-case identity
+
+frozen expectation authority
+
+source trace
+
+first failing operation
+
+path/ACL/reparse facts
+
+harness audit
+
+ownership classification
+
+controlled reproduction(s)
+
+root-cause classification
+
+partial-bundle safety
+
+affected-gate recommendation.
+
+Do not replace existing Phase 3A evidence.
+
+==================================================
+25. CONTINUE ONLY IF NO PRODUCT DEFECT
+==================================================
+
+If and ONLY if the blocker is resolved without production modification, for
+example a proven harness defect corrected in engineering tooling:
+
+run the affected missing-input publication case once under corrected harness.
+
+Require:
+
+INPUT_ERROR
+
+exit 11
+
+expected four complete files
+
+verified result/evidence
+
+artifacts manifest
+
+completion marker
+
+no extra files
+
+installed package unchanged.
+
+Then run the directly dependent publication validator.
+
+Do not rerun the other eight native groups.
+
+==================================================
+26. NATIVE CERTIFICATION CLOSURE
+==================================================
+
+If the corrected/revalidated missing-input gate passes and all retained eight
+groups remain dependency-valid:
+
+construct an updated native certification receipt that binds:
+
+C3CB
+
+all retained passed groups
+
+new resolved missing-input gate
+
+installed integrity
+
+Correction A
+
+semantic parity
+
+CLI controls.
+
+Do not promote hosted certification yet.
+
+==================================================
+27. HOSTED CERTIFICATION
+==================================================
+
+ONLY after native certification is fully closed:
+
+resume the previously prepared hosted-certification plan.
+
+You remain authorized to:
+
+update only remote mo1306-certification
+
+to the corrected C3CB-based certification scaffold
+
+use the narrow ref-specific force update if necessary
+
+temporarily switch default branch to mo1306-certification if authoritative
+GitHub workflow-registration behavior requires it
+
+dispatch PASS/FAIL/CNE
+
+download artifacts
+
+restore default branch to main.
+
+All restrictions from the previous final 3A prompt remain in force.
+
+==================================================
+28. REMOTE MAIN
+==================================================
+
+Remote main must remain unchanged.
+
+Expected historical SHA:
+
+5955af062152a84c10de17860ba0bcabe8b3555f
+
+Verify before and after any hosted work.
+
+Do not push main.
+
+==================================================
+29. HOSTED REQUIRED CASES
+==================================================
+
+Require actual GitHub Actions:
+
+PASS
+
+FAIL
+
+COULD_NOT_EVALUATE.
+
+Runner:
+
+windows-2022.
+
+No simulation.
+
+==================================================
+30. HOSTED ARTIFACTS / PARITY
+==================================================
+
+Validate actual hosted artifact sets and native/hosted semantic parity exactly
+as required by the prior final 3A prompt.
+
+Do not weaken any hosted gate.
+
+==================================================
+31. FINAL CERTIFICATION COMMIT
+==================================================
+
+Only if:
+
+native certification closes
+
+hosted PASS/FAIL/CNE pass
+
+artifacts pass
+
+parity passes
+
+remote state is restored
+
+create exactly one authoritative final 3A certification commit parented
+DIRECTLY to C3CB:
+
+701d48ee2012675966360dda775ab13013c09ab9
+
+Subject exactly:
+
+cert(memoryos-1.3): certify final MO-1306 Windows and GitHub execution
+
+Certification evidence/tooling only.
+
+No production changes.
+
+Historical blocked 3A evidence remains separate.
+
+==================================================
+32. TIME BUDGET
+==================================================
+
+This is a focused diagnostic.
+
+Target diagnostic:
+<=30 minutes.
+
+If harness-only and resolved, total task target including hosted:
+<=60 minutes.
+
+Normal ceiling:
+90 minutes.
+
+Absolute hard stop:
+3 hours only for bounded active hosted execution.
+
+No broad reruns.
+
+==================================================
+33. FINAL REPORT
+==================================================
+
+Return:
+
+1. Starting state
+2. C3CB
+3. Historical failed publication preserved
+4. Failed argv
+5. Failed environment
+6. Failed output root
+7. Frozen expected publication contract
+8. Expected files
+9. Actual files
+10. Initial INPUT_ERROR
+11. Subsequent ARTIFACT_ERROR
+12. First failing filesystem operation
+13. Native/Windows error code
+14. Failing path
+15. Parent path state
+16. ACL/permissions
+17. Reparse/link state
+18. Path length/type
+19. Publication source trace
+20. Difference from PASS publication
+21. Difference from FAIL publication
+22. Difference from CNE publication
+23. Historical equivalent witnesses
+24. Harness setup audit
+25. Path ownership classification
+26. Handle/process findings
+27. Controlled reproduction 1
+28. Reproduction 2 if needed
+29. Reproduction 3 if needed
+30. Root-cause classification
+31. Harness defect yes/no
+32. Stale expectation yes/no
+33. Product defect yes/no
+34. Environment transient yes/no
+35. Partial-bundle safety
+36. Failure atomicity requirement
+37. Engineering changes if any
+38. Regression added if any
+39. Resolved missing-input result
+40. Native certification result
+41. Hosted certification attempted yes/no
+42. Certification branch state
+43. Default-branch switch state
+44. Hosted PASS
+45. Hosted FAIL
+46. Hosted CNE
+47. Hosted artifacts
+48. Native/hosted parity
+49. Final default branch
+50. Final remote main
+51. Final certification branch
+52. Final 3A receipt
+53. Final certification commit if successful
+54. Commit parent
+55. Production changes
+56. Workspace verification
+57. git diff --check
+58. Final Git status
+59. Pushes
+60. Tags
+61. Linux/Ubuntu/WSL
+62. VM
+63. Other provider accounts
+64. Duration
+65. Exact next task
+
+If harness-only and full native+hosted certification succeeds, end:
+
+MO-1306 PHASE 3A CERTIFICATION COMPLETE
+READY FOR PHASE 3D INTEGRATION
+
+If product defect is proven, end:
+
+MO-1306 PHASE 3A PUBLICATION PRODUCT BLOCKER
+
+If frozen expectation is contradictory, end:
+
+MO-1306 PHASE 3A PUBLICATION EXPECTATION BLOCKED
+
+If environment cause remains unresolved, end:
+
+MO-1306 PHASE 3A PUBLICATION ENVIRONMENT BLOCKED

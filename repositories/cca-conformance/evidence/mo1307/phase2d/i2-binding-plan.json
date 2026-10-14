@@ -1,0 +1,63 @@
+{
+  "kind": "MO1307Phase2DImplementationBindingPlan",
+  "version": "1.0.0",
+  "baseline": "08de262d1ef3149b6e540bcaea0cf910e02732bd",
+  "sourceCommits": [
+    {
+      "id": "2a",
+      "commit": "b628349b4e678a8f71086b1b5c807ffe2edf9a5d",
+      "base": "3883ca889911fcc5a6f46c24e569478a8c32648e"
+    },
+    {
+      "id": "2b",
+      "commit": "b2877ab32c317bb67896414ba9cec64f6f436ca5",
+      "base": "3883ca889911fcc5a6f46c24e569478a8c32648e"
+    },
+    {
+      "id": "2c",
+      "commit": "24a9ed13072cf344baf56ee019d96520b7dfd4f0",
+      "base": "08de262d1ef3149b6e540bcaea0cf910e02732bd"
+    }
+  ],
+  "implementation": {
+    "subject": "feat(memoryos-1.3): integrate MO-1307 release readiness",
+    "soleParent": "08de262d1ef3149b6e540bcaea0cf910e02732bd",
+    "identity": "Not yet created; no future hash is embedded."
+  },
+  "binding": {
+    "subject": "conformance(memoryos-1.3): bind MO-1307 phase 2 integration",
+    "soleParent": "Actual existing I2",
+    "allowedChanges": [
+      "repositories/cca-conformance/evidence/mo1307/phase2d/binding.json",
+      "repositories/cca-conformance/evidence/mo1307/phase2d/binding-verification.json"
+    ],
+    "productionChanges": false
+  },
+  "exactBlobStrategy": "Pre-I2 inventory excludes itself. Compare every staged blob to disk and inventory. B2 binds the actual I2 commit, sole parent, tree, and every changed blob including inventory. Validate correction ancestry and original source worktree preservation.",
+  "postBinding": "Cache-only repeat graph/package/schema/fixtures/Phase1/2A/2B/2C/integrated semantics/native lifecycle smoke/history/workspace/diff and clean main. No production or evidence mutation.",
+  "tooling": [
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase2d/seal.mjs",
+      "byteLength": 3484,
+      "sha256": "sha256:4cb98a3ac4e2213da48902a2ca99bd7cb7b6dadd1f75739e331b30aadfd753da"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase2d/verify-binding.mjs",
+      "byteLength": 3641,
+      "sha256": "sha256:888aaf8881bebec4f6b740142581ba2a7615c6c97ddd7038692c817416f83689"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase2d/final-validation.mjs",
+      "byteLength": 3180,
+      "sha256": "sha256:38dcc3e5d335990ccff6eebbf5cadc0637231fbae1da82a55e954c6f802e9cc4"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase2d/post-binding.mjs",
+      "byteLength": 4448,
+      "sha256": "sha256:c03b3fc2c93897481c8623a62829344e584db053d032ff613ef50a7429eaaad5"
+    }
+  ],
+  "push": false,
+  "tag": false,
+  "phase3BranchCreation": false
+}

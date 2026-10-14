@@ -1,0 +1,94 @@
+"""Seal the bounded environment observation only; never run product or mutate remote refs."""
+import argparse,datetime,hashlib,json,os,re,subprocess,sys,uuid
+from pathlib import Path
+sys.dont_write_bytecode=True
+ROOT=Path(__file__).resolve().parents[4];HERE=Path(__file__).resolve().parent
+OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-environment-capture'
+OLD=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-publication-diagnostic'
+END='MO-1306 PHASE 3A PUBLICATION ENVIRONMENT BLOCKED'
+AUTH='701d48ee2012675966360dda775ab13013c09ab9';HEAD='f236c4a2f94d8cd8e763aaa4bd6c52d703429692'
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def row(p):
+ b=p.read_bytes();return {'path':p.relative_to(ROOT).as_posix(),'byteLength':len(b),'sha256':sha(b)}
+def read(name):return json.loads((OUT/name).read_bytes())
+def put(name,v):
+ p=OUT/name;assert not p.exists(),name;p.write_text(json.dumps(v,sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8',newline='\n')
+def run(args,env=None):
+ p=subprocess.run(args,cwd=ROOT,env=env,capture_output=True,timeout=120)
+ return {'argv':list(map(str,args)),'exitCode':p.returncode,'stdout':p.stdout.decode('utf-8','replace'),'stderr':p.stderr.decode('utf-8','replace')}
+def git(*args):
+ r=run(['git',*args],{**os.environ,'GIT_OPTIONAL_LOCKS':'0'});assert r['exitCode']==0,r;return r['stdout'].strip()
+def preservation():
+ v=read('preservation-before.json');assert len(v['files'])==698
+ for r in v['files']:
+  now=row(ROOT/r['path']);assert all(now[k]==r[k] for k in ['path','byteLength','sha256']),r['path']
+ assert git('rev-parse','HEAD')==HEAD and git('branch','--show-current')=='mo1306/phase3a-refresh'
+ assert git('diff','--name-only','HEAD')=='' and git('diff','--cached','--name-only')==''
+ assert git('for-each-ref','--format=%(refname) %(objectname)')==v['protectedRefs']
+ return v
+def gitcheck():
+ v=preservation();p=Path(git('rev-parse','--git-path','index'));p=p if p.is_absolute() else ROOT/p
+ before=sha(p.read_bytes());assert before==v['realIndexSha256']
+ folder=ROOT/'.cache/mo1306-phase3a-environment-capture';folder.mkdir(exist_ok=True)
+ temp=folder/('review-index-'+uuid.uuid4().hex);env={**os.environ,'GIT_INDEX_FILE':str(temp),'GIT_OPTIONAL_LOCKS':'0'}
+ results=[]
+ for args in [['git','read-tree','HEAD'],['git','add','--',OUT.relative_to(ROOT).as_posix(),HERE.relative_to(ROOT).as_posix()],['git','diff','--cached','--check','HEAD'],['git','diff','--check','HEAD']]:
+  r=run(args,env);results.append(r)
+  if r['exitCode']:raise AssertionError(r)
+ names=run(['git','diff','--cached','--name-only','HEAD'],env);assert names['exitCode']==0
+ prefixes=[base.relative_to(ROOT).as_posix()+'/' for base in [OUT,HERE]]
+ assert all(any(name.startswith(prefix) for prefix in prefixes) for name in names['stdout'].splitlines())
+ assert sha(p.read_bytes())==before
+ return {'kind':'MemoryOSPublicationEnvironmentGitValidation','status':'PASS','commands':results,'temporaryIndex':str(temp),'realIndexSha256':before,'realIndexUnchanged':True,'trackedPathsUnchanged':True,'refsUnchanged':True,'head':HEAD,'newEnvironmentPaths':len(names['stdout'].splitlines()),'postCommitCheck':'NOT_APPLICABLE_NO_COMMIT'}
+def validate(check=False):
+ args=[sys.executable,'-B',str(HERE/'validate.py')]+(['--check','--final'] if check else [])
+ r=run(args);assert r['exitCode']==0,r;return r
+def check():
+ receipt=read('execution-receipt.json');assert receipt['status']=='ENVIRONMENT_BLOCKED' and receipt['classification']=='UNRESOLVED'
+ index=read('evidence-index.json');actual={p.relative_to(ROOT).as_posix() for base in [OUT,HERE] for p in base.rglob('*') if p.is_file() and p!=OUT/'evidence-index.json'}
+ assert len(index['files'])==len(actual) and {r['path'] for r in index['files']}==actual
+ for r in index['files']:assert row(ROOT/r['path'])==r,r['path']
+ v=validate(True);g=gitcheck()
+ print(json.dumps({'status':'PASS','disposition':END,'classification':'UNRESOLVED','indexFiles':len(actual),'independentValidation':v['stdout'].strip(),'git':g['status'],'head':HEAD,'statusPorcelain':git('status','--porcelain'),'finalCommit':None}))
+def close():
+ preservation();attempts=[json.loads(p.read_bytes()) for p in sorted((OUT/'runs').glob('*/summary.json'))]
+ assert len(attempts)==1 and attempts[0]['actual']['classification']=='INPUT_ERROR' and attempts[0]['exitCode']==11 and attempts[0]['actual']['publication']=='COMPLETE' and len(attempts[0]['bundleFiles'])==4
+ assessment=read('section20-assessment.json');assert assessment['allCriteriaSatisfied'] is False
+ assert (OUT/'capture-summary.json').exists() and (HERE/'validate.py').exists()
+ report=OUT/'REPORT.md';text=report.read_text(encoding='utf-8').rstrip()+'\n'
+ for a,b in [('Phase3A','Phase 3A'),('Phase3D','Phase 3D'),('INPUT_ERROR/11','INPUT_ERROR / exit 11'),('ARTIFACT_ERROR/17','ARTIFACT_ERROR / exit 17'),('exit11','exit 11'),('all20','all 20'),('All20','All 20'),('Installed94','Installed 94'),('count0','count 0'),('remains1','remains 1'),('maximum3','maximum 3'),('and8','and 8'),('helper18','helper 18'),('PID9448','PID 9448'),('PID10148','PID 10148'),('parent9448','parent 9448'),('errno-4058','errno -4058'),('manifest381','manifest 381'),('marker188','marker 188'),('with10-second','with 10-second'),('CorrectionA/B','Correction A/B')]:text=text.replace(a,b)
+ start=datetime.datetime.fromisoformat('2026-09-27T21:14:46+00:00');now=datetime.datetime.now(datetime.timezone.utc);elapsed=(now-start).total_seconds();assert elapsed<5400
+ updates={'ROOT_WORKSPACE_VERIFICATION':'PASS: fresh read-only workspace verification for historical f236c4a refresh checkout; installed C3CB package checked independently.','ROOT_DIFF_CHECK':'PASS for tracked checkout and all new environment-capture paths using a temporary Git index. Real index, HEAD and refs unchanged. No commit created.','ROOT_GIT_STATUS':'Branch mo1306/phase3a-refresh and HEAD f236c4a2f94d8cd8e763aaa4bd6c52d703429692 unchanged. No staged or tracked changes; eight untracked evidence/tooling directories retain previous and new diagnostics.','ROOT_DURATION':f'{elapsed/60:.2f} minutes from {start.isoformat()} through evidence closure {now.isoformat()}; target <=30 minutes; no hosted extension used.'}
+ for a,b in updates.items():text=text.replace(a,b)
+ assert 'ROOT_' not in text and text.rstrip().endswith(END)
+ fields=[]
+ for line in text.splitlines():
+  m=re.match(r'^\|\s*(\d+)\s*\|\s*(.*?)\s*\|\s*(.*?)\s*\|$',line)
+  if m:fields.append({'number':int(m.group(1)),'name':m.group(2),'result':m.group(3)})
+ assert [f['number'] for f in fields]==list(range(1,59))
+ report.write_text(text,encoding='utf-8',newline='\n')
+ exceptions=[]
+ for base in [OUT,HERE]:
+  attr=base/'.gitattributes';value=attr.read_text(encoding='utf-8')
+  for p in sorted(base.rglob('*')):
+   if not p.is_file() or p.suffix.lower() not in ['.json','.txt','.md','.py','.mjs','.ps1','.yml']:continue
+   if p.read_bytes().replace(b'\r\n',b'\n').endswith(b'\n\n'):
+    name=p.relative_to(base).as_posix();assert ' ' not in name and '[' not in name
+    line=name+' whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof\n'
+    if line not in value:value+=line
+    exceptions.append(row(p))
+  attr.write_text(value,encoding='utf-8',newline='\n')
+ put('byte-preservation-attributes.json',{'kind':'MemoryOSPublicationEnvironmentExactByteAttributes','status':'PASS','scope':'Exact-path EOF-only whitespace exceptions preserve captured/executed bytes. No source bytes changed.','files':exceptions})
+ put('git-validation.json',gitcheck())
+ names=['preservation-before.json','preservation-audit.json','methodology-audit.json','section20-assessment-before.json','section20-assessment.json','observation-plan.json','capture-summary.json','observed-bundle-validation.json','observer-microcheck.json','observer-path-microcheck.json','source-handle-audit.json','windows-eventlog.json','remote-state.json','workspace-verification.json','scaffold-verification.json','git-validation.json']
+ bindings={name:row(OUT/name) for name in names}
+ old=json.loads((OLD/'execution-receipt.json').read_bytes())
+ receipt={'kind':'MemoryOSPhase3APublicationEnvironmentCaptureReceipt','version':'1.0.0','status':'ENVIRONMENT_BLOCKED','classification':'UNRESOLVED','disposition':END,'authority':AUTH,'correction':'39d83316f7c72d6cb49f8b6cde36c1bfa833112a','head':HEAD,'branch':'mo1306/phase3a-refresh','historicalBlockedReceipt':row(OLD/'execution-receipt.json'),'historicalReport':row(OLD/'REPORT.md'),'historicalDispositionRetained':True,'labels':old['labels'],'allCertificationGatesPassed':False,'nativeCertified':False,'githubHostedCertified':False,'completionCommitCreated':False,'labelsPromoted':False,'phase3DReady':False,'resolvedMissingInputGate':False,'productChanged':False,'productionChanges':False,'acceptedGroupsRerun':False,'remoteMutated':False,'rootCauseProven':False,'historicalCauseProven':False,'harnessDefectProven':False,'productDefectProven':False,'environmentTransientProven':False,'stableFreshSupersessionUsed':False,'exactKernelExitClaimed':False,'systemWideHandleEnumeration':False,'newObservedRunCount':1,'hypothesisWitnessCount':0,'priorReproductionsReadOnly':3,'allNewObservedRunsComplete':True,'additionalProductExecutionsPermittedInThisTask':False,'finalCommit':None,'finalParent':None,'hosted':{'attempted':False,'runs':[],'artifacts':[],'parity':None},'remote':read('remote-state.json'),'bindings':bindings,'newObservations':[row(p) for p in sorted((OUT/'runs').glob('*/summary.json'))],'retention':'All 698 prior evidence/tooling files preserved, including the original failure and three previous faithful reproductions. Eight accepted groups reused read-only; no blocked receipt promoted.','causeEvidence':{'originalNativeError':'NOT_CAPTURED_NOT_RECOVERED','failureRegion':'Manifest checkPaths pre-rename guard or following renameSync; historical helper18 association is source-order inference.','newPublicationErrors':0,'newOutcome':'INPUT_ERROR / exit 11 / COMPLETE','classificationRationale':'The single genuine observed run passes with richer process/file/timing evidence, but no independent evidence proves the original cause. Section20 criterion10 methodology permission is NOT_ESTABLISHED; successful fresh evidence alone cannot resolve this gate.','directFileHandleEnumeration':False,'observerLimits':'Process CPU/IO/handle counts, descriptor ledger and shared-directory notifications are bounded indirect evidence; no absence-of-global-lock claim. Polling/notification delivery are not exact kernel timestamps.','hypothesisWitness':'NOT_USED_NO_SUPPORTED_SPECIFIC_CAUSAL_MECHANISM','repeatDecision':'Runs2/3 not used: another successful repeat would not materially identify the historical cause.'},'recommendation':fields[57]['result'],'requestedReportFields':fields,'elapsedSecondsAtClosure':elapsed,'within30MinuteDiagnosticTarget':elapsed<=1800,'gitDiffCheck':'PASS','localStatus':git('status','--porcelain')}
+ put('execution-receipt.json',receipt)
+ v=validate()
+ put('final-validation.json',{'kind':'MemoryOSPublicationEnvironmentClosure','status':'PASS','meaning':'Evidence consistency and truthful blocked disposition only; no native/hosted certification.','receipt':row(OUT/'execution-receipt.json'),'report':row(report),'independentValidation':row(OUT/'validation.json'),'negativeControls':row(OUT/'validation-negatives.json'),'tool':row(Path(__file__)),'validationCommand':v,'git':row(OUT/'git-validation.json'),'closureUtc':now.isoformat(),'elapsedSeconds':elapsed})
+ files=sorted((p for base in [OUT,HERE] for p in base.rglob('*') if p.is_file() and p!=OUT/'evidence-index.json'),key=lambda p:p.relative_to(ROOT).as_posix())
+ put('evidence-index.json',{'kind':'MemoryOSPublicationEnvironmentClosedIndex','status':'ENVIRONMENT_BLOCKED','scope':'New environment-capture files only; index excludes itself. All698 historical files remain independently bound and immutable.','files':[row(p) for p in files]})
+ check()
+if __name__=='__main__':
+ parser=argparse.ArgumentParser();parser.add_argument('--check',action='store_true');args=parser.parse_args();check() if args.check else close()

@@ -1,0 +1,285 @@
+{
+  "candidate": {
+    "baseCommit": "deff3c8016ca685db18a3874b18ff956d289c0e0",
+    "identityPath": "repositories/cca-conformance/mo1308-phase3-candidate-identity.json",
+    "identitySha256": "528f36b8103abe1df3fbff08489350fd7a494f951ec73ac043bbf7209c5112c7",
+    "productionTreeDigest": "sha256:111bd7dd6860221bb2f00f344f38750450c9be3a509bbe888630443d47a83481"
+  },
+  "certifying": true,
+  "corpus": null,
+  "execution": {
+    "adaptiveExpansion": false,
+    "caseRetry": false,
+    "diagnosticPromotion": false,
+    "lateSuccessRecovery": false,
+    "once": true,
+    "stopAtFirstMandatoryFailure": true,
+    "warmup": false
+  },
+  "generation": {
+    "id": "phase3d",
+    "ordinal": 1,
+    "supersedes": null
+  },
+  "harnessReview": {
+    "byteLength": 4863,
+    "path": "repositories/cca-conformance/evidence/mo1308/phase3d-harness-review/review.json",
+    "sha256": "1f81110e8ab95d05c819c3aa18839db41f3bdd59afd0129578caa1c168273912"
+  },
+  "inputs": [],
+  "inventory": {
+    "path": "repositories/cca-conformance/mo1308-phase3-inventory.json",
+    "sha256": "934607c1acdeff88b934fa447ce714c3869bbb73a2a4d35b36603bc5c2d35b5d"
+  },
+  "kind": "MO1308Phase3Seal",
+  "protocol": {
+    "path": "docs/mo1308-phase3-protocol.md",
+    "sha256": "4066c8df246db08875969cb61a5088daab2ed52ef4ad22835db81eb93e4d284f",
+    "status": "APPROVED — FREEZE AMENDMENT A8 (owner approval 2026-10-06)"
+  },
+  "sealedAt": "2026-10-09T16:23:44.263Z",
+  "segments": [
+    {
+      "budgetMs": 5400000,
+      "extended": null,
+      "id": "main",
+      "steps": [
+        "D",
+        "E"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "cases": [
+        {
+          "id": "3D-D1",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3D-D2",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3D-D3",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3D-D4",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3D-D5",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3D-D6",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3D-D7",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        }
+      ],
+      "guardMs": 3600000,
+      "id": "D",
+      "segment": "main"
+    },
+    {
+      "cases": [
+        {
+          "id": "3D-E1",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3D-E2",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": [
+            "Q03"
+          ]
+        },
+        {
+          "id": "3D-E3",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": [
+            "Q01",
+            "Q02",
+            "Q13",
+            "Q14",
+            "Q15"
+          ]
+        }
+      ],
+      "guardMs": 900000,
+      "id": "E",
+      "segment": "main"
+    }
+  ],
+  "stream": "3D",
+  "tools": [
+    {
+      "byteLength": 1876,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/README.md",
+      "sha256": "9265101f86858975ad9f8f85d53f259d7aa16e38ab7626aaa54fea5784435ceb"
+    },
+    {
+      "byteLength": 2116,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/candidate-identity.mjs",
+      "sha256": "a7e4061b6fdf8d32679a69aaf6dbf151587caa2cc6761f3bdd3248e763e44a40"
+    },
+    {
+      "byteLength": 11829,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/corpus.mjs",
+      "sha256": "57f67db3ac5c6b18262a576d2812f16e61f5a50947670e0f2b5545e65b6e4f43"
+    },
+    {
+      "byteLength": 1235,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/inventory-file.mjs",
+      "sha256": "62d62b168ed762f38672b1204feaf52577a270afbfcbc030e97e41605b198864"
+    },
+    {
+      "byteLength": 3334,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/lib/allowed-paths.mjs",
+      "sha256": "4cb9adcc1269b589d41e555a7ef887c2b6802e4c6a02014a071fc27b42031eec"
+    },
+    {
+      "byteLength": 8919,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/lib/campaign-driver.mjs",
+      "sha256": "da32ba92d9de5d5778fa6b203c25ec7998615863b15a0c52339777f60b0f504b"
+    },
+    {
+      "byteLength": 7053,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/lib/candidate.mjs",
+      "sha256": "72d9d2e74d5c65f0ee427fcc39aee7039d21ef9cbe7e2479f890c35537cf1cc7"
+    },
+    {
+      "byteLength": 2804,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/lib/classification.mjs",
+      "sha256": "0d64eac5b3d4101be4888f9fd421cda7eb15e9ee73792bd830006b223533c2e4"
+    },
+    {
+      "byteLength": 7505,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/lib/closure.mjs",
+      "sha256": "7941c3b5db4873b6b8e958816c43212023cb8441b3b3e8aa3b0dcb79ae7a55b8"
+    },
+    {
+      "byteLength": 3774,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/lib/disclosure.mjs",
+      "sha256": "cd0027e99777b13fd88d8421259291002bee307a1656bedc3a2ccd2d9dd62014"
+    },
+    {
+      "byteLength": 2594,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/lib/evidence-allowance.mjs",
+      "sha256": "566a669f857f5ab84cf060a5f882123e9b9f95db5a75f3f4dae3bc45f6a94dce"
+    },
+    {
+      "byteLength": 1045,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/lib/evidence.mjs",
+      "sha256": "269c9480b20c4161d35a7114ee9f86fde8d6b13ba96f2a3b07e5af80c5c27100"
+    },
+    {
+      "byteLength": 2512,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/lib/git.mjs",
+      "sha256": "1e25930b98f30d1dcb18eb4a0994581c0cfe4f8d4b7a778a3716b836bba714f1"
+    },
+    {
+      "byteLength": 1849,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/lib/hashing.mjs",
+      "sha256": "b2f997245372d5e4fc7e187531f2ca128ce3bf09153f7297d339b8a81fb240fc"
+    },
+    {
+      "byteLength": 33247,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/lib/inventory-source.mjs",
+      "sha256": "a7408d172a34bb0ddc1fa5c46263f0374d6317257bed648abe0f6876e47774c2"
+    },
+    {
+      "byteLength": 5798,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/lib/inventory.mjs",
+      "sha256": "45be502dfffa24b7c4685a5dc8f01118aa28cecef024235baf3b0870041adb26"
+    },
+    {
+      "byteLength": 7710,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/lib/receipts.mjs",
+      "sha256": "1cbd691cafd9be712323dd16e76aafe519496ed5f93e31131f9fdc5f64db4d82"
+    },
+    {
+      "byteLength": 21952,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/lib/runner.mjs",
+      "sha256": "eeb124af999fe59de392d318c9ffb49dc6303e334c44fd643c00fe2c99f62312"
+    },
+    {
+      "byteLength": 11605,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/lib/seal.mjs",
+      "sha256": "f8ccdbc11f67d23af37819b0bd0c6b4d8a72014c22e6b745ca127624fe803bd1"
+    },
+    {
+      "byteLength": 2861,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/lib/shape.mjs",
+      "sha256": "7956e0d6c050bc7595c44e9f1815a27125ac203e8da7d061108be1374c607a5d"
+    },
+    {
+      "byteLength": 1623,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/lib/stable-json.mjs",
+      "sha256": "7d334b0280077cc403a2e4de89d2dac80064fb6b60cd56bd046ff98c0ed3cdeb"
+    },
+    {
+      "byteLength": 4474,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/render-protocol.mjs",
+      "sha256": "a98b7bb7bf3d92bca48ed89f0b5cfe044df0d3a49cb965ef5238df12b786b060"
+    },
+    {
+      "byteLength": 3028,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/short-temp.mjs",
+      "sha256": "56083984e98ea9ea3a7bcb2a9696c66b7a2ea180207abf406eb4cbdf84a8d25f"
+    },
+    {
+      "byteLength": 1020,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3d/campaign.mjs",
+      "sha256": "1483aa1512352c5726b4220a07b5e0b231752209a67e03bee34c2c000a6a02b0"
+    },
+    {
+      "byteLength": 1556,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3d/cases.mjs",
+      "sha256": "e34f6a2f659c0abdea5bb50c93f6efe3544c72fe83c30356f198b5316021dcfe"
+    },
+    {
+      "byteLength": 5075,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3d/i3-inventory.mjs",
+      "sha256": "c5d07b957ae1ec785a7ed163aaf94a5e75a9e66ca7011b9366ab74033e1fe162"
+    },
+    {
+      "byteLength": 2809,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3d/regression-preconditions.mjs",
+      "sha256": "2a8be22ef08d2c6e13cc2180b8a1bc1c144b120e6401b87e2fca0bc5a2af0c92"
+    },
+    {
+      "byteLength": 1390,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3d/validate-final.mjs",
+      "sha256": "376d0f8d6f69ccb784d8511ec9dd4702e502b644656de87332d2212bda1a6888"
+    },
+    {
+      "byteLength": 29382,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3d/validate.mjs",
+      "sha256": "f9782676f53b82684030998d35e4719c1131b1071e262488a32b4b390eba1286"
+    }
+  ],
+  "version": "1.0.0"
+}

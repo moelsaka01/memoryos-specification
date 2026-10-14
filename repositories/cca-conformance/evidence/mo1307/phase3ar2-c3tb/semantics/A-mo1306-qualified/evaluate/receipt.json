@@ -1,0 +1,27 @@
+{
+  "step": "A",
+  "name": "mo1306-qualified",
+  "operation": "evaluate",
+  "elapsedMs": 14701.715699999999,
+  "exit": 29,
+  "signal": null,
+  "error": null,
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-c3tb/semantics/A-mo1306-qualified/evaluate/stdout.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-c3tb/semantics/A-mo1306-qualified/evaluate/stderr.data",
+    "byteLength": 115,
+    "sha256": "sha256:b2a2279f168dfef0effe10ad966bda3871750a96ff46dcef570eb48ccf55dcb1"
+  },
+  "result": "FAIL",
+  "failure": {
+    "name": "AssertionError",
+    "code": "ERR_ASSERTION",
+    "stage": null,
+    "message": "{\"code\":\"MO1307_TIMEOUT\",\"kind\":\"MemoryOSReadinessError\",\"reference\":null,\"stage\":\"ACQUISITION\",\"version\":\"1.0.0\"}\n\n\n29 !== 2\n",
+    "stack": "AssertionError [ERR_ASSERTION]: {\"code\":\"MO1307_TIMEOUT\",\"kind\":\"MemoryOSReadinessError\",\"reference\":null,\"stage\":\"ACQUISITION\",\"version\":\"1.0.0\"}\n\n\n29 !== 2\n\n    at invoke (file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-c3tb/core.mjs:15:277)\n    at file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-c3tb/core.mjs:19:2\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)"
+  }
+}

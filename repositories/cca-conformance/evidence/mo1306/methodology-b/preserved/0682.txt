@@ -1,0 +1,113 @@
+"""One authorized fresh-root reproduction; no retry or other accepted-case execution."""
+import copy,ctypes,hashlib,json,os,shutil,subprocess,sys,time,uuid
+from pathlib import Path
+from datetime import datetime,timezone
+sys.dont_write_bytecode=True
+ROOT=Path(__file__).resolve().parents[4];HERE=Path(__file__).resolve().parent
+BASE=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-environment-capture'
+CACHE=ROOT/'.cache/mo1306-phase3a-final'
+INSTALLED=ROOT/'.cache/mo1306-phase3a-final/install/node_modules/memoryos-ci'
+NODE=ROOT/'.cache/mo1306-phase3a-final/node-v24.21.0-win-x64/node.exe'
+OLD=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-final/native/20260927T120240-b3df86'
+sys.path.insert(0,str(HERE.parent/'mo1306-phase2d'))
+import observer
+from trace_phase2d import validate_trace
+sys.path.insert(0,str(HERE))
+from windows_capture import Capture
+ENV={k:os.environ[k] for k in ['SystemRoot','WINDIR']}
+IDS={'node':str(NODE),'powershell':str(Path(ENV['SystemRoot'])/'System32/WindowsPowerShell/v1.0/powershell.exe'),'conhost':str(Path(ENV['SystemRoot'])/'System32/conhost.exe')}
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def ref(p):
+ b=p.read_bytes();return {'path':p.relative_to(ROOT).as_posix(),'byteLength':len(b),'sha256':sha(b)}
+def read(p):return json.loads(p.read_bytes())
+def put(p,v):
+ raw=(json.dumps(v,sort_keys=True,separators=(',',':'))+'\n').encode();assert len(raw)<2*1024*1024
+ p.parent.mkdir(parents=True,exist_ok=True)
+ with p.open('xb') as f:f.write(raw)
+ return ref(p)
+def inventory():return [{'path':p.relative_to(INSTALLED).as_posix(),'byteLength':p.stat().st_size,'sha256':sha(p.read_bytes())} for p in sorted(INSTALLED.rglob('*')) if p.is_file()]
+def compact(record):
+ r=copy.deepcopy(record);dictionary={}
+ for entry in r.get('lifetimes',[])+[p for s in r.get('observation',{}).get('samples',[]) for p in s['processes']]:
+  if isinstance(entry.get('commandLine'),str):
+   command=entry['commandLine'];key=sha(command.encode());dictionary[key]=command;entry['commandLine']={'sha256':key}
+ r['traceEncoding']={'kind':'LosslessCommandLineDictionary','version':'1.0.0','commandLines':dictionary};return r
+K=ctypes.WinDLL('kernel32',use_last_error=True);A=ctypes.WinDLL('advapi32',use_last_error=True)
+K.GetFileAttributesW.argtypes=[ctypes.c_wchar_p];K.GetFileAttributesW.restype=ctypes.c_uint32
+K.LocalFree.argtypes=[ctypes.c_void_p];K.LocalFree.restype=ctypes.c_void_p
+A.GetNamedSecurityInfoW.argtypes=[ctypes.c_wchar_p,ctypes.c_int,ctypes.c_uint32,ctypes.POINTER(ctypes.c_void_p),ctypes.POINTER(ctypes.c_void_p),ctypes.POINTER(ctypes.c_void_p),ctypes.POINTER(ctypes.c_void_p),ctypes.POINTER(ctypes.c_void_p)];A.GetNamedSecurityInfoW.restype=ctypes.c_uint32
+A.ConvertSecurityDescriptorToStringSecurityDescriptorW.argtypes=[ctypes.c_void_p,ctypes.c_uint32,ctypes.c_uint32,ctypes.POINTER(ctypes.c_void_p),ctypes.POINTER(ctypes.c_uint32)];A.ConvertSecurityDescriptorToStringSecurityDescriptorW.restype=ctypes.c_int
+
+def path_state(path):
+ path=Path(path);attr=K.GetFileAttributesW(str(path));winerror=ctypes.get_last_error() if attr==0xffffffff else 0
+ result={'path':str(path),'length':len(str(path)),'parent':str(path.parent),'exists':path.exists(),'windowsAttributes':None if attr==0xffffffff else attr,'windowsError':winerror,'readOnly':bool(attr&1) if attr!=0xffffffff else None,'reparsePoint':bool(attr&1024) if attr!=0xffffffff else None,'directory':bool(attr&16) if attr!=0xffffffff else None}
+ if attr!=0xffffffff:
+  sd=ctypes.c_void_p();out=ctypes.c_void_p();length=ctypes.c_uint32();code=A.GetNamedSecurityInfoW(str(path),1,7,None,None,None,None,ctypes.byref(sd));result['aclReadWindowsError']=code
+  if code==0:
+   try:
+    if A.ConvertSecurityDescriptorToStringSecurityDescriptorW(sd,1,7,ctypes.byref(out),ctypes.byref(length)):
+     result['sddl']=ctypes.wstring_at(out);K.LocalFree(out)
+    else:result['sddlWindowsError']=ctypes.get_last_error()
+   finally:K.LocalFree(sd)
+ return result
+
+def main():
+ assert sys.argv[1:]==['--execute-once'],'Explicit --execute-once required; no loops or retries'
+ rid=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S')+'-'+uuid.uuid4().hex[:6]
+ output=BASE/'runs'/rid;work=CACHE/('n-'+rid)/'error-input';output.mkdir(parents=True,exist_ok=False);work.mkdir(parents=True,exist_ok=False)
+ put(output/'started.json',{'utc':datetime.now(timezone.utc).isoformat(),'id':rid,'scope':'One faithful case only','tool':ref(Path(__file__)),'wrapper':ref(HERE/'observe-publication.mjs'),'windowsObserver':ref(HERE/'windows_capture.py'),'plan':ref(BASE/'observation-plan.json')})
+ oldcase=read(OLD/'cases/error-input.json');oldtrace=read(OLD/'traces/error-input.json');before=inventory();assert before==read(OLD/'installed-integrity-after.json')['members'] and len(before)==94
+ assert sha(NODE.read_bytes())=='sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32'
+ assert sha((INSTALLED/'distribution-manifest.json').read_bytes())=='sha256:b41d024d8ec1c588ca3fc919f8e3ac59a622aebc7cff3377f6a20ce7fc2ca4f3'
+ for f in oldcase['inputFiles']:
+  source=ROOT/f['path'];assert ref(source)==f;shutil.copyfile(source,work/source.name)
+ assert {p.name for p in work.iterdir()}=={'candidate.mip','policy.json','memoryos-ci.json'}
+ cfg=read(work/'memoryos-ci.json');assert cfg['context']['candidateMip']=='missing.mip' and not (work/'missing.mip').exists() and not (work/'.memoryos-ci').exists()
+ expected_argv=list(oldtrace['command']);oldwork=expected_argv[5];expected_argv[5]=str(work);expected_argv[7]=str(work/'memoryos-ci.json')
+ max_operand=work/'.memoryos-ci/out/00000000-0000-4000-8000-000000000000/.pending/memoryos-ci-artifacts.json'
+ assert len(str(work))==len(oldwork) and len(str(max_operand))==207 and len(str(max_operand))<=240
+ event_path=output/'events.json';argv=[str(NODE),'--max-old-space-size=128',str(HERE/'observe-publication.mjs'),str(event_path),str(INSTALLED/'bin/memoryos-ci.mjs'),*expected_argv[3:]]
+ paths=[work.parent,work,*sorted(work.iterdir()),work/'missing.mip',work/'.memoryos-ci',work/'.memoryos-ci/out']
+ pre={'status':'PASS','authority':'701d48ee2012675966360dda775ab13013c09ab9','archiveSha256':'sha256:7649f6df77c3f6163eb94b343974abaeccebbd5bcb8a2208cc889128904ce45d','distributionSha256':sha((INSTALLED/'distribution-manifest.json').read_bytes()),'node':ref(NODE),'oldCase':ref(OLD/'cases/error-input.json'),'oldTrace':ref(OLD/'traces/error-input.json'),'originalArgv':oldtrace['command'],'productCommand':expected_argv,'productArgv':[expected_argv[0],*expected_argv[2:]],'maximumPublicationOperandLength':len(str(max_operand)),'maximumPublicationOperandTemplate':str(max_operand),'sameWorkspaceLengthAsHistorical':True,'externalArgv':argv,'cwd':str(INSTALLED.parent),'environment':ENV,'inputFiles':[ref(p) for p in sorted(work.iterdir())],'filesystemBefore':[path_state(p) for p in paths],'initialOutputAbsent':True,'freshWorkspaceCreatedExclusive':True,'installedMembersBefore':before,'deviations':['Fresh isolated workspace and output paths are required by the user. Configuration and input file bytes are unchanged.','External Node entry script is the diagnostic observer; product process.argv is the original installed CLI shape with only the fresh workspace/config operands changed. process.execArgv remains --max-old-space-size=128.','Buffered in-process observation adds nonzero CPU/bookkeeping overhead. No product timeout/clock/timer arguments, fs operands/results/errors, installed code or helper bytes are changed. Evidence is flushed after product exit.']}
+ put(output/'preflight.json',pre);print(json.dumps({'reproduction':rid,'preflight':'PASS','output':str(output)}),flush=True)
+ began=datetime.now(timezone.utc).isoformat();result=None
+ try:
+  capture=Capture(work,path_state);original_snapshot=observer.snapshot
+  def observe_snapshot(*args,**kwargs):
+   rows=original_snapshot(*args,**kwargs);capture.discover(rows);return rows
+  try:
+   capture.start_capture();observer.snapshot=observe_snapshot
+   result=observer.execute(argv,INSTALLED.parent,env=ENV,timeout=80,interval=.1)
+  finally:
+   observer.snapshot=original_snapshot;external=capture.stop()
+   samples=external.pop('processSamples');external['processSampleCount']=len(samples);external['processSampleChunks']=[put(output/('windows-process-samples-'+str(i//128)+'.json'),{'samples':samples[i:i+128]}) for i in range(0,len(samples),128)]
+   put(output/'windows-capture.json',external)
+  result['topologyValidation']=validate_trace(result,IDS,INSTALLED)
+  assert not result['cleanup']['remainingPids'] and result['cleanup']['elapsedMs']<=2000
+  for stream in ['stdout','stderr']:
+   with (output/(stream+'.txt')).open('xb') as f:f.write(result[stream].encode())
+  put(output/'trace.json',compact(result))
+  assert event_path.is_file(),'Diagnostic observer must flush actual evidence'
+  events=read(event_path);assert events['productArgv']==[str(NODE),str(INSTALLED/'bin/memoryos-ci.mjs'),*expected_argv[3:]] and events['execArgvAtExit']==['--max-old-space-size=128'] and events['environment']==ENV
+  assert not events['remainingTrackedFileDescriptors']
+  actual=json.loads(result['stdout']);summary={'status':'OBSERVED','id':rid,'startedUtc':began,'endedUtc':datetime.now(timezone.utc).isoformat(),'exitCode':result['exitCode'],'actual':actual,'diagnostics':[json.loads(line) for line in result['stderr'].splitlines()],'events':ref(event_path),'trace':ref(output/'trace.json'),'stdout':ref(output/'stdout.txt'),'stderr':ref(output/'stderr.txt'),'preflight':ref(output/'preflight.json'),'topology':result['topologyValidation'],'cleanup':result['cleanup'],'helperCount':events['helperCount'],'classification':'PENDING_EVIDENCE_REVIEW','additionalReproductions':0,'windowsCapture':ref(output/'windows-capture.json'),'observationPlan':ref(BASE/'observation-plan.json'),'windowsObserver':ref(HERE/'windows_capture.py')}
+  bundle=work/'.memoryos-ci/out'/actual['runId'];summary['actualBundlePath']=str(bundle)
+  if bundle.exists():
+   shutil.copytree(bundle,output/'bundle');summary['bundleFiles']=[ref(p) for p in sorted((output/'bundle').rglob('*')) if p.is_file()]
+   paths.extend(sorted(bundle.rglob('*')));paths.extend([bundle.parent,bundle,bundle/'.pending',bundle/'memoryos-ci-artifacts.json',bundle/'memoryos-ci-complete.json'])
+  summary['filesystemAfter']=[path_state(p) for p in paths]
+  after=inventory();assert after==before
+  summary['installedIntegrity']=put(output/'installed-integrity-after.json',{'status':'PASS','count':94,'members':after,'before':ref(output/'preflight.json')})
+  assert external['threadsStopped'] and external['handleObservation']['allOwnedObserverHandlesClosed'] and external['handleObservation']['directoryWatchClosed']
+  assert not external['errors'],external['errors']
+  for event in events['events']:
+   assert external['captureStart']['qpcNs']-1000<=int(event['qpcBeforeNs'])<=int(event['qpcAfterNs'])<=external['captureEnd']['qpcNs']+1000
+  put(output/'summary.json',summary);print(json.dumps({'output':str(output),'exitCode':result['exitCode'],'actual':actual,'helperCount':events['helperCount'],'integrity':'PASS'}),flush=True)
+ except BaseException as error:
+  if result:
+   for stream in ['stdout','stderr']:
+    p=output/(stream+'.txt')
+    if not p.exists():p.write_bytes(result[stream].encode())
+   if not (output/'trace.json').exists():put(output/'trace.json',compact(result))
+  put(output/'engineering-failure.json',{'type':type(error).__name__,'message':str(error),'utc':datetime.now(timezone.utc).isoformat()});raise
+if __name__=='__main__':main()

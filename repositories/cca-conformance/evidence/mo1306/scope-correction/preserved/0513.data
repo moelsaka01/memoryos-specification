@@ -1,0 +1,191 @@
+{
+  "mode": "entry-stage-error",
+  "command": [
+    "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+    "--max-old-space-size=96",
+    "--expose-gc",
+    "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-3b-refresh2\\repositories\\cca-conformance\\tools\\mo1306-phase3b-r2\\xml-witness.mjs",
+    "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-3b-refresh2\\.cache\\mo1306-phase3b-r2\\xml\\witness-bundle.mjs",
+    "entry-stage-error",
+    "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-3b-refresh2\\.cache\\mo1306-phase3b-r2\\xml\\entry-stage-error"
+  ],
+  "exitCode": 0,
+  "wallSeconds": 1.375,
+  "timedOut": false,
+  "wallLimitSeconds": 10,
+  "v8OldSpaceLimitMiB": 96,
+  "hardWindowsJobProcessMemoryLimitBytes": 402653184,
+  "peakProcessCommittedBytes": 96665600,
+  "stdoutSha256": "3fccb5bc1a6c47ef9d19234c0e46c1bce92a20c81c020cd862f2ca8dcfdc1961",
+  "stderr": "",
+  "witness": {
+    "mode": "entry-stage-error",
+    "node": "v24.21.0",
+    "execArgv": [
+      "--max-old-space-size=96",
+      "--expose-gc"
+    ],
+    "externalNetworkAllowed": false,
+    "azureOptions": {
+      "attributesGroupName": "$",
+      "textNodeName": "#",
+      "ignoreAttributes": false,
+      "suppressBooleanAttributes": false,
+      "parseAttributeValue": false,
+      "parseTagValue": false,
+      "attributeNamePrefix": "",
+      "processEntities": true,
+      "trimValues": false
+    },
+    "effectiveOptions": {
+      "preserveOrder": false,
+      "attributeNamePrefix": "",
+      "attributesGroupName": "$",
+      "textNodeName": "#",
+      "ignoreAttributes": false,
+      "removeNSPrefix": false,
+      "allowBooleanAttributes": false,
+      "parseTagValue": false,
+      "parseAttributeValue": false,
+      "trimValues": false,
+      "cdataPropName": false,
+      "numberParseOptions": {
+        "hex": true,
+        "leadingZeros": true,
+        "eNotation": true
+      },
+      "alwaysCreateTextNode": false,
+      "commentPropName": false,
+      "unpairedTags": [],
+      "processEntities": {
+        "enabled": true,
+        "maxEntitySize": 10000,
+        "maxExpansionDepth": 10,
+        "maxTotalExpansions": 1000,
+        "maxExpandedLength": 100000,
+        "allowedTags": null,
+        "tagFilter": null
+      },
+      "htmlEntities": false,
+      "ignoreDeclaration": false,
+      "ignorePiTags": false,
+      "transformTagName": false,
+      "transformAttributeName": false,
+      "captureMetaData": false,
+      "maxNestedTags": 100,
+      "strictReservedNames": true,
+      "suppressBooleanAttributes": false
+    },
+    "requests": [
+      {
+        "url": "https://service.invalid/container/blob?sig=LOCAL_ONLY&comp=block&blockid=NmJkNzk2Y2YtYTMzYS00MGRhLWI2OTktZGRmOTg5MDk1NmNmMDAwMDAwMDAwMDAw",
+        "method": "PUT",
+        "operation": "block",
+        "requestBodyBytes": 1386,
+        "requestBodySha256": "d9f4489ea54659085114954b56f4b614ecc83505cd0d4084d8ac21bfd50c2794",
+        "isXmlRequest": false,
+        "outboundPrefix": "504b0304"
+      }
+    ],
+    "parses": [
+      {
+        "inputBytes": 5066,
+        "inputSha256": "228e139b95d1ac5db9f3e4058138490a308125c25856730fef6252267dca4cd7",
+        "inputContainsArtifactSentinel": false,
+        "outputMessageLength": 1001,
+        "elapsedMs": 1.702099999999973,
+        "memoryBefore": {
+          "rss": 75591680,
+          "heapTotal": 24076288,
+          "heapUsed": 15231344,
+          "external": 22811781,
+          "arrayBuffers": 9416623
+        },
+        "memoryAfter": {
+          "rss": 75993088,
+          "heapTotal": 24076288,
+          "heapUsed": 15518056,
+          "external": 22811821,
+          "arrayBuffers": 9416623
+        },
+        "callStack": "Error: parser trace\n    at bundle.XMLParser.parse (file:///C:/Users/melsa/Documents/Codex/cca-mo1306-3b-refresh2/repositories/cca-conformance/tools/mo1306-phase3b-r2/xml-witness.mjs:49:454)\n    at parseXML (file:///C:/Users/melsa/Documents/Codex/cca-mo1306-3b-refresh2/.cache/mo1306-phase3b-r2/xml/witness-bundle.mjs:95610:30)\n    at parse (file:///C:/Users/melsa/Documents/Codex/cca-mo1306-3b-refresh2/.cache/mo1306-phase3b-r2/xml/witness-bundle.mjs:91671:36)\n    at deserializeResponseBody (file:///C:/Users/melsa/Documents/Codex/cca-mo1306-3b-refresh2/.cache/mo1306-phase3b-r2/xml/witness-bundle.mjs:91528:34)\n    at Object.sendRequest (file:///C:/Users/melsa/Documents/Codex/cca-mo1306-3b-refresh2/.cache/mo1306-phase3b-r2/xml/witness-bundle.mjs:91492:20)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async Object.sendRequest (file:///C:/Users/melsa/Documents/Codex/cca-mo1306-3b-refresh2/.cache/mo1306-phase3b-r2/xml/witness-bundle.mjs:97853:34)\n    at async StorageContextClient.sendOperationRequest (file:///C:/Users/melsa/Documents/Codex/cca-mo1306-3b-refresh2/.cache/mo1306-phase3b-r2/xml/witness-bundle.mjs:92289:33)\n    at async StorageContextClient.sendOperationRequest (file:///C:/Users/melsa/Documents/Codex/cca-mo1306-3b-refresh2/.cache/mo1306-phase3b-r2/xml/witness-bundle.mjs:92911:24)\n    at async file:///C:/Users/melsa/Documents/Codex/cca-mo1306-3b-refresh2/.cache/mo1306-phase3b-r2/xml/witness-bundle.mjs:119624:48"
+      }
+    ],
+    "rpc": [
+      {
+        "method": "CreateArtifact",
+        "request": {
+          "workflowRunBackendId": "1",
+          "workflowJobRunBackendId": "1",
+          "name": "memoryos-ci-1-1",
+          "mimeType": {
+            "value": "application/zip"
+          },
+          "version": 7,
+          "expiresAt": {
+            "seconds": "1791058153",
+            "nanos": 611000000
+          }
+        }
+      }
+    ],
+    "error": {
+      "name": "RestError",
+      "code": "InvalidRequest",
+      "messagePrefix": "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<",
+      "messageLength": 1001
+    },
+    "elapsedMs": 77.86699999999999,
+    "artifactFixtures": [
+      {
+        "name": "evaluation-identity.json",
+        "sha256": "689f277780ba5a16bcda56552e56c172cf16ada0898b1b6d9d79fb7e08ebf354"
+      },
+      {
+        "name": "memoryos-ci-artifacts.json",
+        "sha256": "689f277780ba5a16bcda56552e56c172cf16ada0898b1b6d9d79fb7e08ebf354"
+      },
+      {
+        "name": "memoryos-ci-complete.json",
+        "sha256": "689f277780ba5a16bcda56552e56c172cf16ada0898b1b6d9d79fb7e08ebf354"
+      },
+      {
+        "name": "memoryos-ci-evidence.json",
+        "sha256": "689f277780ba5a16bcda56552e56c172cf16ada0898b1b6d9d79fb7e08ebf354"
+      },
+      {
+        "name": "memoryos-ci-result.json",
+        "sha256": "689f277780ba5a16bcda56552e56c172cf16ada0898b1b6d9d79fb7e08ebf354"
+      },
+      {
+        "name": "policy-outcome.json",
+        "sha256": "689f277780ba5a16bcda56552e56c172cf16ada0898b1b6d9d79fb7e08ebf354"
+      }
+    ],
+    "processMemory": {
+      "rss": 76668928,
+      "heapTotal": 25124864,
+      "heapUsed": 16748808,
+      "external": 22908877,
+      "arrayBuffers": 9482159
+    },
+    "resourceUsage": {
+      "userCPUTime": 281000,
+      "systemCPUTime": 109000,
+      "maxRSS": 77576,
+      "sharedMemorySize": 0,
+      "unsharedDataSize": 0,
+      "unsharedStackSize": 0,
+      "minorPageFault": 0,
+      "majorPageFault": 25423,
+      "swappedOut": 0,
+      "fsRead": 22,
+      "fsWrite": 47,
+      "ipcSent": 0,
+      "ipcReceived": 0,
+      "signalsCount": 0,
+      "voluntaryContextSwitches": 0,
+      "involuntaryContextSwitches": 0
+    }
+  }
+}

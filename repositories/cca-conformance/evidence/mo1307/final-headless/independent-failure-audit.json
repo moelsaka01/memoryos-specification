@@ -1,0 +1,139 @@
+{
+  "kind": "MO1307FinalHeadlessIndependentFailureAudit",
+  "result": "AUDIT_CONFIRMED_FAILURE_AND_STOP",
+  "reviewer": "inventory_authority",
+  "createdAtUtc": "2026-09-30T15:47:49.188581+00:00",
+  "scope": "Read-only audit of already preserved receipts, stdout/stderr, source and tool bytes. Only this new reporting artifact is written; no product/helper/test/diagnostic/Phase3A execution or frozen-file mutation.",
+  "candidate": null,
+  "candidateStatus": "NOT_CREATED_AFTER_MANDATORY_FAILURE",
+  "certificationAcceptance": false,
+  "regressionReceipt": {
+    "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/receipt.json",
+    "byteLength": 180142,
+    "sha256": "sha256:89bfa91cab44b2f27926cf0338bb780de5a68bf14ebae1a4a369a49937bd89fa"
+  },
+  "validationSource": {
+    "path": "repositories/cca-conformance/evidence/mo1307/final-headless/validation-source.json",
+    "byteLength": 191990,
+    "sha256": "sha256:3be480c39be93a99aa51db28cebf7ffe2331f9f65ee9c48984d6bbaefe512add"
+  },
+  "plan": {
+    "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/plan.json",
+    "byteLength": 58220,
+    "sha256": "sha256:557789dae9d947cf54fc9c11d8dd31018e907816767134e7c31206686ccbf4cb"
+  },
+  "firstMandatoryFailure": {
+    "id": "native-foundation-016",
+    "name": "N15 native fixed PowerShell snapshots and checked inspection sanitization",
+    "receipt": {
+      "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-016.receipt.json",
+      "byteLength": 1657,
+      "sha256": "sha256:48f6b54205183948f31a115d60a4da436b4381cbe4fd41c2152e1c7e0bd3a089"
+    },
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-016.stdout.txt",
+      "byteLength": 943,
+      "sha256": "sha256:59cf45ff4259d132bc60563a8c7241770f5ccf179dea3143521f504b26939032"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-016.stderr.txt",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "testSource": {
+      "path": "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs",
+      "byteLength": 24274,
+      "sha256": "sha256:f24dbc94bbd796dd4d3d320df85d58d158558fa73f19f8ee94ebdff59ff16712"
+    },
+    "sourceLine": 219,
+    "expectedDecodedResponseStatus": "ABSENT",
+    "actualDecodedResponseStatus": "ERROR",
+    "assertionCode": "ERR_ASSERTION",
+    "assertionOperator": "strictEqual",
+    "testProcessExitCode": 1,
+    "testProcessSignal": null,
+    "testProcessError": null,
+    "testProcessStderrBytes": 0,
+    "commandElapsedMs": 7681.662400000001,
+    "testDurationMs": 5560.5353,
+    "tapRunDurationMs": 6635.926,
+    "errorScope": "These are the assertion and selected Node test-process results. They are not a claim that a helper exited 1, a new startup failure occurred, or a particular production branch caused the framed ERROR."
+  },
+  "coverage": {
+    "selectedMandatoryTotal": 107,
+    "selectedPass": 97,
+    "selectedFail": 1,
+    "selectedNotRun": 9,
+    "separatePackageCheck": "PASS",
+    "executedCommandRowsIncludingPackageCheck": 99,
+    "notRun": [
+      "native-foundation-017",
+      "native-foundation-018",
+      "native-foundation-019",
+      "native-foundation-020",
+      "native-foundation-021",
+      "native-foundation-022",
+      "native-foundation-023",
+      "native-foundation-024",
+      "native-foundation-025"
+    ],
+    "exactPlanPrefix": true,
+    "selectedFilteredSkips": 0,
+    "laterSelectedReceiptOrOutputFiles": 0
+  },
+  "priorFreshResults": {
+    "minimumSmoke": {
+      "result": "PASS",
+      "helperInvocations": 1,
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/minimum-wire-smoke/receipt.json",
+        "byteLength": 23968,
+        "sha256": "sha256:04992c83c3b1823e76f96e0886967836d33c4a1507742fbaefc1eb068e636ca5"
+      }
+    },
+    "security": {
+      "result": "PASS",
+      "categories": 19,
+      "engineeringExtractedFunctionProcesses": 15,
+      "newProductHelpers": 0,
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/security/receipt.json",
+        "byteLength": 101643,
+        "sha256": "sha256:563e2a8e5cdc289642c9dbbb3715012b97350e1f76fd93dcf03bfa7dc4450ee2"
+      }
+    },
+    "scope": "These remain their actual fresh scoped results and do not establish complete regression success or certification."
+  },
+  "integrity": {
+    "sourceIdentity": "sha256:05ebd3890b650becdd8229dc39e623a029f84a0569231bdd8afb6fe72858d6c7",
+    "packageMembersMatched": 89,
+    "sealedInputsMatched": 727,
+    "frozenToolsMatched": 10,
+    "allExecutedCommandReceiptRowsMatched": 99,
+    "allExecutedCommandStdoutStderrBindingsMatched": 198,
+    "sourcesUnchangedReceipt": true,
+    "currentSourceBytesIndependentlyMatched": true,
+    "governance": {
+      "path": "docs/mo1307-final-headless-correction-addendum.md",
+      "byteLength": 11416,
+      "sha256": "sha256:40303f1c51637de94057fc5203c6729bf9763496d4e63640278f1d10b0be6024"
+    }
+  },
+  "stop": {
+    "firstFailedCommandIsFinalRecordedCommand": true,
+    "noLaterSelectedOutputsOrReceipts": true,
+    "nativeFilesystemEvidenceDirectoryPresent": false,
+    "toctouEvidenceDirectoryPresent": false,
+    "retriesRecorded": 0,
+    "futurePhase3AReviewStopped": true,
+    "draftPhase3AScope": "Scratch drafts are unexecuted and unsealed; no candidate or installed campaign acceptance is inferred.",
+    "limits": "Filesystem/receipt audit verifies the recorded campaign boundary; it is not a new system-wide process observation."
+  },
+  "rootCause": "NOT_DIAGNOSED. This audit records the expected/actual assertion and does not infer cause from the response status alone.",
+  "executionByReviewer": {
+    "helpers": 0,
+    "tests": 0,
+    "diagnostics": 0,
+    "certification": 0
+  }
+}

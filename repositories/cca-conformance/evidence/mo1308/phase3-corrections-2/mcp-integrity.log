@@ -1,0 +1,24 @@
+✔ runtime closure is byte-preserved and pinned to exactly the authoritative source files (120.1264ms)
+✔ missing/changed/extra runtime payload, changed manifest, contract substitution and path types fail closed (510.4388ms)
+✔ junction/symlink runtime root and case-substituted inventory are rejected (89.7353ms)
+✔ unsafe member names and environment/preload/runtime substitutions reject without lookup (0.8008ms)
+✔ missing resource file and missing finite constant fail startup validation (35.7899ms)
+✖ production dependency closure rejects changed, missing and extra package members (1662.9935ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3993.7042
+
+✖ failing tests:
+
+test at tests\integrity.test.mjs:49:1
+✖ production dependency closure rejects changed, missing and extra package members (1662.9935ms)
+  Error: MO1304_RUNTIME_INTEGRITY
+      at verifyDependencies (file:///C:/r3/repositories/memoryos-mcp/src/integrity.mjs:122:79)
+      at async TestContext.<anonymous> (file:///C:/r3/repositories/memoryos-mcp/tests/integrity.test.mjs:53:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

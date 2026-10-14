@@ -1,0 +1,202 @@
+"""Offline publication-diagnostic validation; never executes product or network code."""
+import argparse,base64,copy,hashlib,importlib.util,json,math,os,subprocess,sys
+from pathlib import Path
+sys.dont_write_bytecode=True
+HERE=Path(__file__).resolve().parent;ROOT=HERE.parents[3]
+OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-publication-diagnostic'
+MAIN=Path(r'C:\Users\melsa\Documents\Codex\cca-workspace')
+AUTH='701d48ee2012675966360dda775ab13013c09ab9';HEAD='f236c4a2f94d8cd8e763aaa4bd6c52d703429692'
+DIST='sha256:b41d024d8ec1c588ca3fc919f8e3ac59a622aebc7cff3377f6a20ce7fc2ca4f3'
+PKG=ROOT/'.cache/mo1306-phase3a-final/install/node_modules/memoryos-ci';NODE=ROOT/'.cache/mo1306-phase3a-final/node-v24.21.0-win-x64/node.exe'
+NODE_SHA='sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32'
+BASIC={'memoryos-ci-artifacts.json','memoryos-ci-complete.json','memoryos-ci-evidence.json','memoryos-ci-result.json'}
+OLD=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-final';RUN=OLD/'native/20260927T120240-b3df86'
+spec=importlib.util.spec_from_file_location('retained_final_validation',HERE.parent/'mo1306-phase3a-final/validate.py');old=importlib.util.module_from_spec(spec);spec.loader.exec_module(old)
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def enc(v):return (json.dumps(v,sort_keys=True,separators=(',',':'))+'\n').encode()
+def need(v,c):
+ if not v:raise AssertionError(c)
+def git(*args):return subprocess.run(['git','-C',str(ROOT),*args],capture_output=True,check=True,env={**os.environ,'GIT_OPTIONAL_LOCKS':'0'},timeout=30).stdout
+
+def blocked(v):
+ need(v['status']=='ENVIRONMENT_BLOCKED','UNSUPPORTED_FINAL_DISPOSITION')
+ for key in ['nativeCertified','githubHostedCertified','completionCommitCreated','resolvedMissingInputGate','productChanged','acceptedGroupsRerun','remoteMutated']:
+  need(v.get(key) is False,'FALSE_RESOLUTION_OR_SCOPE: '+key)
+ for key in ['rootCauseProven','environmentTransientProven','productDefectProven','harnessDefectProven','staleExpectation']:
+  if key in v:need(v[key] is False,'UNSUPPORTED_CAUSE_CLAIM: '+key)
+ need(v.get('classification') not in ['ENVIRONMENT_TRANSIENT','PRODUCT_DEFECT','HARNESS_DEFECT','RESOLVED'],'UNSUPPORTED_CLASSIFICATION')
+ for key in ['commit','parent','finalCommit','completionCommit']:
+  if key in v:need(v[key] is None,'UNAUTHORIZED_COMPLETION_COMMIT')
+
+class Audit:
+ def __init__(self):self.bound={};self.contents={};self.repro_reports=[]
+ def target(self,name,base=ROOT):
+  p=Path(name);p=p if p.is_absolute() else base/p;p=p.resolve()
+  need(ROOT in p.parents or MAIN in p.parents,'UNAUTHORIZED_REFERENCE_ROOT');need(p.is_file() and not p.is_symlink(),'MISSING_REGULAR_REFERENCE: '+str(p));return p
+ def raw(self,name,base=ROOT):
+  p=self.target(name,base)
+  if p not in self.contents:self.contents[p]=p.read_bytes()
+  return self.contents[p]
+ def row(self,p):
+  p=self.target(p);b=self.raw(p);return {'path':p.relative_to(ROOT).as_posix() if ROOT in p.parents else str(p),'byteLength':len(b),'sha256':sha(b)}
+ def ref(self,r,base=ROOT):
+  p=self.target(r['path'],base);b=self.raw(p);need(len(b)==r['byteLength'] and sha(b)==r['sha256'],'STALE_HASH: '+str(p));self.bound[str(p)]=(len(b),sha(b));return b
+ def value(self,r,base=ROOT):return json.loads(self.ref(r,base))
+ def load(self,name):return json.loads(self.raw(OUT/name))
+ def walk(self,v):
+  if isinstance(v,dict):
+   if {'path','byteLength','sha256'}<=v.keys():self.ref(v)
+   else:
+    for x in v.values():self.walk(x)
+  elif isinstance(v,list):
+   for x in v:self.walk(x)
+ def preserve(self):
+  v=self.load('preservation-before.json');need(v['head']==HEAD and v['branch']=='mo1306/phase3a-refresh','PRESERVATION_BASELINE');need(len(v['files'])==v['historicalFileCount']==624,'PRESERVATION_COUNT')
+  names=[r['path'] for r in v['files']];need(len(names)==len(set(names)),'PRESERVATION_DUPLICATE');self.walk(v['files'])
+  need(git('rev-parse','HEAD').decode().strip()==HEAD,'HEAD_CHANGED');need(git('branch','--show-current').decode().strip()==v['branch'],'BRANCH_CHANGED')
+  need(git('for-each-ref','--format=%(refname) %(objectname)').decode().strip()==v['protectedRefs'].strip(),'PROTECTED_REF_CHANGED')
+  idx=Path(git('rev-parse','--git-path','index').decode().strip());idx=idx if idx.is_absolute() else ROOT/idx
+  need(sha(idx.read_bytes())==v['realIndexSha256'],'REAL_INDEX_CHANGED');need(not git('diff','--name-only').strip() and not git('diff','--cached','--name-only').strip(),'TRACKED_CHANGES')
+  for n in ['phase3ar','phase3ar-resolution','phase3a-final']:
+   path=ROOT/'repositories/cca-conformance/evidence/mo1306'/n/'evidence-index.json';index=json.loads(self.raw(path));self.walk(index.get('files',index.get('artifacts',[])))
+  receipt=json.loads(self.raw(OLD/'final/execution-receipt.json'));need(receipt['status']=='NATIVE_CERTIFICATION_BLOCKED' and receipt['nativeCertified'] is False,'RESTAMPED_HISTORY')
+  return {'status':'PASS','files':624,'head':HEAD,'realIndexUnchanged':True,'protectedRefsUnchanged':True,'oldDispositionUnchanged':True}
+ def candidate(self):
+  need(sha(self.raw(NODE))==NODE_SHA,'NODE_CHANGED');need(sha(self.raw(PKG/'distribution-manifest.json'))==DIST,'OLD_DISTRIBUTION')
+  manifest=json.loads(self.raw(PKG/'distribution-manifest.json'));names={r['path'] for r in manifest['files']}|{'distribution-manifest.json'}
+  need(len(names)==94 and {p.relative_to(PKG).as_posix() for p in PKG.rglob('*') if p.is_file()}==names,'PACKAGE_MEMBER_SET')
+  for r in manifest['files']:self.ref(r,PKG)
+  for name in names:
+   b=self.raw(PKG/name);need(b==self.raw(MAIN/'repositories/memoryos-ci'/name),'INSTALLED_AUTHORITY_DRIFT')
+  need(git('rev-parse','main').decode().strip()==AUTH,'AUTHORITY_MAIN_CHANGED')
+  return {'status':'PASS','members':94,'distributionDigest':DIST,'nodeSha256':NODE_SHA}
+ def expectation(self):
+  v=self.load('expectation-audit.json');self.walk(v);need(v['authority']==AUTH and v['expectationStatus']=='FROZEN_EXPECTATION_VALID' and v['staleExpectationStopApplies'] is False,'EXPECTATION_RESTAMP')
+  need(set(v['expected']['files'])==BASIC and v['expected']['exitCode']==11 and v['expected']['classification']=='INPUT_ERROR','FALSE_EXPECTATION')
+  for r in [v['contract'],*v['sourceBindings'].values()]:
+   p=Path(r['path']);rel=p.relative_to(MAIN).as_posix();need(git('show',AUTH+':'+rel)==self.ref(r),'SOURCE_AUTHORITY_HASH')
+  need(v['failureAtomicity']['fullRollbackRequired'] is False and v['failureAtomicity']['partialFinalFilesPermitted'] is True,'INVENTED_ATOMICITY')
+  contract=self.ref(v['contract']).decode();need('Handled operational failures, if safe publication initialized, have exactly\nfour files' in contract.replace('\r\n','\n'),'MISSING_CONTRACT_REQUIREMENT')
+  partial=Path(v['partialBundle']['directory']);regular={p.name:p.read_bytes() for p in partial.iterdir() if p.is_file()};need(set(regular)=={'memoryos-ci-result.json','memoryos-ci-evidence.json'} and (partial/'.pending').is_dir() and not list((partial/'.pending').iterdir()),'PARTIAL_STATE_CHANGED')
+  try:old.bundle.bundle_valid(regular,partial.name,'generic',11)
+  except AssertionError as e:need(str(e)=='BUNDLE_EXTRA_OR_MISSING_FILE','UNEXPECTED_PARTIAL_REJECTION')
+  else:raise AssertionError('PARTIAL_BUNDLE_ACCEPTED')
+  need(all(x['rejectsClaimOfComplete'] for x in v['consumerSafety']),'CONSUMER_FALSE_COMPLETE')
+  return {'status':'PASS','staleExpectation':False,'requiredFiles':sorted(BASIC),'partialRejected':True,'partialFinalFilesPermitted':True}
+ def history(self):
+  v=self.load('historical-witnesses.json');self.walk(v);need(v['authority']==AUTH and v['currentAuthoritySuccessfulEquivalentWitnessFound'] is False,'HISTORICAL_RESTAMP')
+  for w in v['witnesses']:
+   c={Path(r['path']).name:self.ref(r) for r in w['files']};need(set(c)==BASIC,'HISTORICAL_FILES');r=json.loads(c['memoryos-ci-result.json']);m=json.loads(c['memoryos-ci-artifacts.json']);z=json.loads(c['memoryos-ci-complete.json']);e=json.loads(c['memoryos-ci-evidence.json'])
+   need(r['classification']=='INPUT_ERROR' and r['process']['exitCode']==11 and r['semantic'] is None,'HISTORICAL_RESULT');need(z['manifestSha256']==sha(c['memoryos-ci-artifacts.json']) and e['resultSha256']==sha(c['memoryos-ci-result.json']),'HISTORICAL_MARKER')
+   need([x['path'] for x in m['files']]==['memoryos-ci-evidence.json','memoryos-ci-result.json'],'HISTORICAL_MANIFEST')
+   for x in m['files']:need(sha(c[x['path']])==x['sha256'] and len(c[x['path']])==x['byteLength'],'HISTORICAL_MEMBER_HASH')
+   trace=self.value(w['trace']);need(trace['exitCode']==11 and json.loads(trace['stdout'])['publication']=='COMPLETE','HISTORICAL_COMMAND');need(w['harness']['sha256']==trace['harnessSha256'],'HISTORICAL_EXECUTED_HARNESS');need(self.value(w['verifyReceipt'])['exitCode']==0,'HISTORICAL_VERIFY')
+  return {'status':'PASS','witnesses':len(v['witnesses']),'reuseScope':'Byte-identical publication implementation, differing filesystem helper; no substitute for current gate.'}
+ def retention(self):
+  native=json.loads(self.raw(OLD/'native-summary.json'));need(native['authority']==AUTH and native['status']=='NATIVE_CERTIFICATION_BLOCKED' and native['requiredGateCompletion'] is False,'RETAINED_NATIVE_RESTAMP')
+  cases=[self.value(r) for r in native['cases']];passed=sorted(c['id'] for c in cases if c['status']=='PASS');failed=sorted(c['id'] for c in cases if c['status']=='FAIL')
+  need(len(passed)==8 and failed==['error-input'],'RETAINED_CASE_CHANGE')
+  return {'status':'PASS','passedGroupsRetained':passed,'failedGroupPreserved':failed,'dependencyBasis':'All624 historical bytes including source-bound prior validation remain unchanged; exact installed C3CB94member closure and pinned Node unchanged. Only missing-input reproduction commands executed in this new evidence set.','acceptedGroupsRerun':False}
+ def reproduction(self,directory):
+  v=json.loads(self.raw(directory/'summary.json'));self.walk(v);pre=self.value(v['preflight']);start=json.loads(self.raw(directory/'started.json'));self.walk(start)
+  need(start['id']==v['id']==directory.name,'REPRO_ID_BINDING')
+  need(pre['authority']==AUTH and pre['distributionSha256']==DIST,'REPRO_OLD_CANDIDATE');self.ref(pre['node']);need(pre['node']['sha256']==NODE_SHA,'REPRO_NODE')
+  self.ref(pre['oldCase']);oldtrace=self.value(pre['oldTrace']);need(pre['originalArgv']==oldtrace['command'],'REPRO_ORIGINAL_ARGV')
+  original=pre['originalArgv'];command=pre['productCommand'];need(len(command)==len(original) and all(a==b for i,(a,b) in enumerate(zip(command,original)) if i not in [5,7]),'REPRO_ARGV_CHANGE')
+  work=Path(command[5]);need(command[7]==str(work/'memoryos-ci.json') and work.name=='error-input' and command[-1]=='generic','REPRO_WORKSPACE_SUBSTITUTION')
+  need(pre['initialOutputAbsent'] and pre['freshWorkspaceCreatedExclusive'] and pre['sameWorkspaceLengthAsHistorical'] and len(str(work))==len(original[5]) and pre['maximumPublicationOperandLength']==207,'REPRO_SETUP')
+  oldcase=self.value(pre['oldCase']);newfiles={Path(r['path']).name:(r['byteLength'],r['sha256']) for r in pre['inputFiles']};oldfiles={Path(r['path']).name:(r['byteLength'],r['sha256']) for r in oldcase['inputFiles']};need(newfiles==oldfiles,'REPRO_INPUT_DRIFT');self.walk(pre['inputFiles'])
+  for x in pre['installedMembersBefore']:self.ref(x,PKG)
+  need(len(pre['installedMembersBefore'])==94,'REPRO_PRE_MEMBER_COUNT')
+  integrity=self.value(v['installedIntegrity']);need(integrity['count']==94 and integrity['members']==pre['installedMembersBefore'],'REPRO_POST_INTEGRITY')
+  for x in integrity['members']:self.ref(x,PKG)
+  raw=self.value(v['events']);trace=self.value(v['trace']);actual=json.loads(self.ref(v['stdout']));diagnostics=[json.loads(line) for line in self.ref(v['stderr']).decode().splitlines()]
+  need(actual==v['actual'] and actual['exitCode']==v['exitCode']==trace['exitCode'] and diagnostics==v['diagnostics'],'REPRO_RAW_SUMMARY')
+  need(raw['productArgv']==pre['productArgv']==[command[0],*command[2:]] and raw['externalArgv']==[pre['externalArgv'][0],*pre['externalArgv'][2:]] and trace['command']==pre['externalArgv'],'REPRO_PRODUCT_ARGV')
+  need(raw['originalExecArgv']==raw['execArgvAtExit']==['--max-old-space-size=128'] and raw['environment']==pre['environment'] and set(raw['environment'])=={'SystemRoot','WINDIR'},'REPRO_ENVIRONMENT')
+  need(raw['cwd']==pre['cwd']==str(PKG.parent) and raw['exitCode']==v['exitCode'],'REPRO_PROCESS_IDENTITY')
+  need(raw['clock']=='Node performance.now; no clock patched; relative values comparable only within this process','REPRO_CLOCK_MIX')
+  events=raw['events'];need([e['sequence'] for e in events]==list(range(1,len(events)+1)) and all(math.isfinite(e['atMs']) for e in events) and all(a['atMs']<=b['atMs'] for a,b in zip(events,events[1:])),'REPRO_EVENT_ORDER')
+  spawns=[e for e in events if e['event']=='helperSpawnBefore'];need(len(spawns)==raw['helperCount']==v['helperCount'],'REPRO_HELPER_COUNT')
+  helper=base64.b64encode(self.raw(PKG/'scripts/check-paths.ps1').decode('utf-8').encode('utf-16le')).decode()
+  for e in spawns:
+   need(e['argv']==['-NoProfile','-NonInteractive','-EncodedCommand',helper] and e['options']['env']==pre['environment'] and e['options']['shell'] is False,'REPRO_HELPER_DRIFT')
+  arms=[e for e in events if e['event']=='timerArmed']
+  for e in arms:
+   need(0<float(e['requestedDelayMs'])<=2000 and e['callbackSource'] in ['()=>stop(timeoutCode)',"()=>finish(new CIError('CLEANUP_FAILED'))"],'REPRO_DEADLINE_RELAXED')
+   need(math.isclose(e['dueLowerMs'],e['registrationBeforeMs']+e['requestedDelayMs'],abs_tol=1e-7) and math.isclose(e['dueUpperMs'],e['registrationAfterMs']+e['requestedDelayMs'],abs_tol=1e-7),'REPRO_DUE_CLOCK_MIX')
+  need(raw['remainingTrackedFileDescriptors']==[] and trace['cleanup']['remainingPids']==[] and trace['cleanup']['elapsedMs']<=2000,'REPRO_CLEANUP')
+  old_audit=old.Audit();old_audit.trace(v['trace'])
+  bundle={Path(r['path']).name:self.ref(r) for r in v.get('bundleFiles',[])}
+  if actual['publication']=='COMPLETE':
+   need(actual['classification']=='INPUT_ERROR' and actual['exitCode']==11 and set(bundle)==BASIC,'REPRO_COMPLETE_EXPECTATION')
+   old.bundle.bundle_valid(bundle,actual['runId'],'generic',11);need(sha(bundle['memoryos-ci-result.json'])==actual['resultSha256'],'REPRO_SUMMARY_RESULT_HASH')
+   need(diagnostics[0]['code']=='MO1306_INPUT_READ','REPRO_INPUT_DIAGNOSTIC')
+   need(not [e for e in events if e['event'] in ['timerFireBefore','helperKillBefore']],'REPRO_PASS_TERMINAL_CONTRADICTION')
+   for spawn in spawns:
+    ordinal=spawn['ordinal'];bound=[e for e in arms if e['ordinal']==ordinal];closed=[e for e in events if e['event']=='helperEventBefore' and e['eventName']=='close' and e['ordinal']==ordinal]
+    need(len(bound)==len(closed)==1 and closed[0]['args']==[0,None] and closed[0]['atMs']<bound[0]['dueLowerMs'],'REPRO_UNTIMELY_HELPER_SUCCESS')
+    response=''.join(e['text'] for e in events if e['event']=='helperStdout' and e['ordinal']==ordinal);need(json.loads(response)=={'kind':'MemoryOSCICDPathCheck','safe':True,'version':'1.0.0'},'REPRO_HELPER_RESPONSE')
+  else:need(actual['resultSha256'] is None and actual['exitCode']>=10,'REPRO_FALSE_COMPLETION')
+  errors=[e for e in events if e['event']=='fsError'];publication_errors=[e for e in errors if any(isinstance(p,str) and '.memoryos-ci' in p for p in e['operands'])]
+  result={'id':v['id'],'summary':self.row(directory/'summary.json'),'actual':actual,'helperCount':len(spawns),'publicationFsErrorCount':len(publication_errors),'remainingOwnedProcesses':0,'installedMembers':94,'claim':'Observed reproduction outcome only; does not establish original cause or close certification.'};self.repro_reports.append(result);return result
+ def aggregate(self):
+  value=self.load('reproduction-summary.json');self.walk(value);need(value['authority']==AUTH and value['reproductionCount']==len(self.repro_reports)==3 and value['maximumReproductions']==3,'AGGREGATE_REPRO_COUNT')
+  need(value['status']=='ENVIRONMENT_BLOCKED' and value['classification']=='ENVIRONMENT_UNRESOLVED','AGGREGATE_FALSE_DISPOSITION')
+  for key in ['resolved','historicalCauseEstablished','deterministicProductDefectProven','environmentTransientProven','harnessDefectProven','staleExpectationProven','nativeCertificationClosed','hostedAuthorizedByTheseResults','furtherProductExecution']:need(value[key] is False,'AGGREGATE_FALSE_CLAIM: '+key)
+  need(len(value['rows'])==3 and [r['number'] for r in value['rows']]==[1,2,3],'AGGREGATE_ROW_COUNT')
+  indexed={r['id']:r for r in self.repro_reports}
+  for row in value['rows']:
+   actual=indexed[row['id']];need(row['summary']==actual['summary'] and row['actual']==actual['actual'] and row['helperCount']==actual['helperCount'] and row['publicationApiErrorCount']==actual['publicationFsErrorCount'],'AGGREGATE_RAW_MISMATCH')
+   need(row['firstPublicationFailure'] is None and row['timerFireCount']==row['killCount']==0,'AGGREGATE_FIRST_FAILURE_MISREPRESENTED')
+  need(value['original']['actual']==json.loads(self.raw(RUN/'failure-review.json'))['actual'],'AGGREGATE_RESTAMPED_ORIGINAL')
+  bundle=self.value(value['offlineBundleValidation']);need(bundle['count']==3 and all(r['nativeCliVerifyExecuted'] is False for r in bundle['rows']),'UNAUTHORIZED_EXTRA_VERIFICATION')
+  return {'status':'PASS','rootCauseProven':False,'resolved':False,'actualReproductions':3}
+ def remote(self):
+  v=self.load('remote-state.json');self.walk(v);need(v['defaultBranch']=='main' and v['remoteMain']=='5955af062152a84c10de17860ba0bcabe8b3555f' and v['certificationCommit']=='3096139e0108be22528859e4f462356dddf6ef29','REMOTE_STATE')
+  need(v['pushes']==v['dispatches']==v['remoteMutations']==v['settingChanges']==[],'REMOTE_MUTATION')
+  responses={k:self.value(r) for k,r in v['responses'].items()}
+  need(all(x['method']=='GET' and str(x['status'])=='200' for x in responses.values()),'REMOTE_NOT_READONLY')
+  need(responses['repository']['body']['default_branch']=='main' and responses['main-ref']['body']['object']['sha']==v['remoteMain'] and responses['certification-ref']['body']['object']['sha']==v['certificationCommit'],'REMOTE_RESPONSE_MISMATCH')
+  need(responses['certification-runs']['body']['total_count']==v['certificationRunCount']==0,'FALSE_NO_HOSTED_RUNS')
+  return {'status':'PASS','mutations':0,'hostedExecuted':False}
+ def finish(self,final):
+  receipt=OUT/'execution-receipt.json';index=OUT/'evidence-index.json'
+  if receipt.exists():
+   v=json.loads(self.raw(receipt));self.walk(v);blocked(v);need(v['authority']==AUTH,'FINAL_OLD_AUTHORITY')
+  if index.exists():
+   v=json.loads(self.raw(index));files=v.get('files',v.get('artifacts'));need(isinstance(files,list),'CLOSED_INDEX_SCHEMA');self.walk(files);names=[x['path'] for x in files];need(len(names)==len(set(names)),'CLOSED_INDEX_DUPLICATE')
+   expected={p.relative_to(ROOT).as_posix() for base in [HERE,OUT] for p in base.rglob('*') if p.is_file() and p!=index};need(set(names)==expected,'CLOSED_INDEX_EXACT_SET')
+  if final:need(receipt.exists() and index.exists(),'FINAL_RECEIPT_INDEX_REQUIRED')
+ def run(self,final):
+  preserved=self.preserve();candidate=self.candidate();expectation=self.expectation();history=self.history();retained=self.retention();self.walk(self.load('harness-audit.json'))
+  directories=sorted((OUT/'reproductions').glob('*/started.json'));need(1<=len(directories)<=3,'REPRODUCTION_CAP');repros=[self.reproduction(p.parent) for p in directories]
+  aggregate=self.aggregate()
+  remote=self.remote();self.finish(final)
+  return {'kind':'MemoryOSPublicationDiagnosticIndependentValidation','version':'1.0.0','status':'PASS','scope':'Offline source/artifact/preservation verification only; no product or network execution. Reproduction successes do not establish root cause or certification.','authority':AUTH,'preservation':preserved,'candidate':candidate,'expectation':expectation,'history':history,'retainedAcceptedGates':retained,'reproductions':repros,'reproductionAggregate':aggregate,'remote':remote,'resolvedMissingInputGate':False,'nativeCertified':False,'githubHostedCertified':False,'rootCauseProven':False,'boundFiles':len(self.bound),'validator':self.row(Path(__file__)),'retainedBundleValidator':self.row(HERE.parent/'mo1306-phase3ar/validate.py')}
+
+def negatives(audit):
+ results=[]
+ def reject(name,fn):
+  try:fn()
+  except (AssertionError,ValueError,KeyError) as e:results.append({'id':name,'status':'REJECTED','reason':str(e)});return
+  raise AssertionError('NEGATIVE_ACCEPTED '+name)
+ bad=audit.row(OUT/'expectation-audit.json');bad['sha256']='sha256:'+'0'*64;reject('stale-source-or-evidence-hash',lambda:audit.ref(bad))
+ base={'status':'ENVIRONMENT_BLOCKED','classification':'UNRESOLVED',**{k:False for k in ['nativeCertified','githubHostedCertified','completionCommitCreated','resolvedMissingInputGate','productChanged','acceptedGroupsRerun','remoteMutated']}}
+ for name,key in [('false-native-certification','nativeCertified'),('false-hosted-certification','githubHostedCertified'),('resolved-gate-from-pass-alone','resolvedMissingInputGate'),('false-environment-transient','environmentTransientProven'),('false-product-defect','productDefectProven'),('accepted-groups-rerun','acceptedGroupsRerun')]:
+  value={**base,key:True};reject(name,lambda value=value:blocked(value))
+ value={**base,'commit':AUTH};reject('unauthorized-completion-commit',lambda:blocked(value))
+ sample=audit.repro_reports[0];v=json.loads(audit.raw(Path(sample['summary']['path']) if Path(sample['summary']['path']).is_absolute() else ROOT/sample['summary']['path']));contents={Path(r['path']).name:audit.ref(r) for r in v['bundleFiles']}
+ if v['actual']['publication']=='COMPLETE':
+  incomplete={k:x for k,x in contents.items() if k!='memoryos-ci-complete.json'};reject('missing-completion-marker',lambda:old.bundle.bundle_valid(incomplete,v['actual']['runId'],'generic',11))
+  extra={**contents,'unexpected.txt':b'x'};reject('extra-bundle-artifact',lambda:old.bundle.bundle_valid(extra,v['actual']['runId'],'generic',11))
+  tampered={**contents,'memoryos-ci-artifacts.json':contents['memoryos-ci-artifacts.json']+b' '};reject('changed-manifest',lambda:old.bundle.bundle_valid(tampered,v['actual']['runId'],'generic',11))
+ return {'kind':'MemoryOSPublicationDiagnosticValidationNegatives','status':'PASS','count':len(results),'controls':results,'method':'Only in-memory mutated copies; no execution or preserved byte changes.'}
+
+def main():
+ p=argparse.ArgumentParser();p.add_argument('--check',action='store_true');p.add_argument('--final',action='store_true');args=p.parse_args();a=Audit();report=a.run(args.final);controls=negatives(a)
+ if not args.check:
+  for name,v in [('validation.json',report),('validation-negatives.json',controls)]:
+   target=OUT/name;need(not target.exists(),'IMMUTABLE_OUTPUT_EXISTS '+name);target.write_bytes(enc(v))
+ print(json.dumps({'status':'PASS','boundFiles':report['boundFiles'],'preservedFiles':624,'reproductions':len(report['reproductions']),'negativeControls':controls['count'],'nativeCertified':False,'resolvedMissingInputGate':False,'readOnlyCheck':args.check,'final':args.final}))
+if __name__=='__main__':main()

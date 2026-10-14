@@ -1,0 +1,235 @@
+{
+  "kind": "MO1310CampaignReceipt",
+  "version": "1.0.0",
+  "campaign": "SH",
+  "certifying": true,
+  "mode": "certifying",
+  "generation": 1,
+  "commit": "1d77559b02564a853cbf7c420bf45069d4e5eddc",
+  "baseline": "889f99e72a5d41c242572cc052ab97b07cc10a24",
+  "host": {
+    "platform": "win32",
+    "arch": "x64",
+    "release": "10.0.26200",
+    "node": "v24.21.0"
+  },
+  "result": "ACCEPTED",
+  "accepted": true,
+  "cases": [
+    {
+      "id": "SH-E1",
+      "windowsOnlyPart": "home and History in Edge on Windows 11 x64",
+      "outcome": "PASS",
+      "detail": "home keeps Mission Control and gains History, which opens and leaves; Clear, a new selection and leaving the route drop the export",
+      "exitCode": 0,
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "logSha256": "sha256:60099dbc2b30e4a30b4eb869f7d487d9bc8575b9cc59bce6c7fc4e95662882d6"
+    },
+    {
+      "id": "SH-E2",
+      "windowsOnlyPart": "a CLI export made on NTFS with Node 24.21.0, opened through the directory input in Edge",
+      "outcome": "PASS",
+      "detail": "a real CLI export (every record kind, a tombstone and a purge) opened through the directory input shows the dashboard, equal to the standalone page, with the full head digest",
+      "entries": 10,
+      "headDigest": "sha256:3f562e681c6817ff323448109b54fa26de2e901bdb8c30d39108e99a34c85278"
+    },
+    {
+      "id": "SH-E3",
+      "windowsOnlyPart": "the directory-handle code path in Edge",
+      "outcome": "PASS",
+      "detail": "both input routes render the same dashboard; cancelled, denied and missing pickers change nothing",
+      "exitCode": 0,
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "logSha256": "sha256:f2de4a5450e91f1b95ffcff4743836015f5fd3a1cf84b7f97fffe5c3f72be5ba"
+    },
+    {
+      "id": "SH-E4",
+      "windowsOnlyPart": "tampered NTFS exports in Edge",
+      "outcome": "PASS",
+      "detail": "chain, member, manifest, marker and truncated-tail variants of a real CLI export are rejected inside Studio with the carried MO-1308 code and nothing rendered",
+      "result": {
+        "chain": {
+          "code": "DASH_EXPORT_INVALID",
+          "historyCode": "MO1308_EXPORT_CORRUPT",
+          "frame": false,
+          "saveDisabled": true
+        },
+        "member": {
+          "code": "DASH_EXPORT_INVALID",
+          "historyCode": "MO1308_EXPORT_CORRUPT",
+          "frame": false,
+          "saveDisabled": true
+        },
+        "manifest": {
+          "code": "DASH_EXPORT_INVALID",
+          "historyCode": "MO1308_EXPORT_CORRUPT",
+          "frame": false,
+          "saveDisabled": true
+        },
+        "marker": {
+          "code": "DASH_EXPORT_INVALID",
+          "historyCode": "MO1308_EXPORT_CORRUPT",
+          "frame": false,
+          "saveDisabled": true
+        },
+        "truncatedTail": {
+          "code": "DASH_EXPORT_INVALID",
+          "historyCode": "MO1308_EXPORT_CORRUPT",
+          "frame": false,
+          "saveDisabled": true
+        }
+      }
+    },
+    {
+      "id": "SH-E5",
+      "windowsOnlyPart": "empty and single-entry NTFS exports in Edge",
+      "outcome": "PASS",
+      "detail": "empty and single-entry CLI exports open and equal the standalone page",
+      "results": [
+        [
+          "empty",
+          true
+        ],
+        [
+          "single",
+          true
+        ]
+      ]
+    },
+    {
+      "id": "SH-E6",
+      "windowsOnlyPart": "the download written by Edge equals the generator's file",
+      "outcome": "PASS",
+      "detail": "Save dashboard snapshot downloads exactly the bytes the standalone generator writes",
+      "snapshotSha256": "sha256:e2f7625d9a9d540dd796b36cdc9f5568fb888a25dca7e7a24556cbd307651ea6"
+    },
+    {
+      "id": "SH-E7",
+      "windowsOnlyPart": "keyboard and 320/768/1280 layouts in Edge",
+      "outcome": "PASS",
+      "detail": "keyboard, names and 320/768/1280 layouts of the History screen",
+      "exitCode": 0,
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "logSha256": "sha256:c365d26f10389d70a32f9baa1291bf380d09eb8a6c56473ee3609c918e866fb4"
+    },
+    {
+      "id": "SH-S1",
+      "windowsOnlyPart": "request set, CSP and forbidden APIs in Edge",
+      "outcome": "PASS",
+      "detail": "request allow-list, policies in the browser and the forbidden-API source scan",
+      "exitCode": 0,
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "logSha256": "sha256:23b798f1944e8c98281c3c8c6c5b8f3144311241410485ad06a8956dd6cf136d"
+    },
+    {
+      "id": "SH-S2",
+      "windowsOnlyPart": "wording scan of the Edge-rendered DOM",
+      "outcome": "PASS",
+      "detail": "registry scan of the rendered screen and dashboard, closed action set, adversarial words as data",
+      "exitCode": 0,
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "logSha256": "sha256:a511e396f54435c17ca6999e6f237e2c54d492507e411e3357d02e92a781bb3a"
+    },
+    {
+      "id": "SH-S3",
+      "windowsOnlyPart": "injection corpus in Edge",
+      "outcome": "PASS",
+      "detail": "hostile strings and folder names are inert",
+      "exitCode": 0,
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "logSha256": "sha256:72d0a3314d393d446470c87fb6f1f8159b59bd64db3660037779905d96eda6ff"
+    },
+    {
+      "id": "SH-S4",
+      "windowsOnlyPart": "read-once probe in Edge",
+      "outcome": "PASS",
+      "detail": "read once; later changes to the source cannot reach the displayed data",
+      "exitCode": 0,
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "logSha256": "sha256:c6cb73741e3ec788652a17597e353febb3f9ef7311712021e6ead19233b6843f"
+    },
+    {
+      "id": "SH-S5",
+      "windowsOnlyPart": "no storage or kept handle in Edge",
+      "outcome": "PASS",
+      "detail": "no storage, no link or form, no kept handle; closed read-only actions",
+      "exitCode": 0,
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "logSha256": "sha256:69ed5abe3beab50fa3317b6ac36028a2b44dba79863bcd5411f93149275c335c"
+    },
+    {
+      "id": "SH-C1",
+      "windowsOnlyPart": "no C/C++ change proof on the Windows checkout",
+      "outcome": "PASS",
+      "detail": "no C/C++/CMake/vcpkg path differs from v1.3.0 (the proof that the C++ CTest run may be skipped) and no MO-1308 production blob changed",
+      "exitCode": 0,
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "logSha256": "sha256:2ce15552900694b4aeadcf51f143e8e445c149c3c1ddf6e29f89f452e7cdf900",
+      "nativeChangeProof": {
+        "baseline": "889f99e72a5d41c242572cc052ab97b07cc10a24",
+        "head": "1d77559b02564a853cbf7c420bf45069d4e5eddc",
+        "changedPaths": 57,
+        "nativePaths": []
+      }
+    },
+    {
+      "id": "SH-C2",
+      "windowsOnlyPart": "no dependency change on the Windows checkout",
+      "outcome": "PASS",
+      "detail": "no dependency, lock file, build step or released-file change outside the documented list",
+      "exitCode": 0,
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "logSha256": "sha256:254adb76dca4fa2c9ba00d261e26cb487512ea04b9581ce9188eee31bb69ec73"
+    },
+    {
+      "id": "SH-C3",
+      "windowsOnlyPart": "generator differential against v1.3.0 under Windows line endings",
+      "outcome": "PASS",
+      "detail": "the generator's output is byte-identical to v1.3.0 on every fixture and corpus (golden and live differential)",
+      "exitCode": 0,
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "logSha256": "sha256:bc5f69e1e2fd4adfab963777767e09e344e2738d13f91077d0e3cd53d1ede5f9"
+    },
+    {
+      "id": "SH-C4",
+      "windowsOnlyPart": "derived page and v1.3.0 blobs under the Windows checkout",
+      "outcome": "PASS",
+      "detail": "page.embedded.js is current, the MO-1309 page and modules equal their v1.3.0 blobs, and ARCHITECTURE carries only the two clauses",
+      "exitCode": 0,
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "logSha256": "sha256:f40826c5355bfcd08d0e7cec22026270c07bc27b1966e328aff3d278784744c9"
+    },
+    {
+      "id": "SH-C5",
+      "windowsOnlyPart": "source closure reproducible from a fresh Windows checkout",
+      "outcome": "PASS",
+      "detail": "the MemoryOS 1.3.1 source closure extracted from HEAD equals the committed blobs",
+      "files": 57,
+      "closureDigest": "sha256:b7d5c1ef9bd1d5707b90949b7e40745479f0ee97eccc3557ad62438f0f23edde"
+    }
+  ]
+}

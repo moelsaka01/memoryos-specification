@@ -1,0 +1,22 @@
+{
+  "kind": "MemoryOSReadinessPhase2ADevelopmentObservation",
+  "version": "1.0.0",
+  "classification": "TEST_HARNESS_DEFECT",
+  "command": [
+    "--test",
+    "--test-reporter=tap",
+    "--test-name-pattern=A2[5-9]|A30",
+    "repositories/cca-conformance/tests/mo1307_phase2a_core_test.mjs"
+  ],
+  "result": "FAIL",
+  "tests": 6,
+  "passed": 5,
+  "failed": 1,
+  "selector": "A25 history count 128 is retained exactly and 129 is a resource error",
+  "observedCode": "MO1307_INPUT",
+  "expectedCode": "MO1307_RESOURCE_LIMIT",
+  "description": "The overflow fixture created 129 history records and 129 scope conditionIds together. The history count resource error coexisted with a malformed scope claim; INPUT exit 12 took precedence over RESOURCE_LIMIT exit 28.",
+  "correction": "The 129-history test now uses a safely unavailable scope slot to isolate the history count admission boundary. The 128-history fixture keeps complete scope conditionIds.",
+  "productChangeRequired": false,
+  "productionCertification": false
+}

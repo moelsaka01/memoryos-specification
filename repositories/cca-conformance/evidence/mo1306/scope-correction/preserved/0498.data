@@ -1,0 +1,148 @@
+{
+  "artifactBasenameAllowlist": [
+    "evaluation-identity.json",
+    "memoryos-ci-artifacts.json",
+    "memoryos-ci-complete.json",
+    "memoryos-ci-evidence.json",
+    "memoryos-ci-result.json",
+    "policy-outcome.json"
+  ],
+  "existing3ARReceipt": {
+    "hostedStatus": "ENVIRONMENT_BLOCKED",
+    "identity": {
+      "byteLength": 7486,
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3ar/execution-receipt.json",
+      "sha256": "sha256:e11e9da36dc5ca373bea03a258e971cfc424d618da96a60df49961708841fbb1"
+    },
+    "nativeStatus": "CERTIFICATION_BLOCKED",
+    "remoteCommit": "3096139e0108be22528859e4f462356dddf6ef29",
+    "status": "CERTIFICATION_BLOCKED"
+  },
+  "frozenTemplate": {
+    "byteLength": 3890,
+    "path": "repositories/memoryos-ci/templates/github.yml.tpl",
+    "sha256": "sha256:69c2b2268d20a2f79569a83bc5674588d18e89aa61b6f7914b9c439df45e5adc"
+  },
+  "gitStatus": "",
+  "head": "f236c4a2f94d8cd8e763aaa4bd6c52d703429692",
+  "invocationCount": 3,
+  "kind": "MemoryOSPhase3BR2Current3ARWorkflowCrossCheck",
+  "pins": {
+    "checkout": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+    "upload-artifact": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"
+  },
+  "scope": "Read-only local dependency/invocation cross-check. No remote query, hosted run, account operation, or claim that pending 3A-R certification succeeded.",
+  "status": "PASS",
+  "version": "1.0.0",
+  "workflows": [
+    {
+      "case": "pass",
+      "checkoutPins": [
+        "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
+      ],
+      "contentsReadOnly": true,
+      "exactBytesEqual": true,
+      "manualDispatchOnly": true,
+      "ordinarySecretReferencePresent": false,
+      "retainedEvidence": {
+        "byteLength": 6386,
+        "path": "repositories/cca-conformance/evidence/mo1306/phase3ar/github/mo1306-certification-pass.yml",
+        "sha256": "sha256:79dfcad62e9c54aebbe00fb100ee545025388351afc12ee98b8a193d3dc17416"
+      },
+      "separateToolAndDataPaths": true,
+      "trustedToolsCommit": "9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44",
+      "upload": {
+        "id": "upload",
+        "if": "always() && steps.evaluate.outputs.complete == 'true'",
+        "uses": "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+        "with": {
+          "if-no-files-found": "error",
+          "include-hidden-files": "true",
+          "name": "memoryos-ci-${{ github.run_id }}-${{ github.run_attempt }}",
+          "path": "_memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/evaluation-identity.json\n_memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-artifacts.json\n_memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-complete.json\n_memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-evidence.json\n_memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-result.json\n_memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/policy-outcome.json\n",
+          "retention-days": "7"
+        }
+      },
+      "uploadInvocationExactlyEqualsFrozenTemplate": true,
+      "workingWorkflow": {
+        "byteLength": 6386,
+        "path": ".github/workflows/mo1306-certification-pass.yml",
+        "sha256": "sha256:79dfcad62e9c54aebbe00fb100ee545025388351afc12ee98b8a193d3dc17416"
+      }
+    },
+    {
+      "case": "fail",
+      "checkoutPins": [
+        "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
+      ],
+      "contentsReadOnly": true,
+      "exactBytesEqual": true,
+      "manualDispatchOnly": true,
+      "ordinarySecretReferencePresent": false,
+      "retainedEvidence": {
+        "byteLength": 6386,
+        "path": "repositories/cca-conformance/evidence/mo1306/phase3ar/github/mo1306-certification-fail.yml",
+        "sha256": "sha256:8de9b21bae83eb047afce792c4c690e715acde9cff2eae8103c00f7acaad06f3"
+      },
+      "separateToolAndDataPaths": true,
+      "trustedToolsCommit": "9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44",
+      "upload": {
+        "id": "upload",
+        "if": "always() && steps.evaluate.outputs.complete == 'true'",
+        "uses": "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+        "with": {
+          "if-no-files-found": "error",
+          "include-hidden-files": "true",
+          "name": "memoryos-ci-${{ github.run_id }}-${{ github.run_attempt }}",
+          "path": "_memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/evaluation-identity.json\n_memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-artifacts.json\n_memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-complete.json\n_memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-evidence.json\n_memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-result.json\n_memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/policy-outcome.json\n",
+          "retention-days": "7"
+        }
+      },
+      "uploadInvocationExactlyEqualsFrozenTemplate": true,
+      "workingWorkflow": {
+        "byteLength": 6386,
+        "path": ".github/workflows/mo1306-certification-fail.yml",
+        "sha256": "sha256:8de9b21bae83eb047afce792c4c690e715acde9cff2eae8103c00f7acaad06f3"
+      }
+    },
+    {
+      "case": "cne",
+      "checkoutPins": [
+        "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
+      ],
+      "contentsReadOnly": true,
+      "exactBytesEqual": true,
+      "manualDispatchOnly": true,
+      "ordinarySecretReferencePresent": false,
+      "retainedEvidence": {
+        "byteLength": 6382,
+        "path": "repositories/cca-conformance/evidence/mo1306/phase3ar/github/mo1306-certification-cne.yml",
+        "sha256": "sha256:63680e49998af94c1530b46f81387cea7c2cedbb40494be2359546e2b4cb6d37"
+      },
+      "separateToolAndDataPaths": true,
+      "trustedToolsCommit": "9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44",
+      "upload": {
+        "id": "upload",
+        "if": "always() && steps.evaluate.outputs.complete == 'true'",
+        "uses": "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+        "with": {
+          "if-no-files-found": "error",
+          "include-hidden-files": "true",
+          "name": "memoryos-ci-${{ github.run_id }}-${{ github.run_attempt }}",
+          "path": "_memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/evaluation-identity.json\n_memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-artifacts.json\n_memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-complete.json\n_memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-evidence.json\n_memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-result.json\n_memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/policy-outcome.json\n",
+          "retention-days": "7"
+        }
+      },
+      "uploadInvocationExactlyEqualsFrozenTemplate": true,
+      "workingWorkflow": {
+        "byteLength": 6382,
+        "path": ".github/workflows/mo1306-certification-cne.yml",
+        "sha256": "sha256:63680e49998af94c1530b46f81387cea7c2cedbb40494be2359546e2b4cb6d37"
+      }
+    }
+  ],
+  "worktree": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-3a-refresh"
+}

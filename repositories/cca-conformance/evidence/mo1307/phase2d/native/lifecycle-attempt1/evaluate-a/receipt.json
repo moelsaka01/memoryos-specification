@@ -1,0 +1,321 @@
+{
+  "name": "evaluate-a",
+  "result": "PASS",
+  "command": "evaluate",
+  "requests": [
+    {
+      "sequence": 1,
+      "session": "d522e9032242b03a96aa7dfef803f80a7e6193576885e4582dc11a1332a9a87e",
+      "operation": "READ_SET",
+      "status": "OK",
+      "exitConfirmed": true
+    },
+    {
+      "sequence": 2,
+      "session": "d522e9032242b03a96aa7dfef803f80a7e6193576885e4582dc11a1332a9a87e",
+      "operation": "READ_SET",
+      "status": "OK",
+      "exitConfirmed": true
+    },
+    {
+      "sequence": 3,
+      "session": "d522e9032242b03a96aa7dfef803f80a7e6193576885e4582dc11a1332a9a87e",
+      "operation": "READ_SET",
+      "status": "OK",
+      "exitConfirmed": true
+    },
+    {
+      "sequence": 4,
+      "session": "d522e9032242b03a96aa7dfef803f80a7e6193576885e4582dc11a1332a9a87e",
+      "operation": "CHECK_OUTPUT",
+      "status": "ABSENT",
+      "exitConfirmed": true
+    },
+    {
+      "sequence": 5,
+      "session": "d522e9032242b03a96aa7dfef803f80a7e6193576885e4582dc11a1332a9a87e",
+      "operation": "CHECK_OUTPUT",
+      "status": "ABSENT",
+      "exitConfirmed": true
+    },
+    {
+      "sequence": 6,
+      "session": "d522e9032242b03a96aa7dfef803f80a7e6193576885e4582dc11a1332a9a87e",
+      "operation": "INSPECT_OUTPUT_ROOT",
+      "status": "OK",
+      "exitConfirmed": true
+    },
+    {
+      "sequence": 7,
+      "session": "d522e9032242b03a96aa7dfef803f80a7e6193576885e4582dc11a1332a9a87e",
+      "operation": "CHECK_STAGE_ROOT",
+      "status": "OK",
+      "exitConfirmed": true
+    },
+    {
+      "sequence": 8,
+      "session": "d522e9032242b03a96aa7dfef803f80a7e6193576885e4582dc11a1332a9a87e",
+      "operation": "INSPECT_PENDING",
+      "status": "OK",
+      "exitConfirmed": true
+    },
+    {
+      "sequence": 9,
+      "session": "d522e9032242b03a96aa7dfef803f80a7e6193576885e4582dc11a1332a9a87e",
+      "operation": "CHECK_FINALIZATION",
+      "status": "FINAL_ABSENT",
+      "exitConfirmed": true
+    }
+  ],
+  "snapshot": {
+    "kind": "cli",
+    "deadline": 30236.2682,
+    "helpers": 9,
+    "workers": 1,
+    "helperUsedMs": 16536.1295,
+    "activeRole": null,
+    "cleanupConfirmed": true,
+    "publication": {
+      "phase": "COMMITTED",
+      "admitted": true,
+      "deadlineExpiredAfterAdmission": false,
+      "cancelledAfterAdmission": false,
+      "namespaceVerified": true,
+      "dispositionDeadline": 19667.3191
+    },
+    "terminalCode": null,
+    "terminalAt": null,
+    "cleanupDeadline": null,
+    "events": [
+      {
+        "type": "start",
+        "at": 241.1672,
+        "role": "helper",
+        "deadline": 5241.0877,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 251.2986,
+        "role": "helper",
+        "pid": 11328,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 1932.0457,
+        "role": "helper",
+        "ordinal": 1
+      },
+      {
+        "type": "start",
+        "at": 1946.1023,
+        "role": "helper",
+        "deadline": 6946.0706,
+        "ordinal": 2
+      },
+      {
+        "type": "observation",
+        "at": 1959.87,
+        "role": "helper",
+        "pid": 15864,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 3430.4673,
+        "role": "helper",
+        "ordinal": 2
+      },
+      {
+        "type": "start",
+        "at": 3462.2231,
+        "role": "helper",
+        "deadline": 8462.178899999999,
+        "ordinal": 3
+      },
+      {
+        "type": "observation",
+        "at": 3476.5305,
+        "role": "helper",
+        "pid": 20616,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 7553.7189,
+        "role": "helper",
+        "ordinal": 3
+      },
+      {
+        "type": "start",
+        "at": 7561.6474,
+        "role": "helper",
+        "deadline": 12561.597099999999,
+        "ordinal": 4
+      },
+      {
+        "type": "observation",
+        "at": 7574.277,
+        "role": "helper",
+        "pid": 21116,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 8924.5104,
+        "role": "helper",
+        "ordinal": 4
+      },
+      {
+        "type": "start",
+        "at": 8928.0568,
+        "role": "worker",
+        "deadline": 18927.999900000003,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 8933.1981,
+        "role": "worker",
+        "threadId": 1,
+        "resourceLimits": {
+          "maxYoungGenerationSizeMb": 16,
+          "maxOldGenerationSizeMb": 128,
+          "codeRangeSizeMb": -1,
+          "stackSizeMb": 4
+        }
+      },
+      {
+        "type": "quiescent",
+        "at": 9685.3944,
+        "role": "worker",
+        "ordinal": 1
+      },
+      {
+        "type": "start",
+        "at": 9717.3157,
+        "role": "helper",
+        "deadline": 14717.2603,
+        "ordinal": 5
+      },
+      {
+        "type": "observation",
+        "at": 9735.379,
+        "role": "helper",
+        "pid": 17844,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 11487.8372,
+        "role": "helper",
+        "ordinal": 5
+      },
+      {
+        "type": "start",
+        "at": 11496.8691,
+        "role": "helper",
+        "deadline": 16496.8394,
+        "ordinal": 6
+      },
+      {
+        "type": "observation",
+        "at": 11514.4901,
+        "role": "helper",
+        "pid": 23652,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 13347.089,
+        "role": "helper",
+        "ordinal": 6
+      },
+      {
+        "type": "start",
+        "at": 13356.6628,
+        "role": "helper",
+        "deadline": 18356.631,
+        "ordinal": 7
+      },
+      {
+        "type": "observation",
+        "at": 13370.8161,
+        "role": "helper",
+        "pid": 26868,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 14759.5951,
+        "role": "helper",
+        "ordinal": 7
+      },
+      {
+        "type": "start",
+        "at": 14771.2798,
+        "role": "helper",
+        "deadline": 19771.247600000002,
+        "ordinal": 8
+      },
+      {
+        "type": "observation",
+        "at": 14783.5098,
+        "role": "helper",
+        "pid": 24192,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 16211.7877,
+        "role": "helper",
+        "ordinal": 8
+      },
+      {
+        "type": "start",
+        "at": 16220.6316,
+        "role": "helper",
+        "deadline": 21126.510000000002,
+        "ordinal": 9
+      },
+      {
+        "type": "observation",
+        "at": 16232.1984,
+        "role": "helper",
+        "pid": 27852,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 17662.6445,
+        "role": "helper",
+        "ordinal": 9
+      },
+      {
+        "type": "publication-transport",
+        "at": 17669.6218
+      }
+    ]
+  },
+  "outcome": {
+    "exitCode": 0,
+    "committed": true
+  },
+  "session": "d522e9032242b03a96aa7dfef803f80a7e6193576885e4582dc11a1332a9a87e",
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/lifecycle-attempt1/evaluate-a/stdout.data",
+    "byteLength": 353,
+    "sha256": "sha256:7a28060c140535052dfe9ddf75eab9ec03f66db45767ab00d644f213397d16b8"
+  },
+  "resultIdentity": {
+    "path": "result",
+    "byteLength": 59987,
+    "sha256": "sha256:8ec1375f09103b8d1b791985065c3589bdf8ba2a4ed661dcc081d48468049fa7"
+  },
+  "noOverlap": true,
+  "actualFixedWorker": true,
+  "actual2B2ASemantics": true,
+  "actualNativeFrames": true,
+  "verifyNoMutation": null
+}

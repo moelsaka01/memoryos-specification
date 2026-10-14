@@ -1,0 +1,13 @@
+"""Released MO-1302 workflow and check preservation, additional to package blobs."""
+import runpy
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[4];a=runpy.run_path(str(Path(__file__).with_name('authority-audit.py')))
+paths=['.github/workflows/memoryos-native-policy-gate.yml','.github/workflows/memoryos-policy-gate-engineering.yml','.github/workflows/memoryos-policy-gate-hosted.yml','.github/workflows/memoryos-policy-gate.yml','repositories/cca-conformance/docs/mo1302-github-policy-gate.md']
+rows=[]
+for p,oid in a['tree']('memoryos-1.3-mo1302',*paths).items():
+ assert a['blobid']((ROOT/p).read_bytes())==oid,p;rows.append({**a['row'](ROOT/p),'releasedGitBlob':oid})
+assert len(rows)==5
+text=(ROOT/'.github/workflows/memoryos-policy-gate.yml').read_text();assert 'MemoryOS Policy Gate' in text
+assert all(p['path']!='.github/workflows/memoryos-ci.yml' for p in rows)
+a['put']('mo1302-preservation.json',{'status':'PASS','baseline':a['C3AB'],'releasedTag':'memoryos-1.3-mo1302','releasedCommit':a['git']('rev-parse','memoryos-1.3-mo1302^{}'),'workflowAndContractFiles':rows,'requiredCheck':'memoryos-policy-gate / MemoryOS Policy Gate','releasedActionFiles':43,'selectedRegressionTests':4,'scope':'Exact released action directory plus four released workflow files and gate contract unchanged. No execution of historical Ubuntu jobs; new neutral workflow has distinct check identity.'})
+print('MO-1302 workflow and required check preservation PASS')

@@ -1,0 +1,16 @@
+{
+  "kind": "MemoryOSPhase3CRNativeWrapperRetry",
+  "baseline": "9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44",
+  "argv": [
+    "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-3c-refresh\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+    "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-3c-refresh\\repositories\\cca-conformance\\tools\\mo1306-phase2c\\github-wrapper.test.mjs",
+    "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-3c-refresh\\.cache\\pw2",
+    "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-3c-refresh\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe"
+  ],
+  "exitCode": 1,
+  "stdout": "",
+  "stderr": "node:internal/modules/run_main:107\r\n    triggerUncaughtException(\r\n    ^\r\n\r\nAssertionError [ERR_ASSERTION]: pass evaluate: {\"code\":\"MO1306_ARTIFACT_WRITE\",\"kind\":\"MemoryOSCICDDiagnostic\",\"message\":\"The requested operation could not complete.\",\"stage\":\"PUBLICATION\",\"version\":\"1.0.0\"}\r\n{\"code\":\"MO1306_FILESYSTEM_BOUNDARY\",\"kind\":\"MemoryOSCICDDiagnostic\",\"message\":\"The requested operation could not complete.\",\"stage\":\"ACQUISITION\",\"version\":\"1.0.0\"}\r\n{\"code\":\"MO1306_RUNTIME_INTEGRITY\",\"kind\":\"MemoryOSCICDDiagnostic\",\"message\":\"GitHub result transport failed.\",\"stage\":\"INTEGRITY\",\"version\":\"1.0.0\"}\r\r\n\r\n\r\n15 !== 0\r\n\r\n    at file:///C:/Users/melsa/Documents/Codex/cca-mo1306-3c-refresh/repositories/cca-conformance/tools/mo1306-phase2c/github-wrapper.test.mjs:46:10\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\r\n    at async node:internal/modules/esm/loader:647:26\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\r\n  generatedMessage: false,\r\n  code: 'ERR_ASSERTION',\r\n  actual: 15,\r\n  expected: 0,\r\n  operator: 'strictEqual',\r\n  diff: 'simple'\r\n}\r\n\r\nNode.js v24.21.0\r\n",
+  "elapsedMs": 54844,
+  "status": "FAILED_EXECUTION_PRESERVED",
+  "reasonForRetry": "First unchanged-helper attempt exceeded frozen2s under competing PowerShell audits; this narrowed retry uses shorter exclusive scratch and serialized process-heavy work. Frozen helper budget and production bytes unchanged."
+}

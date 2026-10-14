@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: CLI transport accepts only one exact stdout envelope and propagates MO-1301 projections
+ok 1 - CLI transport accepts only one exact stdout envelope and propagates MO-1301 projections
+  ---
+  duration_ms: 31.3127
+  type: 'test'
+  ...
+# Subtest: real bundled orchestration verifies PASS, FAIL, CNE, Policy Set, and trusted Regression
+ok 2 - real bundled orchestration verifies PASS, FAIL, CNE, Policy Set, and trusted Regression
+  ---
+  duration_ms: 105575.3726
+  type: 'test'
+  ...
+# Subtest: valid MO-1301 evaluation failures propagate unchanged and publish no generation
+ok 3 - valid MO-1301 evaluation failures propagate unchanged and publish no generation
+  ---
+  duration_ms: 8397.421
+  type: 'test'
+  ...
+# Subtest: artifact verifier rejections remain MO-1301 failures and reconstruction contradictions are Action failures
+ok 4 - artifact verifier rejections remain MO-1301 failures and reconstruction contradictions are Action failures
+  ---
+  duration_ms: 76278.8896
+  type: 'test'
+  ...
+# Subtest: all six wrong decision/exit pairings are rejected after full verification
+ok 5 - all six wrong decision/exit pairings are rejected after full verification
+  ---
+  duration_ms: 108638.6041
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 301471.1887

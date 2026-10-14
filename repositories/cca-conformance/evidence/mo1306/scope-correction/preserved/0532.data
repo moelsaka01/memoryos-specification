@@ -1,0 +1,231 @@
+91460: ;// CONCATENATED MODULE: ./node_modules/@azure/core-client/dist/esm/deserializationPolicy.js
+91461: // Copyright (c) Microsoft Corporation.
+91462: // Licensed under the MIT License.
+91463:
+91464:
+91465:
+91466:
+91467: const defaultJsonContentTypes = ["application/json", "text/json"];
+91468: const defaultXmlContentTypes = ["application/xml", "application/atom+xml"];
+91469: /**
+91470:  * The programmatic identifier of the deserializationPolicy.
+91471:  */
+91472: const deserializationPolicyName = "deserializationPolicy";
+91473: /**
+91474:  * This policy handles parsing out responses according to OperationSpecs on the request.
+91475:  */
+91476: function deserializationPolicy(options = {}) {
+91477:     const jsonContentTypes = options.expectedContentTypes?.json ?? defaultJsonContentTypes;
+91478:     const xmlContentTypes = options.expectedContentTypes?.xml ?? defaultXmlContentTypes;
+91479:     const parseXML = options.parseXML;
+91480:     const serializerOptions = options.serializerOptions;
+91481:     const updatedOptions = {
+91482:         xml: {
+91483:             rootName: serializerOptions?.xml.rootName ?? "",
+91484:             includeRoot: serializerOptions?.xml.includeRoot ?? false,
+91485:             xmlCharKey: serializerOptions?.xml.xmlCharKey ?? XML_CHARKEY,
+91486:         },
+91487:     };
+91488:     return {
+91489:         name: deserializationPolicyName,
+91490:         async sendRequest(request, next) {
+91491:             const response = await next(request);
+91492:             return deserializeResponseBody(jsonContentTypes, xmlContentTypes, response, updatedOptions, parseXML);
+91493:         },
+91494:     };
+91495: }
+91496: function getOperationResponseMap(parsedResponse) {
+91497:     let result;
+91498:     const request = parsedResponse.request;
+91499:     const operationInfo = getOperationRequestInfo(request);
+91500:     const operationSpec = operationInfo?.operationSpec;
+91501:     if (operationSpec) {
+91502:         if (!operationInfo?.operationResponseGetter) {
+91503:             result = operationSpec.responses[parsedResponse.status];
+91504:         }
+91505:         else {
+91506:             result = operationInfo?.operationResponseGetter(operationSpec, parsedResponse);
+91507:         }
+91508:     }
+91509:     return result;
+91510: }
+91511: function shouldDeserializeResponse(parsedResponse) {
+91512:     const request = parsedResponse.request;
+91513:     const operationInfo = getOperationRequestInfo(request);
+91514:     const shouldDeserialize = operationInfo?.shouldDeserialize;
+91515:     let result;
+91516:     if (shouldDeserialize === undefined) {
+91517:         result = true;
+91518:     }
+91519:     else if (typeof shouldDeserialize === "boolean") {
+91520:         result = shouldDeserialize;
+91521:     }
+91522:     else {
+91523:         result = shouldDeserialize(parsedResponse);
+91524:     }
+91525:     return result;
+91526: }
+91527: async function deserializeResponseBody(jsonContentTypes, xmlContentTypes, response, options, parseXML) {
+91528:     const parsedResponse = await parse(jsonContentTypes, xmlContentTypes, response, options, parseXML);
+91529:     if (!shouldDeserializeResponse(parsedResponse)) {
+91530:         return parsedResponse;
+91531:     }
+91532:     const operationInfo = getOperationRequestInfo(parsedResponse.request);
+91533:     const operationSpec = operationInfo?.operationSpec;
+91534:     if (!operationSpec || !operationSpec.responses) {
+91535:         return parsedResponse;
+91536:     }
+91537:     const responseSpec = getOperationResponseMap(parsedResponse);
+91538:     const { error, shouldReturnResponse } = handleErrorResponse(parsedResponse, operationSpec, responseSpec, options);
+91539:     if (error) {
+91540:         throw error;
+91541:     }
+91542:     else if (shouldReturnResponse) {
+91543:         return parsedResponse;
+91544:     }
+91545:     // An operation response spec does exist for current status code, so
+91546:     // use it to deserialize the response.
+91547:     if (responseSpec) {
+91548:         if (responseSpec.bodyMapper) {
+91549:             let valueToDeserialize = parsedResponse.parsedBody;
+91550:             if (operationSpec.isXML && responseSpec.bodyMapper.type.name === MapperTypeNames.Sequence) {
+91551:                 valueToDeserialize =
+91552:                     typeof valueToDeserialize === "object"
+91553:                         ? valueToDeserialize[responseSpec.bodyMapper.xmlElementName]
+91554:                         : [];
+91555:             }
+91556:             try {
+91557:                 parsedResponse.parsedBody = operationSpec.serializer.deserialize(responseSpec.bodyMapper, valueToDeserialize, "operationRes.parsedBody", options);
+91558:             }
+91559:             catch (deserializeError) {
+91560:                 const restError = new esm_restError_RestError(`Error ${deserializeError} occurred in deserializing the responseBody - ${parsedResponse.bodyAsText}`, {
+91561:                     statusCode: parsedResponse.status,
+91562:                     request: parsedResponse.request,
+91563:                     response: parsedResponse,
+91564:                 });
+91565:                 throw restError;
+91566:             }
+91567:         }
+91568:         else if (operationSpec.httpMethod === "HEAD") {
+91569:             // head methods never have a body, but we return a boolean to indicate presence/absence of the resource
+91570:             parsedResponse.parsedBody = response.status >= 200 && response.status < 300;
+91571:         }
+91572:         if (responseSpec.headersMapper) {
+91573:             parsedResponse.parsedHeaders = operationSpec.serializer.deserialize(responseSpec.headersMapper, parsedResponse.headers.toJSON(), "operationRes.parsedHeaders", { xml: {}, ignoreUnknownProperties: true });
+91574:         }
+91575:     }
+91576:     return parsedResponse;
+91577: }
+91578: function isOperationSpecEmpty(operationSpec) {
+91579:     const expectedStatusCodes = Object.keys(operationSpec.responses);
+91580:     return (expectedStatusCodes.length === 0 ||
+91581:         (expectedStatusCodes.length === 1 && expectedStatusCodes[0] === "default"));
+91582: }
+91583: function handleErrorResponse(parsedResponse, operationSpec, responseSpec, options) {
+91584:     const isSuccessByStatus = 200 <= parsedResponse.status && parsedResponse.status < 300;
+91585:     const isExpectedStatusCode = isOperationSpecEmpty(operationSpec)
+91586:         ? isSuccessByStatus
+91587:         : !!responseSpec;
+91588:     if (isExpectedStatusCode) {
+91589:         if (responseSpec) {
+91590:             if (!responseSpec.isError) {
+91591:                 return { error: null, shouldReturnResponse: false };
+91592:             }
+91593:         }
+91594:         else {
+91595:             return { error: null, shouldReturnResponse: false };
+91596:         }
+91597:     }
+91598:     const errorResponseSpec = responseSpec ?? operationSpec.responses.default;
+91599:     const initialErrorMessage = parsedResponse.request.streamResponseStatusCodes?.has(parsedResponse.status)
+91600:         ? `Unexpected status code: ${parsedResponse.status}`
+91601:         : parsedResponse.bodyAsText;
+91602:     const error = new esm_restError_RestError(initialErrorMessage, {
+91603:         statusCode: parsedResponse.status,
+91604:         request: parsedResponse.request,
+91605:         response: parsedResponse,
+91606:     });
+91607:     // If the item failed but there's no error spec or default spec to deserialize the error,
+91608:     // and the parsed body doesn't look like an error object,
+91609:     // we should fail so we just throw the parsed response
+91610:     if (!errorResponseSpec &&
+91611:         !(parsedResponse.parsedBody?.error?.code && parsedResponse.parsedBody?.error?.message)) {
+91612:         throw error;
+91613:     }
+91614:     const defaultBodyMapper = errorResponseSpec?.bodyMapper;
+91615:     const defaultHeadersMapper = errorResponseSpec?.headersMapper;
+91616:     try {
+91617:         // If error response has a body, try to deserialize it using default body mapper.
+91618:         // Then try to extract error code & message from it
+91619:         if (parsedResponse.parsedBody) {
+91620:             const parsedBody = parsedResponse.parsedBody;
+91621:             let deserializedError;
+91622:             if (defaultBodyMapper) {
+91623:                 let valueToDeserialize = parsedBody;
+91624:                 if (operationSpec.isXML && defaultBodyMapper.type.name === MapperTypeNames.Sequence) {
+91625:                     valueToDeserialize = [];
+91626:                     const elementName = defaultBodyMapper.xmlElementName;
+91627:                     if (typeof parsedBody === "object" && elementName) {
+91628:                         valueToDeserialize = parsedBody[elementName];
+91629:                     }
+91630:                 }
+91631:                 deserializedError = operationSpec.serializer.deserialize(defaultBodyMapper, valueToDeserialize, "error.response.parsedBody", options);
+91632:             }
+91633:             const internalError = parsedBody.error || deserializedError || parsedBody;
+91634:             error.code = internalError.code;
+91635:             if (internalError.message) {
+91636:                 error.message = internalError.message;
+91637:             }
+91638:             if (defaultBodyMapper) {
+91639:                 error.response.parsedBody = deserializedError;
+91640:             }
+91641:         }
+91642:         // If error response has headers, try to deserialize it using default header mapper
+91643:         if (parsedResponse.headers && defaultHeadersMapper) {
+91644:             error.response.parsedHeaders =
+91645:                 operationSpec.serializer.deserialize(defaultHeadersMapper, parsedResponse.headers.toJSON(), "operationRes.parsedHeaders");
+91646:         }
+91647:     }
+91648:     catch (defaultError) {
+91649:         error.message = `Error "${defaultError.message}" occurred in deserializing the responseBody - "${parsedResponse.bodyAsText}" for the default response.`;
+91650:     }
+91651:     return { error, shouldReturnResponse: false };
+91652: }
+91653: async function parse(jsonContentTypes, xmlContentTypes, operationResponse, opts, parseXML) {
+91654:     if (!operationResponse.request.streamResponseStatusCodes?.has(operationResponse.status) &&
+91655:         operationResponse.bodyAsText) {
+91656:         const text = operationResponse.bodyAsText;
+91657:         const contentType = operationResponse.headers.get("Content-Type") || "";
+91658:         const contentComponents = !contentType
+91659:             ? []
+91660:             : contentType.split(";").map((component) => component.toLowerCase());
+91661:         try {
+91662:             if (contentComponents.length === 0 ||
+91663:                 contentComponents.some((component) => jsonContentTypes.indexOf(component) !== -1)) {
+91664:                 operationResponse.parsedBody = JSON.parse(text);
+91665:                 return operationResponse;
+91666:             }
+91667:             else if (contentComponents.some((component) => xmlContentTypes.indexOf(component) !== -1)) {
+91668:                 if (!parseXML) {
+91669:                     throw new Error("Parsing XML not supported.");
+91670:                 }
+91671:                 const body = await parseXML(text, opts.xml);
+91672:                 operationResponse.parsedBody = body;
+91673:                 return operationResponse;
+91674:             }
+91675:         }
+91676:         catch (err) {
+91677:             const msg = `Error "${err}" occurred while parsing the response body - ${operationResponse.bodyAsText}.`;
+91678:             const errCode = err.code || esm_restError_RestError.PARSE_ERROR;
+91679:             const e = new esm_restError_RestError(msg, {
+91680:                 code: errCode,
+91681:                 statusCode: operationResponse.status,
+91682:                 request: operationResponse.request,
+91683:                 response: operationResponse,
+91684:             });
+91685:             throw e;
+91686:         }
+91687:     }
+91688:     return operationResponse;
+91689: }
+91690: //# sourceMappingURL=deserializationPolicy.js.map

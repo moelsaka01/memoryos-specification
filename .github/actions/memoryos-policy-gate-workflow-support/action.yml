@@ -1,0 +1,77 @@
+name: MemoryOS Policy Gate Workflow Support
+description: Secure GitHub transport and presentation support for the reusable MemoryOS Policy Gate workflow.
+inputs:
+  mode: { description: "Internal operation: prepare, extract, or finalize.", required: true }
+  policy-kind: { description: "Policy artifact kind.", required: false, default: "" }
+  policy-path: { description: "Workspace-relative Policy path.", required: false, default: "" }
+  expected-policy-semantic-digest: { description: "Pinned Policy semantic digest.", required: false, default: "" }
+  candidate-mip-path: { description: "Direct candidate MIP path.", required: false, default: "" }
+  regression-baseline-mip-path: { description: "Direct baseline MIP path.", required: false, default: "" }
+  candidate-mip-artifact-name: { description: "Candidate same-run artifact name.", required: false, default: "" }
+  regression-baseline-mip-artifact-name: { description: "Baseline same-run artifact name.", required: false, default: "" }
+  retention-days: { description: "Result retention from 1 through 90.", required: false, default: "" }
+  run-id: { description: "Current workflow run ID.", required: false, default: "" }
+  run-attempt: { description: "Current workflow run attempt.", required: false, default: "" }
+  check-run-id: { description: "Current gate check-run ID.", required: false, default: "" }
+  archive-directory: { description: "Directory containing one raw artifact ZIP.", required: false, default: "" }
+  artifact-role: { description: "Artifact role: candidate or baseline.", required: false, default: "" }
+  artifact-name: { description: "Artifact name to revalidate.", required: false, default: "" }
+  artifact-id: { description: "Artifact ID to revalidate.", required: false, default: "" }
+  checkout-outcome: { description: "Checkout step outcome.", required: false, default: "" }
+  prepare-outcome: { description: "Prepare step outcome.", required: false, default: "" }
+  candidate-download-outcome: { description: "Candidate download outcome.", required: false, default: "" }
+  candidate-extract-outcome: { description: "Candidate extraction outcome.", required: false, default: "" }
+  baseline-download-outcome: { description: "Baseline download outcome.", required: false, default: "" }
+  baseline-extract-outcome: { description: "Baseline extraction outcome.", required: false, default: "" }
+  gate-outcome: { description: "Phase 1 Action outcome.", required: false, default: "" }
+  upload-outcome: { description: "Verified allowlist upload outcome.", required: false, default: "" }
+  upload-artifact-name: { description: "Generated result artifact name.", required: false, default: "" }
+  upload-artifact-id: { description: "Uploaded result artifact ID.", required: false, default: "" }
+  pre-gate-stable-code: { description: "Internal support-stage stable code.", required: false, default: "" }
+  pre-gate-phase: { description: "Internal support-stage failure phase.", required: false, default: "" }
+  outcome-path: { description: "Verified outcome path used only for presentation.", required: false, default: "" }
+  gate-class: { description: "Phase 1 gate classification.", required: false, default: "" }
+  decision: { description: "Phase 1 Policy decision.", required: false, default: "" }
+  cli-exit-code: { description: "Phase 1 evaluation exit.", required: false, default: "" }
+  publication-valid: { description: "Phase 1 publication verification state.", required: false, default: "" }
+  policy-semantic-digest: { description: "Verified Policy semantic digest.", required: false, default: "" }
+  evaluation-identity-digest: { description: "Verified Evaluation Identity digest.", required: false, default: "" }
+  outcome-digest: { description: "Verified outcome digest.", required: false, default: "" }
+  policy-fact-context-digest: { description: "Verified PolicyFactContext digest.", required: false, default: "" }
+  regression-source-digest: { description: "Verified Regression source digest.", required: false, default: "" }
+  stable-code: { description: "Phase 1 primary stable code.", required: false, default: "" }
+  failure-class: { description: "Phase 1 failure class.", required: false, default: "" }
+  phase: { description: "Phase 1 failure phase.", required: false, default: "" }
+  artifact-kind: { description: "Phase 1 artifact kind.", required: false, default: "" }
+  limit-identifier: { description: "Phase 1 resource-limit identifier.", required: false, default: "" }
+  distribution-repository: { description: "Verified distribution repository.", required: false, default: "" }
+  distribution-revision: { description: "Verified distribution revision.", required: false, default: "" }
+outputs:
+  candidate-artifact-id: { description: "Sole candidate artifact ID, or empty for direct mode." }
+  baseline-artifact-id: { description: "Sole baseline artifact ID, or empty when absent/direct." }
+  upload-artifact-name: { description: "Generated or successfully published result artifact name." }
+  retention-days: { description: "Validated retention-days value." }
+  mip-path: { description: "Workspace-relative private MIP snapshot path." }
+  support-stable-code: { description: "Internal support-stage stable code on failure." }
+  support-phase: { description: "Internal support-stage failure phase." }
+  gate-class: { description: "Final gate classification." }
+  decision: { description: "Verified Policy decision, or empty for tool failure." }
+  cli-exit-code: { description: "Original evaluation exit when available." }
+  publication-valid: { description: "Whether the local normative generation is verified." }
+  policy-semantic-digest: { description: "Verified Policy semantic digest." }
+  evaluation-identity-digest: { description: "Verified Evaluation Identity digest." }
+  outcome-digest: { description: "Verified outcome digest." }
+  policy-fact-context-digest: { description: "Verified PolicyFactContext digest." }
+  regression-source-digest: { description: "Verified Regression source digest." }
+  stable-code: { description: "Primary stable code when applicable." }
+  failure-class: { description: "Frozen failure class when applicable." }
+  phase: { description: "Frozen failure phase when applicable." }
+  artifact-kind: { description: "Verified or failure-associated artifact kind." }
+  limit-identifier: { description: "Root resource-limit identifier when applicable." }
+  distribution-repository: { description: "Verified evaluator distribution repository." }
+  distribution-revision: { description: "Verified evaluator distribution revision." }
+  artifact-name: { description: "Successfully uploaded artifact name." }
+  artifact-id: { description: "Successfully uploaded artifact ID." }
+runs:
+  using: node24
+  main: dist/index.js

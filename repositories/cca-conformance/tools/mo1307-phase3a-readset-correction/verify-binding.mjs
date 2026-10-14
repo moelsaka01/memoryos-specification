@@ -1,0 +1,17 @@
+// Read committed correction graph and blobs. --record writes only the conformance child record.
+import assert from 'node:assert/strict';
+import {evidence,baseline,str,blobs,check,json,write,record,implementationSubject,bindingSubject} from './common.mjs';
+import {checkEvidence} from './check-evidence.mjs';
+assert.ok(process.argv.slice(2).every(a=>['--record','--bound'].includes(a)));assert.ok(!(process.argv.includes('--record')&&process.argv.includes('--bound')));
+const binding=json(evidence+'/binding.json'),commit=binding.implementation.commit;
+assert.equal(binding.implementation.parent,baseline);assert.deepEqual(str('show','-s','--format=%P',commit).split(' '),[baseline]);assert.equal(str('show','-s','--format=%s',commit),implementationSubject);assert.equal(str('rev-parse',commit+'^{tree}'),binding.implementation.tree);
+assert.equal(str('show','-s','--format=%s',baseline),'conformance(memoryos-1.3): bind MO-1307 phase 2 integration');const oldBinding=json('repositories/cca-conformance/evidence/mo1307/phase2d/binding.json');assert.deepEqual(str('show','-s','--format=%P',baseline).split(' '),[oldBinding.implementation.commit]);
+const names=str('diff-tree','--no-commit-id','--name-only','-r',commit).split('\n').filter(Boolean).sort();assert.deepEqual(binding.members.map(m=>m.path),names);const bytes=blobs(commit,names);binding.members.forEach((m,i)=>{check(m,bytes[i]);check(m);});
+const inventory=json(evidence+'/changed-file-inventory.json');assert.equal(inventory.baseline,baseline);assert.deepEqual(inventory.members.map(m=>m.path),names.filter(p=>p!==evidence+'/changed-file-inventory.json'));for(const m of inventory.members)check(m);
+const validation=json(evidence+'/final-validation/receipt.json');assert.equal(validation.result,'PASS');for(const row of validation.commands){assert.equal(row.result,'PASS');check(row.stdout);check(row.stderr);}for(const m of validation.sourceBindings)check(m);
+const current=await checkEvidence();assert.equal(current.result,'PASS',JSON.stringify(current.failure));assert.equal(str('branch','--show-current'),'main');let child=null;
+if(process.argv.includes('--bound')){
+ child=str('rev-parse','HEAD');assert.deepEqual(str('show','-s','--format=%P',child).split(' '),[commit]);assert.equal(str('show','-s','--format=%s',child),bindingSubject);assert.deepEqual(str('diff-tree','--no-commit-id','--name-only','-r',child).split('\n').sort(),[evidence+'/binding.json',evidence+'/binding-verification.json'].sort());assert.equal(str('status','--porcelain'),'');const verification=json(evidence+'/binding-verification.json');assert.equal(verification.result,'PASS');assert.equal(verification.C3R,commit);check(verification.binding);const bnames=[evidence+'/binding.json',evidence+'/binding-verification.json'];blobs(child,bnames).forEach((b,i)=>check(record(bnames[i]),b));
+}else assert.equal(str('rev-parse','HEAD'),commit);
+const result={kind:'MO1307ReadSetCorrectionBindingVerification',version:'1.0.0',result:'PASS',B2:baseline,C3R:commit,C3RB:child,tree:binding.implementation.tree,graph:'PASS',boundBlobs:names.length,binding:record(evidence+'/binding.json'),productionChangesInBindingCommit:false,actualTreeBinding:'PASS',evidenceGraph:'PASS',selfReference:false,certification:false};
+if(process.argv.includes('--record'))write(evidence+'/binding-verification.json',result);console.log(JSON.stringify(result));

@@ -1,0 +1,24 @@
+$taskRoot = 'C:\Users\melsa\Documents\Codex\cca-mo1306-3a-refresh'
+$taskCase = Join-Path $taskRoot '.cache\mo1306-phase3a-final\n-20260927T120240-b3df86\error-input'
+$taskRun = Join-Path $taskCase '.memoryos-ci\out\e89b8e91-c3c5-402d-9e6f-000bd2a102ba'
+$taskTargets = @($taskCase,(Join-Path $taskCase 'missing.mip'),(Join-Path $taskCase 'memoryos-ci.json'),(Join-Path $taskRun '.pending'),$taskRun,(Join-Path $taskRun 'memoryos-ci-result.json'),(Join-Path $taskRun 'memoryos-ci-evidence.json'),(Join-Path $taskRun 'memoryos-ci-artifacts.json'),(Join-Path $taskRun 'memoryos-ci-complete.json'),(Join-Path $taskRun '.pending\memoryos-ci-artifacts.json'))
+$taskTargets += (Join-Path $taskRoot '.cache\mo1306-phase3a-final\n-20260927T120240-b3df86\policy-pass')
+$taskCursor = $taskRun
+while ($taskCursor) { $taskTargets += $taskCursor; $taskCursor = [IO.Path]::GetDirectoryName($taskCursor) }
+$taskRows = foreach ($taskPath in ($taskTargets | Select-Object -Unique)) {
+ $taskExists = Test-Path -LiteralPath $taskPath
+ if ($taskExists) {
+  $taskItem = Get-Item -LiteralPath $taskPath -Force
+  $taskAcl = $null; $taskAclError = $null
+  try { $taskAcl = Get-Acl -LiteralPath $taskPath -ErrorAction Stop } catch { $taskAclError = $_.Exception.Message }
+  [ordered]@{ path=$taskPath; length=$taskPath.Length; exists=$true; directory=$taskItem.PSIsContainer; attributes=[string]$taskItem.Attributes; linkType=$taskItem.LinkType; target=$taskItem.Target; byteLength=if($taskItem.PSIsContainer){$null}else{$taskItem.Length}; creationUtc=$taskItem.CreationTimeUtc.ToString('o'); writeUtc=$taskItem.LastWriteTimeUtc.ToString('o'); owner=$taskAcl.Owner; sddl=$taskAcl.Sddl; aclProtected=$taskAcl.AreAccessRulesProtected; aclReadError=$taskAclError }
+ } else { [ordered]@{path=$taskPath; length=$taskPath.Length; exists=$false} }
+}
+$taskProcessesError=$null
+try { $taskProcesses = @(Get-CimInstance Win32_Process -Filter "ProcessId=4292 OR ProcessId=19232 OR ProcessId=12660 OR ProcessId=13184" -OperationTimeoutSec 5 -ErrorAction Stop | Select-Object ProcessId,ParentProcessId,Name,CreationDate,ExecutablePath) } catch { $taskProcessesError=$_.Exception.Message; $taskProcesses=@() }
+$taskResult = [ordered]@{observedUtc=[DateTime]::UtcNow.ToString('o'); temporalScope='Current inspection only; historical ACL and open handles were not captured'; paths=$taskRows; preservedPidsNow=$taskProcesses; processReadError=$taskProcessesError; fileSystem=([IO.DriveInfo]::new('C:\').DriveFormat)}
+$taskEvidencePath=Join-Path $taskRoot 'repositories\cca-conformance\evidence\mo1306\phase3a-publication-diagnostic\windows-now.json'
+if (Test-Path -LiteralPath $taskEvidencePath) { throw 'Refuse evidence overwrite' }
+[IO.File]::WriteAllText($taskEvidencePath, ($taskResult | ConvertTo-Json -Depth 7 -Compress) + "`n", (New-Object Text.UTF8Encoding($false)))
+[ordered]@{status='OBSERVED';file=$taskEvidencePath;pathCount=$taskRows.Count;processReadError=$taskProcessesError;currentOldPidMatches=$taskProcesses.Count} | ConvertTo-Json -Compress
+

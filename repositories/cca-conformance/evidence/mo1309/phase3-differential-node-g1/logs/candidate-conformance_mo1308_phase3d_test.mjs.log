@@ -1,0 +1,106 @@
+TAP version 13
+# Subtest: D01 the ten 3D cases (steps D and E) are all implemented and none is host-only
+ok 1 - D01 the ten 3D cases (steps D and E) are all implemented and none is host-only
+  ---
+  duration_ms: 2.640487
+  type: 'test'
+  ...
+# Subtest: D02 against the real repository: well-formed read-only report, D1 and D5 READY, preserved rehearsals add no D2 problem, nothing is written
+ok 2 - D02 against the real repository: well-formed read-only report, D1 and D5 READY, preserved rehearsals add no D2 problem, nothing is written
+  ---
+  duration_ms: 2512.400829
+  type: 'test'
+  ...
+# Subtest: D03 a complete accepted state: I3 is built, then the binding-only BF is certified ready to tag, and nothing is tagged
+not ok 3 - D03 a complete accepted state: I3 is built, then the binding-only BF is certified ready to tag, and nothing is tagged
+  ---
+  duration_ms: 16316.230128
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1308_phase3d_test.mjs:110:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"3D-D7","status":"NOT_READY","problems":["BF is not binding-only: M repositories/cca-conformance/mo1308-final-release-inventory.json","the parent of BF is not I3","the binding names another I3 commit","the tag memoryos-1.3-mo1308 exists and does not target the BF commit"],"observed":{"state":"BF"},"pendingBf":false}]
+    + actual - expected
+    
+    + 'NOT_READY'
+    - 'I3_VALID_PENDING_BF'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'I3_VALID_PENDING_BF'
+  actual: 'NOT_READY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1308_phase3d_test.mjs:124:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: D04 a rehearsal is never an accepted input: a stream with only a rehearsal has no accepted generation
+ok 4 - D04 a rehearsal is never an accepted input: a stream with only a rehearsal has no accepted generation
+  ---
+  duration_ms: 9167.340397
+  type: 'test'
+  ...
+# Subtest: D05 tampering is caught: a changed receipt, a changed step receipt and a wrong disclosure all make the case NOT_READY
+ok 5 - D05 tampering is caught: a changed receipt, a changed step receipt and a wrong disclosure all make the case NOT_READY
+  ---
+  duration_ms: 30930.465069
+  type: 'test'
+  ...
+# Subtest: D06 a commit that changes a production path is caught by D1, and a regression record for another tree or a short suite by D4
+ok 6 - D06 a commit that changes a production path is caught by D1, and a regression record for another tree or a short suite by D4
+  ---
+  duration_ms: 15053.368433
+  type: 'test'
+  ...
+# Subtest: D07 the validator CLI is read-only and its exit code follows the result
+ok 7 - D07 the validator CLI is read-only and its exit code follows the result
+  ---
+  duration_ms: 2807.537135
+  type: 'test'
+  ...
+# Subtest: D08 the retained regression needs its A8.10 preconditions: fresh worktree, no .cache/mo1307 leftovers, quiet host, F22 timing, no retries
+ok 8 - D08 the retained regression needs its A8.10 preconditions: fresh worktree, no .cache/mo1307 leftovers, quiet host, F22 timing, no retries
+  ---
+  duration_ms: 9174.993218
+  type: 'test'
+  ...
+# Subtest: D09 the precondition capture: cache state, load sample, F22 duration from a node:test log, and refusal on leftovers or a busy host
+ok 9 - D09 the precondition capture: cache state, load sample, F22 duration from a node:test log, and refusal on leftovers or a busy host
+  ---
+  duration_ms: 2015.304718
+  type: 'test'
+  ...
+# Subtest: D10 an untampered rehearsal sealed against bytes that have since moved is accepted as STALE_REHEARSAL (informational)
+ok 10 - D10 an untampered rehearsal sealed against bytes that have since moved is accepted as STALE_REHEARSAL (informational)
+  ---
+  duration_ms: 14218.883898
+  type: 'test'
+  ...
+# Subtest: D11 a tampered rehearsal fails, whether or not its bound bytes moved
+ok 11 - D11 a tampered rehearsal fails, whether or not its bound bytes moved
+  ---
+  duration_ms: 18370.309905
+  type: 'test'
+  ...
+# Subtest: D12 a certifying generation whose bound inputs changed still fails exactly as before
+ok 12 - D12 a certifying generation whose bound inputs changed still fails exactly as before
+  ---
+  duration_ms: 15571.080129
+  type: 'test'
+  ...
+# Subtest: D13 the open certifying 3D generation (sealed, not yet closed) is not an input of its own run: D2 stays READY
+ok 13 - D13 the open certifying 3D generation (sealed, not yet closed) is not an input of its own run: D2 stays READY
+  ---
+  duration_ms: 15534.226445
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 12
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 151817.567658

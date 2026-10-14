@@ -1,0 +1,62 @@
+"""Read retained native evidence only; preserve failure and publish a blocked receipt."""
+import copy,hashlib,json,os,shutil,sys
+from pathlib import Path
+sys.dont_write_bytecode=True
+ROOT=Path(__file__).resolve().parents[4]
+HERE=Path(__file__).resolve().parent
+sys.path.insert(0,str(HERE.parent/'mo1306-phase2d'))
+import observer
+from trace_phase2d import validate_trace
+BASE=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-final'
+run=BASE/'native'/sys.argv[1]
+CACHE=ROOT/'.cache/mo1306-phase3a-final'
+PACKAGE=CACHE/'install/node_modules/memoryos-ci'
+NODE=CACHE/'node-v24.21.0-win-x64/node.exe'
+def sha(raw): return 'sha256:'+hashlib.sha256(raw).hexdigest()
+def ref(p):
+ raw=p.read_bytes();return {'path':p.relative_to(ROOT).as_posix(),'byteLength':len(raw),'sha256':sha(raw)}
+def read(p): return json.loads(p.read_bytes())
+def put(p,value):
+ raw=(json.dumps(value,sort_keys=True,separators=(',',':'))+'\n').encode();assert len(raw)<2*1024*1024
+ p.parent.mkdir(parents=True,exist_ok=True)
+ with p.open('xb') as stream:stream.write(raw)
+ return ref(p)
+summary=read(run/'summary.json');assert summary['status']=='FAIL' and summary['caseCount']==9
+assert len(summary['commands'])==14
+assert [c['id'] for c in summary['cases'] if c['status']!='PASS']==['error-input']
+assert [c['id'] for c in summary['commands'] if c['status']!='PASS']==['error-input']
+ids={'node':str(NODE),'powershell':str(Path(os.environ['SystemRoot'])/'System32/WindowsPowerShell/v1.0/powershell.exe'),'conhost':str(Path(os.environ['SystemRoot'])/'System32/conhost.exe')}
+traces=[read(ROOT/c['trace']['path']) for c in summary['commands']]
+trace_validations=[];remaining=[]
+for command,t in zip(summary['commands'],traces):
+ outcome=validate_trace(t,ids,PACKAGE)
+ assert outcome['status']=='PASS' and not t['cleanup']['remainingPids']
+ for p in t['lifetimes']:
+  current=observer.details(p['pid'])
+  if current and current['creationTime100ns']==p['creationTime100ns']:remaining.append({'pid':p['pid'],'creationTime100ns':p['creationTime100ns']})
+ trace_validations.append({'id':command['id'],'trace':command['trace'],'validation':outcome})
+assert not remaining
+validation=put(run/'post-stop-trace-validation.json',{'status':'PASS','mode':'Read-only validation of already retained actual traces; no product re-execution.','traces':trace_validations,'remainingPreviouslyObservedIdentities':remaining,'validator':ref(HERE.parent/'mo1306-phase2d/trace_phase2d.py')})
+before=read(run/'preflight.json')['installedMembers']
+after=[{'path':p.relative_to(PACKAGE).as_posix(),'byteLength':p.stat().st_size,'sha256':sha(p.read_bytes())} for p in sorted(PACKAGE.rglob('*')) if p.is_file()]
+assert before==after and len(after)==94
+integrity=put(run/'installed-integrity-after.json',{'status':'PASS','count':94,'members':after,'before':ref(run/'preflight.json'),'mode':'Read-only hash inventory after immediate behavioral stop.'})
+semantic=[]
+for name in ['policy-pass','policy-fail','policy-cne']:
+ case=read(run/'cases'/(name+'.json'));oracle=read(run/'oracles'/(name+'.json'))
+ assert case['semanticByteParity'] and oracle['status']=='PASS'
+ semantic.append({'id':name,'case':ref(run/'cases'/(name+'.json')),'bundle':case['bundle'],'runId':case['runId'],'normativeDigests':case['normativeDigests'],'oracle':ref(run/'oracles'/(name+'.json')),'oracleFiles':oracle['normativeOracleFiles']})
+actual=read(run/'logs/error-input.stdout.txt');diagnostic=read(run/'logs/error-input.stderr.txt')
+assert actual['exitCode']==17 and actual['classification']=='ARTIFACT_ERROR' and actual['publication']=='NONE' and actual['resultSha256'] is None
+assert diagnostic['code']=='MO1306_ARTIFACT_WRITE'
+workspace=CACHE/('n-'+summary['run'])/'error-input';original=workspace/'.memoryos-ci/out'/actual['runId']
+retained=run/'incomplete-bundle'/actual['runId'];retained.parent.mkdir();shutil.copytree(original,retained)
+assert sorted(p.name for p in retained.iterdir())==['.pending','memoryos-ci-evidence.json','memoryos-ci-result.json'] and not list((retained/'.pending').iterdir())
+input_config=run/'error-input-configuration.json';shutil.copyfile(workspace/'memoryos-ci.json',input_config)
+partial=read(retained/'memoryos-ci-result.json')
+assert partial['classification']=='INPUT_ERROR' and partial['error']['code']=='MO1306_INPUT_READ' and partial['process']['exitCode']==11
+failure=put(run/'failure-review.json',{'status':'OBSERVED_PUBLICATION_FAILURE','expected':{'classification':'INPUT_ERROR','exitCode':11,'publication':'COMPLETE','files':4},'actual':actual,'diagnostic':diagnostic,'inputConfiguration':ref(input_config),'retainedIncompleteBundle':retained.relative_to(ROOT).as_posix(),'retainedFiles':[ref(p) for p in sorted(retained.iterdir()) if p.is_file()],'pendingEmpty':True,'completeMarkerPresent':False,'partialResult':{'classification':partial['classification'],'error':partial['error'],'exitCode':partial['process']['exitCode']},'traceValidation':validation,'cause':'Underlying publication exception is not exposed by the CLI; core maps multiple publication failures to MO1306_ARTIFACT_WRITE. No specific helper timeout, OS interruption, filesystem failure, or source defect is inferred.','stop':'Immediate stop after the first unexpected actual product result; no retry, further product execution, expected-value relabeling, or deadline changes.','unexecuted':['verify-error-input'],'sourceBindings':[{'path':'src/core.mjs','sha256':sha((PACKAGE/'src/core.mjs').read_bytes())},{'path':'src/publication.mjs','sha256':sha((PACKAGE/'src/publication.mjs').read_bytes())}]})
+receipt={'kind':'MemoryOSPhase3AFinalNativeReceipt','version':'1.0.0','status':'NATIVE_CERTIFICATION_BLOCKED','authority':summary['bindings']['authority'],'correctionC3C':summary['bindings']['correctionC3C'],'archive':summary['bindings']['archive'],'distributionDigest':summary['bindings']['distributionDigest'],'runSummary':ref(run/'summary.json'),'nativeSummary':ref(run/'summary.json'),'preflight':ref(run/'preflight.json'),'installedIntegrity':integrity,'caseCount':9,'passedCaseCount':8,'failedCaseCount':1,'observedCommandCount':14,'cases':[ref(run/'cases'/(c['id']+'.json')) for c in summary['cases']],'semanticParity':semantic,'timing':[ref(run/'timing'/(n+'.json')) for n in ['timely-helper','late-helper','late-terminal']],'topology':{'status':'PASS','peakAttributableRoles':max(t['observation']['peakProcessCount'] for t in traces),'peakAggregateRssBytes':max(t['observation']['peakAggregateRssBytes'] for t in traces),'maximumCleanupObservationMs':max(t['cleanup']['elapsedMs'] for t in traces),'remainingOwnedProcesses':0,'helperWorkerOverlap':False,'validation':validation,'basis':'Read-only validation of all actual retained traces using unchanged phase2d validate_trace and Correction A topology validation; sampled evidence, no kernel containment claim.'},'failureEvidence':[failure,ref(run/'traces/error-input.json'),ref(run/'logs/error-input.stdout.txt'),ref(run/'logs/error-input.stderr.txt'),ref(run/'cases/error-input.json')],'unexecutedGates':['verify-error-input'],'requiredGateCompletion':False,'elapsedMs':summary['elapsedMs'],'finalizer':ref(Path(__file__))}
+assert receipt['topology']['peakAttributableRoles']<=3
+output=put(BASE/'native-summary.json',receipt)
+print(json.dumps({'status':receipt['status'],'receipt':output,'topology':receipt['topology'],'failureReview':failure,'integrity':integrity}))

@@ -1,0 +1,237 @@
+# CCA Memory Studio
+
+[← MemoryOS and workspace overview](../../README.md) · [Workspace documentation](../../docs/README.md)
+
+`cca-studio` implements CP-011 as two deliberately separated surfaces:
+
+- `cca::studio`, the frozen CCA-STUDIO-1.0 headless C++ Contract in
+  `include/cca/memory/memory_studio.hpp`; and
+- a dependency-free, responsive web presentation in `web/` that projects a
+  detached Studio observation without becoming part of the public C++ API.
+
+The C++ target depends only on `cca::memory`. It deep-copies caller-supplied
+released values, preserves exact Workspace identity and deterministic order,
+and implements `observe`, `inspect`, `trace`, `summarize`, `exportView`, and
+`forgetSession`. It does not poll, persist, retrieve, mutate, or acquire
+MemoryOS state.
+
+MemoryOS 1.1 Sprint 1 extends only the downstream presentation. Accepted
+detached observations become immutable frames in a stable semantic world;
+layout is deterministic, Follow is ephemeral view state, and finite motion is
+driven only by an actual observation delta. The frozen C++ Contract remains
+unchanged.
+
+Sprint 2 adds immutable Cognitive Traces over those frames. Selecting an
+observed Reflection reconstructs each branch from the Reflection's own
+detached candidate, typed knowledge value, and ordered evidence snapshots
+before the renderer receives the result. The renderer never computes or
+infers a trace, and current aggregates cannot rewrite historical provenance.
+
+Sprint 3 adds the Living Connectome investigation identity without changing
+either foundation. Fixed structural regions make cognitive geography
+recognizable, Trace mode establishes an explicit origin-to-outcome hierarchy,
+and manual Follow moves through validated membership only. No activity is
+simulated and no semantic state is written by the presentation.
+
+Sprint 4 adds deterministic Cognitive Replay. Replay reconstructs one
+immutable Cognitive Trace as actual node and relationship references, one
+semantic step at a time. The application owns the explicit Play/Pause
+scheduler; the renderer receives completed replay state and never computes
+events or ordering. Replay does not change the runtime or public C++ Contract.
+
+Sprint 5 refines that completed architecture into a calmer cognitive
+investigation product. Replay updates the mounted semantic world in place,
+the investigation rail exposes the exact evidence-to-Reflection progression,
+and generic object chrome yields to the current observed element without
+changing any runtime or public contract. See
+[MemoryOS 1.1 Sprint 5](docs/memoryos-1.1-sprint-5.md).
+
+MO-1106 adds deterministic Cognitive Evolution over two immutable Observation
+Frames. The engine compares authoritative cognitive identity and semantic
+relationships—not rendering, layout, or pixels—and supplies the Living
+Connectome with a reference-only evolution view plus a stable union world.
+Compare, Previous Observation, and Next Observation are explicit; no replay,
+runtime, trace, or public API behavior changes. See
+[Cognitive Evolution](docs/memoryos-1.1-cognitive-evolution.md).
+
+MO-1107 adds deterministic Comparative Reconstruction over two existing
+Cognitive Traces. Exact semantic identities are aligned in one stable union
+world, shared cognition stays unified, and synchronized replay pauses at every
+real divergence. The engine—not the renderer—determines where Evidence,
+Semantic Transformation, Retrieval, Relationship, or Reflection state became
+different. Previous milestones and the frozen C++ Contract remain unchanged.
+See [Comparative Reconstruction](docs/memoryos-1.1-comparative-reconstruction.md).
+
+MO-1108 begins from the completed Engineering Excellence evidence and closes
+the release-candidate integration gap without adding a cognitive capability or
+architecture. Observe, Trace, Replay, Evolution, and Comparative
+Reconstruction share one reversible workflow; application-owned checkpoints
+restore the exact investigation after comparison, while region isolation,
+Focus, Fit, and the calibrated 100% camera remain presentation-only. The
+MemoryOS 1.0 runtime, frozen C++ Contract, and deterministic MemoryOS 1.1
+engines remain unchanged. See
+[Integration & Workflow Unification](docs/memoryos-1.1-integration-workflow.md)
+and the [MemoryOS Studio documentation index](docs/README.md).
+
+MO-1201 adds the first MemoryOS 1.2 platform artifact: the canonical Memory
+Investigation Package (`.mip`). A dependency-free, renderer-independent module
+imports, exports, verifies, and byte-identically round-trips deterministic
+cognition under the frozen MIP-001 contract. It uses strict RFC 8785 bytes,
+domain-separated SHA-256 integrity, and independent reconstruction of Trace,
+Replay, Evolution, and Comparative Reconstruction. It does not change Studio
+interaction or the MemoryOS runtime. See
+[Memory Investigation Packages](docs/memory-investigation-packages.md).
+
+MO-1202 adds a generic AI runtime adapter contract plus dependency-free
+reference adapters for the OpenAI Agents SDK, Anthropic SDK, and LangGraph.
+Adapters consume runtime events privately, require a successfully settled
+source, and publish only completed source-authored cognition as opaque
+Observation context. Transport deltas, timestamps, usage, lifecycle traffic,
+and live SDK objects never enter MIP. They import no provider SDK, make no
+network request, infer no MIP semantic role or provenance, and do not change
+Runtime, Studio, or MIP. See
+[AI Runtime Adapters](docs/ai-runtime-adapters.md).
+
+MO-1203 adds the renderer-independent
+[Investigation Core](docs/investigation-core.md). It is the single execution
+authority for native Studio investigations and verified MIP-backed
+investigations. State is always derived from its immutable digest-linked
+transition log; checkpoints bind that log rather than storing alternate truth.
+Studio, SDK, and CLI clients consume immutable projections; future clients
+must preserve the same boundary. The Core never creates a Studio projection or
+cognitive artifacts that are absent from an Observation-only adapter package.
+
+MO-1204 makes Studio a client of the public in-process JavaScript
+[MemoryOS SDK facade](../cca-sdk/README.md). `app.js` no longer imports the
+Investigation Core. Explicit observation snapshots, Reflection selections,
+comparison sessions, and checkpoints cross the SDK boundary unchanged; the
+facade forwards state changes to the frozen Core and package verification to
+MIP-001.
+
+MO-1206 adds read-only
+[Cognitive Regression Analysis](docs/cognitive-regression.md) to that same
+Investigation Core. The engine compares immutable Replay, Reflection,
+Evidence, Retrieval, Evolution, Verification, transition-history, and
+lifecycle facts. SDK and CLI consumers receive the same closed report; no
+renderer, heuristic, explanation, score, or inference participates.
+
+MO-1207 adds the
+[Cognitive Investigation Explorer](docs/cognitive-investigation-explorer.md)
+as a read-only Core workflow. It navigates exact facts in an existing
+Regression Report and returns immutable digest endpoints for SDK, CLI, and
+Studio consumers. It does not rerun Replay, recompute Regression, or create an
+explanation.
+
+MO-1208 publishes CCA-MEMORYOS-1.0 as the implementation-independent platform
+Standard and designates MemoryOS 1.2.0 as its initial Reference
+Implementation. The [official conformance suite](../cca-conformance/README.md)
+assesses the existing Studio, MIP, adapter, Core, Regression, and Explorer
+behavior; neither the Standard nor the suite adds Studio behavior.
+
+MO-1301 adds [Investigation Policies](docs/investigation-policies.md) as the
+first MemoryOS 1.3 Engineering Operations subsystem. A closed Fact Model,
+six registered rules, one optional deterministic Regression source, frozen
+resource profile, Evaluation Identity, and canonical outcome run downstream
+of the released v1.2.1 Core. SDK 1.1 and CLI 1.1 expose the same authoritative
+engine without making serialized context or source artifacts authoritative.
+
+## Build and verify
+
+From the workspace root:
+
+```text
+cmake --preset ci
+cmake --build --preset ci
+ctest --preset ci -L studio
+```
+
+The Studio test inventory includes public behavior, lifecycle, ordering,
+failure precedence, moved-from state, ownership and lifetime, exhaustive
+allocation-failure campaigns, architecture-boundary checks, the executable
+example, and the dependency-free presentation model. Separate JavaScript
+conformance suites verify MIP-001, the MO-1202 adapters, the MO-1203
+Investigation Core, the MO-1204 JavaScript SDK facade, and MO-1206 Cognitive
+Regression, including provider lifecycle validation, settled projections,
+deterministic reference packages, invariance, transition-log integrity,
+checkpoint restoration, regression category correctness, lifecycle behavior,
+and failure/resource boundaries.
+
+## Run the presentation
+
+With Node.js 20 or newer:
+
+```text
+node repositories/cca-studio/scripts/serve.mjs
+```
+
+Open `http://127.0.0.1:4173/`. The built-in reference observation is
+deterministic and makes every MemoryOS scope reviewable without a backend. A
+host can supply a real detached projection before loading `app.js`:
+
+```js
+globalThis.__CCA_STUDIO_SNAPSHOT__ = detachedStudioProjection;
+globalThis.__CCA_STUDIO_COMMANDS__ = {
+  observe: (view) => adapter.observe(view),
+  inspect: (query) => adapter.inspect(query),
+  trace: (query) => adapter.trace(query),
+  summarize: (query) => adapter.summarize(query),
+  exportView: () => adapter.exportView(),
+  forgetSession: () => adapter.forgetSession(),
+};
+```
+
+An injected adapter is accepted only when all six operations are present. The
+adapter remains downstream of the frozen C++ Contract. It must preserve
+exact identifiers, stored order, Workspace isolation, result codes,
+observation paths, and explanation-chain boundaries.
+
+## Documentation
+
+- [MemoryOS Studio documentation index](docs/README.md)
+- [MemoryOS 1.2 Memory Investigation Packages](docs/memory-investigation-packages.md)
+- [MemoryOS 1.2 AI Runtime Adapters](docs/ai-runtime-adapters.md)
+- [MemoryOS 1.2 Investigation Core](docs/investigation-core.md)
+- [Investigation Core conformance evidence](docs/investigation-core-conformance-evidence.md)
+- [MemoryOS 1.2 Cognitive Regression Analysis](docs/cognitive-regression.md)
+- [Cognitive Regression engineering guide](docs/cognitive-regression-engineering-guide.md)
+- [Cognitive Regression conformance report](docs/cognitive-regression-conformance-report.md)
+- [MemoryOS 1.2 Cognitive Investigation Explorer](docs/cognitive-investigation-explorer.md)
+- [Explorer engineering guide](docs/cognitive-investigation-explorer-engineering-guide.md)
+- [Explorer architecture review](docs/cognitive-investigation-explorer-architecture-review.md)
+- [Explorer conformance report](docs/cognitive-investigation-explorer-conformance-report.md)
+- [MemoryOS Standard conformance suite](../cca-conformance/README.md)
+- [MemoryOS 1.3 Investigation Policies](docs/investigation-policies.md)
+- [MemoryOS 1.2.0 Reference Implementation guide](../cca-conformance/docs/reference-implementation-guide.md)
+- [MemoryOS SDK](../cca-sdk/README.md)
+- [MemoryOS SDK conformance report](../cca-sdk/docs/conformance-report.md)
+- [Public API and behavior](docs/memory-studio.md)
+- [Requirement and test evidence](docs/memory-studio-conformance-evidence.md)
+- MemoryOS 1.1 Stable Semantic World (historical milestone record; not retained in the v1.2.1 source archive)
+- MemoryOS 1.1 Cognitive Trace architecture (historical milestone record; not retained in the v1.2.1 source archive)
+- [MemoryOS 1.1 Living Connectome](docs/memoryos-1.1-sprint-3.md)
+- [MemoryOS 1.1 Cognitive Replay](docs/memoryos-1.1-sprint-4.md)
+- [MemoryOS 1.1 Cognitive Polish](docs/memoryos-1.1-sprint-5.md)
+- [MemoryOS 1.1 Cognitive Evolution](docs/memoryos-1.1-cognitive-evolution.md)
+- [MemoryOS 1.1 Comparative Reconstruction](docs/memoryos-1.1-comparative-reconstruction.md)
+- [MemoryOS 1.1 Integration & Workflow Unification](docs/memoryos-1.1-integration-workflow.md)
+- MemoryOS 1.1 performance report (historical record; not retained in the v1.2.1 source archive)
+- MemoryOS 1.1 scalability report (historical record; not retained in the v1.2.1 source archive)
+- MemoryOS 1.1 engineering benchmark (historical record; not retained in the v1.2.1 source archive)
+- MemoryOS 1.1 UX audit (historical record; not retained in the v1.2.1 source archive)
+- MemoryOS 1.1 accessibility audit (historical record; not retained in the v1.2.1 source archive)
+- [MemoryOS 1.1 Engineering architecture review](docs/memoryos-1.1-engineering-architecture-review.md)
+- MemoryOS 1.1 documentation audit (historical record; not retained in the v1.2.1 source archive)
+- MemoryOS 1.1 RC documentation audit (historical record; not retained in the v1.2.1 source archive)
+- MemoryOS 1.1 RC repository audit (historical record; not retained in the v1.2.1 source archive)
+- [MemoryOS 1.2 release notes](../../RELEASE_NOTES.md)
+- [MemoryOS 1.2 known issues](../../KNOWN_ISSUES.md)
+- [Official MemoryOS 1.2 demonstration](docs/media/memoryos-v1.2-demo.gif)
+- [Full-quality MemoryOS 1.2 demonstration](docs/media/memoryos-v1.2-demo.mp4)
+- Historical MemoryOS 1.1 demonstration (historical media; not retained in the v1.2.1 source archive)
+- [MemoryOS 1.0 launch demo production package](docs/memoryos-1.0-launch-demo-production-package.md)
+- [GitHub screenshot specification](docs/github-screenshot-specification.md)
+- [C++ example](examples/memory_studio_usage.cpp)
+- [AI runtime adapter example](examples/ai_runtime_adapter_usage.mjs)
+- [Investigation Core example](examples/investigation_core_usage.mjs)
+- [Investigation Policy SDK example](examples/investigation_policy_usage.mjs)
+- [Cognitive Investigation Explorer example](examples/cognitive_investigation_explorer_usage.mjs)

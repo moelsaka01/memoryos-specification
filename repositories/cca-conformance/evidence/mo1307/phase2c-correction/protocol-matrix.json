@@ -1,0 +1,93 @@
+{
+  "kind": "MemoryOSReadinessPublicationProtocolCorrectionMatrix",
+  "version": "1.0.0",
+  "original": {
+    "wireVersion": "1.0.0",
+    "requestsPerAssessment": 4,
+    "requestsPerInvocation": 1,
+    "postWorkerChannel": false,
+    "outputResponse": "ABSENT; one output-parent identity; no files"
+  },
+  "corrected": {
+    "wireVersion": "2.0.0",
+    "session": "64 lowercase hexadecimal characters, fresh per assessment",
+    "requestsPerInvocation": 1,
+    "evaluateInvocations": 9,
+    "verifyInvocations": 4,
+    "automaticRetry": false,
+    "chainIdentitiesMaximum": 120,
+    "evaluate": [
+      {
+        "sequence": 1,
+        "operation": "READ_SET",
+        "phase": "BEFORE_WORKER"
+      },
+      {
+        "sequence": 2,
+        "operation": "READ_SET",
+        "phase": "BEFORE_WORKER"
+      },
+      {
+        "sequence": 3,
+        "operation": "READ_SET",
+        "phase": "BEFORE_WORKER"
+      },
+      {
+        "sequence": 4,
+        "operation": "CHECK_OUTPUT",
+        "phase": "BEFORE_WORKER"
+      },
+      {
+        "sequence": 5,
+        "operation": "CHECK_OUTPUT",
+        "phase": "AFTER_WORKER_DURING_PUBLICATION"
+      },
+      {
+        "sequence": 6,
+        "operation": "INSPECT_OUTPUT_ROOT",
+        "phase": "AFTER_WORKER_DURING_PUBLICATION"
+      },
+      {
+        "sequence": 7,
+        "operation": "CHECK_STAGE_ROOT",
+        "phase": "AFTER_WORKER_DURING_PUBLICATION"
+      },
+      {
+        "sequence": 8,
+        "operation": "INSPECT_PENDING",
+        "phase": "AFTER_WORKER_DURING_PUBLICATION"
+      },
+      {
+        "sequence": 9,
+        "operation": "CHECK_FINALIZATION",
+        "phase": "AFTER_WORKER_DURING_PUBLICATION"
+      }
+    ],
+    "verify": [
+      "READ_SET",
+      "READ_SET",
+      "READ_SET",
+      "READ_SET"
+    ],
+    "verifyPublishes": false,
+    "helperDeadlineMs": 5000,
+    "helperAggregateDeadlineMs": 20000,
+    "apiDeadlineMs": 10000,
+    "cliDeadlineMs": 30000,
+    "cleanupAllowanceMs": 2000,
+    "responseAuthority": "Full native chain; slot9 includes native fixed final absence after exact-byte reread",
+    "concurrentHelperMaximum": 1,
+    "attributableProcessRolesMaximum": 3,
+    "workerThreadsMaximum": 1,
+    "helperWorkerOverlap": false
+  },
+  "unchanged": [
+    "Identity seven fields",
+    "all byte caps",
+    "all public semantic schemas and record versions",
+    "private immutable-root precondition",
+    "no network, credentials or product Git",
+    "readiness/evidence semantics"
+  ],
+  "reference": "docs/mo1307-phase2c-publication-inspection-correction.md"
+}

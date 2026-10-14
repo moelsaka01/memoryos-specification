@@ -1,0 +1,10 @@
+{
+  "kind": "MO1307EngineeringHarnessFailure",
+  "result": "FAIL",
+  "command": "authorize-native.mjs",
+  "observed": "TypeError: number 730 is not iterable (cannot read property Symbol(Symbol.iterator))",
+  "cause": "Regression receipt stores sourceBindings as count; byte records are in inputs-before.json. Semantic receipt stores its array directly.",
+  "effect": "Stopped before authorization record or any native execution.",
+  "correction": "Read regression input records from the retained adjacent inputs-before.json; preserve the semantic array and check every source byte.",
+  "productionChanged": false
+}

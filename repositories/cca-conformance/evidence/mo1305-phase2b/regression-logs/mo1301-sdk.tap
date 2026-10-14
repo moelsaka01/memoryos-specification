@@ -1,0 +1,796 @@
+TAP version 13
+# Subtest: the exact frozen Resource Profile bytes, digest, and 31-limit inventory verify
+ok 1 - the exact frozen Resource Profile bytes, digest, and 31-limit inventory verify
+  ---
+  duration_ms: 60.9933
+  type: 'test'
+  ...
+# Subtest: Resource Profile raw bootstrap accepts below/exact and rejects first above deterministically
+ok 2 - Resource Profile raw bootstrap accepts below/exact and rejects first above deterministically
+  ---
+  duration_ms: 14.1254
+  type: 'test'
+  ...
+# Subtest: Resource Profile depth bootstrap enforces exact and first-above before schema
+ok 3 - Resource Profile depth bootstrap enforces exact and first-above before schema
+  ---
+  duration_ms: 2.6641
+  type: 'test'
+  ...
+# Subtest: Resource Profile value-count bootstrap enforces exact and first-above before schema
+ok 4 - Resource Profile value-count bootstrap enforces exact and first-above before schema
+  ---
+  duration_ms: 1.609
+  type: 'test'
+  ...
+# Subtest: Resource Profile decoded-string bootstrap enforces exact and first-above before schema
+ok 5 - Resource Profile decoded-string bootstrap enforces exact and first-above before schema
+  ---
+  duration_ms: 0.8142
+  type: 'test'
+  ...
+# Subtest: Resource Profile completes syntax validation before classifying bootstrap counters
+ok 6 - Resource Profile completes syntax validation before classifying bootstrap counters
+  ---
+  duration_ms: 2.2492
+  type: 'test'
+  ...
+# Subtest: Resource Profile bootstrap completes the deepest raw-bounded syntax envelopes
+ok 7 - Resource Profile bootstrap completes the deepest raw-bounded syntax envelopes
+  ---
+  duration_ms: 14.0858
+  type: 'test'
+  ...
+# Subtest: Resource Profile validation rejects syntax, unknown members, identity, and version precisely
+ok 8 - Resource Profile validation rejects syntax, unknown members, identity, and version precisely
+  ---
+  duration_ms: 15.3634
+  type: 'test'
+  ...
+# Subtest: all 16 immutable machine definitions reproduce exact bytes and normative identities
+ok 9 - all 16 immutable machine definitions reproduce exact bytes and normative identities
+  ---
+  duration_ms: 331.9282
+  type: 'test'
+  ...
+# Subtest: runtime rule preparation contracts exhaustively match the frozen registry and parameter schemas
+ok 10 - runtime rule preparation contracts exhaustively match the frozen registry and parameter schemas
+  ---
+  duration_ms: 38.4974
+  type: 'test'
+  ...
+# Subtest: the frozen definition manifest cross-binds the independent descriptor table
+ok 11 - the frozen definition manifest cross-binds the independent descriptor table
+  ---
+  duration_ms: 6.0655
+  type: 'test'
+  ...
+# Subtest: machine-definition verification fails closed for altered bytes and a wrong version
+ok 12 - machine-definition verification fails closed for altered bytes and a wrong version
+  ---
+  duration_ms: 3.6804
+  type: 'test'
+  ...
+# Subtest: verified Resource Profile data is deeply immutable
+ok 13 - verified Resource Profile data is deeply immutable
+  ---
+  duration_ms: 2.5701
+  type: 'test'
+  ...
+# Subtest: installed machine definitions contain no sizing placeholder identity
+ok 14 - installed machine definitions contain no sizing placeholder identity
+  ---
+  duration_ms: 6.3593
+  type: 'test'
+  ...
+# Subtest: all frozen Evaluation Identity and outcome golden vectors validate byte-for-byte
+ok 15 - all frozen Evaluation Identity and outcome golden vectors validate byte-for-byte
+  ---
+  duration_ms: 83.3971
+  type: 'test'
+  ...
+# Subtest: trusted native evaluation reproduces the frozen no-Regression vector
+ok 16 - trusted native evaluation reproduces the frozen no-Regression vector
+  ---
+  duration_ms: 125.7947
+  type: 'test'
+  ...
+# Subtest: trusted MIP evaluation reproduces the frozen lifecycle and aggregate-CNE vectors
+ok 17 - trusted MIP evaluation reproduces the frozen lifecycle and aggregate-CNE vectors
+  ---
+  duration_ms: 1005.4884
+  type: 'test'
+  ...
+# Subtest: trusted retained CF5B-2 recipes reproduce every remaining golden vector family
+ok 18 - trusted retained CF5B-2 recipes reproduce every remaining golden vector family
+  ---
+  duration_ms: 1207.0171
+  type: 'test'
+  ...
+# Subtest: all reachable truth rows for the six frozen rules have exact decisions and evidence
+ok 19 - all reachable truth rows for the six frozen rules have exact decisions and evidence
+  ---
+  duration_ms: 4445.2757
+  type: 'test'
+  ...
+# Subtest: authoritative Replay ready, playing, and paused states deterministically FAIL completion
+ok 20 - authoritative Replay ready, playing, and paused states deterministically FAIL completion
+  ---
+  duration_ms: 508.1112
+  type: 'test'
+  ...
+# Subtest: Policy and Policy Set aggregation retains order and applies FAIL over CNE over PASS
+ok 21 - Policy and Policy Set aggregation retains order and applies FAIL over CNE over PASS
+  ---
+  duration_ms: 136.2432
+  type: 'test'
+  ...
+# Subtest: Policy and Policy Set aggregation exhaust the frozen two-result precedence matrix
+ok 22 - Policy and Policy Set aggregation exhaust the frozen two-result precedence matrix
+  ---
+  duration_ms: 172.5171
+  type: 'test'
+  ...
+# Subtest: metadata is non-semantic while transition-log state is evaluation-identifying
+ok 23 - metadata is non-semantic while transition-log state is evaluation-identifying
+  ---
+  duration_ms: 490.9344
+  type: 'test'
+  ...
+# Subtest: different trusted Regression baselines change external-source, identity, and outcome bytes
+ok 24 - different trusted Regression baselines change external-source, identity, and outcome bytes
+  ---
+  duration_ms: 375.7894
+  type: 'test'
+  ...
+# Subtest: frozen cache vectors classify exactly and production hits return retained immutable bytes
+ok 25 - frozen cache vectors classify exactly and production hits return retained immutable bytes
+  ---
+  duration_ms: 254.194
+  type: 'test'
+  ...
+# Subtest: authority precedes cache lookup and prepared/evaluator/evaluation capabilities cannot be forged
+ok 26 - authority precedes cache lookup and prepared/evaluator/evaluation capabilities cannot be forged
+  ---
+  duration_ms: 400.5427
+  type: 'test'
+  ...
+# Subtest: captured intrinsics prevent prototype poisoning from splitting semantics or Core head binding
+ok 27 - captured intrinsics prevent prototype poisoning from splitting semantics or Core head binding
+  ---
+  duration_ms: 166.0033
+  type: 'test'
+  ...
+# Subtest: Phase H enforces the exact 16383/16384/16385 canonical-input boundary
+ok 28 - Phase H enforces the exact 16383/16384/16385 canonical-input boundary
+  ---
+  duration_ms: 1020.9458
+  type: 'test'
+  ...
+# Subtest: Phase H enforces exact 3/4/5 rule and 15/16/17 selector-visit boundaries
+ok 29 - Phase H enforces exact 3/4/5 rule and 15/16/17 selector-visit boundaries
+  ---
+  duration_ms: 952.6311
+  type: 'test'
+  ...
+# Subtest: Phase I enforces exact 3/4/5 per-selection and aggregate identifier boundaries
+ok 30 - Phase I enforces exact 3/4/5 per-selection and aggregate identifier boundaries
+  ---
+  duration_ms: 163.712
+  type: 'test'
+  ...
+# Subtest: Phase I enforces the exact 1023/1024/1025 aggregate evidence-byte boundary
+ok 31 - Phase I enforces the exact 1023/1024/1025 aggregate evidence-byte boundary
+  ---
+  duration_ms: 274.062
+  type: 'test'
+  ...
+# Subtest: limit 31 admits the production 4059/4060 maximum and freezes 4061 as unreachable
+ok 32 - limit 31 admits the production 4059/4060 maximum and freezes 4061 as unreachable
+  ---
+  duration_ms: 275.528
+  type: 'test'
+  ...
+# Subtest: frozen Phase H/I proofs and non-recursive limit-31 closure bind the profile
+ok 33 - frozen Phase H/I proofs and non-recursive limit-31 closure bind the profile
+  ---
+  duration_ms: 51.6299
+  type: 'test'
+  ...
+# Subtest: unsupported outcome version is rejected before root/identity cross-binding
+ok 34 - unsupported outcome version is rejected before root/identity cross-binding
+  ---
+  duration_ms: 10.5978
+  type: 'test'
+  ...
+# Subtest: outcome validation rejects unknown, mis-cardinalized, row-incompatible, and identity-unbound evidence
+ok 35 - outcome validation rejects unknown, mis-cardinalized, row-incompatible, and identity-unbound evidence
+  ---
+  duration_ms: 9.8981
+  type: 'test'
+  ...
+# Subtest: detached completed outcomes cannot bypass post-identity limits 28 through 31
+ok 36 - detached completed outcomes cannot bypass post-identity limits 28 through 31
+  ---
+  duration_ms: 17.6426
+  type: 'test'
+  ...
+# Subtest: a detached five-rule result cannot claim an identity that Phase H could never form
+ok 37 - a detached five-rule result cannot claim an identity that Phase H could never form
+  ---
+  duration_ms: 6.8434
+  type: 'test'
+  ...
+# Subtest: detached validators reject Policy/Set rule totals and source-specific selection overclaims
+ok 38 - detached validators reject Policy/Set rule totals and source-specific selection overclaims
+  ---
+  duration_ms: 93.263
+  type: 'test'
+  ...
+# Subtest: authoritative evaluation is invariant under post-import String, Array, RegExp, and typed-byte poisoning
+ok 39 - authoritative evaluation is invariant under post-import String, Array, RegExp, and typed-byte poisoning
+  ---
+  duration_ms: 223.7473
+  type: 'test'
+  ...
+# Subtest: minimal frozen Policy fixture has exact canonical bytes and identities
+ok 40 - minimal frozen Policy fixture has exact canonical bytes and identities
+  ---
+  duration_ms: 28.3191
+  type: 'test'
+  ...
+# Subtest: prepared Policy authority is unforgeable and its evaluator view exposes only immutable data and byte copies
+ok 41 - prepared Policy authority is unforgeable and its evaluator view exposes only immutable data and byte copies
+  ---
+  duration_ms: 4.88
+  type: 'test'
+  ...
+# Subtest: Policy preparation and retained authority resist post-import intrinsic poisoning
+ok 42 - Policy preparation and retained authority resist post-import intrinsic poisoning
+  ---
+  duration_ms: 6.1558
+  type: 'test'
+  ...
+# Subtest: Policy accepts surrounding whitespace but derives the exact canonical document
+ok 43 - Policy accepts surrounding whitespace but derives the exact canonical document
+  ---
+  duration_ms: 2.027
+  type: 'test'
+  ...
+# Subtest: Policy metadata is valid, non-semantic, and document-identifying
+ok 44 - Policy metadata is valid, non-semantic, and document-identifying
+  ---
+  duration_ms: 2.4573
+  type: 'test'
+  ...
+# Subtest: Policy validates a multi-rule sequence against all registered parameter classes
+ok 45 - Policy validates a multi-rule sequence against all registered parameter classes
+  ---
+  duration_ms: 3.1819
+  type: 'test'
+  ...
+# Subtest: all six initial rule registrations prepare without executing
+ok 46 - all six initial rule registrations prepare without executing
+  ---
+  duration_ms: 10.326
+  type: 'test'
+  ...
+# Subtest: Policy rejects duplicates, unknown members, and invalid stable versions
+ok 47 - Policy rejects duplicates, unknown members, and invalid stable versions
+  ---
+  duration_ms: 4.897
+  type: 'test'
+  ...
+# Subtest: Policy preserves unsupported rule type and version classifications
+ok 48 - Policy preserves unsupported rule type and version classifications
+  ---
+  duration_ms: 3.3902
+  type: 'test'
+  ...
+# Subtest: registered parameter schemas are closed and enforce exact primitive/value contracts
+ok 49 - registered parameter schemas are closed and enforce exact primitive/value contracts
+  ---
+  duration_ms: 3.4639
+  type: 'test'
+  ...
+# Subtest: Policy syntax failures never become PASS, FAIL, or CNE
+ok 50 - Policy syntax failures never become PASS, FAIL, or CNE
+  ---
+  duration_ms: 0.9051
+  type: 'test'
+  ...
+# Subtest: minimal and multiple-child Policy Sets preserve order and semantic pins
+ok 51 - minimal and multiple-child Policy Sets preserve order and semantic pins
+  ---
+  duration_ms: 10.5705
+  type: 'test'
+  ...
+# Subtest: Policy Set metadata isolation preserves the frozen semantic identity
+ok 52 - Policy Set metadata isolation preserves the frozen semantic identity
+  ---
+  duration_ms: 3.5234
+  type: 'test'
+  ...
+# Subtest: Policy Set rejects zero children, malformed members, nested Sets, and unknown composition
+ok 53 - Policy Set rejects zero children, malformed members, nested Sets, and unknown composition
+  ---
+  duration_ms: 22.6388
+  type: 'test'
+  ...
+# Subtest: Policy Set rejects duplicate child identifiers and duplicate semantic digests
+ok 54 - Policy Set rejects duplicate child identifiers and duplicate semantic digests
+  ---
+  duration_ms: 5.2092
+  type: 'test'
+  ...
+# Subtest: Policy Set rejects a syntactically valid but incorrect semantic pin
+ok 55 - Policy Set rejects a syntactically valid but incorrect semantic pin
+  ---
+  duration_ms: 1.3263
+  type: 'test'
+  ...
+# Subtest: Policy Set outer raw gate precedes syntax and inline children have no raw transport gate
+ok 56 - Policy Set outer raw gate precedes syntax and inline children have no raw transport gate
+  ---
+  duration_ms: 0.9826
+  type: 'test'
+  ...
+# Subtest: Policy Set phase E is limit-major and pin verification precedes Set uniqueness
+ok 57 - Policy Set phase E is limit-major and pin verification precedes Set uniqueness
+  ---
+  duration_ms: 4.6888
+  type: 'test'
+  ...
+# Subtest: Phase-1 semantic identities intersect the final CF6 golden corpus exactly
+ok 58 - Phase-1 semantic identities intersect the final CF6 golden corpus exactly
+  ---
+  duration_ms: 18.0026
+  type: 'test'
+  ...
+# Subtest: the final closure vector corpora retain their reviewed source-byte identities
+ok 59 - the final closure vector corpora retain their reviewed source-byte identities
+  ---
+  duration_ms: 74.0389
+  type: 'test'
+  ...
+# Subtest: frozen boundary carriers enforce below/exact/first-above for limits 1-16
+ok 60 - frozen boundary carriers enforce below/exact/first-above for limits 1-16
+  ---
+  duration_ms: 532.1683
+  type: 'test'
+  ...
+# Subtest: limits 5 and 12 use the frozen machine-verifiable first-above unreachability proofs
+ok 61 - limits 5 and 12 use the frozen machine-verifiable first-above unreachability proofs
+  ---
+  duration_ms: 138.6702
+  type: 'test'
+  ...
+# Subtest: SDK 1.1 exposes only the frozen normative contract identity projection
+ok 62 - SDK 1.1 exposes only the frozen normative contract identity projection
+  ---
+  duration_ms: 9.25
+  type: 'test'
+  ...
+# Subtest: Policy preparation retains exact immutable bytes and stable failures
+ok 63 - Policy preparation retains exact immutable bytes and stable failures
+  ---
+  duration_ms: 17.6648
+  type: 'test'
+  ...
+# Subtest: authoritative native evaluation returns and verifies exact evaluator bytes
+ok 64 - authoritative native evaluation returns and verifies exact evaluator bytes
+  ---
+  duration_ms: 174.1515
+  type: 'test'
+  ...
+# Subtest: serialized artifacts remain inspection-only and cannot restore authority
+ok 65 - serialized artifacts remain inspection-only and cannot restore authority
+  ---
+  duration_ms: 76.3921
+  type: 'test'
+  ...
+# Subtest: prepared Policy content is transferable while Core authority remains owner-bound
+ok 66 - prepared Policy content is transferable while Core authority remains owner-bound
+  ---
+  duration_ms: 90.274
+  type: 'test'
+  ...
+# Subtest: trusted Regression facts publish one context/source bundle and bind exact capability identity
+ok 67 - trusted Regression facts publish one context/source bundle and bind exact capability identity
+  ---
+  duration_ms: 213.3545
+  type: 'test'
+  ...
+# Subtest: Policy Set evaluation shares the same owner-bound request and result contract
+ok 68 - Policy Set evaluation shares the same owner-bound request and result contract
+  ---
+  duration_ms: 62.9609
+  type: 'test'
+  ...
+# Subtest: all 17 frozen CF6 identity/outcome records verify through SDK 1.1
+ok 69 - all 17 frozen CF6 identity/outcome records verify through SDK 1.1
+  ---
+  duration_ms: 98.7885
+  type: 'test'
+  ...
+# Subtest: SDK 1.1 production capture and evaluation reproduce all 17 frozen vectors
+ok 70 - SDK 1.1 production capture and evaluation reproduce all 17 frozen vectors
+  ---
+  duration_ms: 2980.7717
+  type: 'test'
+  ...
+# Subtest: SDK 1.1 exercises all 10 frozen cache vectors at the production boundary
+ok 71 - SDK 1.1 exercises all 10 frozen cache vectors at the production boundary
+  ---
+  duration_ms: 3799.5894
+  type: 'test'
+  ...
+# Subtest: SDK 1.1 production evaluation exhausts every reachable frozen rule row
+ok 72 - SDK 1.1 production evaluation exhausts every reachable frozen rule row
+  ---
+  duration_ms: 23295.007
+  type: 'test'
+  ...
+# Subtest: SDK 1.1 preserves all Policy and Policy Set aggregation rows in authored order
+ok 73 - SDK 1.1 preserves all Policy and Policy Set aggregation rows in authored order
+  ---
+  duration_ms: 933.2154
+  type: 'test'
+  ...
+# Subtest: verification rejects wrong digests without fabricating a Policy decision
+ok 74 - verification rejects wrong digests without fabricating a Policy decision
+  ---
+  duration_ms: 774.68
+  type: 'test'
+  ...
+# Subtest: SDK 1.1 preserves immutable bytes and opaque authority under intrinsic poisoning
+ok 75 - SDK 1.1 preserves immutable bytes and opaque authority under intrinsic poisoning
+  ---
+  duration_ms: 315.3766
+  type: 'test'
+  ...
+# Subtest: SDK 1.1 outer ownership bindings resist WeakMap interception and spoofing
+ok 76 - SDK 1.1 outer ownership bindings resist WeakMap interception and spoofing
+  ---
+  duration_ms: 1448.0842
+  type: 'test'
+  ...
+# Subtest: MO-1204 exposes immutable versioned SDK objects without exposing Core construction
+ok 77 - MO-1204 exposes immutable versioned SDK objects without exposing Core construction
+  ---
+  duration_ms: 213.2817
+  type: 'test'
+  ...
+# Subtest: MO-1204 default observation operations preserve cross-language Core parity
+ok 78 - MO-1204 default observation operations preserve cross-language Core parity
+  ---
+  duration_ms: 168.7789
+  type: 'test'
+  ...
+# Subtest: MO-1204 native SDK commands produce the exact Core transition history and projections
+ok 79 - MO-1204 native SDK commands produce the exact Core transition history and projections
+  ---
+  duration_ms: 710.2695
+  type: 'test'
+  ...
+# Subtest: MO-1204 exposes comparison as an explicit non-semantic session and preserves Core stages
+ok 80 - MO-1204 exposes comparison as an explicit non-semantic session and preserves Core stages
+  ---
+  duration_ms: 52542.2657
+  type: 'test'
+  ...
+# Subtest: MO-1204 verification and Checkpoint restoration remain Core-owned
+ok 81 - MO-1204 verification and Checkpoint restoration remain Core-owned
+  ---
+  duration_ms: 277.2094
+  type: 'test'
+  ...
+# Subtest: MO-1204 package verification import and export preserve exact MIP bytes
+ok 82 - MO-1204 package verification import and export preserve exact MIP bytes
+  ---
+  duration_ms: 15764.3909
+  type: 'test'
+  ...
+# Subtest: MO-1206 exposes one immutable read-only Regression path with exact Core parity
+ok 83 - MO-1206 exposes one immutable read-only Regression path with exact Core parity
+  ---
+  duration_ms: 478.2624
+  type: 'test'
+  ...
+# Subtest: MO-1207 SDK navigates regression evidence with exact Core parity
+ok 84 - MO-1207 SDK navigates regression evidence with exact Core parity
+  ---
+  duration_ms: 603.6849
+  type: 'test'
+  ...
+# Subtest: MO-1204 rejects implicit selections and cross-instance handles
+ok 85 - MO-1204 rejects implicit selections and cross-instance handles
+  ---
+  duration_ms: 418.7071
+  type: 'test'
+  ...
+# Subtest: MO-1204 keeps concurrent SDK instances isolated
+ok 86 - MO-1204 keeps concurrent SDK instances isolated
+  ---
+  duration_ms: 637.9102
+  type: 'test'
+  ...
+# Subtest: MO-1204 makes Studio an SDK client while keeping the private binding thin
+ok 87 - MO-1204 makes Studio an SDK client while keeping the private binding thin
+  ---
+  duration_ms: 143.2021
+  type: 'test'
+  ...
+# Subtest: restricted JSON accepts strict UTF-8 scalar strings and preserves them
+ok 88 - restricted JSON accepts strict UTF-8 scalar strings and preserves them
+  ---
+  duration_ms: 6.0778
+  type: 'test'
+  ...
+# Subtest: restricted JSON rejects malformed UTF-8 and a UTF-8 BOM
+ok 89 - restricted JSON rejects malformed UTF-8 and a UTF-8 BOM
+  ---
+  duration_ms: 1.3065
+  type: 'test'
+  ...
+# Subtest: restricted JSON rejects decoded duplicate names before construction
+ok 90 - restricted JSON rejects decoded duplicate names before construction
+  ---
+  duration_ms: 1.1527
+  type: 'test'
+  ...
+# Subtest: restricted JSON accepts only the four JSON whitespace bytes around one value
+ok 91 - restricted JSON accepts only the four JSON whitespace bytes around one value
+  ---
+  duration_ms: 0.7862
+  type: 'test'
+  ...
+# Subtest: restricted JSON rejects escaped lone surrogates
+ok 92 - restricted JSON rejects escaped lone surrogates
+  ---
+  duration_ms: 0.6817
+  type: 'test'
+  ...
+# Subtest: restricted JSON does not normalize Unicode
+ok 93 - restricted JSON does not normalize Unicode
+  ---
+  duration_ms: 1.707
+  type: 'test'
+  ...
+# Subtest: restricted integer grammar accepts zero, negatives, and both safe endpoints
+ok 94 - restricted integer grammar accepts zero, negatives, and both safe endpoints
+  ---
+  duration_ms: 0.6661
+  type: 'test'
+  ...
+# Subtest: restricted integer grammar rejects unsafe, negative-zero, fractional, and exponent forms
+ok 95 - restricted integer grammar rejects unsafe, negative-zero, fractional, and exponent forms
+  ---
+  duration_ms: 1.3155
+  type: 'test'
+  ...
+# Subtest: canonical object ordering compares UTF-16 code units
+ok 96 - canonical object ordering compares UTF-16 code units
+  ---
+  duration_ms: 0.8741
+  type: 'test'
+  ...
+# Subtest: canonical arrays retain sequence order and registered sets require registry order
+ok 97 - canonical arrays retain sequence order and registered sets require registry order
+  ---
+  duration_ms: 0.8735
+  type: 'test'
+  ...
+# Subtest: canonicalization rejects sparse, accessor, symbol, non-data, subclassed, and cyclic values
+ok 98 - canonicalization rejects sparse, accessor, symbol, non-data, subclassed, and cyclic values
+  ---
+  duration_ms: 1.9929
+  type: 'test'
+  ...
+# Subtest: canonical output is exact UTF-8 without BOM or trailing LF
+ok 99 - canonical output is exact UTF-8 without BOM or trailing LF
+  ---
+  duration_ms: 43.3985
+  type: 'test'
+  ...
+# Subtest: JSON census uses value occurrences, open-container depth, and decoded string/name bytes
+ok 100 - JSON census uses value occurrences, open-container depth, and decoded string/name bytes
+  ---
+  duration_ms: 1.5348
+  type: 'test'
+  ...
+# Subtest: bounded parsing saturates counters, stops materializing, and still completes syntax
+ok 101 - bounded parsing saturates counters, stops materializing, and still completes syntax
+  ---
+  duration_ms: 2.3956
+  type: 'test'
+  ...
+# Subtest: domain-separated SHA-256 uses exactly domain, NUL, and canonical bytes
+ok 102 - domain-separated SHA-256 uses exactly domain, NUL, and canonical bytes
+  ---
+  duration_ms: 4.2525
+  type: 'test'
+  ...
+# Subtest: stable SemVer and dotted identifiers use their exact frozen grammars
+ok 103 - stable SemVer and dotted identifiers use their exact frozen grammars
+  ---
+  duration_ms: 0.748
+  type: 'test'
+  ...
+# Subtest: stable machine errors preserve exact non-localized codes and immutable details
+ok 104 - stable machine errors preserve exact non-localized codes and immutable details
+  ---
+  duration_ms: 1.1046
+  type: 'test'
+  ...
+# Subtest: byte intake snapshots mutable buffers and rejects shared mutable storage
+ok 105 - byte intake snapshots mutable buffers and rejects shared mutable storage
+  ---
+  duration_ms: 2.4966
+  type: 'test'
+  ...
+# Subtest: native capture is the closed immutable Fact Model 1.0.0 projection and matches the frozen vector
+ok 106 - native capture is the closed immutable Fact Model 1.0.0 projection and matches the frozen vector
+  ---
+  duration_ms: 1665.7774
+  type: 'test'
+  ...
+# Subtest: point-in-time capture atomically binds one Core state and keeps earlier facts immutable
+ok 107 - point-in-time capture atomically binds one Core state and keeps earlier facts immutable
+  ---
+  duration_ms: 2064.8186
+  type: 'test'
+  ...
+# Subtest: transition binding never consults a mutable Array.prototype.at
+ok 108 - transition binding never consults a mutable Array.prototype.at
+  ---
+  duration_ms: 729.1705
+  type: 'test'
+  ...
+# Subtest: MIP inventory alone never manufactures local active-artifact state
+ok 109 - MIP inventory alone never manufactures local active-artifact state
+  ---
+  duration_ms: 1051.584
+  type: 'test'
+  ...
+# Subtest: locally activated, completed, and verified MIP state matches the frozen MIP context digest
+ok 110 - locally activated, completed, and verified MIP state matches the frozen MIP context digest
+  ---
+  duration_ms: 6658.4224
+  type: 'test'
+  ...
+# Subtest: native projection binds each locally active artifact to its exact retained state
+ok 111 - native projection binds each locally active artifact to its exact retained state
+  ---
+  duration_ms: 10939.7936
+  type: 'test'
+  ...
+# Subtest: MIP projection exposes Evolution and Comparative facts only after exact local designation
+ok 112 - MIP projection exposes Evolution and Comparative facts only after exact local designation
+  ---
+  duration_ms: 7148.2424
+  type: 'test'
+  ...
+# Subtest: serialized round trips preserve identity but cannot mint Core authority
+ok 113 - serialized round trips preserve identity but cannot mint Core authority
+  ---
+  duration_ms: 190.9238
+  type: 'test'
+  ...
+# Subtest: serialized validation preserves the frozen seven-step primary precedence
+ok 114 - serialized validation preserves the frozen seven-step primary precedence
+  ---
+  duration_ms: 192.5075
+  type: 'test'
+  ...
+# Subtest: PolicyFactContext limits 17-21 accept exact boundaries and reject first-above inputs
+ok 115 - PolicyFactContext limits 17-21 accept exact boundaries and reject first-above inputs
+  ---
+  duration_ms: 22688.3913
+  type: 'test'
+  ...
+# Subtest: MO-1301 freezes the Regression source-model and deterministic-source registry closure identities
+ok 116 - MO-1301 freezes the Regression source-model and deterministic-source registry closure identities
+  ---
+  duration_ms: 26.233
+  type: 'test'
+  ...
+# Subtest: MO-1301 trusted native capture emits the closed zero-finding source deterministically
+ok 117 - MO-1301 trusted native capture emits the closed zero-finding source deterministically
+  ---
+  duration_ms: 476.8723
+  type: 'test'
+  ...
+# Subtest: MO-1301 trusted construction reproduces the frozen same-candidate source identities
+ok 118 - MO-1301 trusted construction reproduces the frozen same-candidate source identities
+  ---
+  duration_ms: 285.6074
+  type: 'test'
+  ...
+# Subtest: MO-1301 native findings preserve report identity, fact identifiers, and frozen order
+ok 119 - MO-1301 native findings preserve report identity, fact identifiers, and frozen order
+  ---
+  duration_ms: 211.8158
+  type: 'test'
+  ...
+# Subtest: MO-1301 trusted MIP capture binds verified package identity for zero and nonzero reports
+ok 120 - MO-1301 trusted MIP capture binds verified package identity for zero and nonzero reports
+  ---
+  duration_ms: 1300.5789
+  type: 'test'
+  ...
+# Subtest: MO-1301 authority is adapter-minted, owner-scoped, context-bound, and lost on serialization
+ok 121 - MO-1301 authority is adapter-minted, owner-scoped, context-bound, and lost on serialization
+  ---
+  duration_ms: 460.8009
+  type: 'test'
+  ...
+# Subtest: MO-1301 capabilities resist constructor, prototype, and intrinsic tampering
+ok 122 - MO-1301 capabilities resist constructor, prototype, and intrinsic tampering
+  ---
+  duration_ms: 719.272
+  type: 'test'
+  ...
+# Subtest: MO-1301 capability freezing and retained bytes resist post-import intrinsic poisoning
+ok 123 - MO-1301 capability freezing and retained bytes resist post-import intrinsic poisoning
+  ---
+  duration_ms: 927.7269
+  type: 'test'
+  ...
+# Subtest: MO-1301 Regression projection and canonical identity resist post-import intrinsic poisoning
+ok 124 - MO-1301 Regression projection and canonical identity resist post-import intrinsic poisoning
+  ---
+  duration_ms: 349.5348
+  type: 'test'
+  ...
+# Subtest: MO-1301 trusted pair capture uses intrinsic Core state and rejects invalid ownership or pair binding
+ok 125 - MO-1301 trusted pair capture uses intrinsic Core state and rejects invalid ownership or pair binding
+  ---
+  duration_ms: 546.5536
+  type: 'test'
+  ...
+# Subtest: MO-1301 serialized validity does not claim authoritative baseline provenance
+ok 126 - MO-1301 serialized validity does not claim authoritative baseline provenance
+  ---
+  duration_ms: 588.9393
+  type: 'test'
+  ...
+# Subtest: MO-1301 deterministic source normalization enforces closed 0..1 registered cardinality
+ok 127 - MO-1301 deterministic source normalization enforces closed 0..1 registered cardinality
+  ---
+  duration_ms: 207.9416
+  type: 'test'
+  ...
+# Subtest: MO-1301 serialized source validation preserves frozen classification precedence
+ok 128 - MO-1301 serialized source validation preserves frozen classification precedence
+  ---
+  duration_ms: 240.9281
+  type: 'test'
+  ...
+# Subtest: MO-1301 detached validation fails closed with stable report and source classifications
+ok 129 - MO-1301 detached validation fails closed with stable report and source classifications
+  ---
+  duration_ms: 231.4163
+  type: 'test'
+  ...
+# Subtest: MO-1301 raw-byte and finding-count boundaries enforce phases A and E
+ok 130 - MO-1301 raw-byte and finding-count boundaries enforce phases A and E
+  ---
+  duration_ms: 237.852
+  type: 'test'
+  ...
+# Subtest: MO-1301 limit 23 cannot exceed under the frozen exact Core version
+ok 131 - MO-1301 limit 23 cannot exceed under the frozen exact Core version
+  ---
+  duration_ms: 419.789
+  type: 'test'
+  ...
+1..131
+# tests 131
+# suites 0
+# pass 131
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 206806.993

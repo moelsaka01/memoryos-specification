@@ -1,0 +1,30 @@
+readiness=READY readinessDigest=sha256:7dc59aef2472df2959b88aa6532740bc03c7dacd4c5b8763c9a1306d80ac4532 proofBindingDigest=sha256:397770af834aa5fe0fe0958075e059a03f2f7fdd383a66ed7027dd5c19a8f157
+gate=artifact state=SATISFIED
+gate=binding state=SATISFIED
+gate=history state=SATISFIED
+gate=provenance state=SATISFIED
+gate=provider.azure state=SATISFIED
+gate=provider.azure.live state=NOT_REQUIRED
+gate=provider.generic state=SATISFIED
+gate=provider.github state=SATISFIED
+gate=provider.github.hosted state=NOT_REQUIRED
+gate=provider.gitlab state=SATISFIED
+gate=provider.gitlab.live state=NOT_REQUIRED
+gate=provider.jenkins state=SATISFIED
+gate=provider.jenkins.live state=NOT_REQUIRED
+gate=resources state=SATISFIED
+gate=rest.contract state=NOT_APPLICABLE
+gate=sbom state=SATISFIED
+gate=scope state=SATISFIED
+gate=security state=SATISFIED
+gate=semantic state=SATISFIED
+gate=supply state=SATISFIED
+gate=tag state=SATISFIED
+gate=windows state=SATISFIED
+provider=azure implementation=IMPLEMENTED validation=CONTRACT_VALIDATED execution=LIVE_PROVIDER_CERTIFIED sourceExecutionLabel=LIVE_PROVIDER_CERTIFIED support=SUPPORTED hostedPass=null hostedFail=null hostedCne=null hostedParity=null
+provider=generic implementation=IMPLEMENTED validation=REAL_EXECUTION_CERTIFIED execution=REAL_EXECUTION_CERTIFIED sourceExecutionLabel=REAL_EXECUTION_CERTIFIED support=SUPPORTED hostedPass=null hostedFail=null hostedCne=null hostedParity=null
+provider=github implementation=IMPLEMENTED validation=OFFLINE_VALIDATED execution=HOSTED_EXECUTION_CERTIFIED sourceExecutionLabel=HOSTED_EXECUTION_CERTIFIED support=SUPPORTED hostedPass=true hostedFail=true hostedCne=true hostedParity=true
+provider=gitlab implementation=IMPLEMENTED validation=CONTRACT_VALIDATED execution=LIVE_PROVIDER_CERTIFIED sourceExecutionLabel=LIVE_PROVIDER_CERTIFIED support=SUPPORTED hostedPass=null hostedFail=null hostedCne=null hostedParity=null
+provider=jenkins implementation=IMPLEMENTED validation=CONTRACT_VALIDATED execution=LIVE_PROVIDER_CERTIFIED sourceExecutionLabel=LIVE_PROVIDER_CERTIFIED support=SUPPORTED hostedPass=null hostedFail=null hostedCne=null hostedParity=null
+humanAction=REVIEW_READINESS_AND_LIMITATIONS
+humanAction=DECIDE_RELEASE

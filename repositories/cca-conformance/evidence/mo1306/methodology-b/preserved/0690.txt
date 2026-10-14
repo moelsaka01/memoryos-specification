@@ -1,0 +1,130 @@
+"""Bounded read-only Windows owned-process and fully shared directory observer."""
+import ctypes as C,ctypes.wintypes as W,json,os,struct,threading,time
+from pathlib import Path
+K=C.WinDLL('kernel32',use_last_error=True)
+class IO(C.Structure):_fields_=[(n,C.c_uint64) for n in ['readOperations','writeOperations','otherOperations','readBytes','writeBytes','otherBytes']]
+class OVERLAPPED(C.Structure):_fields_=[('Internal',C.c_size_t),('InternalHigh',C.c_size_t),('Offset',W.DWORD),('OffsetHigh',W.DWORD),('hEvent',W.HANDLE)]
+K.QueryPerformanceCounter.argtypes=[C.POINTER(C.c_int64)];K.QueryPerformanceCounter.restype=W.BOOL
+K.QueryPerformanceFrequency.argtypes=[C.POINTER(C.c_int64)];K.QueryPerformanceFrequency.restype=W.BOOL
+K.OpenProcess.argtypes=[W.DWORD,W.BOOL,W.DWORD];K.OpenProcess.restype=W.HANDLE
+K.CloseHandle.argtypes=[W.HANDLE];K.CloseHandle.restype=W.BOOL
+K.GetProcessTimes.argtypes=[W.HANDLE,*([C.POINTER(W.FILETIME)]*4)];K.GetProcessTimes.restype=W.BOOL
+K.GetProcessIoCounters.argtypes=[W.HANDLE,C.POINTER(IO)];K.GetProcessIoCounters.restype=W.BOOL
+K.GetProcessHandleCount.argtypes=[W.HANDLE,C.POINTER(W.DWORD)];K.GetProcessHandleCount.restype=W.BOOL
+K.GetExitCodeProcess.argtypes=[W.HANDLE,C.POINTER(W.DWORD)];K.GetExitCodeProcess.restype=W.BOOL
+K.WaitForSingleObject.argtypes=[W.HANDLE,W.DWORD];K.WaitForSingleObject.restype=W.DWORD
+K.CreateFileW.argtypes=[W.LPCWSTR,W.DWORD,W.DWORD,C.c_void_p,W.DWORD,W.DWORD,W.HANDLE];K.CreateFileW.restype=W.HANDLE
+K.GetFileAttributesW.argtypes=[W.LPCWSTR];K.GetFileAttributesW.restype=W.DWORD
+K.CreateEventW.argtypes=[C.c_void_p,W.BOOL,W.BOOL,W.LPCWSTR];K.CreateEventW.restype=W.HANDLE
+K.ResetEvent.argtypes=[W.HANDLE];K.ResetEvent.restype=W.BOOL
+K.ReadDirectoryChangesW.argtypes=[W.HANDLE,C.c_void_p,W.DWORD,W.BOOL,W.DWORD,C.POINTER(W.DWORD),C.POINTER(OVERLAPPED),C.c_void_p];K.ReadDirectoryChangesW.restype=W.BOOL
+K.GetOverlappedResult.argtypes=[W.HANDLE,C.POINTER(OVERLAPPED),C.POINTER(W.DWORD),W.BOOL];K.GetOverlappedResult.restype=W.BOOL
+K.CancelIoEx.argtypes=[W.HANDLE,C.POINTER(OVERLAPPED)];K.CancelIoEx.restype=W.BOOL
+F=C.c_int64();assert K.QueryPerformanceFrequency(C.byref(F));FREQ=F.value
+
+def qpc():
+ value=C.c_int64();assert K.QueryPerformanceCounter(C.byref(value));return {'qpcTicks':value.value,'qpcNs':value.value*1000000000//FREQ}
+def ft(value):return (value.dwHighDateTime<<32)|value.dwLowDateTime
+
+def calibration():
+ before=qpc();perf=time.perf_counter_ns();after=qpc();assert before['qpcNs']<=perf<=after['qpcNs']+1000
+ return {'before':before,'perfCounterNs':perf,'after':after}
+class Capture:
+ def __init__(self,workspace,path_state):
+  self.workspace=Path(workspace);self.path_state=path_state;self.start=qpc();self.calibrations=[calibration()];self.stopEvent=threading.Event();self.lock=threading.Lock();self.processes={};self.samples=[];self.notifications=[];self.directorySnapshots=[];self.errors=[];self.processOverheadNs=0;self.discoveryOverheadNs=0;self.fsOverheadNs=0;self.subscriptions=[];self.watchReadyAt=None;self.started=False;self.watchReady=threading.Event();self.watchClosed=False
+ def start_capture(self):
+  self.processThread=threading.Thread(target=self.poll,name='owned-process-capture',daemon=True);self.fsThread=threading.Thread(target=self.watch,name='directory-capture',daemon=True)
+  self.processThread.start();self.fsThread.start();assert self.watchReady.wait(3),'Directory observer failed to become ready'
+  assert not self.errors, self.errors;self.started=True
+ def discover(self,rows):
+  begun=qpc()['qpcNs']
+  with self.lock:
+   for row in rows:
+    identity=(row['pid'],row['creationTime100ns'])
+    if identity in self.processes:continue
+    h=K.OpenProcess(0x100000|0x1000,False,row['pid'])
+    if not h:self.errors.append({'stage':'OpenProcess','pid':row['pid'],'error':C.get_last_error(),'time':qpc()});continue
+    created,exited,kernel,user=[W.FILETIME() for _ in range(4)]
+    if not K.GetProcessTimes(h,*[C.byref(x) for x in [created,exited,kernel,user]]) or ft(created)!=row['creationTime100ns']:
+     K.CloseHandle(h);self.errors.append({'stage':'ProcessIdentityRace','pid':row['pid'],'time':qpc()});continue
+    self.processes[identity]={'handle':h,'pid':row['pid'],'parentPid':row['parent'],'creationTime100ns':row['creationTime100ns'],'executable':row['executable'],'commandLine':row['commandLine'],'firstDiscovered':qpc(),'lastNonSignaled':None,'firstSignaled':None,'handleClosed':False}
+  self.discoveryOverheadNs+=qpc()['qpcNs']-begun
+ def poll(self):
+  try:
+   while not self.stopEvent.is_set():
+    begun=qpc()['qpcNs'];snapshot=[]
+    with self.lock:
+     for identity,p in self.processes.items():
+      h=p['handle']
+      if h is None:continue
+      before=qpc();wait=K.WaitForSingleObject(h,0);code=W.DWORD();exitok=K.GetExitCodeProcess(h,C.byref(code));created,exited,kernel,user=[W.FILETIME() for _ in range(4)];timesok=K.GetProcessTimes(h,*[C.byref(x) for x in [created,exited,kernel,user]]);io=IO();iook=K.GetProcessIoCounters(h,C.byref(io));count=W.DWORD();handleok=K.GetProcessHandleCount(h,C.byref(count));after=qpc()
+      sample={'pid':p['pid'],'creationTime100ns':p['creationTime100ns'],'before':before,'after':after,'waitStatus':wait,'exitCode':code.value if exitok else None,'kernelCpu100ns':ft(kernel) if timesok else None,'userCpu100ns':ft(user) if timesok else None,'kernelExitFiletimeDescriptiveOnly':ft(exited) if timesok else None,'io':{n:getattr(io,n) for n,_ in IO._fields_} if iook else None,'handleCount':count.value if handleok else None}
+      snapshot.append(sample)
+      if wait==0:
+       p['firstSignaled']=after;p['final']=sample;p['exitObservedBetween']={'lower':p['lastNonSignaled'],'upper':after};K.CloseHandle(h);p['handle']=None;p['handleClosed']=True;p['observerHandleClosedAt']=qpc()
+      elif wait==258:p['lastNonSignaled']=before
+      else:self.errors.append({'stage':'WaitForSingleObject','pid':p['pid'],'result':wait,'error':C.get_last_error(),'time':after})
+    self.samples.append({'time':qpc(),'processes':snapshot});self.processOverheadNs+=qpc()['qpcNs']-begun
+    self.stopEvent.wait(.020)
+  except BaseException as e:self.errors.append({'stage':'processSampler','type':type(e).__name__,'error':str(e),'time':qpc()})
+ def directory_state(self,reason):
+  begun=qpc();out=self.workspace/'.memoryos-ci/out';paths=[self.workspace,self.workspace/'.memoryos-ci',out]
+  if out.exists():
+   for run in out.iterdir():
+    paths.append(run)
+    if run.is_dir():
+     paths.extend(run.iterdir());pending=run/'.pending'
+     if pending.is_dir():paths.extend(pending.iterdir())
+  rows=[]
+  for p in paths[:30]:
+   if reason=='manifest-or-complete-notification':
+    attr=K.GetFileAttributesW(str(p));row={'path':str(p),'length':len(str(p)),'exists':attr!=0xffffffff,'windowsAttributes':None if attr==0xffffffff else attr,'reparsePoint':bool(attr&1024) if attr!=0xffffffff else None,'readOnly':bool(attr&1) if attr!=0xffffffff else None,'acl':'Initial/post-capture only to avoid security-query latency at rename.'}
+   else:row=self.path_state(p)
+   if p.exists():
+    stat=p.lstat();row.update(size=stat.st_size,type='directory' if p.is_dir() else 'file')
+   rows.append(row)
+  self.directorySnapshots.append({'reason':reason,'before':begun,'after':qpc(),'rows':rows});self.fsOverheadNs+=qpc()['qpcNs']-begun['qpcNs']
+ def watch(self):
+  h=None;event=None;pending=False;ov=OVERLAPPED()
+  try:
+   # Full sharing means this diagnostic watcher never denies rename/delete access.
+   h=K.CreateFileW(str(self.workspace),1,7,None,3,0x02000000|0x40000000,None)
+   if h in [None,C.c_void_p(-1).value]:raise OSError(C.get_last_error(),'CreateFile directory watch')
+   event=K.CreateEventW(None,True,False,None)
+   if not event:raise OSError(C.get_last_error(),'CreateEvent')
+   ov.hEvent=event;buffer=C.create_string_buffer(65536);count=W.DWORD();self.directory_state('before-product')
+   while not self.stopEvent.is_set():
+    K.ResetEvent(event);submitted=qpc();ok=K.ReadDirectoryChangesW(h,buffer,len(buffer),True,0x1|0x2|0x4|0x8|0x10|0x100,None,C.byref(ov),None)
+    if not ok:raise OSError(C.get_last_error(),'ReadDirectoryChangesW')
+    pending=True;armed=qpc();self.subscriptions.append({'before':submitted,'after':armed});
+    if self.watchReadyAt is None:self.watchReadyAt=armed;self.watchReady.set()
+    lastUnsignaled=submitted
+    while not self.stopEvent.is_set():
+     before=qpc();wait=K.WaitForSingleObject(event,20);after=qpc()
+     if wait==258:lastUnsignaled=before;continue
+     if wait!=0:raise OSError(C.get_last_error(),'Directory notification wait')
+     if not K.GetOverlappedResult(h,C.byref(ov),C.byref(count),False):raise OSError(C.get_last_error(),'GetOverlappedResult')
+     pending=False
+     if count.value==0:self.errors.append({'stage':'DirectoryNotificationOverflow','time':after});break
+     offset=0;batch=[]
+     while True:
+      nxt,action,length=struct.unpack_from('<III',buffer.raw,offset);name=buffer.raw[offset+12:offset+12+length].decode('utf-16-le');batch.append({'action':action,'actionName':{1:'ADDED',2:'REMOVED',3:'MODIFIED',4:'RENAMED_OLD_NAME',5:'RENAMED_NEW_NAME'}.get(action,'UNKNOWN'),'relativePath':name})
+      if not nxt:break
+      offset+=nxt
+     self.notifications.append({'submitted':submitted,'lastUnsignaled':lastUnsignaled,'receiptBefore':before,'receiptAfter':after,'records':batch,'note':'Ordered notification records; timestamps bound observer delivery, not exact kernel mutation time.'})
+     if any('memoryos-ci-artifacts.json' in row['relativePath'] or 'memoryos-ci-complete.json' in row['relativePath'] for row in batch):self.directory_state('manifest-or-complete-notification')
+     break
+   if pending:
+    K.CancelIoEx(h,C.byref(ov));K.WaitForSingleObject(event,1000);K.GetOverlappedResult(h,C.byref(ov),C.byref(count),False)
+  except BaseException as e:self.errors.append({'stage':'directoryWatcher','type':type(e).__name__,'error':str(e),'time':qpc()});self.watchReady.set()
+  finally:
+   if h and h!=C.c_void_p(-1).value:K.CloseHandle(h)
+   if event:K.CloseHandle(event)
+   self.watchClosed=True
+ def stop(self):
+  self.stopEvent.set();self.processThread.join(2);self.fsThread.join(2)
+  with self.lock:
+   for p in self.processes.values():
+    if p['handle'] is not None:K.CloseHandle(p['handle']);p['handle']=None;p['handleClosed']=True;p['observerHandleClosedAt']=qpc()
+  self.end=qpc();self.calibrations.append(calibration());self.directory_state('after-product')
+  return {'kind':'MemoryOSPhase3AWindowsEnvironmentCapture','version':'1.0.0','qpcFrequency':FREQ,'qpcResolutionNs':1000000000/FREQ,'clockMetadata':{k:vars(time.get_clock_info(k)) for k in ['perf_counter','monotonic']},'calibrations':self.calibrations,'captureStart':self.start,'captureEnd':self.end,'processSamples':self.samples,'processes':[{k:v for k,v in p.items() if k!='handle'} for p in self.processes.values()],'directoryWatchReadyAt':self.watchReadyAt,'directorySubscriptions':self.subscriptions,'directoryNotifications':self.notifications,'directorySnapshots':self.directorySnapshots,'errors':self.errors,'requestedProcessSampleMs':20,'maximumProcessSampleGapMs':max(((b['time']['qpcNs']-a['time']['qpcNs'])/1e6 for a,b in zip(self.samples,self.samples[1:])),default=0),'measuredObserverWorkMs':{'process':self.processOverheadNs/1e6,'discovery':self.discoveryOverheadNs/1e6,'directorySnapshots':self.fsOverheadNs/1e6},'handleObservation':{'ownedProcessQueryHandlesOnly':True,'allOwnedObserverHandlesClosed':all(p['handleClosed'] for p in self.processes.values()),'directoryWatchClosed':self.watchClosed,'directoryWatchShareMode':7,'exclusiveOpenProbe':False,'systemWideHandleEnumeration':False,'limitation':'Process handle counts and Node descriptor ledger are indirect. They do not identify arbitrary external file handles or prove absence of external locking.'},'threadsStopped':not self.processThread.is_alive() and not self.fsThread.is_alive(),'utcNotUsedForCausality':True}

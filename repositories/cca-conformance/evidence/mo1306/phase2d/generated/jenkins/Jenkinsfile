@@ -1,0 +1,25 @@
+pipeline {
+  agent {
+    label 'MemoryOS_Windows'
+  }
+  options {
+    skipDefaultCheckout()
+    timeout(time: 5, unit: 'MINUTES')
+  }
+  stages {
+    stage('MemoryOS Policy') {
+      steps {
+        checkout scm
+        powershell(encoding: 'UTF-8', script: '''
+$status = 16
+try {
+  & (Join-Path $env:MEMORYOS_CI_HOME 'scripts/Invoke-MemoryOSCI.ps1') -Provider 'jenkins' -Workspace $env:WORKSPACE -ConfigurationDigest 'sha256:12ddefe6af24e3364dfee0c081ad4a41061bcf8aa4804716bb6ee65aa5483afb' -DistributionDigest 'sha256:bd154a7a972395b801b3cb0189a728b7e9870eb05f90558346eb7fee7055fe77'
+  $status = $LASTEXITCODE
+} finally {
+  exit $status
+}
+''')
+      }
+    }
+  }
+}

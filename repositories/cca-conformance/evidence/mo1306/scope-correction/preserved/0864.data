@@ -1,0 +1,66 @@
+"""Independent Phase 3C-R authority, archive and historical preservation audit."""
+import hashlib,json,os,subprocess,sys,time,tarfile,re
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[4]
+OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3cr'
+CACHE=ROOT/'.cache/c3r'; PKG=ROOT/'repositories/memoryos-ci'
+NODE=ROOT/'.cache/mo1305-phase3br/toolchain/node-v24.21.0-win-x64/node.exe'
+C3AB='9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44'; C3A='90b9ac914e477fb90fe317d0de9ba310aae37f60'
+B2='0e35ffe70919d77b1db530929093826410b805f9'; I2='58b7b8cc90fe798fafe6d09bf04db45ceea29f6d'; B1='dbafc0061aa493da2517ee5564f9ea6adb90f52d'
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def row(p,base=ROOT):
+ b=p.read_bytes();return {'path':p.relative_to(base).as_posix(),'byteLength':len(b),'sha256':sha(b)}
+def put(n,v):
+ p=OUT/n; p.parent.mkdir(parents=True,exist_ok=True);assert not p.exists(),str(p);p.write_bytes((json.dumps(v,sort_keys=True,separators=(',',':'))+'\n').encode())
+def git(*a):return subprocess.check_output(['git','-c','core.longpaths=true',*a],cwd=ROOT,env={**os.environ,'GIT_OPTIONAL_LOCKS':'0'}).decode().strip()
+def blobid(b):return hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest()
+def tree(rev,*paths):
+ raw=subprocess.check_output(['git','ls-tree','-r','-z',rev,'--',*paths],cwd=ROOT)
+ return {x.split(b'\t',1)[1].decode():x.split(b'\t',1)[0].split()[2].decode() for x in raw.split(b'\0') if x}
+def run(n,args,expected=0):
+ env={k:v for k,v in os.environ.items() if k.upper() not in ['NODE_OPTIONS','NODE_PATH']};env.update(TEMP=str(CACHE/'temp'),TMP=str(CACHE/'temp'),PYTHONDONTWRITEBYTECODE='1')
+ t=time.monotonic();r=subprocess.run(list(map(str,args)),cwd=ROOT,env=env,capture_output=True,stdin=subprocess.DEVNULL,timeout=120,creationflags=subprocess.CREATE_NO_WINDOW)
+ counts={k:int(v) for k,v in re.findall(r'^# (tests|pass|fail|cancelled|skipped|todo) (\d+)\s*$',r.stdout.decode('utf8'),re.M)}
+ v={'argv':list(map(str,args)),'exitCode':r.returncode,'stdout':r.stdout.decode('utf8'),'stderr':r.stderr.decode('utf8'),'elapsedMs':round((time.monotonic()-t)*1000),'counts':counts}
+ put(n+'.json',v);assert r.returncode==expected,(n,v);return v
+
+def main():
+ CACHE.mkdir(parents=True,exist_ok=True);(CACHE/'temp').mkdir(exist_ok=True)
+ assert git('rev-parse','HEAD')==C3AB and git('branch','--show-current')=='mo1306/phase3c-refresh'
+ assert git('rev-parse',C3AB+'^')==C3A and git('rev-parse',C3A+'^')==B2 and git('rev-parse',B2+'^')==I2 and git('rev-parse',I2+'^')==B1
+ assert git('diff','--name-only',C3A,C3AB)=='repositories/cca-conformance/mo1306-phase3-correction-binding.json'
+ original=ROOT.parent/'cca-mo1306-3c'; correction=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3-correction'
+ before=json.loads((correction/'baseline.json').read_bytes());preserved=[]
+ for r in before['blockerFiles']:
+  assert row(original/r['path'],original)==r and (original/r['path']).read_bytes()==(correction/'original-3c'/r['path']).read_bytes();preserved.append(r)
+ untracked=subprocess.check_output(['git','-C',str(original),'ls-files','--others','--exclude-standard'],env={**os.environ,'GIT_OPTIONAL_LOCKS':'0'}).decode().splitlines()
+ assert set(untracked)=={r['path'] for r in preserved}
+ witness=json.loads((original/'repositories/cca-conformance/evidence/mo1306/phase3c/command-selector-blocker.json').read_bytes())
+ assert witness['status']=='BLOCKED' and [r['observed']['exitCode'] for r in witness['cases']]==[10,16,16,16]
+ for t in before['tags']:assert git('rev-parse',t['tag'])==t['object'] and git('rev-parse',t['tag']+'^{}')==t['commit']
+ assert sha(NODE.read_bytes())=='sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32'
+ archive=CACHE/'memoryos-ci-0.1.0.tgz';result=run('authority-pack',[NODE,PKG/'scripts/pack.mjs',archive]);assert json.loads(result['stdout'])=={'byteLength':197172,'sha256':'sha256:2f1e9424ce64e44b7b1587ce206fe5f7ae72579652ca1fc891c489bc1a21925d','fileCount':94}
+ assert archive.stat().st_size==197172 and sha(archive.read_bytes())=='sha256:2f1e9424ce64e44b7b1587ce206fe5f7ae72579652ca1fc891c489bc1a21925d'
+ with tarfile.open(archive) as tar:
+  members=tar.getmembers();assert len(members)==94 and len({m.name for m in members})==94
+  for m in members:assert m.isfile() and m.name.startswith('package/') and tar.extractfile(m).read()==(PKG/m.name[8:]).read_bytes()
+ source_tree=tree(C3AB,'repositories/memoryos-ci');assert all(blobid((ROOT/p).read_bytes())==o for p,o in source_tree.items())
+ unchanged=[];changed=[]
+ for p,oid in tree(B2,'repositories/memoryos-ci').items():
+  (unchanged if blobid((ROOT/p).read_bytes())==oid else changed).append(p)
+ assert changed==['repositories/memoryos-ci/bin/memoryos-ci.mjs','repositories/memoryos-ci/distribution-manifest.json']
+ history=[]
+ for rev,scope in [(B2,'repositories/cca-conformance/evidence/mo1306'),(C3A,'repositories/cca-conformance/evidence/mo1306/phase3-correction'),('memoryos-1.3-mo1302','.github/actions/memoryos-policy-gate')]:
+  entries=tree(rev,scope)
+  for p,oid in entries.items():assert blobid((ROOT/p).read_bytes())==oid,p
+  history.append({'revision':rev,'scope':scope,'files':len(entries),'tree':git('rev-parse',rev+':'+scope),'unchanged':True})
+ first=json.loads((ROOT/'repositories/cca-conformance/evidence/mo1306/phase2d/first-attempt/phase2c-source-gate.json').read_bytes());assert first['status']=='FAIL'
+ source=json.loads((ROOT/'repositories/cca-conformance/evidence/mo1306/phase2d/source-inventory.json').read_bytes())
+ for name,c in source['commits'].items():assert git('rev-parse',c['revision']+'^')==c['parent'] and git('rev-parse',c['revision']+'^{tree}')==c['tree']
+ binding=json.loads((ROOT/'repositories/cca-conformance/mo1306-phase3-correction-binding.json').read_bytes());assert binding['correctionCommit']==C3A and binding['correctionParent']==B2
+ for r in binding['artifacts']:assert row(ROOT/r['path'])==r
+ put('authority.json',{'status':'PASS','baseline':C3AB,'branch':'mo1306/phase3c-refresh','initialWorkingTreeClean':True,'C3A':C3A,'C3AB':C3AB,'B2':B2,'I2':I2,'B1':B1,'archive':row(archive),'archiveMembers':94,'runtime':row(NODE),'productFiles':[row(ROOT/p) for p in sorted(source_tree)],'packageUnchangedFromB2':unchanged,'packageChangedByCorrection':changed,'originalBlockerDisposition':'BLOCKED / PRODUCTION_DEFECT','originalBlockerFiles':preserved,'originalUntrackedFiles':untracked,'predecessorTags':before['tags'],'historicalPreservation':history,'first2DSourceGate':'FAIL','sourceCommits':source['commits'],'correctionBoundArtifacts':len(binding['artifacts']),'limits':{'hosted':False,'providerServices':False,'linux':False,'vm':False,'full3BRecertification':False}})
+ for name,args,count in [('authority-history',[NODE,'--test','--test-reporter=tap',ROOT/'repositories/cca-conformance/tools/mo1306-phase2d/history.test.mjs'],3),('authority-mo1302',[NODE,'--test','--test-reporter=tap','--test-name-pattern=Action metadata, bootstrap exports|CLI transport accepts|PortablePath and action-input|outputs are exactly nineteen',ROOT/'repositories/cca-conformance/tests/mo1302_action_foundation_conformance_test.mjs'],4)]:
+  v=run(name,args);assert v['counts']['tests']==count and v['counts']['pass']==count and v['counts']['fail']==0
+ print(json.dumps({'status':'PASS','archiveMembers':94,'history':history,'originalBlockerFiles':len(preserved),'runtime':str(NODE),'tests':'3 history (includes 152 historical cases) + 4 MO1302'}))
+if __name__=='__main__':main()

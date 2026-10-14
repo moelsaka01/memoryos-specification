@@ -1,0 +1,253 @@
+$schema: cca://schemas/canonical-specification/1.0
+format_version: 1.0.0
+kind: canonical_specification
+id: cca.reference-architecture
+version: 1.0.0
+metadata:
+  name: CCA reference architecture
+  description: Architecture-neutral compiler input demonstrating the complete canonical format.
+  authors:
+    - CCA Architecture Group
+  labels:
+    lifecycle: reference
+    milestone: is-002
+categories:
+  - id: architecture
+    name: Architecture
+    description: Structural packages, domains, and components.
+    annotations: {}
+    extensions: {}
+  - id: runtime
+    name: Runtime contracts
+    description: Descriptive runtime-facing boundaries; no runtime is implemented.
+    annotations: {}
+    extensions: {}
+  - id: contracts
+    name: Contracts
+    description: Observable interfaces and guarantees.
+    annotations: {}
+    extensions: {}
+  - id: requirements
+    name: Requirements
+    description: Verifiable architectural obligations.
+    annotations: {}
+    extensions: {}
+  - id: artifacts
+    name: Artifacts
+    description: Requested deterministic compiler reports.
+    annotations: {}
+    extensions: {}
+objects:
+  - type: package
+    id: cca.foundation
+    version: 1.2.0
+    category: architecture
+    metadata:
+      name: Foundation package
+      description: Shared architecture-neutral foundation.
+      authors: []
+      labels:
+        stability: stable
+    members:
+      - architecture.core
+    properties:
+      purpose: Shared architecture-neutral foundation.
+    annotations: {}
+    extensions: {}
+  - type: package
+    id: cca.reference
+    version: 1.0.0
+    category: architecture
+    metadata:
+      name: Reference package
+      description: Package containing the compiler-facing reference model.
+      authors: []
+      labels: {}
+    members:
+      - architecture.compiler
+      - contracts.compiler-input
+      - requirement.deterministic-output
+    properties:
+      purpose: Compiler-facing reference model.
+    annotations: {}
+    extensions: {}
+  - type: domain
+    id: architecture.core
+    version: 1.0.0
+    category: architecture
+    metadata:
+      name: Core architecture domain
+      description: Boundary for shared architecture concepts.
+      authors: []
+      labels: {}
+    components:
+      - architecture.compiler
+    properties:
+      boundary: architecture-neutral values and contracts
+    annotations: {}
+    extensions: {}
+  - type: component
+    id: architecture.compiler
+    version: 1.0.0
+    category: architecture
+    metadata:
+      name: Standards compiler
+      description: Deterministic transformation of canonical specifications into reports.
+      authors: []
+      labels:
+        language: cpp23
+    contracts:
+      - contracts.compiler-input
+    requirements:
+      - requirement.deterministic-output
+    properties:
+      responsibilities:
+        - validate canonical specifications
+        - build an internal model
+        - generate deterministic artifacts
+    annotations:
+      deterministic: true
+    extensions:
+      example.trace:
+        source: IS-002
+  - type: contract
+    id: contracts.compiler-input
+    version: 1.0.0
+    category: contracts
+    metadata:
+      name: Compiler input contract
+      description: A UTF-8 canonical specification conforming to schema 1.0.
+      authors: []
+      labels: {}
+    properties:
+      inputs:
+        - one UTF-8 YAML document
+      outputs:
+        - structured diagnostics
+      guarantees:
+        - deterministic interpretation
+    annotations: {}
+    extensions: {}
+  - type: requirement
+    id: requirement.deterministic-output
+    version: 1.0.0
+    category: requirements
+    metadata:
+      name: Deterministic output
+      description: Equivalent explicit inputs produce byte-equivalent reports.
+      authors: []
+      labels:
+        priority: required
+    satisfied_by:
+      - architecture.compiler
+    properties:
+      statement: The compiler must generate deterministic diagnostics and reports.
+      level: must
+      verification:
+        - golden file comparison
+        - repeated compilation comparison
+    annotations: {}
+    extensions: {}
+relationships:
+  - id: relationship.compiler-implements-input
+    type: implements
+    source: architecture.compiler
+    target: contracts.compiler-input
+    metadata:
+      name: Compiler implements input contract
+      description: Connects the component to its accepted source contract.
+      authors: []
+      labels: {}
+    annotations: {}
+    extensions: {}
+  - id: relationship.requirement-constrains-compiler
+    type: constrains
+    source: requirement.deterministic-output
+    target: architecture.compiler
+    metadata:
+      name: Determinism constrains compiler
+      description: Associates the requirement with the responsible component.
+      authors: []
+      labels: {}
+    annotations: {}
+    extensions: {}
+dependencies:
+  - id: dependency.reference-foundation
+    source: cca.reference
+    target: cca.foundation
+    version: ^1.0.0
+    optional: false
+    metadata:
+      name: Foundation package dependency
+      description: Resolved against the in-document package object.
+      authors: []
+      labels: {}
+    annotations: {}
+    extensions: {}
+validation_rules:
+  - id: rule.unique-object-identifiers
+    category: requirements
+    severity: error
+    expression: unique(objects[*].id)
+    message: Object identifiers must be unique.
+    suggestion: Rename the duplicate object and update all references.
+    annotations: {}
+    extensions: {}
+  - id: rule.resolved-relationship-endpoints
+    category: contracts
+    severity: error
+    expression: all(relationships[*].source in objects.id and relationships[*].target in objects.id)
+    message: Relationship endpoints must resolve to objects.
+    suggestion: Add the missing object or correct the endpoint identifier.
+    annotations: {}
+    extensions: {}
+artifacts:
+  - id: artifact.documentation-index
+    type: documentation_index
+    output: documentation-index.md
+    options: {}
+    annotations: {}
+    extensions: {}
+  - id: artifact.dependency-graph
+    type: dependency_graph
+    output: dependency-graph.mmd
+    options: {}
+    annotations: {}
+    extensions: {}
+  - id: artifact.specification-report
+    type: specification_report
+    output: specification-report.json
+    options: {}
+    annotations: {}
+    extensions: {}
+  - id: artifact.validation-report
+    type: validation_report
+    output: validation-report.json
+    options: {}
+    annotations: {}
+    extensions: {}
+  - id: artifact.object-inventory
+    type: object_inventory
+    output: object-inventory.json
+    options: {}
+    annotations: {}
+    extensions: {}
+  - id: artifact.architecture-summary
+    type: architecture_summary
+    output: architecture-summary.md
+    options: {}
+    annotations: {}
+    extensions: {}
+  - id: artifact.placeholder-code
+    type: placeholder_code
+    output: generated/README.md
+    options: {}
+    annotations: {}
+    extensions: {}
+annotations:
+  normative: false
+  purpose: comprehensive valid IS-002 example
+extensions:
+  example.provenance:
+    milestone: IS-002
+    source: checked-in example

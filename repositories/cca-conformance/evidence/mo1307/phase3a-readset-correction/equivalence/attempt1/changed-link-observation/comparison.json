@@ -1,0 +1,156 @@
+{
+  "name": "changed-link-observation",
+  "result": "PASS",
+  "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+  "tags": [
+    "link/reparse state changes"
+  ],
+  "mutation": "link",
+  "exactResponseEqual": true,
+  "code": "MO1307_FILESYSTEM_BOUNDARY",
+  "status": "ERROR",
+  "request": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-link-observation/request.bin",
+    "byteLength": 401,
+    "sha256": "sha256:f8c0a294e06a2466262c7d3c99cbe68758e8aebe1add03e95dac858c90e8c348"
+  },
+  "b2": {
+    "code": 0,
+    "signal": null,
+    "pid": 5824,
+    "elapsedMs": 1977.138300000006,
+    "exitMs": 1977.1166000000085,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-link-observation/b2.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-link-observation/b2.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-link-observation/b2-instrumented.ps1",
+      "byteLength": 32897,
+      "sha256": "sha256:35fe9e29f1ad7b98d2bf4b30f19a6c2289a8016dba8aea1e63fb6a927f0d9ae7"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\repositories\\cca-conformance\\evidence\\mo1307\\phase3a-readset-correction\\equivalence\\attempt1\\changed-link-observation\\b2-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "candidate": {
+    "code": 0,
+    "signal": null,
+    "pid": 5280,
+    "elapsedMs": 2206.1852999999974,
+    "exitMs": 2206.1624999999913,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-link-observation/candidate.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-link-observation/candidate.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-link-observation/candidate-instrumented.ps1",
+      "byteLength": 33343,
+      "sha256": "sha256:f38536add5b013cde1915e9b73a5356c60a70268916502f41982212399a7e9fb"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\repositories\\cca-conformance\\evidence\\mo1307\\phase3a-readset-correction\\equivalence\\attempt1\\changed-link-observation\\candidate-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "nativeObservationCountsEqual": true,
+  "telemetry": {
+    "b2": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 21,
+        "initial:GetFileInformationByHandle": 21,
+        "post-read:Open-Native": 10,
+        "initial:GetFinalPathNameByHandleW": 21,
+        "post-read:GetFileInformationByHandle": 21,
+        "post-read:GetFinalPathNameByHandleW": 21,
+        "initial:Read-Identity": 21,
+        "initial:Assert-SameIdentity": 10,
+        "post-read:Read-Identity": 21,
+        "initial:Open-Native": 21
+      },
+      "mutations": 1,
+      "mutation": "link",
+      "workingSet64": 143003648,
+      "peakWorkingSet64": 147324928,
+      "managedBytes": 62804048,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-link-observation/b2-telemetry.json",
+        "byteLength": 482,
+        "sha256": "sha256:c5c7cf7ad9e966bc77e504c8eb7bea6be454c9c206cccd674b11c56287acf76c"
+      }
+    },
+    "candidate": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 21,
+        "initial:GetFileInformationByHandle": 21,
+        "post-read:Open-Native": 10,
+        "initial:GetFinalPathNameByHandleW": 21,
+        "post-read:GetFileInformationByHandle": 21,
+        "post-read:GetFinalPathNameByHandleW": 21,
+        "initial:Read-Identity": 21,
+        "initial:Assert-SameIdentity": 10,
+        "post-read:Read-Identity": 21,
+        "initial:Open-Native": 21
+      },
+      "mutations": 1,
+      "mutation": "link",
+      "workingSet64": 130592768,
+      "peakWorkingSet64": 134815744,
+      "managedBytes": 50842264,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-link-observation/candidate-telemetry.json",
+        "byteLength": 482,
+        "sha256": "sha256:3de613077d0949531e6bc9ef1a5af6af6a5b6eabc88fb4016976c2af1a1525cf"
+      }
+    }
+  }
+}

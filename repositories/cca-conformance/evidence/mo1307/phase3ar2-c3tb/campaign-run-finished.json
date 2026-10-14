@@ -1,0 +1,20 @@
+{
+  "finishedAt": "2026-10-01T14:23:45.772Z",
+  "result": "FAILED_INCOMPLETE",
+  "failure": {
+    "step": "A",
+    "scheduler": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-c3tb/scheduler/A-receipt.json",
+      "byteLength": 578,
+      "sha256": "sha256:808565af7ed23ef1da7cee01cc9e1656386d413ea3a57d09023a77aa1e90ad71"
+    },
+    "caseFailure": {
+      "name": "AssertionError",
+      "code": "ERR_ASSERTION",
+      "stage": null,
+      "message": "{\"code\":\"MO1307_TIMEOUT\",\"kind\":\"MemoryOSReadinessError\",\"reference\":null,\"stage\":\"ACQUISITION\",\"version\":\"1.0.0\"}\n\n\n29 !== 2\n",
+      "stack": "AssertionError [ERR_ASSERTION]: {\"code\":\"MO1307_TIMEOUT\",\"kind\":\"MemoryOSReadinessError\",\"reference\":null,\"stage\":\"ACQUISITION\",\"version\":\"1.0.0\"}\n\n\n29 !== 2\n\n    at invoke (file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-c3tb/core.mjs:15:277)\n    at file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-c3tb/core.mjs:19:2\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)"
+    }
+  },
+  "noFurtherProductExecution": true
+}

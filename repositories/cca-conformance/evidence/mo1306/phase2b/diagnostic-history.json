@@ -1,0 +1,22 @@
+{
+  "kind": "MemoryOSPhase2BDiagnosticHistory",
+  "version": "1.0.0",
+  "acceptance": false,
+  "events": [
+    {"id":"historical-baseline-stop","classification":"BASELINE_GUARD_STOP","finding":"The preserved schema is valid expected Phase 2B input, not an environment or product defect."},
+    {"id":"windows-powershell-file-policy","finding":"Initial parse harness used -File under existing Windows PowerShell 5.1 restricted script policy and failed.","resolution":"Use the fixed parse-only AST harness through EncodedCommand; execute the actual generated fixed scripts with installed PowerShell 7.6.5 under its existing RemoteSigned policy. No execution-policy change or bypass flag.","retainedAttempt":".cache/mo1306/phase2b/execution-3q6uauaw"},
+    {"id":"missing-native-executable-extension","finding":"The minimal outer shell environment omitted PATHEXT. Native Node was not invoked; LASTEXITCODE was null and exit null appeared as empty exit 0. The whole matrix failed, and no semantic acceptance is claimed for its apparent first exit 0.","resolution":"Supply fixed PATHEXT=.EXE for the engineering shell; the launcher now rejects null native exits; the harness requires summaries and complete semantic bundles.","retainedAttempt":".cache/mo1306/phase2b/execution-7n66sap5"},
+    {"id":"summary-argument-transport","finding":"Read-only PowerShell 5.1 probe showed that native argv strips embedded raw JSON quotes.","resolution":"Canonical bounded UTF-8 base64 transport with strict round-trip verification and a real PowerShell 5.1 transport regression."},
+    {"id":"windows-import-url","finding":"The first suite recorder supplied a Windows absolute path to Node --import; Node requires a file URL.","resolution":"Use Path.as_uri for the fixed engineering network-denial preload; no production change."},
+    {"id":"launcher-test-trailing-separator","finding":"The first launcher regression fixture used a root path with a trailing separator and hit the frozen absolute-path rejection before summary validation.","resolution":"Canonicalize only the test root with path.resolve; final suite must pass all 67 tests."},
+    {"id":"concurrent-native-metadata-rejection","finding":"A metadata-variation run reported FILESYSTEM_BOUNDARY while multiple native suites ran concurrently. Seven preceding GitLab semantic/regression cases passed; the full attempt did not pass.","resolution":"The identical metadata case passed in isolation without any product or timeout change. Run the entire final matrix serially. This supports, but does not prove, transient helper contention as the cause.","retainedAttempt":".cache/mo1306/phase2b/execution-5xzn4y6y"},
+    {"id":"canonical-summary-newline","finding":"All 26 native cases passed on install-xtca0r_1, but final review found that Console.WriteLine converted the emitted summary to CRLF.","resolution":"Use explicit LF with Console.Write; assert exact canonical summary bytes and rerun all 26 cases on install-v9p3k1ba. The predecessor report and bundles were preserved in the named cache attempt.","retainedAttempt":".cache/mo1306/phase2b/execution-9hhtcl9n"},
+    {"id":"offline-socket-guard-import","finding":"After all 67 launcher regressions passed, the consolidated Python runner's function replacement for socket.socket prevented ssl from defining its socket subclass during unittest.mock import.","resolution":"Keep socket.socket subclassable while denying construction through a fixed OfflineSocket class; DNS and connection helpers still deny network. Rerun the consolidated suites without changing any package bytes."}
+  ],
+  "notes": [
+    "Diagnostic failures are not promoted into acceptance passes.",
+    "The final acceptance.json is written only after every final suite passes and all staged source identities match.",
+    "The literal %SystemDrive% cache created during minimal-environment shell diagnostics was moved intact into .cache/mo1306/phase2b/environment-caches, not deleted.",
+    "Earlier attempt directories remain locally available; no reset, clean or broad cache deletion was performed."
+  ]
+}

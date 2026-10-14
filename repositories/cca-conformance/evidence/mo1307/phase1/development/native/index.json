@@ -1,0 +1,247 @@
+{
+  "kind": "MemoryOSReadinessPhase1NativeDevelopmentIndex",
+  "version": "1.0.0",
+  "scope": "FOUNDATION_ENGINEERING_ONLY",
+  "productionCertification": false,
+  "attempts": [
+    {
+      "id": "native-development-attempt-1",
+      "result": "FAIL",
+      "tests": 24,
+      "passed": 22,
+      "failed": 2,
+      "failingTests": [
+        "N15",
+        "N16"
+      ],
+      "classification": "ENGINEERING_LAUNCH_ENVIRONMENT",
+      "disposition": "DIAGNOSED_FIXED",
+      "log": "native-development-attempt-1.log",
+      "diagnosis": "Windows PowerShell 5.1 default Restricted policy blocked the fixed script before helper execution. All policy scopes were Undefined, with no enforced MachinePolicy/UserPolicy."
+    },
+    {
+      "id": "helper-diagnostic-1",
+      "result": "DIAGNOSTIC_CONFIRMED",
+      "exitCode": 1,
+      "stdout": "helper-diagnostic-1.stdout",
+      "stderr": "helper-diagnostic-1.stderr",
+      "disposition": "PRESERVED"
+    },
+    {
+      "id": "native-development-attempt-2-targeted",
+      "result": "PASS",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "selection": "N15|N16",
+      "log": "native-development-attempt-2-targeted.log",
+      "correction": "Engineering test only: fixed process-local -ExecutionPolicy Bypass on the shipped trusted script. No machine/user/enterprise policy change. Precedent: docs/mo1306-phase2c-correction.md and tools/mo1306-phase2c/github-wrapper.test.mjs."
+    },
+    {
+      "id": "native-development-attempt-3-targeted",
+      "result": "PASS",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "selection": "N04b|N15",
+      "log": "native-development-attempt-3-targeted.log",
+      "purpose": "Regression: lowest logical-reference lexical error selection; native guard validates all four evaluate request shapes and verify final request shape."
+    },
+    {
+      "id": "native-development-attempt-4-targeted",
+      "result": "PASS",
+      "tests": 1,
+      "passed": 1,
+      "failed": 0,
+      "selection": "N07",
+      "log": "native-development-attempt-4-targeted.log",
+      "purpose": "Regression: absolute Windows local drive roots accept either separator; only separator spelling is normalized."
+    }
+  ],
+  "nativePowerShell": {
+    "path": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+    "version": "5.1.26100.9444",
+    "byteLength": 495616,
+    "fileVersion": "10.0.26100.8972 (WinBuild.160101.0800)",
+    "machinePolicy": "Undefined",
+    "userPolicy": "Undefined",
+    "processPolicy": "Undefined",
+    "currentUserPolicy": "Undefined",
+    "localMachinePolicy": "Undefined"
+  },
+  "limitations": [
+    "These are development checks, not final acceptance or Phase 3 certification.",
+    "Phase 1 helper validates framing and deliberately returns INTERNAL; it does not acquire native file snapshots.",
+    "Identity-policy publication tests use a trusted fixture inspection hook; Node lstat alone is not certified as complete Windows reparse detection.",
+    "Initial test output did not embed helper stderr; the separately retained diagnostic reproduces and records the pre-execution policy failure.",
+    "Native test attempt source files were not snapshotted before execution; logs and raw helper frames are retained without claiming an unavailable source snapshot.",
+    "Failed-attempt and publication-negative pending files remain in the named .cache/mo1307/phase1/native-foundation-* directories; no cleanup was performed."
+  ],
+  "files": [
+    {
+      "path": "helper-diagnostic-1.stderr",
+      "byteLength": 424,
+      "sha256": "sha256:9bee990a2d5d7c6a4fe767e320f3000eff08c373b969723fcb4c239c538f6db3"
+    },
+    {
+      "path": "native-foundation-26896/helper-4.request",
+      "byteLength": 4,
+      "sha256": "sha256:acfde6b0ffe634f6a3f20eb5e7c939a59343966f28c89ed7b67d78eb874d2056"
+    },
+    {
+      "path": "native-foundation-26896/helper-3.stdout",
+      "byteLength": 162,
+      "sha256": "sha256:55f53f6a261b0ade4da841d270745a1476aa912400377021bd972092a7463238"
+    },
+    {
+      "path": "native-foundation-26896/helper-3.stderr",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native-foundation-26896/helper-3.request",
+      "byteLength": 327,
+      "sha256": "sha256:8acc5605f7deb55d49bba9dd8cd3b0418d828aa6bc6f2413e99c4de669ad5394"
+    },
+    {
+      "path": "native-foundation-26896/helper-2.stdout",
+      "byteLength": 162,
+      "sha256": "sha256:55f53f6a261b0ade4da841d270745a1476aa912400377021bd972092a7463238"
+    },
+    {
+      "path": "native-foundation-26896/helper-2.stderr",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native-foundation-26896/helper-2.request",
+      "byteLength": 309,
+      "sha256": "sha256:1f0561213eaf3dfdcc4d9ebe97a21f152f91c9ff4c121af7383fec65fca88b97"
+    },
+    {
+      "path": "native-foundation-26896/helper-1.stdout",
+      "byteLength": 165,
+      "sha256": "sha256:d6b0da34cff1cbbfd5d943927cdc2ba99fabe43b61c03c9d444d998a5a1452a5"
+    },
+    {
+      "path": "native-foundation-26896/helper-1.stderr",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native-foundation-26896/helper-1.request",
+      "byteLength": 300,
+      "sha256": "sha256:695e0f0af6da61b96146a63753f9936da1fd23ada791b1b9d724d291b4267b66"
+    },
+    {
+      "path": "native-foundation-23796/helper-5.stdout",
+      "byteLength": 165,
+      "sha256": "sha256:0dc8a3d7e392a724662b9ca99b695fa8f5515b15595522ef008f4c4966935751"
+    },
+    {
+      "path": "native-foundation-23796/helper-5.stderr",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native-foundation-23796/helper-5.request",
+      "byteLength": 228,
+      "sha256": "sha256:880e55f44f529446c4baf4be77caf381ff524ae44b9ad06952eace9081d7f838"
+    },
+    {
+      "path": "native-foundation-23796/helper-4.stdout",
+      "byteLength": 169,
+      "sha256": "sha256:30564e7a85f4cfbb8fbbb0e60e6cc98c914a5bd2d9837650cfc57f9528085bab"
+    },
+    {
+      "path": "native-foundation-26896/helper-4.stderr",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native-foundation-23796/helper-4.stderr",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native-foundation-23796/helper-3.stdout",
+      "byteLength": 165,
+      "sha256": "sha256:133b6b5071952d7dee2206f74ae13ef97705bd04144e8153a63884dab59fd656"
+    },
+    {
+      "path": "native-foundation-23796/helper-3.stderr",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native-foundation-23796/helper-3.request",
+      "byteLength": 229,
+      "sha256": "sha256:937eecc0416af6ac760a5ba46061137f6067c10c0b76b5d39af6a0eeb5174259"
+    },
+    {
+      "path": "native-foundation-23796/helper-2.stdout",
+      "byteLength": 165,
+      "sha256": "sha256:024d67b389c759ca7d28300070f087686ecbea32a647eea5e67bca8df0658fd6"
+    },
+    {
+      "path": "native-foundation-23796/helper-2.stderr",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native-foundation-23796/helper-2.request",
+      "byteLength": 304,
+      "sha256": "sha256:95115a26388570d2f1a4c6822e526cad4372f3e36f064f7bfc51b161cc15efaf"
+    },
+    {
+      "path": "native-foundation-23796/helper-1.stdout",
+      "byteLength": 165,
+      "sha256": "sha256:d6b0da34cff1cbbfd5d943927cdc2ba99fabe43b61c03c9d444d998a5a1452a5"
+    },
+    {
+      "path": "native-foundation-23796/helper-1.stderr",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native-foundation-23796/helper-1.request",
+      "byteLength": 300,
+      "sha256": "sha256:695e0f0af6da61b96146a63753f9936da1fd23ada791b1b9d724d291b4267b66"
+    },
+    {
+      "path": "native-development-attempt-4-targeted.log",
+      "byteLength": 192,
+      "sha256": "sha256:a83cb789861bcd82892f399c545e309862c23f49575f8efa6b6465e39bacf644"
+    },
+    {
+      "path": "native-development-attempt-3-targeted.log",
+      "byteLength": 289,
+      "sha256": "sha256:c6a144c4b5d46bd74d4a76fa12419ebdef09ce367ebbb393616e5a170d0d1aec"
+    },
+    {
+      "path": "native-development-attempt-2-targeted.log",
+      "byteLength": 295,
+      "sha256": "sha256:043b348f3d591a134ea136dc0d7f6b9765ff70b44fa81a018ae300d926e5f2ae"
+    },
+    {
+      "path": "native-development-attempt-1.log",
+      "byteLength": 4270,
+      "sha256": "sha256:aefd40df78a1a02934e814f5ce5f3bb11464a25e935d81f092dcafec66e36f14"
+    },
+    {
+      "path": "helper-diagnostic-1.stdout",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native-foundation-23796/helper-4.request",
+      "byteLength": 161,
+      "sha256": "sha256:3ebb6c328ac86134f9ed023fdd8c7105943b71cc65bf9a7463e10583f4cc8eb3"
+    },
+    {
+      "path": "native-foundation-26896/helper-4.stdout",
+      "byteLength": 171,
+      "sha256": "sha256:30b161cc1ca43c331652a6b9f5b90d26c67287ceda788745ada1bb8a8921c364"
+    }
+  ]
+}

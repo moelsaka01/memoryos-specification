@@ -1,0 +1,112 @@
+The original failure is localized to manifest finalization. The pre-rename helper is the leading source/trace inference; its original error and delay cause remain unresolved. Three faithful instrumented reproductions returned complete INPUT_ERROR / exit 11 bundles with unchanged product bytes. No harness defect, stale expectation, deterministic product defect or confirmed environment transient is proven. Native and hosted certification remain blocked.
+
+Evidence: [expectation-audit.json](C:/Users/melsa/Documents/Codex/cca-mo1306-3a-refresh/repositories/cca-conformance/evidence/mo1306/phase3a-publication-diagnostic/expectation-audit.json), [harness-audit.json](C:/Users/melsa/Documents/Codex/cca-mo1306-3a-refresh/repositories/cca-conformance/evidence/mo1306/phase3a-publication-diagnostic/harness-audit.json), [historical-witnesses.json](C:/Users/melsa/Documents/Codex/cca-mo1306-3a-refresh/repositories/cca-conformance/evidence/mo1306/phase3a-publication-diagnostic/historical-witnesses.json), [original-helper-residence.json](C:/Users/melsa/Documents/Codex/cca-mo1306-3a-refresh/repositories/cca-conformance/evidence/mo1306/phase3a-publication-diagnostic/original-helper-residence.json), [windows-now.json](C:/Users/melsa/Documents/Codex/cca-mo1306-3a-refresh/repositories/cca-conformance/evidence/mo1306/phase3a-publication-diagnostic/windows-now.json), [windows-eventlog.json](C:/Users/melsa/Documents/Codex/cca-mo1306-3a-refresh/repositories/cca-conformance/evidence/mo1306/phase3a-publication-diagnostic/windows-eventlog.json), [remote-state.json](C:/Users/melsa/Documents/Codex/cca-mo1306-3a-refresh/repositories/cca-conformance/evidence/mo1306/phase3a-publication-diagnostic/remote-state.json).
+
+Historical records: [blocked report](C:/Users/melsa/Documents/Codex/cca-mo1306-3a-refresh/repositories/cca-conformance/evidence/mo1306/phase3a-final/final/REPORT.md) and [blocked receipt](C:/Users/melsa/Documents/Codex/cca-mo1306-3a-refresh/repositories/cca-conformance/evidence/mo1306/phase3a-final/final/execution-receipt.json).
+
+| Number | Requested field | Recorded result |
+| --- | --- | --- |
+| 1 | Starting state | Branch mo1306/phase3a-refresh; historical HEAD f236c4a2f94d8cd8e763aaa4bd6c52d703429692. HEAD, branch, tracked files, actual index and protected refs are unchanged. |
+| 2 | C3CB | 701d48ee2012675966360dda775ab13013c09ab9; C3C 39d83316f7c72d6cb49f8b6cde36c1bfa833112a. Installed core/publication/filesystem bytes independently match C3CB. |
+| 3 | Historical failed publication preserved | All 624 historical files match their preserved bytes, including the original report, blocked receipt and native/publication evidence. Historical disposition remains MO-1306 PHASE 3A NATIVE CERTIFICATION BLOCKED. |
+| 4 | Failed argv | Exact ten-element original argument vector is reproduced below and bound in harness-audit.json. Pinned Node and installed CLI run --workspace .../error-input --config .../memoryos-ci.json --provider generic. |
+| 5 | Failed environment | Harness explicitly passes only SystemRoot and WINDIR. Original exact values/casing were not separately captured; observed helper resolves under C:/Windows. Cwd: installed package parent node_modules. stdin DEVNULL, stdout/stderr pipes; DETACHED_PROCESS and CREATE_NEW_PROCESS_GROUP. No invented full environment. |
+| 6 | Failed output root | C:/Users/melsa/Documents/Codex/cca-mo1306-3a-refresh/.cache/mo1306-phase3a-final/n-20260927T120240-b3df86/error-input/.memoryos-ci/out; run e89b8e91-c3c5-402d-9e6f-000bd2a102ba. |
+| 7 | Frozen expected publication contract | FROZEN_EXPECTATION_VALID. Missing input maps to INPUT_ERROR / exit 11; safely publishable handled operational errors require four files while identities/budget remain valid. Subsequent publication failure supersedes classification. Contract freeze lines378-462 and548-564; expectation-audit.json. |
+| 8 | Expected files | memoryos-ci-result.json; memoryos-ci-evidence.json; memoryos-ci-artifacts.json; memoryos-ci-complete.json. No normative artifacts; semantic/inputDigest null, checked input prefix retained. |
+| 9 | Actual files | Final result737 bytes and evidence1500 bytes. Empty .pending remains. Manifest and completion marker absent. Actual raw logs and partial bytes preserved. |
+| 10 | Initial INPUT_ERROR | Retained result: INPUT_ERROR / MO1306_INPUT_READ / ACQUISITION / exit 11. Configuration references absent missing.mip; copied candidate.mip remains unused. |
+| 11 | Subsequent ARTIFACT_ERROR | Actual summary ARTIFACT_ERROR / exit 17 / publication NONE / resultSha256 null; stderr MO1306_ARTIFACT_WRITE at PUBLICATION. Original elapsed20777ms. |
+| 12 | First failing filesystem operation | The exact original failing API and native error were not captured. Evidence localizes the failure to manifest finalization: checkPaths on the pending/final manifest or the following renameSync. Helper 18 is the leading source/trace inference; its original payload, timer callback and errno are unavailable. |
+| 13 | Native/Windows error code | Original publication errno/native Windows code and helper terminal code remain unavailable. Reproductions directly captured expected acquisition ENOENT for missing.mip, followed by successful publication; this is not the original publication error. MO1306_ARTIFACT_WRITE is a mapped diagnostic. |
+| 14 | Failing path | Inferred source: original run/.pending/memoryos-ci-artifacts.json; target: original run/memoryos-ci-artifacts.json. Exact absolute operands in harness-audit.json; original helper stdin not recorded. |
+| 15 | Parent path state | Fresh caller workspace; product creates .memoryos-ci, out, run and pending. Partial final files and empty pending establish existence during publication. No complete pre-execution filesystem snapshot was retained; current parents exist. |
+| 16 | ACL/permissions | Current output paths have inherited ACLs including owner FullControl and no read-only output files. Original ACLs were not captured. Current facts do not prove historical ACL immutability; windows-now.json. |
+| 17 | Reparse/link state | Current inspected ancestors and case/output paths have no ReparsePoint flag, linkType or link target. Product guards these paths; original per-call helper replies were not retained. |
+| 18 | Path length/type | Current C: NTFS; workspace117 chars, run171, pending180, pending-manifest207 and target198; all within240. Ordinary absolute names, no ADS/reserved-name syntax or current file-directory collision. |
+| 19 | Publication source trace | prepareOutput creates/checks directories. publish stages sorted evidence/result then manifest using wx, verifies bytes, checks/renames each, removes pending, rechecks runtime/distribution, writes marker last. Failure cleans known pending files only, retains partial final files. Core maps non-whitelisted publication errors to ARTIFACT_WRITE. |
+| 20 | Difference from PASS publication | Same prepareOutput/publish. PASS acquires inputs and launches semantic worker, publishing six files. Missing input fails before worker, requests four operational files. Retained PASS not rerun. |
+| 21 | Difference from FAIL publication | Same six-file semantic publisher; expected exit 6 with complete bundle and verified normative bytes. Missing input omits worker and normative files. Retained FAIL not rerun. |
+| 22 | Difference from CNE publication | Same six-file publisher; expected exit 7. Late-terminal prevents publication before output preparation; generate uses a separate two-file publisher. Retained CNE/late/generate not rerun. |
+| 23 | Historical equivalent witnesses | Phase1 run fce52e4e-5af6-4d92-acfb-9676e3f9cd79 and Phase2D generic-input3b8472f3-fdfe-4c96-b02d-b249db564a8f have verified complete INPUT_ERROR / exit 11 bundles. publication.mjs byte-identical; corrected helper/CLI and distributions differ. Phase2D matches logical current missing.mip setup and core/verifier bytes. Neither replaces C3CB gate; exact identities in historical-witnesses.json. |
+| 24 | Harness setup audit | Unique campaign root exist_ok=False; fresh case mkdir; copy three files; mutate candidate path only; close config; synchronous observed CLI. No shared output, parallel cases, output precreation, early deletion or harness cleanup race. Failure finally blocks write evidence only. No setup defect demonstrated. |
+| 25 | Path ownership classification | CALLER_REQUIRED workspace/config/input capabilities; PREEXISTING_PACKAGE install/helper/Node; PRODUCT_REQUIRED output directories/run/final files; TEMPORARY_INTERNAL pending/staged files; HARNESS_ONLY isolated case/evidence/logs. Output directory absence is not omitted caller setup. |
+| 26 | Handle/process findings | Original observer records no remaining owned processes and opens process handles, not bundle files. Current bounded lookup found no original root4292/helper19232/helper12660/harness13184. Original arbitrary-process file handles unknown. Helper18 conservative external residence lower bound3294ms exceeds the2000ms success deadline but includes possible shutdown/reaping; original callback/errno not captured. Narrow retained event logs contain no matching events; absence does not establish or exclude interference. |
+| 27 | Controlled reproduction 1 | PASS observation: 20260927T205808-b8cd68, run 1b5c6a07-b6a4-459b-a285-b957f30097be. Actual INPUT_ERROR / exit 11 / COMPLETE; exact four files,20 helpers, no remaining owned processes; installed 94-member inventory unchanged. [20260927T205808-b8cd68](C:/Users/melsa/Documents/Codex/cca-mo1306-3a-refresh/repositories/cca-conformance/evidence/mo1306/phase3a-publication-diagnostic/reproductions/20260927T205808-b8cd68/summary.json). No original publication-failure recurrence; no transient/resolution inference. |
+| 28 | Reproduction 2 if needed | PASS observation: 20260927T210033-e28397, run e15daacd-8526-4af6-851f-12d19f6c7a66. Actual INPUT_ERROR / exit 11 / COMPLETE; exact four files,20 helpers, no remaining owned processes; installed 94-member inventory unchanged. [20260927T210033-e28397](C:/Users/melsa/Documents/Codex/cca-mo1306-3a-refresh/repositories/cca-conformance/evidence/mo1306/phase3a-publication-diagnostic/reproductions/20260927T210033-e28397/summary.json). No original publication-failure recurrence; no transient/resolution inference. |
+| 29 | Reproduction 3 if needed | PASS observation: 20260927T210127-639d33, run 9535be36-2434-4e8e-abab-efc8d0f3b61d. Actual INPUT_ERROR / exit 11 / COMPLETE; exact four files,20 helpers, no remaining owned processes; installed 94-member inventory unchanged. [20260927T210127-639d33](C:/Users/melsa/Documents/Codex/cca-mo1306-3a-refresh/repositories/cca-conformance/evidence/mo1306/phase3a-publication-diagnostic/reproductions/20260927T210127-639d33/summary.json). No original publication-failure recurrence; no transient/resolution inference. |
+| 30 | Root-cause classification | ENVIRONMENT_BLOCKED / ORIGINAL_PUBLICATION_CAUSE_UNRESOLVED. Manifest finalization is localized; delayed helper 18 is a lead, not a proven root cause. Three instrumented passes do not establish harness fault, stale expectation, deterministic product defect or environment transient. |
+| 31 | Harness defect yes/no | NO proven harness/setup defect. Fresh exclusive workspace, correct copied fixtures/config, product-owned output paths, synchronous lifecycle and no harness file cleanup race were established. |
+| 32 | Stale expectation yes/no | NO. Independent contract/source/historical audit validates conditional complete four-file operational publication. |
+| 33 | Product defect yes/no | NOT PROVEN. Three unchanged installed-C3CB reproductions completed publication. Original long helper residence is evidence for investigation, not a captured internal timeout or late-success acceptance. No deterministic production-contract violation or product correction is established. |
+| 34 | Environment transient yes/no | NOT ESTABLISHED. No concrete original file-lock/security/resource/interruption evidence. Three later passes do not prove an environment transient. Classification remains PUBLICATION ENVIRONMENT BLOCKED. |
+| 35 | Partial-bundle safety | PASS by source and independent offline predicates: actual three directory entries or two files fail exact 4/6-member verifier; no marker means unpublished. CLI/provider/GitHub cannot promote completeness; upload requires complete=true. Truthful NONE / exit 17 remains operational failure. No dynamic verifier execution claimed by this audit. |
+| 36 | Failure atomicity requirement | Full rollback not required. Frozen contract permits incomplete diagnostic final files, mandates marker absence and known-temporary cleanup. Empty pending may remain. This does not close publication certification. |
+| 37 | Engineering changes if any | Diagnostic-only source/expectation/history/harness/path/event audits and instrumentation that records builtin calls/helper stdin/events without altering installed bytes. All three installed inventories retained 94 unchanged members. No harness fix, product change or deadline modification. |
+| 38 | Regression added if any | NONE. No proven harness defect exists to correct or add a defect regression for. Three bounded recurrence observations are diagnostics, not a new certification suite. |
+| 39 | Resolved missing-input result | Three faithful fresh reproductions returned INPUT_ERROR / exit 11 / COMPLETE with exact four files. Original failure cause remains unresolved; these observations do not close the affected certification gate or relabel the historical failure. |
+| 40 | Native certification result | NATIVE CERTIFICATION REMAINS BLOCKED. Eight accepted groups plus CLI/semantic parity are retained without rerun. No publication-resolution or native certification promotion. |
+| 41 | Hosted certification attempted yes/no | NO. Four GET-only remote observations; no campaign, push, default switch or dispatch. |
+| 42 | Certification branch state | Latest snapshot retains mo1306-certification at3096139e0108be22528859e4f462356dddf6ef29. Prepared local C3CB scaffold451599e7b95a537ebc2daac627b061fd88791dea not pushed. |
+| 43 | Default-branch switch state | NOT USED. GET reports main; no settings mutation. |
+| 44 | Hosted PASS | NOT EXECUTED; native certification not closed. |
+| 45 | Hosted FAIL | NOT EXECUTED; native certification not closed. |
+| 46 | Hosted CNE | NOT EXECUTED; native certification not closed. |
+| 47 | Hosted artifacts | None from this diagnostic; branch run count0. Repository artifact listing not repeated in bounded four-GET snapshot. |
+| 48 | Native/hosted parity | NOT EXECUTED; no hosted bundles. Retained native normative parity remains separate. |
+| 49 | Final default branch | main, independently observed by GET; never switched. |
+| 50 | Final remote main | 5955af062152a84c10de17860ba0bcabe8b3555f, independently observed unchanged; no main push. |
+| 51 | Final certification branch | 3096139e0108be22528859e4f462356dddf6ef29, independently observed unchanged; corrected local scaffold not pushed. |
+| 52 | Final 3A receipt | New execution-receipt.json records ENVIRONMENT_BLOCKED with original cause unresolved. Native/hosted certification, resolved gate, label promotion, final commit and Phase 3D readiness flags are false. Historical blocked receipts remain immutable. |
+| 53 | Final certification commit if successful | NONE. Successful final certification commit remains gated on native, hosted, artifacts, parity and restoration. |
+| 54 | Commit parent | N/A. Required successful certification direct parent C3CB701d48ee2012675966360dda775ab13013c09ab9. |
+| 55 | Production changes | NONE. All 94 installed package files remain unchanged; 624 historical files and the tracked checkout/index match their preserved state. |
+| 56 | Workspace verification | PASS: workspace-verification.json records historical f236c4a refresh checkout verification. This is not a constructed final C3CB certification checkout; package bindings checked separately. |
+| 57 | git diff --check | PASS for tracked checkout and all new diagnostic paths through a temporary Git index; actual index, HEAD and refs unchanged. No post-commit check applies because no commit was created. |
+| 58 | Final Git status | Historical branch and HEAD unchanged; no staged or tracked changes. Six untracked directories retain prior resolution/final evidence and tools plus the new diagnostic evidence and tools. No diagnostic or certification commit was created. |
+| 59 | Pushes | ZERO in diagnostic; no main/certification ref update. |
+| 60 | Tags | No tags/releases created. |
+| 61 | Linux/Ubuntu/WSL | NOT USED. |
+| 62 | VM | NOT USED. |
+| 63 | Other provider accounts | NOT USED. No GitLab/Jenkins/Azure account activity. |
+| 64 | Duration | 16.43 minutes from 2026-09-27T20:50:50+00:00 through evidence closure 2026-09-27T21:07:15.964640+00:00; diagnostic target <=30 minutes; no hosted extension used. |
+| 65 | Exact next task | Next task: focused attribution of the manifest-finalization failure, correlating Windows native process-start/scheduling/file-I/O observations with the existing helper/API instrumentation during a separately authorized affected-case capture. Establish a concrete cause before any remedy and gate closure. Preserve accepted groups and deadlines; no further reproduction or hosted work in this task because the three-run cap is reached. |
+
+Exact original argument vector:
+
+```json
+[
+  "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-3a-refresh\\.cache\\mo1306-phase3a-final\\node-v24.21.0-win-x64\\node.exe",
+  "--max-old-space-size=128",
+  "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-3a-refresh\\.cache\\mo1306-phase3a-final\\install\\node_modules\\memoryos-ci\\bin\\memoryos-ci.mjs",
+  "run",
+  "--workspace",
+  "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-3a-refresh\\.cache\\mo1306-phase3a-final\\n-20260927T120240-b3df86\\error-input",
+  "--config",
+  "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-3a-refresh\\.cache\\mo1306-phase3a-final\\n-20260927T120240-b3df86\\error-input\\memoryos-ci.json",
+  "--provider",
+  "generic"
+]
+```
+
+Original parsed configuration (canonical bytes bound in historical receipt):
+
+```json
+{
+  "context": {
+    "candidateMip": "missing.mip"
+  },
+  "kind": "MemoryOSCICDConfiguration",
+  "operation": "evaluatePolicy",
+  "output": {
+    "directory": ".memoryos-ci/out"
+  },
+  "policy": {
+    "expectedSemanticDigest": "sha256:bc0cb0880beac6408c3a7890c028b2d0cd1544e55b5e79864c564e23c4955157",
+    "path": "policy.json"
+  },
+  "version": "1.0.0"
+}
+```
+
+MO-1306 PHASE 3A PUBLICATION ENVIRONMENT BLOCKED

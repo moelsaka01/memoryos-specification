@@ -1,0 +1,703 @@
+TAP version 13
+# Subtest: T01 the two tar writers are byte-identical and a reader and system tar read the result
+ok 1 - T01 the two tar writers are byte-identical and a reader and system tar read the result
+  ---
+  duration_ms: 7.992241
+  type: 'test'
+  ...
+# Subtest: T02 tar bytes are canonical: mode, owner and time are fixed
+ok 2 - T02 tar bytes are canonical: mode, owner and time are fixed
+  ---
+  duration_ms: 0.780237
+  type: 'test'
+  ...
+# Subtest: T03 blob ids are computed without git and match it
+ok 3 - T03 blob ids are computed without git and match it
+  ---
+  duration_ms: 8.064126
+  type: 'test'
+  ...
+# Subtest: E01 the object-database, git-archive and clean-worktree assemblies agree, and so do the archives
+ok 4 - E01 the object-database, git-archive and clean-worktree assemblies agree, and so do the archives
+  ---
+  duration_ms: 526.333995
+  type: 'test'
+  ...
+# Subtest: A01 lineage, changed paths and released bytes hold for HEAD
+not ok 5 - A01 lineage, changed paths and released bytes hold for HEAD
+  ---
+  duration_ms: 1362.443366
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1308_phase3b_test.mjs:107:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'docs/mo1309-cloud-dashboard.md is outside the allowed path set',
+    +   'docs/mo1309-contract-freeze-1.md is outside the allowed path set',
+    +   'docs/mo1309-handoff.md is outside the allowed path set',
+    +   'docs/mo1309-phase1-handoff.md is outside the allowed path set',
+    +   'docs/mo1309-phase2-handoff.md is outside the allowed path set',
+    +   'docs/mo1309-phase2c-trust-review.md is outside the allowed path set',
+    +   'docs/mo1309-phase2d-budgets.json is outside the allowed path set',
+    +   'docs/mo1309-phase2d-cloud-report.json is outside the allowed path set',
+    +   'docs/mo1309-phase2d-performance.md is outside the allowed path set',
+    +   'docs/mo1309-phase2d-windows-run.md is outside the allowed path set',
+    +   'docs/mo1309-phase3-cloud-report.json is outside the allowed path set',
+    +   'docs/mo1309-phase4-windows-plan.md is outside the allowed path set',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-rehearsal/4a/4a-receipt.json is outside the allowed path set',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-rehearsal/4b/4b-receipt.json is outside the allowed path set',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-rehearsal/4c/4c-receipt.json is outside the allowed path set',
+    +   'repositories/cca-conformance/mo1308-final-binding.json is outside the allowed path set',
+    +   'repositories/cca-conformance/mo1308-final-release-inventory.json is outside the allowed path set',
+    +   'repositories/cca-conformance/mo1309-conformance-inventory.json is outside the allowed path set',
+    +   'repositories/cca-conformance/mo1309-test-manifest.json is outside the allowed path set',
+    +   'repositories/cca-conformance/tests/mo1309_audit_test.mjs is outside the allowed path set',
+    +   'repositories/cca-conformance/tests/mo1309_campaigns_test.mjs is outside the allowed path set',
+    +   'repositories/cca-conformance/tests/mo1309_inventory_test.mjs is outside the allowed path set',
+    +   'repositories/cca-conformance/tests/mo1309_manifest_test.mjs is outside the allowed path set',
+    +   'repositories/cca-conformance/tests/mo1309_validator_test.mjs is outside the allowed path set',
+    +   'repositories/cca-conformance/tools/mo1309/assemble-final.mjs is outside the allowed path set',
+    +   'repositories/cca-conformance/tools/mo1309/audit.mjs is outside the allowed path set',
+    +   'repositories/cca-conformance/tools/mo1309/campaigns.mjs is outside the allowed path set',
+    +   'repositories/cca-conformance/tools/mo1309/differential-gate.mjs is outside the allowed path set',
+    +   'repositories/cca-conformance/tools/mo1309/inventory.mjs is outside the allowed path set',
+    +   'repositories/cca-conformance/tools/mo1309/run-tests.mjs is outside the allowed path set',
+    +   'repositories/cca-conformance/tools/mo1309/validate.mjs is outside the allowed path set',
+    +   'repositories/cca-studio/scripts/generate-memoryos-dashboard-fixtures.mjs is outside the allowed path set',
+    +   'repositories/cca-studio/scripts/memoryos-dashboard-generator.mjs is outside the allowed path set',
+    +   'repositories/cca-studio/scripts/memoryos-dashboard-perf-budget.mjs is outside the allowed path set',
+    +   'repositories/cca-studio/scripts/memoryos-dashboard-perf-corpus.mjs is outside the allowed path set',
+    +   'repositories/cca-studio/scripts/memoryos-dashboard-perf.mjs is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/entries/00000000000000000000.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/entries/00000000000000000001.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/entries/00000000000000000002.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/entries/00000000000000000003.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/entries/00000000000000000004.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/memoryos-history-export-complete.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/memoryos-history-export.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/memoryos-history-ledger.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/6bf693c5e62656d255222d1ff9c8dcc53282482d3d542d2794038368d33f86af/memoryos-ci-artifacts.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/6bf693c5e62656d255222d1ff9c8dcc53282482d3d542d2794038368d33f86af/memoryos-ci-complete.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/6bf693c5e62656d255222d1ff9c8dcc53282482d3d542d2794038368d33f86af/memoryos-ci-evidence.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/6bf693c5e62656d255222d1ff9c8dcc53282482d3d542d2794038368d33f86af/memoryos-ci-result.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/c21c9376c3fda5ab8bb36cea7318a90e1c273df7d34646baddd83b9f92041623/human-decision.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/e52eee1ad38d32de46bc146aa307e9acb7b116bb664b39197016726c84b493a8/memoryos-readiness-result.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/view-model.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000000.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000001.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000002.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000003.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000004.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000005.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000006.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000007.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000008.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000009.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/memoryos-history-export-complete.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/memoryos-history-export.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/memoryos-history-ledger.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/029318176746fc541e4d2e7ea5256db0d1db05539ac1bade8a92eb9bdbd53825/evaluation-identity.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/029318176746fc541e4d2e7ea5256db0d1db05539ac1bade8a92eb9bdbd53825/policy-outcome.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/0d46ac4035dac90af7ef41ff4c838dce6f4b715febff1ce55431e1b2295d4625/regression-report.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/evaluation-identity.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/memoryos-ci-artifacts.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/memoryos-ci-complete.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/memoryos-ci-evidence.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/memoryos-ci-result.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/policy-outcome.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/1fdd6fd9c839092b2f53dbcf365ebc1dc99c63da74d0c40d75b3ddbdb9131b8c/human-decision.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/c21c9376c3fda5ab8bb36cea7318a90e1c273df7d34646baddd83b9f92041623/human-decision.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/cf5ccc111c309d6ffbd5eae217f501805420ea16146252cf87f948ba4625d2dd/memoryos-readiness-result.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/e52eee1ad38d32de46bc146aa307e9acb7b116bb664b39197016726c84b493a8/memoryos-readiness-result.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/eda8bda4beec4d81d347f92b66a9e92db2dfc824555a229895b112f9adaac394/checkpoint.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/view-model.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/entries/00000000000000000000.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/entries/00000000000000000001.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/entries/00000000000000000002.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/entries/00000000000000000003.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/memoryos-history-export-complete.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/memoryos-history-export.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/memoryos-history-ledger.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/records/47e0a37dc1b060fa3ab8164955f5650827cd32fb50b081047a8ef6ecfae44628/human-decision.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/records/c21c9376c3fda5ab8bb36cea7318a90e1c273df7d34646baddd83b9f92041623/human-decision.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/records/cf5ccc111c309d6ffbd5eae217f501805420ea16146252cf87f948ba4625d2dd/memoryos-readiness-result.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/records/e52eee1ad38d32de46bc146aa307e9acb7b116bb664b39197016726c84b493a8/memoryos-readiness-result.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/view-model.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/empty/export/memoryos-history-export-complete.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/empty/export/memoryos-history-export.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/empty/export/memoryos-history-ledger.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/empty/view-model.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/entries/00000000000000000000.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/memoryos-history-export-complete.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/memoryos-history-export.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/memoryos-history-ledger.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/records/964de0c3089f51358953edeb0b4b2d505b6a8c4eafa6ae500bb998ff5010c533/evaluation-identity.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/records/964de0c3089f51358953edeb0b4b2d505b6a8c4eafa6ae500bb998ff5010c533/policy-outcome.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/view-model.json is outside the allowed path set',
+    +   'repositories/cca-studio/tests/support-dashboard-determinism-probe.mjs is outside the allowed path set',
+    +   'repositories/cca-studio/tests/support-dashboard-differential.mjs is outside the allowed path set',
+    +   'repositories/cca-studio/tests/support-dashboard-fixtures.mjs is outside the allowed path set',
+    +   'repositories/cca-studio/tests/support-dashboard-mini-snapshot.mjs is outside the allowed path set',
+    +   'repositories/cca-studio/tests/support-dashboard-reference-viewmodel.mjs is outside the allowed path set',
+    +   'repositories/cca-studio/tests/support-dashboard-snapshot.mjs is outside the allowed path set',
+    +   'repositories/cca-studio/tests/support-dashboard-synthetic.mjs is outside the allowed path set',
+    +   'repositories/cca-studio/tests/support-devtools.mjs is outside the allowed path set',
+    +   'repositories/cca-studio/web/dashboard/page.css is outside the allowed path set',
+    +   'repositories/cca-studio/web/dashboard/page.html is outside the allowed path set',
+    +   'repositories/cca-studio/web/dashboard/page.js is outside the allowed path set',
+    +   'repositories/cca-studio/web/js/memoryos-dashboard-contract.js is outside the allowed path set',
+    +   'repositories/cca-studio/web/js/memoryos-dashboard-dataclass.js is outside the allowed path set',
+    +   'repositories/cca-studio/web/js/memoryos-dashboard-snapshot.js is outside the allowed path set',
+    +   'repositories/cca-studio/web/js/memoryos-dashboard-viewmodel.js is outside the allowed path set',
+    +   'repositories/cca-studio/web/js/memoryos-dashboard-wording.js is outside the allowed path set'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'docs/mo1309-cloud-dashboard.md is outside the allowed path set'
+    1: 'docs/mo1309-contract-freeze-1.md is outside the allowed path set'
+    2: 'docs/mo1309-handoff.md is outside the allowed path set'
+    3: 'docs/mo1309-phase1-handoff.md is outside the allowed path set'
+    4: 'docs/mo1309-phase2-handoff.md is outside the allowed path set'
+    5: 'docs/mo1309-phase2c-trust-review.md is outside the allowed path set'
+    6: 'docs/mo1309-phase2d-budgets.json is outside the allowed path set'
+    7: 'docs/mo1309-phase2d-cloud-report.json is outside the allowed path set'
+    8: 'docs/mo1309-phase2d-performance.md is outside the allowed path set'
+    9: 'docs/mo1309-phase2d-windows-run.md is outside the allowed path set'
+    10: 'docs/mo1309-phase3-cloud-report.json is outside the allowed path set'
+    11: 'docs/mo1309-phase4-windows-plan.md is outside the allowed path set'
+    12: 'repositories/cca-conformance/evidence/mo1309/phase3-rehearsal/4a/4a-receipt.json is outside the allowed path set'
+    13: 'repositories/cca-conformance/evidence/mo1309/phase3-rehearsal/4b/4b-receipt.json is outside the allowed path set'
+    14: 'repositories/cca-conformance/evidence/mo1309/phase3-rehearsal/4c/4c-receipt.json is outside the allowed path set'
+    15: 'repositories/cca-conformance/mo1308-final-binding.json is outside the allowed path set'
+    16: 'repositories/cca-conformance/mo1308-final-release-inventory.json is outside the allowed path set'
+    17: 'repositories/cca-conformance/mo1309-conformance-inventory.json is outside the allowed path set'
+    18: 'repositories/cca-conformance/mo1309-test-manifest.json is outside the allowed path set'
+    19: 'repositories/cca-conformance/tests/mo1309_audit_test.mjs is outside the allowed path set'
+    20: 'repositories/cca-conformance/tests/mo1309_campaigns_test.mjs is outside the allowed path set'
+    21: 'repositories/cca-conformance/tests/mo1309_inventory_test.mjs is outside the allowed path set'
+    22: 'repositories/cca-conformance/tests/mo1309_manifest_test.mjs is outside the allowed path set'
+    23: 'repositories/cca-conformance/tests/mo1309_validator_test.mjs is outside the allowed path set'
+    24: 'repositories/cca-conformance/tools/mo1309/assemble-final.mjs is outside the allowed path set'
+    25: 'repositories/cca-conformance/tools/mo1309/audit.mjs is outside the allowed path set'
+    26: 'repositories/cca-conformance/tools/mo1309/campaigns.mjs is outside the allowed path set'
+    27: 'repositories/cca-conformance/tools/mo1309/differential-gate.mjs is outside the allowed path set'
+    28: 'repositories/cca-conformance/tools/mo1309/inventory.mjs is outside the allowed path set'
+    29: 'repositories/cca-conformance/tools/mo1309/run-tests.mjs is outside the allowed path set'
+    30: 'repositories/cca-conformance/tools/mo1309/validate.mjs is outside the allowed path set'
+    31: 'repositories/cca-studio/scripts/generate-memoryos-dashboard-fixtures.mjs is outside the allowed path set'
+    32: 'repositories/cca-studio/scripts/memoryos-dashboard-generator.mjs is outside the allowed path set'
+    33: 'repositories/cca-studio/scripts/memoryos-dashboard-perf-budget.mjs is outside the allowed path set'
+    34: 'repositories/cca-studio/scripts/memoryos-dashboard-perf-corpus.mjs is outside the allowed path set'
+    35: 'repositories/cca-studio/scripts/memoryos-dashboard-perf.mjs is outside the allowed path set'
+    36: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/entries/00000000000000000000.json is outside the allowed path set'
+    37: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/entries/00000000000000000001.json is outside the allowed path set'
+    38: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/entries/00000000000000000002.json is outside the allowed path set'
+    39: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/entries/00000000000000000003.json is outside the allowed path set'
+    40: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/entries/00000000000000000004.json is outside the allowed path set'
+    41: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/memoryos-history-export-complete.json is outside the allowed path set'
+    42: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/memoryos-history-export.json is outside the allowed path set'
+    43: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/memoryos-history-ledger.json is outside the allowed path set'
+    44: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/6bf693c5e62656d255222d1ff9c8dcc53282482d3d542d2794038368d33f86af/memoryos-ci-artifacts.json is outside the allowed path set'
+    45: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/6bf693c5e62656d255222d1ff9c8dcc53282482d3d542d2794038368d33f86af/memoryos-ci-complete.json is outside the allowed path set'
+    46: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/6bf693c5e62656d255222d1ff9c8dcc53282482d3d542d2794038368d33f86af/memoryos-ci-evidence.json is outside the allowed path set'
+    47: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/6bf693c5e62656d255222d1ff9c8dcc53282482d3d542d2794038368d33f86af/memoryos-ci-result.json is outside the allowed path set'
+    48: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/c21c9376c3fda5ab8bb36cea7318a90e1c273df7d34646baddd83b9f92041623/human-decision.json is outside the allowed path set'
+    49: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/e52eee1ad38d32de46bc146aa307e9acb7b116bb664b39197016726c84b493a8/memoryos-readiness-result.json is outside the allowed path set'
+    50: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/view-model.json is outside the allowed path set'
+    51: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000000.json is outside the allowed path set'
+    52: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000001.json is outside the allowed path set'
+    53: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000002.json is outside the allowed path set'
+    54: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000003.json is outside the allowed path set'
+    55: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000004.json is outside the allowed path set'
+    56: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000005.json is outside the allowed path set'
+    57: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000006.json is outside the allowed path set'
+    58: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000007.json is outside the allowed path set'
+    59: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000008.json is outside the allowed path set'
+    60: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000009.json is outside the allowed path set'
+    61: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/memoryos-history-export-complete.json is outside the allowed path set'
+    62: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/memoryos-history-export.json is outside the allowed path set'
+    63: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/memoryos-history-ledger.json is outside the allowed path set'
+    64: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/029318176746fc541e4d2e7ea5256db0d1db05539ac1bade8a92eb9bdbd53825/evaluation-identity.json is outside the allowed path set'
+    65: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/029318176746fc541e4d2e7ea5256db0d1db05539ac1bade8a92eb9bdbd53825/policy-outcome.json is outside the allowed path set'
+    66: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/0d46ac4035dac90af7ef41ff4c838dce6f4b715febff1ce55431e1b2295d4625/regression-report.json is outside the allowed path set'
+    67: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/evaluation-identity.json is outside the allowed path set'
+    68: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/memoryos-ci-artifacts.json is outside the allowed path set'
+    69: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/memoryos-ci-complete.json is outside the allowed path set'
+    70: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/memoryos-ci-evidence.json is outside the allowed path set'
+    71: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/memoryos-ci-result.json is outside the allowed path set'
+    72: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/policy-outcome.json is outside the allowed path set'
+    73: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/1fdd6fd9c839092b2f53dbcf365ebc1dc99c63da74d0c40d75b3ddbdb9131b8c/human-decision.json is outside the allowed path set'
+    74: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/c21c9376c3fda5ab8bb36cea7318a90e1c273df7d34646baddd83b9f92041623/human-decision.json is outside the allowed path set'
+    75: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/cf5ccc111c309d6ffbd5eae217f501805420ea16146252cf87f948ba4625d2dd/memoryos-readiness-result.json is outside the allowed path set'
+    76: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/e52eee1ad38d32de46bc146aa307e9acb7b116bb664b39197016726c84b493a8/memoryos-readiness-result.json is outside the allowed path set'
+    77: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/eda8bda4beec4d81d347f92b66a9e92db2dfc824555a229895b112f9adaac394/checkpoint.json is outside the allowed path set'
+    78: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/view-model.json is outside the allowed path set'
+    79: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/entries/00000000000000000000.json is outside the allowed path set'
+    80: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/entries/00000000000000000001.json is outside the allowed path set'
+    81: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/entries/00000000000000000002.json is outside the allowed path set'
+    82: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/entries/00000000000000000003.json is outside the allowed path set'
+    83: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/memoryos-history-export-complete.json is outside the allowed path set'
+    84: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/memoryos-history-export.json is outside the allowed path set'
+    85: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/memoryos-history-ledger.json is outside the allowed path set'
+    86: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/records/47e0a37dc1b060fa3ab8164955f5650827cd32fb50b081047a8ef6ecfae44628/human-decision.json is outside the allowed path set'
+    87: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/records/c21c9376c3fda5ab8bb36cea7318a90e1c273df7d34646baddd83b9f92041623/human-decision.json is outside the allowed path set'
+    88: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/records/cf5ccc111c309d6ffbd5eae217f501805420ea16146252cf87f948ba4625d2dd/memoryos-readiness-result.json is outside the allowed path set'
+    89: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/records/e52eee1ad38d32de46bc146aa307e9acb7b116bb664b39197016726c84b493a8/memoryos-readiness-result.json is outside the allowed path set'
+    90: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/view-model.json is outside the allowed path set'
+    91: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/empty/export/memoryos-history-export-complete.json is outside the allowed path set'
+    92: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/empty/export/memoryos-history-export.json is outside the allowed path set'
+    93: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/empty/export/memoryos-history-ledger.json is outside the allowed path set'
+    94: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/empty/view-model.json is outside the allowed path set'
+    95: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/entries/00000000000000000000.json is outside the allowed path set'
+    96: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/memoryos-history-export-complete.json is outside the allowed path set'
+    97: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/memoryos-history-export.json is outside the allowed path set'
+    98: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/memoryos-history-ledger.json is outside the allowed path set'
+    99: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/records/964de0c3089f51358953edeb0b4b2d505b6a8c4eafa6ae500bb998ff5010c533/evaluation-identity.json is outside the allowed path set'
+    100: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/records/964de0c3089f51358953edeb0b4b2d505b6a8c4eafa6ae500bb998ff5010c533/policy-outcome.json is outside the allowed path set'
+    101: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/view-model.json is outside the allowed path set'
+    102: 'repositories/cca-studio/tests/support-dashboard-determinism-probe.mjs is outside the allowed path set'
+    103: 'repositories/cca-studio/tests/support-dashboard-differential.mjs is outside the allowed path set'
+    104: 'repositories/cca-studio/tests/support-dashboard-fixtures.mjs is outside the allowed path set'
+    105: 'repositories/cca-studio/tests/support-dashboard-mini-snapshot.mjs is outside the allowed path set'
+    106: 'repositories/cca-studio/tests/support-dashboard-reference-viewmodel.mjs is outside the allowed path set'
+    107: 'repositories/cca-studio/tests/support-dashboard-snapshot.mjs is outside the allowed path set'
+    108: 'repositories/cca-studio/tests/support-dashboard-synthetic.mjs is outside the allowed path set'
+    109: 'repositories/cca-studio/tests/support-devtools.mjs is outside the allowed path set'
+    110: 'repositories/cca-studio/web/dashboard/page.css is outside the allowed path set'
+    111: 'repositories/cca-studio/web/dashboard/page.html is outside the allowed path set'
+    112: 'repositories/cca-studio/web/dashboard/page.js is outside the allowed path set'
+    113: 'repositories/cca-studio/web/js/memoryos-dashboard-contract.js is outside the allowed path set'
+    114: 'repositories/cca-studio/web/js/memoryos-dashboard-dataclass.js is outside the allowed path set'
+    115: 'repositories/cca-studio/web/js/memoryos-dashboard-snapshot.js is outside the allowed path set'
+    116: 'repositories/cca-studio/web/js/memoryos-dashboard-viewmodel.js is outside the allowed path set'
+    117: 'repositories/cca-studio/web/js/memoryos-dashboard-wording.js is outside the allowed path set'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1308_phase3b_test.mjs:113:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: B01 released closures, vendored SDK copies, Action manifest and the readiness package hold
+ok 6 - B01 released closures, vendored SDK copies, Action manifest and the readiness package hold
+  ---
+  duration_ms: 1874.333764
+  type: 'test'
+  ...
+# Subtest: B02 the tags are the pinned ones; two are independently recorded in the Freeze
+not ok 7 - B02 the tags are the pinned ones; two are independently recorded in the Freeze
+  ---
+  duration_ms: 77.530916
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1308_phase3b_test.mjs:139:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'memoryos-1.3-* tags are ["memoryos-1.3-mo1301","memoryos-1.3-mo1302","memoryos-1.3-mo1303","memoryos-1.3-mo1304","memoryos-1.3-mo1305","memoryos-1.3-mo1306","memoryos-1.3-mo1307","memoryos-1.3-mo1308"], expected ["memoryos-1.3-mo1301","memoryos-1.3-mo1302","memoryos-1.3-mo1303","memoryos-1.3-mo1304","memoryos-1.3-mo1305","memoryos-1.3-mo1306","memoryos-1.3-mo1307"]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'memoryos-1.3-* tags are ["memoryos-1.3-mo1301","memoryos-1.3-mo1302","memoryos-1.3-mo1303","memoryos-1.3-mo1304","memoryos-1.3-mo1305","memoryos-1.3-mo1306","memoryos-1.3-mo1307","memoryos-1.3-mo1308"], expected ["memoryos-1.3-mo1301","memoryos-1.3-mo1302","memoryos-1.3-mo1303","memoryos-1.3-mo1304","memoryos-1.3-mo1305","memoryos-1.3-mo1306","memoryos-1.3-mo1307"]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1308_phase3b_test.mjs:141:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: B03 the pinned baseline is reproducible from the repository tags
+ok 8 - B03 the pinned baseline is reproducible from the repository tags
+  ---
+  duration_ms: 170.867269
+  type: 'test'
+  ...
+# Subtest: C01 dependency, import, history-boundary, no-I/O and supply audits hold for HEAD
+ok 9 - C01 dependency, import, history-boundary, no-I/O and supply audits hold for HEAD
+  ---
+  duration_ms: 2556.122682
+  type: 'test'
+  ...
+# Subtest: C02 the forbidden-identifier scan ignores strings, comments, properties and object keys
+ok 10 - C02 the forbidden-identifier scan ignores strings, comments, properties and object keys
+  ---
+  duration_ms: 0.555285
+  type: 'test'
+  ...
+# Subtest: N01 a changed production blob breaks the identity and the closure-equals-identity audits
+ok 11 - N01 a changed production blob breaks the identity and the closure-equals-identity audits
+  ---
+  duration_ms: 2136.919565
+  type: 'test'
+  ...
+# Subtest: N02 released content is protected: a vendored SDK, a closure file, an addition to a closure, a released document
+ok 12 - N02 released content is protected: a vendored SDK, a closure file, an addition to a closure, a released document
+  ---
+  duration_ms: 825.209549
+  type: 'test'
+  ...
+# Subtest: N03 the readiness package and the Action bundle detect a changed member
+ok 13 - N03 the readiness package and the Action bundle detect a changed member
+  ---
+  duration_ms: 2215.814226
+  type: 'test'
+  ...
+# Subtest: N04 dependency manifests: a new dependency, a changed lockfile, an added manifest and a wrong version are all findings
+ok 14 - N04 dependency manifests: a new dependency, a changed lockfile, an added manifest and a wrong version are all findings
+  ---
+  duration_ms: 2019.00624
+  type: 'test'
+  ...
+# Subtest: N05 the history boundary: an SDK import, a node import and process use are findings
+ok 15 - N05 the history boundary: an SDK import, a node import and process use are findings
+  ---
+  duration_ms: 2091.497397
+  type: 'test'
+  ...
+# Subtest: N06 supply: a changed license, an added notice and a third copy of the hand-written hash are findings
+ok 16 - N06 supply: a changed license, an added notice and a third copy of the hand-written hash are findings
+  ---
+  duration_ms: 2887.432486
+  type: 'test'
+  ...
+# Subtest: N07 lineage: a rewritten Freeze, a missing amendment and a path outside the allowed set are findings
+not ok 17 - N07 lineage: a rewritten Freeze, a missing amendment and a path outside the allowed set are findings
+  ---
+  duration_ms: 471.483128
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1308_phase3b_test.mjs:248:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'docs/mo1309-cloud-dashboard.md',
+    +   'docs/mo1309-contract-freeze-1.md',
+    +   'docs/mo1309-handoff.md',
+    +   'docs/mo1309-phase1-handoff.md',
+    +   'docs/mo1309-phase2-handoff.md',
+    +   'docs/mo1309-phase2c-trust-review.md',
+    +   'docs/mo1309-phase2d-budgets.json',
+    +   'docs/mo1309-phase2d-cloud-report.json',
+    +   'docs/mo1309-phase2d-performance.md',
+    +   'docs/mo1309-phase2d-windows-run.md',
+    +   'docs/mo1309-phase3-cloud-report.json',
+    +   'docs/mo1309-phase4-windows-plan.md',
+        'package.json',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-rehearsal/4a/4a-receipt.json',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-rehearsal/4b/4b-receipt.json',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-rehearsal/4c/4c-receipt.json',
+    +   'repositories/cca-conformance/mo1308-final-binding.json',
+    +   'repositories/cca-conformance/mo1308-final-release-inventory.json',
+    +   'repositories/cca-conformance/mo1309-conformance-inventory.json',
+    +   'repositories/cca-conformance/mo1309-test-manifest.json',
+    +   'repositories/cca-conformance/tests/mo1309_audit_test.mjs',
+    +   'repositories/cca-conformance/tests/mo1309_campaigns_test.mjs',
+    +   'repositories/cca-conformance/tests/mo1309_inventory_test.mjs',
+    +   'repositories/cca-conformance/tests/mo1309_manifest_test.mjs',
+    +   'repositories/cca-conformance/tests/mo1309_validator_test.mjs',
+    +   'repositories/cca-conformance/tools/mo1309/assemble-final.mjs',
+    +   'repositories/cca-conformance/tools/mo1309/audit.mjs',
+    +   'repositories/cca-conformance/tools/mo1309/campaigns.mjs',
+    +   'repositories/cca-conformance/tools/mo1309/differential-gate.mjs',
+    +   'repositories/cca-conformance/tools/mo1309/inventory.mjs',
+    +   'repositories/cca-conformance/tools/mo1309/run-tests.mjs',
+    +   'repositories/cca-conformance/tools/mo1309/validate.mjs',
+    +   'repositories/cca-studio/scripts/generate-memoryos-dashboard-fixtures.mjs',
+    +   'repositories/cca-studio/scripts/memoryos-dashboard-generator.mjs',
+    +   'repositories/cca-studio/scripts/memoryos-dashboard-perf-budget.mjs',
+    +   'repositories/cca-studio/scripts/memoryos-dashboard-perf-corpus.mjs',
+    +   'repositories/cca-studio/scripts/memoryos-dashboard-perf.mjs',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/entries/00000000000000000000.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/entries/00000000000000000001.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/entries/00000000000000000002.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/entries/00000000000000000003.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/entries/00000000000000000004.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/memoryos-history-export-complete.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/memoryos-history-export.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/memoryos-history-ledger.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/6bf693c5e62656d255222d1ff9c8dcc53282482d3d542d2794038368d33f86af/memoryos-ci-artifacts.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/6bf693c5e62656d255222d1ff9c8dcc53282482d3d542d2794038368d33f86af/memoryos-ci-complete.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/6bf693c5e62656d255222d1ff9c8dcc53282482d3d542d2794038368d33f86af/memoryos-ci-evidence.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/6bf693c5e62656d255222d1ff9c8dcc53282482d3d542d2794038368d33f86af/memoryos-ci-result.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/c21c9376c3fda5ab8bb36cea7318a90e1c273df7d34646baddd83b9f92041623/human-decision.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/e52eee1ad38d32de46bc146aa307e9acb7b116bb664b39197016726c84b493a8/memoryos-readiness-result.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/view-model.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000000.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000001.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000002.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000003.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000004.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000005.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000006.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000007.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000008.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000009.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/memoryos-history-export-complete.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/memoryos-history-export.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/memoryos-history-ledger.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/029318176746fc541e4d2e7ea5256db0d1db05539ac1bade8a92eb9bdbd53825/evaluation-identity.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/029318176746fc541e4d2e7ea5256db0d1db05539ac1bade8a92eb9bdbd53825/policy-outcome.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/0d46ac4035dac90af7ef41ff4c838dce6f4b715febff1ce55431e1b2295d4625/regression-report.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/evaluation-identity.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/memoryos-ci-artifacts.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/memoryos-ci-complete.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/memoryos-ci-evidence.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/memoryos-ci-result.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/policy-outcome.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/1fdd6fd9c839092b2f53dbcf365ebc1dc99c63da74d0c40d75b3ddbdb9131b8c/human-decision.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/c21c9376c3fda5ab8bb36cea7318a90e1c273df7d34646baddd83b9f92041623/human-decision.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/cf5ccc111c309d6ffbd5eae217f501805420ea16146252cf87f948ba4625d2dd/memoryos-readiness-result.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/e52eee1ad38d32de46bc146aa307e9acb7b116bb664b39197016726c84b493a8/memoryos-readiness-result.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/eda8bda4beec4d81d347f92b66a9e92db2dfc824555a229895b112f9adaac394/checkpoint.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/view-model.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/entries/00000000000000000000.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/entries/00000000000000000001.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/entries/00000000000000000002.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/entries/00000000000000000003.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/memoryos-history-export-complete.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/memoryos-history-export.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/memoryos-history-ledger.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/records/47e0a37dc1b060fa3ab8164955f5650827cd32fb50b081047a8ef6ecfae44628/human-decision.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/records/c21c9376c3fda5ab8bb36cea7318a90e1c273df7d34646baddd83b9f92041623/human-decision.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/records/cf5ccc111c309d6ffbd5eae217f501805420ea16146252cf87f948ba4625d2dd/memoryos-readiness-result.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/records/e52eee1ad38d32de46bc146aa307e9acb7b116bb664b39197016726c84b493a8/memoryos-readiness-result.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/view-model.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/empty/export/memoryos-history-export-complete.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/empty/export/memoryos-history-export.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/empty/export/memoryos-history-ledger.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/empty/view-model.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/entries/00000000000000000000.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/memoryos-history-export-complete.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/memoryos-history-export.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/memoryos-history-ledger.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/records/964de0c3089f51358953edeb0b4b2d505b6a8c4eafa6ae500bb998ff5010c533/evaluation-identity.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/records/964de0c3089f51358953edeb0b4b2d505b6a8c4eafa6ae500bb998ff5010c533/policy-outcome.json',
+    +   'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/view-model.json',
+    +   'repositories/cca-studio/tests/support-dashboard-determinism-probe.mjs',
+    +   'repositories/cca-studio/tests/support-dashboard-differential.mjs',
+    +   'repositories/cca-studio/tests/support-dashboard-fixtures.mjs',
+    +   'repositories/cca-studio/tests/support-dashboard-mini-snapshot.mjs',
+    +   'repositories/cca-studio/tests/support-dashboard-reference-viewmodel.mjs',
+    +   'repositories/cca-studio/tests/support-dashboard-snapshot.mjs',
+    +   'repositories/cca-studio/tests/support-dashboard-synthetic.mjs',
+    +   'repositories/cca-studio/tests/support-devtools.mjs',
+    +   'repositories/cca-studio/web/dashboard/page.css',
+    +   'repositories/cca-studio/web/dashboard/page.html',
+    +   'repositories/cca-studio/web/dashboard/page.js',
+    +   'repositories/cca-studio/web/js/memoryos-dashboard-contract.js',
+    +   'repositories/cca-studio/web/js/memoryos-dashboard-dataclass.js',
+    +   'repositories/cca-studio/web/js/memoryos-dashboard-snapshot.js',
+    +   'repositories/cca-studio/web/js/memoryos-dashboard-viewmodel.js',
+    +   'repositories/cca-studio/web/js/memoryos-dashboard-wording.js',
+        'repositories/memoryos-readiness/src/new.mjs'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'package.json'
+    1: 'repositories/memoryos-readiness/src/new.mjs'
+  actual:
+    0: 'docs/mo1309-cloud-dashboard.md'
+    1: 'docs/mo1309-contract-freeze-1.md'
+    2: 'docs/mo1309-handoff.md'
+    3: 'docs/mo1309-phase1-handoff.md'
+    4: 'docs/mo1309-phase2-handoff.md'
+    5: 'docs/mo1309-phase2c-trust-review.md'
+    6: 'docs/mo1309-phase2d-budgets.json'
+    7: 'docs/mo1309-phase2d-cloud-report.json'
+    8: 'docs/mo1309-phase2d-performance.md'
+    9: 'docs/mo1309-phase2d-windows-run.md'
+    10: 'docs/mo1309-phase3-cloud-report.json'
+    11: 'docs/mo1309-phase4-windows-plan.md'
+    12: 'package.json'
+    13: 'repositories/cca-conformance/evidence/mo1309/phase3-rehearsal/4a/4a-receipt.json'
+    14: 'repositories/cca-conformance/evidence/mo1309/phase3-rehearsal/4b/4b-receipt.json'
+    15: 'repositories/cca-conformance/evidence/mo1309/phase3-rehearsal/4c/4c-receipt.json'
+    16: 'repositories/cca-conformance/mo1308-final-binding.json'
+    17: 'repositories/cca-conformance/mo1308-final-release-inventory.json'
+    18: 'repositories/cca-conformance/mo1309-conformance-inventory.json'
+    19: 'repositories/cca-conformance/mo1309-test-manifest.json'
+    20: 'repositories/cca-conformance/tests/mo1309_audit_test.mjs'
+    21: 'repositories/cca-conformance/tests/mo1309_campaigns_test.mjs'
+    22: 'repositories/cca-conformance/tests/mo1309_inventory_test.mjs'
+    23: 'repositories/cca-conformance/tests/mo1309_manifest_test.mjs'
+    24: 'repositories/cca-conformance/tests/mo1309_validator_test.mjs'
+    25: 'repositories/cca-conformance/tools/mo1309/assemble-final.mjs'
+    26: 'repositories/cca-conformance/tools/mo1309/audit.mjs'
+    27: 'repositories/cca-conformance/tools/mo1309/campaigns.mjs'
+    28: 'repositories/cca-conformance/tools/mo1309/differential-gate.mjs'
+    29: 'repositories/cca-conformance/tools/mo1309/inventory.mjs'
+    30: 'repositories/cca-conformance/tools/mo1309/run-tests.mjs'
+    31: 'repositories/cca-conformance/tools/mo1309/validate.mjs'
+    32: 'repositories/cca-studio/scripts/generate-memoryos-dashboard-fixtures.mjs'
+    33: 'repositories/cca-studio/scripts/memoryos-dashboard-generator.mjs'
+    34: 'repositories/cca-studio/scripts/memoryos-dashboard-perf-budget.mjs'
+    35: 'repositories/cca-studio/scripts/memoryos-dashboard-perf-corpus.mjs'
+    36: 'repositories/cca-studio/scripts/memoryos-dashboard-perf.mjs'
+    37: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/entries/00000000000000000000.json'
+    38: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/entries/00000000000000000001.json'
+    39: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/entries/00000000000000000002.json'
+    40: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/entries/00000000000000000003.json'
+    41: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/entries/00000000000000000004.json'
+    42: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/memoryos-history-export-complete.json'
+    43: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/memoryos-history-export.json'
+    44: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/memoryos-history-ledger.json'
+    45: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/6bf693c5e62656d255222d1ff9c8dcc53282482d3d542d2794038368d33f86af/memoryos-ci-artifacts.json'
+    46: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/6bf693c5e62656d255222d1ff9c8dcc53282482d3d542d2794038368d33f86af/memoryos-ci-complete.json'
+    47: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/6bf693c5e62656d255222d1ff9c8dcc53282482d3d542d2794038368d33f86af/memoryos-ci-evidence.json'
+    48: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/6bf693c5e62656d255222d1ff9c8dcc53282482d3d542d2794038368d33f86af/memoryos-ci-result.json'
+    49: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/c21c9376c3fda5ab8bb36cea7318a90e1c273df7d34646baddd83b9f92041623/human-decision.json'
+    50: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/export/records/e52eee1ad38d32de46bc146aa307e9acb7b116bb664b39197016726c84b493a8/memoryos-readiness-result.json'
+    51: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/adversarial-wording/view-model.json'
+    52: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000000.json'
+    53: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000001.json'
+    54: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000002.json'
+    55: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000003.json'
+    56: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000004.json'
+    57: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000005.json'
+    58: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000006.json'
+    59: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000007.json'
+    60: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000008.json'
+    61: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/entries/00000000000000000009.json'
+    62: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/memoryos-history-export-complete.json'
+    63: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/memoryos-history-export.json'
+    64: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/memoryos-history-ledger.json'
+    65: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/029318176746fc541e4d2e7ea5256db0d1db05539ac1bade8a92eb9bdbd53825/evaluation-identity.json'
+    66: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/029318176746fc541e4d2e7ea5256db0d1db05539ac1bade8a92eb9bdbd53825/policy-outcome.json'
+    67: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/0d46ac4035dac90af7ef41ff4c838dce6f4b715febff1ce55431e1b2295d4625/regression-report.json'
+    68: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/evaluation-identity.json'
+    69: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/memoryos-ci-artifacts.json'
+    70: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/memoryos-ci-complete.json'
+    71: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/memoryos-ci-evidence.json'
+    72: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/memoryos-ci-result.json'
+    73: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/14a888f733325169292f6bb9f4971587f213b072983243d77aeb267dbad6f8db/policy-outcome.json'
+    74: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/1fdd6fd9c839092b2f53dbcf365ebc1dc99c63da74d0c40d75b3ddbdb9131b8c/human-decision.json'
+    75: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/c21c9376c3fda5ab8bb36cea7318a90e1c273df7d34646baddd83b9f92041623/human-decision.json'
+    76: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/cf5ccc111c309d6ffbd5eae217f501805420ea16146252cf87f948ba4625d2dd/memoryos-readiness-result.json'
+    77: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/e52eee1ad38d32de46bc146aa307e9acb7b116bb664b39197016726c84b493a8/memoryos-readiness-result.json'
+    78: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/export/records/eda8bda4beec4d81d347f92b66a9e92db2dfc824555a229895b112f9adaac394/checkpoint.json'
+    79: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/all-kinds-tombstoned/view-model.json'
+    80: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/entries/00000000000000000000.json'
+    81: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/entries/00000000000000000001.json'
+    82: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/entries/00000000000000000002.json'
+    83: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/entries/00000000000000000003.json'
+    84: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/memoryos-history-export-complete.json'
+    85: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/memoryos-history-export.json'
+    86: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/memoryos-history-ledger.json'
+    87: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/records/47e0a37dc1b060fa3ab8164955f5650827cd32fb50b081047a8ef6ecfae44628/human-decision.json'
+    88: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/records/c21c9376c3fda5ab8bb36cea7318a90e1c273df7d34646baddd83b9f92041623/human-decision.json'
+    89: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/records/cf5ccc111c309d6ffbd5eae217f501805420ea16146252cf87f948ba4625d2dd/memoryos-readiness-result.json'
+    90: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/export/records/e52eee1ad38d32de46bc146aa307e9acb7b116bb664b39197016726c84b493a8/memoryos-readiness-result.json'
+    91: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/claims-only/view-model.json'
+    92: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/empty/export/memoryos-history-export-complete.json'
+    93: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/empty/export/memoryos-history-export.json'
+    94: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/empty/export/memoryos-history-ledger.json'
+    95: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/empty/view-model.json'
+    96: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/entries/00000000000000000000.json'
+    97: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/memoryos-history-export-complete.json'
+    98: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/memoryos-history-export.json'
+    99: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/memoryos-history-ledger.json'
+    100: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/records/964de0c3089f51358953edeb0b4b2d505b6a8c4eafa6ae500bb998ff5010c533/evaluation-identity.json'
+    101: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/export/records/964de0c3089f51358953edeb0b4b2d505b6a8c4eafa6ae500bb998ff5010c533/policy-outcome.json'
+    102: 'repositories/cca-studio/tests/fixtures/memoryos-dashboard/1.0.0/single-entry/view-model.json'
+    103: 'repositories/cca-studio/tests/support-dashboard-determinism-probe.mjs'
+    104: 'repositories/cca-studio/tests/support-dashboard-differential.mjs'
+    105: 'repositories/cca-studio/tests/support-dashboard-fixtures.mjs'
+    106: 'repositories/cca-studio/tests/support-dashboard-mini-snapshot.mjs'
+    107: 'repositories/cca-studio/tests/support-dashboard-reference-viewmodel.mjs'
+    108: 'repositories/cca-studio/tests/support-dashboard-snapshot.mjs'
+    109: 'repositories/cca-studio/tests/support-dashboard-synthetic.mjs'
+    110: 'repositories/cca-studio/tests/support-devtools.mjs'
+    111: 'repositories/cca-studio/web/dashboard/page.css'
+    112: 'repositories/cca-studio/web/dashboard/page.html'
+    113: 'repositories/cca-studio/web/dashboard/page.js'
+    114: 'repositories/cca-studio/web/js/memoryos-dashboard-contract.js'
+    115: 'repositories/cca-studio/web/js/memoryos-dashboard-dataclass.js'
+    116: 'repositories/cca-studio/web/js/memoryos-dashboard-snapshot.js'
+    117: 'repositories/cca-studio/web/js/memoryos-dashboard-viewmodel.js'
+    118: 'repositories/cca-studio/web/js/memoryos-dashboard-wording.js'
+    119: 'repositories/memoryos-readiness/src/new.mjs'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1308_phase3b_test.mjs:255:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: S01 the 3B definition covers every case, with nothing host-only
+ok 18 - S01 the 3B definition covers every case, with nothing host-only
+  ---
+  duration_ms: 1.462553
+  type: 'test'
+  ...
+# Subtest: S02 the tool sources use no network module and no package manager
+ok 19 - S02 the tool sources use no network module and no package manager
+  ---
+  duration_ms: 21.210213
+  type: 'test'
+  ...
+# Subtest: S03 a complete non-certifying rehearsal passes every case, verifies its own evidence, and writes the closure artifacts
+not ok 20 - S03 a complete non-certifying rehearsal passes every case, verifies its own evidence, and writes the closure artifacts
+  ---
+  duration_ms: 1276.807561
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1308_phase3b_test.mjs:273:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"stream":"3B","result":"REHEARSAL_FAILED","total":26,"executedPass":2,"failed":["3B-A3"],"escalated":[],"skippedHostOnly":[],"notRun":["3B-A4","3B-B1","3B-B2","3B-B3","3B-B4","3B-B5","3B-C1","3B-C2","3B-C3","3B-C4","3B-C5","3B-D1","3B-D2","3B-D3","3B-D4","3B-E1","3B-E2","3B-E3","3B-F1","3B-F2","3B-G1","3B-G2","3B-G3"],"outcomes":{}}
+    + actual - expected
+    
+    + 'REHEARSAL_FAILED'
+    - 'REHEARSAL_COMPLETED'
+                 ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'REHEARSAL_COMPLETED'
+  actual: 'REHEARSAL_FAILED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1308_phase3b_test.mjs:278:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: S04 a certifying seal needs the pinned Node and native Windows (G1 refuses a rehearsal-grade host)
+ok 21 - S04 a certifying seal needs the pinned Node and native Windows (G1 refuses a rehearsal-grade host)
+  ---
+  duration_ms: 438.648907
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 17
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 21163.470689

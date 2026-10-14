@@ -1,0 +1,51 @@
+{
+  "name": "cancel-during-helper",
+  "outcome": "PASS",
+  "elapsedMs": 1532.5465000000004,
+  "error": {
+    "code": "MO1307_CANCELLED",
+    "message": "MO1307_CANCELLED"
+  },
+  "detail": null,
+  "snapshot": {
+    "kind": "cli",
+    "deadline": 42625.7706,
+    "helpers": 1,
+    "workers": 0,
+    "helperUsedMs": 0,
+    "activeRole": "helper",
+    "cleanupConfirmed": false,
+    "publication": null,
+    "terminalCode": "MO1307_CANCELLED",
+    "terminalAt": 14138.1055,
+    "cleanupDeadline": 16138.1055,
+    "events": [
+      {
+        "type": "start",
+        "at": 12626.505,
+        "role": "helper",
+        "deadline": 17626.4634,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 12637.6404,
+        "role": "helper",
+        "pid": 26124,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "terminal",
+        "at": 14138.1227,
+        "code": "MO1307_CANCELLED",
+        "stage": "ACQUISITION"
+      },
+      {
+        "type": "cleanup",
+        "at": 14158.2088,
+        "role": "helper",
+        "confirmed": false
+      }
+    ]
+  }
+}

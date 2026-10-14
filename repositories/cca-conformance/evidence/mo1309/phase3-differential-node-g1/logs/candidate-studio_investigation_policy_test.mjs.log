@@ -1,0 +1,142 @@
+TAP version 13
+# Subtest: minimal frozen Policy fixture has exact canonical bytes and identities
+ok 1 - minimal frozen Policy fixture has exact canonical bytes and identities
+  ---
+  duration_ms: 16.016103
+  type: 'test'
+  ...
+# Subtest: prepared Policy authority is unforgeable and its evaluator view exposes only immutable data and byte copies
+ok 2 - prepared Policy authority is unforgeable and its evaluator view exposes only immutable data and byte copies
+  ---
+  duration_ms: 2.227389
+  type: 'test'
+  ...
+# Subtest: Policy preparation and retained authority resist post-import intrinsic poisoning
+ok 3 - Policy preparation and retained authority resist post-import intrinsic poisoning
+  ---
+  duration_ms: 4.692877
+  type: 'test'
+  ...
+# Subtest: Policy accepts surrounding whitespace but derives the exact canonical document
+ok 4 - Policy accepts surrounding whitespace but derives the exact canonical document
+  ---
+  duration_ms: 1.160544
+  type: 'test'
+  ...
+# Subtest: Policy metadata is valid, non-semantic, and document-identifying
+ok 5 - Policy metadata is valid, non-semantic, and document-identifying
+  ---
+  duration_ms: 3.982163
+  type: 'test'
+  ...
+# Subtest: Policy validates a multi-rule sequence against all registered parameter classes
+ok 6 - Policy validates a multi-rule sequence against all registered parameter classes
+  ---
+  duration_ms: 1.806354
+  type: 'test'
+  ...
+# Subtest: all six initial rule registrations prepare without executing
+ok 7 - all six initial rule registrations prepare without executing
+  ---
+  duration_ms: 6.469766
+  type: 'test'
+  ...
+# Subtest: Policy rejects duplicates, unknown members, and invalid stable versions
+ok 8 - Policy rejects duplicates, unknown members, and invalid stable versions
+  ---
+  duration_ms: 2.180523
+  type: 'test'
+  ...
+# Subtest: Policy preserves unsupported rule type and version classifications
+ok 9 - Policy preserves unsupported rule type and version classifications
+  ---
+  duration_ms: 1.240571
+  type: 'test'
+  ...
+# Subtest: registered parameter schemas are closed and enforce exact primitive/value contracts
+ok 10 - registered parameter schemas are closed and enforce exact primitive/value contracts
+  ---
+  duration_ms: 3.888516
+  type: 'test'
+  ...
+# Subtest: Policy syntax failures never become PASS, FAIL, or CNE
+ok 11 - Policy syntax failures never become PASS, FAIL, or CNE
+  ---
+  duration_ms: 0.877762
+  type: 'test'
+  ...
+# Subtest: minimal and multiple-child Policy Sets preserve order and semantic pins
+ok 12 - minimal and multiple-child Policy Sets preserve order and semantic pins
+  ---
+  duration_ms: 12.10069
+  type: 'test'
+  ...
+# Subtest: Policy Set metadata isolation preserves the frozen semantic identity
+ok 13 - Policy Set metadata isolation preserves the frozen semantic identity
+  ---
+  duration_ms: 2.42885
+  type: 'test'
+  ...
+# Subtest: Policy Set rejects zero children, malformed members, nested Sets, and unknown composition
+ok 14 - Policy Set rejects zero children, malformed members, nested Sets, and unknown composition
+  ---
+  duration_ms: 7.831781
+  type: 'test'
+  ...
+# Subtest: Policy Set rejects duplicate child identifiers and duplicate semantic digests
+ok 15 - Policy Set rejects duplicate child identifiers and duplicate semantic digests
+  ---
+  duration_ms: 3.244671
+  type: 'test'
+  ...
+# Subtest: Policy Set rejects a syntactically valid but incorrect semantic pin
+ok 16 - Policy Set rejects a syntactically valid but incorrect semantic pin
+  ---
+  duration_ms: 0.95476
+  type: 'test'
+  ...
+# Subtest: Policy Set outer raw gate precedes syntax and inline children have no raw transport gate
+ok 17 - Policy Set outer raw gate precedes syntax and inline children have no raw transport gate
+  ---
+  duration_ms: 1.48871
+  type: 'test'
+  ...
+# Subtest: Policy Set phase E is limit-major and pin verification precedes Set uniqueness
+ok 18 - Policy Set phase E is limit-major and pin verification precedes Set uniqueness
+  ---
+  duration_ms: 3.34684
+  type: 'test'
+  ...
+# Subtest: Phase-1 semantic identities intersect the final CF6 golden corpus exactly
+ok 19 - Phase-1 semantic identities intersect the final CF6 golden corpus exactly
+  ---
+  duration_ms: 13.164161
+  type: 'test'
+  ...
+# Subtest: the final closure vector corpora retain their reviewed source-byte identities
+ok 20 - the final closure vector corpora retain their reviewed source-byte identities
+  ---
+  duration_ms: 40.674667
+  type: 'test'
+  ...
+# Subtest: frozen boundary carriers enforce below/exact/first-above for limits 1-16
+ok 21 - frozen boundary carriers enforce below/exact/first-above for limits 1-16
+  ---
+  duration_ms: 217.072103
+  type: 'test'
+  ...
+# Subtest: limits 5 and 12 use the frozen machine-verifiable first-above unreachability proofs
+ok 22 - limits 5 and 12 use the frozen machine-verifiable first-above unreachability proofs
+  ---
+  duration_ms: 65.588649
+  type: 'test'
+  ...
+1..22
+# tests 22
+# suites 0
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 518.034093

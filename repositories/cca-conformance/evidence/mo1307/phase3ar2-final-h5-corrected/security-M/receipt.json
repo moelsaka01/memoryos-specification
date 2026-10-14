@@ -1,0 +1,473 @@
+{
+  "kind": "MO1307Phase3AR2C3VBFinalSecurity",
+  "stage": "M",
+  "semanticEvaluations": 0,
+  "result": "PASS",
+  "candidate": "17fa84efe46d30e6f4be85fd2427485677a222a3",
+  "productionCommit": "98b766f9218b209f52251147213839b9775f6da3",
+  "productionTree": "b9dabf54572e06c96bb5e48c4e20671f2cc24053",
+  "authority": "PROSPECTIVE_HELPER_AGGREGATE_BOUND@2.0.0",
+  "finishedAt": "2026-10-04T18:35:06.638Z",
+  "elapsedMs": 16572.892499999998,
+  "failure": null,
+  "rows": [
+    {
+      "name": "fixed-production-helper-launch-under-combined-environment-poison",
+      "result": "PASS",
+      "elapsedMs": 1531.8743,
+      "firstInvocation": 1,
+      "lastInvocation": 0,
+      "detail": {
+        "observed": {
+          "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "args": [
+            "-NoLogo",
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final-h5-corrected\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+          ],
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "shell": false
+        },
+        "actualNativeResponse": true,
+        "snapshot": {
+          "kind": "cli",
+          "deadline": 32140.483,
+          "helpers": 1,
+          "workers": 0,
+          "helperUsedMs": 1522.3717000000001,
+          "activeRole": null,
+          "cleanupConfirmed": true,
+          "publication": null,
+          "terminalCode": null,
+          "terminalAt": null,
+          "cleanupDeadline": null,
+          "events": [
+            {
+              "type": "start",
+              "at": 2145.3855,
+              "role": "helper",
+              "deadline": 11145.2999,
+              "ordinal": 1
+            },
+            {
+              "type": "observation",
+              "at": 2160.0837,
+              "role": "helper",
+              "pid": 17860,
+              "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+            },
+            {
+              "type": "quiescent",
+              "at": 3667.6817,
+              "role": "helper",
+              "ordinal": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "actual-worker-empty-environment-execargv-resource-limits",
+      "result": "PASS",
+      "elapsedMs": 53.19399999999996,
+      "firstInvocation": 1,
+      "lastInvocation": 0,
+      "detail": {
+        "kind": "api",
+        "deadline": 13671.0873,
+        "helpers": 0,
+        "workers": 1,
+        "helperUsedMs": 0,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": null,
+        "terminalAt": null,
+        "cleanupDeadline": null,
+        "events": [
+          {
+            "type": "start",
+            "at": 3671.315,
+            "role": "worker",
+            "deadline": 13671.0873,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 3673.6466,
+            "role": "worker",
+            "threadId": 1,
+            "resourceLimits": {
+              "maxYoungGenerationSizeMb": 16,
+              "maxOldGenerationSizeMb": 128,
+              "codeRangeSizeMb": -1,
+              "stackSizeMb": 4
+            }
+          },
+          {
+            "type": "quiescent",
+            "at": 3723.843,
+            "role": "worker",
+            "ordinal": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "actual-cli-node-options-empty",
+      "result": "PASS",
+      "elapsedMs": 1588.6039,
+      "firstInvocation": 1,
+      "lastInvocation": 0,
+      "detail": null
+    },
+    {
+      "name": "actual-cli-node-options-option",
+      "result": "PASS",
+      "elapsedMs": 1461.4574000000002,
+      "firstInvocation": 1,
+      "lastInvocation": 0,
+      "detail": null
+    },
+    {
+      "name": "actual-cli-node-path",
+      "result": "PASS",
+      "elapsedMs": 1438.2966999999999,
+      "firstInvocation": 1,
+      "lastInvocation": 0,
+      "detail": null
+    },
+    {
+      "name": "actual-cli-preload",
+      "result": "PASS",
+      "elapsedMs": 1604.2021000000004,
+      "firstInvocation": 1,
+      "lastInvocation": 0,
+      "detail": null
+    },
+    {
+      "name": "actual-cli-import",
+      "result": "PASS",
+      "elapsedMs": 1466.0442000000003,
+      "firstInvocation": 1,
+      "lastInvocation": 0,
+      "detail": null
+    },
+    {
+      "name": "actual-cli-loader",
+      "result": "PASS",
+      "elapsedMs": 1488.5969000000005,
+      "firstInvocation": 1,
+      "lastInvocation": 0,
+      "detail": null
+    },
+    {
+      "name": "actual-cli-inspect-config",
+      "result": "PASS",
+      "elapsedMs": 1505.4981000000007,
+      "firstInvocation": 1,
+      "lastInvocation": 0,
+      "detail": null
+    },
+    {
+      "name": "actual-cli-proxy-credential-path-poison-fixed-helper",
+      "result": "PASS",
+      "elapsedMs": 2815.7137000000002,
+      "firstInvocation": 1,
+      "lastInvocation": 0,
+      "detail": null
+    },
+    {
+      "name": "launch-guard---require=untrusted",
+      "result": "PASS",
+      "elapsedMs": 0.9344999999993888,
+      "firstInvocation": 1,
+      "lastInvocation": 0,
+      "detail": {
+        "scope": "Direct unchanged production launch guard; inspector/debug listener not opened."
+      }
+    },
+    {
+      "name": "launch-guard---import=untrusted",
+      "result": "PASS",
+      "elapsedMs": 0.052700000000186265,
+      "firstInvocation": 1,
+      "lastInvocation": 0,
+      "detail": {
+        "scope": "Direct unchanged production launch guard; inspector/debug listener not opened."
+      }
+    },
+    {
+      "name": "launch-guard---loader=untrusted",
+      "result": "PASS",
+      "elapsedMs": 0.02839999999923748,
+      "firstInvocation": 1,
+      "lastInvocation": 0,
+      "detail": {
+        "scope": "Direct unchanged production launch guard; inspector/debug listener not opened."
+      }
+    },
+    {
+      "name": "launch-guard---experimental-loader=untrusted",
+      "result": "PASS",
+      "elapsedMs": 0.025600000000849832,
+      "firstInvocation": 1,
+      "lastInvocation": 0,
+      "detail": {
+        "scope": "Direct unchanged production launch guard; inspector/debug listener not opened."
+      }
+    },
+    {
+      "name": "launch-guard---inspect",
+      "result": "PASS",
+      "elapsedMs": 0.024600000000646105,
+      "firstInvocation": 1,
+      "lastInvocation": 0,
+      "detail": {
+        "scope": "Direct unchanged production launch guard; inspector/debug listener not opened."
+      }
+    },
+    {
+      "name": "launch-guard---inspect-brk",
+      "result": "PASS",
+      "elapsedMs": 0.024800000002869638,
+      "firstInvocation": 1,
+      "lastInvocation": 0,
+      "detail": {
+        "scope": "Direct unchanged production launch guard; inspector/debug listener not opened."
+      }
+    },
+    {
+      "name": "launch-guard---debug",
+      "result": "PASS",
+      "elapsedMs": 0.027699999998731073,
+      "firstInvocation": 1,
+      "lastInvocation": 0,
+      "detail": {
+        "scope": "Direct unchanged production launch guard; inspector/debug listener not opened."
+      }
+    },
+    {
+      "name": "launch-guard---debug-brk",
+      "result": "PASS",
+      "elapsedMs": 0.026200000000244472,
+      "firstInvocation": 1,
+      "lastInvocation": 0,
+      "detail": {
+        "scope": "Direct unchanged production launch guard; inspector/debug listener not opened."
+      }
+    }
+  ],
+  "invocations": [],
+  "cliInvocations": [
+    {
+      "name": "node-options-empty",
+      "flags": [],
+      "environmentKeys": [
+        "NODE_OPTIONS"
+      ],
+      "engineeringGuardMs": 35000,
+      "elapsedMs": 1588.3155000000002,
+      "exit": 10,
+      "error": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 108,
+      "diagnostic": {
+        "code": "MO1307_USAGE",
+        "kind": "MemoryOSReadinessError",
+        "reference": null,
+        "stage": "LAUNCH",
+        "version": "1.0.0"
+      },
+      "bootstrapWarningLines": 0
+    },
+    {
+      "name": "node-options-option",
+      "flags": [],
+      "environmentKeys": [
+        "NODE_OPTIONS"
+      ],
+      "engineeringGuardMs": 35000,
+      "elapsedMs": 1461.3872999999994,
+      "exit": 10,
+      "error": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 108,
+      "diagnostic": {
+        "code": "MO1307_USAGE",
+        "kind": "MemoryOSReadinessError",
+        "reference": null,
+        "stage": "LAUNCH",
+        "version": "1.0.0"
+      },
+      "bootstrapWarningLines": 0
+    },
+    {
+      "name": "node-path",
+      "flags": [],
+      "environmentKeys": [
+        "NODE_PATH"
+      ],
+      "engineeringGuardMs": 35000,
+      "elapsedMs": 1438.2362999999996,
+      "exit": 10,
+      "error": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 108,
+      "diagnostic": {
+        "code": "MO1307_USAGE",
+        "kind": "MemoryOSReadinessError",
+        "reference": null,
+        "stage": "LAUNCH",
+        "version": "1.0.0"
+      },
+      "bootstrapWarningLines": 0
+    },
+    {
+      "name": "preload",
+      "flags": [
+        "--require=node:path"
+      ],
+      "environmentKeys": [],
+      "engineeringGuardMs": 35000,
+      "elapsedMs": 1604.0985999999994,
+      "exit": 10,
+      "error": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 108,
+      "diagnostic": {
+        "code": "MO1307_USAGE",
+        "kind": "MemoryOSReadinessError",
+        "reference": null,
+        "stage": "LAUNCH",
+        "version": "1.0.0"
+      },
+      "bootstrapWarningLines": 0
+    },
+    {
+      "name": "import",
+      "flags": [
+        "--import=node:path"
+      ],
+      "environmentKeys": [],
+      "engineeringGuardMs": 35000,
+      "elapsedMs": 1465.9845999999998,
+      "exit": 10,
+      "error": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 108,
+      "diagnostic": {
+        "code": "MO1307_USAGE",
+        "kind": "MemoryOSReadinessError",
+        "reference": null,
+        "stage": "LAUNCH",
+        "version": "1.0.0"
+      },
+      "bootstrapWarningLines": 0
+    },
+    {
+      "name": "loader",
+      "flags": [
+        "--experimental-loader=data:text/javascript,export%20%7B%7D"
+      ],
+      "environmentKeys": [],
+      "engineeringGuardMs": 35000,
+      "elapsedMs": 1488.3878000000004,
+      "exit": 10,
+      "error": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 489,
+      "diagnostic": {
+        "code": "MO1307_USAGE",
+        "kind": "MemoryOSReadinessError",
+        "reference": null,
+        "stage": "LAUNCH",
+        "version": "1.0.0"
+      },
+      "bootstrapWarningLines": 3
+    },
+    {
+      "name": "inspect-config",
+      "flags": [
+        "--inspect-port=0"
+      ],
+      "environmentKeys": [],
+      "engineeringGuardMs": 35000,
+      "elapsedMs": 1505.4004000000004,
+      "exit": 10,
+      "error": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 108,
+      "diagnostic": {
+        "code": "MO1307_USAGE",
+        "kind": "MemoryOSReadinessError",
+        "reference": null,
+        "stage": "LAUNCH",
+        "version": "1.0.0"
+      },
+      "bootstrapWarningLines": 0
+    },
+    {
+      "name": "combined-poison",
+      "flags": [],
+      "environmentKeys": [
+        "ALL_PROXY",
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+        "GITHUB_TOKEN",
+        "HTTPS_PROXY",
+        "HTTP_PROXY",
+        "NO_PROXY",
+        "PATH",
+        "PATHEXT",
+        "POWERSHELL_EXECUTION_POLICY",
+        "PSExecutionPolicyPreference",
+        "SystemRoot",
+        "WINDIR"
+      ],
+      "engineeringGuardMs": 35000,
+      "elapsedMs": 2815.5234999999993,
+      "exit": 12,
+      "error": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 115,
+      "diagnostic": {
+        "code": "MO1307_INPUT",
+        "kind": "MemoryOSReadinessError",
+        "reference": null,
+        "stage": "CONFIGURATION",
+        "version": "1.0.0"
+      },
+      "bootstrapWarningLines": 0
+    }
+  ],
+  "installedUnchanged": true,
+  "controls": {
+    "fixedUnmodifiedInstalledHelper": true,
+    "helperWire": "2.0.0",
+    "helperAuthority": "PROSPECTIVE_HELPER_BOUND@2.0.0",
+    "helperDeadlineMs": 9000,
+    "aggregateAuthority": "PROSPECTIVE_HELPER_AGGREGATE_BOUND@2.0.0",
+    "aggregateHelperActiveMs": 28000,
+    "noRetries": true,
+    "productionEdits": false,
+    "network": false,
+    "persistentPolicyMutation": false
+  },
+  "limitations": [
+    "Replacement/freshness vectors use actual changes between native observations and exact production rejection; deterministic within-single-read races remain excluded by private immutable-root assumptions.",
+    "Publication uses exact installed functions, real native frames, and actual worker with canned bytes solely for lifecycle; semantic readiness remains separately certified.",
+    "Native helper responses prove its prior owned-console quiescence; timeout cleanup is a separate dedicated campaign.",
+    "Observer/process topology and peak RSS are separate evidence; no OS-wide network isolation or RSS enforcement claimed.",
+    "Node bootstrap executes flags before entry; benign builtins/inert loader cover actual guarded CLI refusal. Inspect/debug activation is guarded directly with no network listener.",
+    "Synthetic nonsecret credential sentinels only, no real credential read or logged."
+  ]
+}

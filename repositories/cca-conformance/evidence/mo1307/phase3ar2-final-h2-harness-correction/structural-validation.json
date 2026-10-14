@@ -1,0 +1,729 @@
+{
+  "kind": "MO1307Phase3AR2FinalH2HarnessStructuralValidation",
+  "version": "1.0.0",
+  "createdAt": "2026-10-04T10:37:30.976Z",
+  "result": "PASS",
+  "unchangedTools": [
+    ".gitattributes",
+    "cleanup-topology.mjs",
+    "core.mjs",
+    "decisions-tags.mjs",
+    "determinism.mjs",
+    "errors-observer.mjs",
+    "finalization-lock.ps1",
+    "finalization.mjs",
+    "observer-entry.mjs",
+    "runtime-controls-worker.mjs",
+    "runtime-observer.mjs",
+    "security-worker.mjs",
+    "stage.mjs",
+    "topology_identity_policy.py",
+    "transport-observer.mjs"
+  ],
+  "namespaceOnlyTools": [
+    "common.mjs",
+    "observe-command.py",
+    "runtime-controls-run.py",
+    "security.mjs"
+  ],
+  "runtimeControls": {
+    "exactSubstitutions": 9,
+    "equalsConsumedPlusSpecifiedChanges": true,
+    "changedCaseOptions": [
+      "aggregate-helper-exhaustion"
+    ],
+    "caseOptionsBefore": {
+      "timely-helper": "{eofDelayMs:0,maxMs:5000},async({transport})=>{const q=request(),a=await transport.exchange(encodeHelperRequest(q)),r=decodeHelperResponse(a.responseBytes,q);assert.equal(r.status,'OK');assert.equal(a.exitConfirmed,true);return {status:r.status,exitConfirmed:true};});",
+      "cancel-before-helper": "{error:'MO1307_CANCELLED',maxMs:1000,validate:row=>assert.equal(row.snapshot.helpers,0)},async({controller,transport})=>{controller.abort();await transport.exchange(encodeHelperRequest(request()));});",
+      "helper-timeout": "{eofDelayMs:10000,error:'MO1307_TIMEOUT',minMs:9000,maxMs:12000,validate:row=>{const t=invocations.find(r=>r.name===row.name);assert.ok(t.killRequestedAt);assert.equal(t.transportClosed,true);assert.equal(row.snapshot.cleanupConfirmed,false);}},async({transport})=>transport.exchange(encodeHelperRequest(request())));",
+      "late-helper-success-rejected": "{eofDelayMs:9250,lateCleanup:true,error:'MO1307_TIMEOUT',minMs:9000,maxMs:12000,validate:row=>{const li=invocations.find(r=>r.name===row.name),lq=decodeHelperRequest(fs.readFileSync(path.join(evidence,li.ordinal+'.request.bin'))),lr=decodeHelperResponse(fs.readFileSync(path.join(evidence,li.ordinal+'.response.bin')),lq);assert.equal(lr.status,'OK');assert.ok(li.responseAt>=row.snapshot.terminalAt);assert.equal(row.snapshot.terminalCode,'MO1307_TIMEOUT');}},async({transport})=>transport.exchange(encodeHelperRequest(request())));",
+      "cancel-during-helper": "{eofDelayMs:6000,error:'MO1307_CANCELLED',minMs:1400,maxMs:3500},async({controller,transport})=>{const timer=setTimeout(()=>controller.abort(),1500);try{await transport.exchange(encodeHelperRequest(request()));}finally{clearTimeout(timer);}});",
+      "cancel-between-helper-worker": "{error:'MO1307_CANCELLED',maxMs:9000,validate:row=>{assert.equal(row.snapshot.helpers,1);assert.equal(row.snapshot.workers,0);}},async({supervisor,controller,transport})=>{await transport.exchange(encodeHelperRequest(request()));controller.abort();await supervisor.runWorker({mode:'wait',delayMs:0});});",
+      "aggregate-helper-exhaustion": "{eofDelayMs:4000,error:'MO1307_TIMEOUT',minMs:28000,maxMs:31000,validate:row=>{",
+      "worker-timeout": "{error:'MO1307_TIMEOUT',minMs:10000,maxMs:12000,validate:row=>assert.equal(row.snapshot.cleanupConfirmed,true)},async({supervisor})=>supervisor.runWorker({mode:'spin'}));",
+      "worker-cancellation": "{error:'MO1307_CANCELLED',minMs:100,maxMs:2100,validate:row=>assert.equal(row.snapshot.cleanupConfirmed,true)},async({supervisor,controller})=>{const timer=setTimeout(()=>controller.abort(),100);try{await supervisor.runWorker({mode:'wait',delayMs:5000});}finally{clearTimeout(timer);}});",
+      "late-worker-result-rejected": "{WorkerClass:LateWorker,error:'MO1307_TIMEOUT',minMs:10000,maxMs:12000,validate:row=>{const start=row.workerObservations.find(e=>e.type==='start');assert.ok(start);assert.ok(row.workerObservations.some(e=>e.type==='message'&&e.threadId===start.threadId&&e.at>=row.snapshot.terminalAt));assert.equal(row.snapshot.terminalCode,'MO1307_TIMEOUT');assert.equal(row.snapshot.cleanupConfirmed,true);}},async({supervisor})=>supervisor.runWorker({mode:'wait',delayMs:10500}));",
+      "cancel-after-worker-before-publication": "{error:'MO1307_CANCELLED',maxMs:1500,validate:row=>{assert.equal(row.snapshot.workers,1);assert.equal(row.snapshot.helpers,0);}},async({supervisor,controller})=>{await supervisor.runWorker({mode:'wait',delayMs:0});controller.abort();supervisor.checkpoint('PUBLICATION');});"
+    },
+    "caseOptionsAfter": {
+      "timely-helper": "{eofDelayMs:0,maxMs:5000},async({transport})=>{const q=request(),a=await transport.exchange(encodeHelperRequest(q)),r=decodeHelperResponse(a.responseBytes,q);assert.equal(r.status,'OK');assert.equal(a.exitConfirmed,true);return {status:r.status,exitConfirmed:true};});",
+      "cancel-before-helper": "{error:'MO1307_CANCELLED',maxMs:1000,validate:row=>assert.equal(row.snapshot.helpers,0)},async({controller,transport})=>{controller.abort();await transport.exchange(encodeHelperRequest(request()));});",
+      "helper-timeout": "{eofDelayMs:10000,error:'MO1307_TIMEOUT',minMs:9000,maxMs:12000,validate:row=>{const t=invocations.find(r=>r.name===row.name);assert.ok(t.killRequestedAt);assert.equal(t.transportClosed,true);assert.equal(row.snapshot.cleanupConfirmed,false);}},async({transport})=>transport.exchange(encodeHelperRequest(request())));",
+      "late-helper-success-rejected": "{eofDelayMs:9250,lateCleanup:true,error:'MO1307_TIMEOUT',minMs:9000,maxMs:12000,validate:row=>{const li=invocations.find(r=>r.name===row.name),lq=decodeHelperRequest(fs.readFileSync(path.join(evidence,li.ordinal+'.request.bin'))),lr=decodeHelperResponse(fs.readFileSync(path.join(evidence,li.ordinal+'.response.bin')),lq);assert.equal(lr.status,'OK');assert.ok(li.responseAt>=row.snapshot.terminalAt);assert.equal(row.snapshot.terminalCode,'MO1307_TIMEOUT');}},async({transport})=>transport.exchange(encodeHelperRequest(request())));",
+      "cancel-during-helper": "{eofDelayMs:6000,error:'MO1307_CANCELLED',minMs:1400,maxMs:3500},async({controller,transport})=>{const timer=setTimeout(()=>controller.abort(),1500);try{await transport.exchange(encodeHelperRequest(request()));}finally{clearTimeout(timer);}});",
+      "cancel-between-helper-worker": "{error:'MO1307_CANCELLED',maxMs:9000,validate:row=>{assert.equal(row.snapshot.helpers,1);assert.equal(row.snapshot.workers,0);}},async({supervisor,controller,transport})=>{await transport.exchange(encodeHelperRequest(request()));controller.abort();await supervisor.runWorker({mode:'wait',delayMs:0});});",
+      "aggregate-helper-exhaustion": "{eofDelayMs:5700,error:'MO1307_TIMEOUT',minMs:28000,maxMs:31000,validate:row=>{",
+      "worker-timeout": "{error:'MO1307_TIMEOUT',minMs:10000,maxMs:12000,validate:row=>assert.equal(row.snapshot.cleanupConfirmed,true)},async({supervisor})=>supervisor.runWorker({mode:'spin'}));",
+      "worker-cancellation": "{error:'MO1307_CANCELLED',minMs:100,maxMs:2100,validate:row=>assert.equal(row.snapshot.cleanupConfirmed,true)},async({supervisor,controller})=>{const timer=setTimeout(()=>controller.abort(),100);try{await supervisor.runWorker({mode:'wait',delayMs:5000});}finally{clearTimeout(timer);}});",
+      "late-worker-result-rejected": "{WorkerClass:LateWorker,error:'MO1307_TIMEOUT',minMs:10000,maxMs:12000,validate:row=>{const start=row.workerObservations.find(e=>e.type==='start');assert.ok(start);assert.ok(row.workerObservations.some(e=>e.type==='message'&&e.threadId===start.threadId&&e.at>=row.snapshot.terminalAt));assert.equal(row.snapshot.terminalCode,'MO1307_TIMEOUT');assert.equal(row.snapshot.cleanupConfirmed,true);}},async({supervisor})=>supervisor.runWorker({mode:'wait',delayMs:10500}));",
+      "cancel-after-worker-before-publication": "{error:'MO1307_CANCELLED',maxMs:1500,validate:row=>{assert.equal(row.snapshot.workers,1);assert.equal(row.snapshot.helpers,0);}},async({supervisor,controller})=>{await supervisor.runWorker({mode:'wait',delayMs:0});controller.abort();supervisor.checkpoint('PUBLICATION');});"
+    }
+  },
+  "observer": {
+    "exactSubstitutions": 3,
+    "equalsConsumedPlusSpecifiedChanges": true,
+    "policyByteIdentical": true
+  },
+  "bookkeepingDiffs": {
+    "campaign.mjs": {
+      "removed": [
+        {
+          "line": 13,
+          "text": "const dependencyPaths=['repositories/cca-conformance/tools/mo1307-phase2b/test-support.mjs','repositories/cca-conformance/tools/mo1307-phase1/package.mjs','repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs','docs/mo1307-contract-freeze-1.md','docs/mo1307-phase2c-publication-inspection-correction.md','docs/mo1307-phase2c-finalization-boundary-correction.md','docs/mo1307-prospective-helper-bound-v2-candidate.md','docs/mo1307-prospective-helper-aggregate-bound-v2-candidate.md','docs/mo1307-final-headless-correction-addendum.md','docs/mo1307-phase3ar2-final.md','repositories/cca-conformance/evidence/mo1307/final-headless/authorization.txt','repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-v2-candidate/authority.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/authority.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/phase3a-handoff.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/phase3br2-binding-delta.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/phase3cr2-aggregate-delta.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/changed-file-inventory.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/binding.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/binding-verification.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/candidate.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/consistency-validation.json'];"
+        },
+        {
+          "line": 24,
+          "text": "  hHarnessCorrectionEvidence:'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h-harness-correction'"
+        },
+        {
+          "line": 26,
+          "text": "const prerequisiteMemberCounts={historicalFailedBGateTools:7,historicalFailedBGateEvidence:28,topologyObserverCorrectionTools:3,topologyObserverCorrectionEvidence:6,correctedBGateTools:8,correctedBGateEvidence:28,preservedFailedFullTools:26,preservedFailedFullEvidence:374,hHarnessCorrectionTools:1,hHarnessCorrectionEvidence:6};"
+        },
+        {
+          "line": 90,
+          "text": "  const toolRel=path.relative(root,T).replaceAll('\\\\','/'),allowedUntracked=[toolRel,rel,...Object.values(prerequisiteNamespaces)];assert.ok(statusLines.every(line=>line==='?? docs/mo1307-phase3ar2-final.md'||allowedUntracked.some(prefix=>line.startsWith('?? '+prefix+'/'))),'Unexpected working-tree path before seal');"
+        },
+        {
+          "line": 96,
+          "text": "  const harnessReview=json(path.join(E,'harness-review.json'));assert.equal(harnessReview.result,'PASS');assert.deepEqual(harnessReview.observerCorrection.receipt,record(topologyObserverCorrectionReceiptPath));assert.deepEqual(harnessReview.hHarnessCorrection.receipt,record(hHarnessCorrectionReceiptPath));assert.equal(harnessReview.hHarnessCorrection.classification,'H_HARNESS_MARGIN_DEFECT');assert.deepEqual(harnessReview.preservedFailedFullGeneration,record(failedFullReceiptPath));assert.deepEqual(harnessReview.correctedPreCertificationBGate,record(correctedBGateReceiptPath));assert.deepEqual(harnessReview.preservedFailedPreCertificationBGate,record(historicalFailedBGateReceiptPath));"
+        },
+        {
+          "line": 97,
+          "text": "  const preExecution=json(path.join(E,'pre-execution-gate.json'));assert.deepEqual(preExecution.observerCorrection,record(topologyObserverCorrectionReceiptPath));assert.deepEqual(preExecution.hHarnessCorrection,record(hHarnessCorrectionReceiptPath));assert.deepEqual(preExecution.preservedFailedFullGeneration,record(failedFullReceiptPath));assert.deepEqual(preExecution.preCertificationBGate,record(correctedBGateReceiptPath));assert.deepEqual(preExecution.preservedFailedBGate,record(historicalFailedBGateReceiptPath));"
+        },
+        {
+          "line": 102,
+          "text": "  const seal={kind:'MO1307Phase3AR2C3VBNativeInstalledCampaignSeal',version:'1.0.0',sealedAt:new Date().toISOString(),candidate:HEAD,productionCommit:'98b766f9218b209f52251147213839b9775f6da3',productionTree:'b9dabf54572e06c96bb5e48c4e20671f2cc24053',integrationAuthority:authority,helperAuthority,order:steps,inventory:record(inventoryPath),...bindings,limits:fixedLimits,historicalCharacterizationH:'NOT_ESTABLISHED',replacementHelperBoundH:'NOT_ESTABLISHED',hFailureClassification:'H_HARNESS_MARGIN_DEFECT',timelyHelperEngineeringEnvelope:{artificialEofDelayMs:0,maxMs:5000,deadlineMarginMs:4000},admittedRenameSettlement:'NO_FINITE_BOUND_ESTABLISHED',execution:fixedExecution,historicalEvidencePromoted:false,scope:'PHASE_3AR2_ONLY',preCertificationBGate:record(correctedBGateReceiptPath),preservedFailedPreCertificationBGate:record(historicalFailedBGateReceiptPath),topologyObserverCorrection:record(topologyObserverCorrectionReceiptPath),hHarnessCorrection:record(hHarnessCorrectionReceiptPath),preservedFailedFullGeneration:record(failedFullReceiptPath),preservedPhase3BR2:'4d92f0f21c9c3aad8202f4558d61b9229c7214fc',phase3BR2Rerun:false,preservedPhase3CR2:'7d2006c6e19bb50bffb6c710672be996e3c3590b',phase3CR2Rerun:false,phase3CR2ExecutedHere:false,phase3D:false};"
+        },
+        {
+          "line": 202,
+          "text": "  write('resource-and-cleanup-observations.json',{limits:seal.limits,replacementHelperBoundH:'NOT_ESTABLISHED',hFailureClassification:'H_HARNESS_MARGIN_DEFECT',timelyHelperEngineeringEnvelope:{artificialEofDelayMs:0,maxMs:5000,deadlineMarginMs:4000,productDeadlineMs:9000},hHarnessCorrection:record(hHarnessCorrectionReceiptPath),native,externalTopology:externalTopologyBinding,cleanupControls:cleanupControlsBinding,notes:'The <5000-ms timely-helper cap is an engineering envelope, not a product limit. Observed product cleanup confirmation is distinct from held-process-object external cleanup proof; unexecuted controls make no certification claim.'});"
+        },
+        {
+          "line": 247,
+          "text": "    const acceptanceValidation={kind:'MO1307Phase3AR2FinalAcceptanceValidation',version:'1.0.0',result:'PASS',createdAt:new Date().toISOString(),outcome,candidate:{name:'C3VB',commit:HEAD,productionCommit:seal.productionCommit,productionTree:seal.productionTree},steps:completed,allStepsPassed:true,completedMandatoryCases,allMandatoryCasesPassed:true,noRemainingMandatoryCases:remainingMandatoryCases.length===0,integrity:record(path.join(E,'integrity-after.json')),campaignSeal:record(path.join(E,'campaign-seal.json')),campaignRunFinished:record(path.join(E,'campaign-run-finished.json')),freshPackage:{archive:candidateIdentity.archive,packageIdentity:candidateIdentity.packageIdentity,members:candidateIdentity.members,installedInventory:record(path.join(E,'installed-before.json'))},hHarnessCorrection:record(hHarnessCorrectionReceiptPath),runtimeH:record(path.join(E,'runtime-H/receipt.json')),strictBoundary,cleanup:record(path.join(E,'cleanup-topology/receipt.json')),noRetry:true,historicalEvidencePromoted:false,phase3DPerformed:false,push:false,tag:false};"
+        },
+        {
+          "line": 259,
+          "text": "    topologyObserverCorrection:seal.topologyObserverCorrection??null,observerDefect:observerCorrectionReceipt.defect??null,syntheticObserverValidation:{result:observerCorrectionReceipt.result??null,policy:observerCorrectionReceipt.policy??null,cases:observerCorrectionReceipt.cases??null,execution:observerCorrectionReceipt.execution??null,security:observerCorrectionReceipt.security??null},hHarnessCorrection:seal.hHarnessCorrection??null,hFailureClassification:'H_HARNESS_MARGIN_DEFECT',hHarnessCorrectionResult:{result:hHarnessCorrectionReceipt.result??null,classification:hHarnessCorrectionReceipt.classification??null,correctedControl:hHarnessCorrectionReceipt.correctedControl??null,zeroProductValidation:hHarnessCorrectionReceipt.zeroProductValidation??null,execution:hHarnessCorrectionReceipt.execution??null},preservedFailedFullGeneration:seal.preservedFailedFullGeneration??null,preservedFailedFullResult:{result:preservedFailedFullReceipt.result??null,completed:preservedFailedFullReceipt.completed??null,h:preservedFailedFullReceipt.steps?.find?.(row=>row.step==='H')?.result??null,unexecuted:preservedFailedFullReceipt.unexecuted??null,resumed:false,rewritten:false},prerequisiteChain:seal.prerequisiteChain??null,"
+        },
+        {
+          "line": 267,
+          "text": "    write('phase3d-handoff.json',{kind:'MO1307Phase3AR2ToPhase3DHandoff',version:'1.0.0',result:'READY_FOR_SEPARATE_PHASE3D_INTEGRATION',createdAt:new Date().toISOString(),candidate:receipt.candidate,authorities:[seal.helperAuthority,seal.integrationAuthority],packageIdentity:receipt.package.packageIdentity,installedMemberCount:receipt.package.members,installedMemberVerification:record(path.join(E,'installed-before.json')),inventory:record(inventoryPath),seal:record(path.join(E,'campaign-seal.json')),acceptanceValidation:acceptanceValidationBinding,certificationReceipt:record(path.join(E,'certification-receipt.json')),phase3AR2Result:outcome,hFailureClassification:'H_HARNESS_MARGIN_DEFECT',hHarnessCorrection:seal.hHarnessCorrection,preservedFailedFullGeneration:seal.preservedFailedFullGeneration,topologyObserverCorrection:seal.topologyObserverCorrection,preCertificationBGate:seal.preCertificationBGate,preservedFailedPreCertificationBGate:seal.preservedFailedPreCertificationBGate,prerequisiteChain:seal.prerequisiteChain,preservedPhase3BR2:{commit:'4d92f0f21c9c3aad8202f4558d61b9229c7214fc',rerun:false,finalDelta:phase3BR2DeltaBinding},preservedPhase3CR2:{commit:'7d2006c6e19bb50bffb6c710672be996e3c3590b',rerun:false,executedHere:false,finalDelta:phase3CR2DeltaBinding},requiredBeforePhase3D:['PRESERVED_FAILED_FULL_GENERATION','ZERO_PRODUCT_H_HARNESS_MARGIN_CORRECTION','FRESH_PHASE3AR2_ACCEPTANCE','PRESERVED_PHASE3BR2_ACCEPTANCE_AND_FINAL_DELTA','PRESERVED_PHASE3CR2_ACCEPTANCE_AND_FINAL_DELTA'],phase3DPerformed:false,push:false,tag:false,commit:null,commitBinding:'The local certification commit containing these already-existing immutable bytes is reported externally; a Git object cannot embed its own future commit hash.'});"
+        },
+        {
+          "line": 302,
+          "text": "    `Historical evidence: ${history.length} tracked baseline files checked, ${historicalChanged.length} changed; none promoted. The complete failed-B, topology-correction, corrected-B, failed full-generation, and zero-product H-correction tool/evidence trees are sealed and rechecked through closure. No diagnostic campaign, production change, push, tag, Phase 3BR2 rerun, Phase 3CR2 rerun, or Phase 3D execution.`,"
+        }
+      ],
+      "added": [
+        {
+          "line": 13,
+          "text": "const dependencyPaths=['repositories/cca-conformance/tools/mo1307-phase2b/test-support.mjs','repositories/cca-conformance/tools/mo1307-phase1/package.mjs','repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs','docs/mo1307-contract-freeze-1.md','docs/mo1307-phase2c-publication-inspection-correction.md','docs/mo1307-phase2c-finalization-boundary-correction.md','docs/mo1307-prospective-helper-bound-v2-candidate.md','docs/mo1307-prospective-helper-aggregate-bound-v2-candidate.md','docs/mo1307-final-headless-correction-addendum.md','docs/mo1307-phase3ar2-final.md','docs/mo1307-phase3ar2-final-h-corrected.md','repositories/cca-conformance/evidence/mo1307/final-headless/authorization.txt','repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-v2-candidate/authority.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/authority.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/phase3a-handoff.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/phase3br2-binding-delta.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/phase3cr2-aggregate-delta.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/changed-file-inventory.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/binding.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/binding-verification.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/candidate.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/consistency-validation.json'];"
+        },
+        {
+          "line": 24,
+          "text": "  hHarnessCorrectionEvidence:'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h-harness-correction',"
+        },
+        {
+          "line": 25,
+          "text": "  preservedFailedHCorrectedTools:'repositories/cca-conformance/tools/mo1307-phase3ar2-final-h-corrected',"
+        },
+        {
+          "line": 26,
+          "text": "  preservedFailedHCorrectedEvidence:'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h-corrected',"
+        },
+        {
+          "line": 27,
+          "text": "  h2HarnessCorrectionTools:'repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-harness-correction',"
+        },
+        {
+          "line": 28,
+          "text": "  h2HarnessCorrectionEvidence:'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-harness-correction'"
+        },
+        {
+          "line": 30,
+          "text": "const prerequisiteMemberCounts={historicalFailedBGateTools:7,historicalFailedBGateEvidence:28,topologyObserverCorrectionTools:3,topologyObserverCorrectionEvidence:6,correctedBGateTools:8,correctedBGateEvidence:28,preservedFailedFullTools:26,preservedFailedFullEvidence:374,hHarnessCorrectionTools:1,hHarnessCorrectionEvidence:6,preservedFailedHCorrectedTools:26,preservedFailedHCorrectedEvidence:407,h2HarnessCorrectionTools:5,h2HarnessCorrectionEvidence:9};"
+        },
+        {
+          "line": 31,
+          "text": "const h2FixtureRoots=['repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected','repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input'];"
+        },
+        {
+          "line": 32,
+          "text": "const h2FailureClassifications=['H_AGGREGATE_FIXTURE_INPUT_ISOLATION_DEFECT','H_OBSERVER_EVENT_ORDERING_DEFECT'];"
+        },
+        {
+          "line": 33,
+          "text": "const aggregateHelperEngineeringEnvelope={artificialEofDelayMs:5700,engineeringMinMs:28000,engineeringMaxMs:31000,maxHelperSlots:5,publicationStateMutations:0,expectedError:'MO1307_TIMEOUT',productAggregateDeadlineMs:28000};"
+        },
+        {
+          "line": 44,
+          "text": "const h2HarnessCorrectionReceiptPath=path.join(root,prerequisiteNamespaces.h2HarnessCorrectionEvidence,'receipt.json');"
+        },
+        {
+          "line": 45,
+          "text": "const preservedFailedHCorrectedReceiptPath=path.join(root,prerequisiteNamespaces.preservedFailedHCorrectedEvidence,'certification-receipt.json');"
+        },
+        {
+          "line": 71,
+          "text": "  assert.deepEqual(seal.h2HarnessCorrection,record(h2HarnessCorrectionReceiptPath));assert.deepEqual(seal.preservedFailedHCorrectedGeneration,record(preservedFailedHCorrectedReceiptPath));assert.deepEqual(seal.h2FailureClassifications,h2FailureClassifications);assert.deepEqual(seal.aggregateHelperEngineeringEnvelope,aggregateHelperEngineeringEnvelope);assert.equal(seal.eventOrderingRule,'MO1307_OBSERVER_EVENT_ORDERING@1.0.0');assert.deepEqual(seal.h2FixtureRoots,h2FixtureRoots);"
+        },
+        {
+          "line": 72,
+          "text": "  const h2Correction=json(h2HarnessCorrectionReceiptPath),preservedFailedHCorrected=json(preservedFailedHCorrectedReceiptPath);assert.equal(h2Correction.kind,'MO1307Phase3AR2FinalH2HarnessCorrectionReceipt');assert.equal(h2Correction.result,'PASS');assert.equal(h2Correction.zeroProductValidation,'PASS');assert.deepEqual(h2Correction.classifications,h2FailureClassifications);assert.deepEqual(h2Correction.aggregateControl,aggregateHelperEngineeringEnvelope);assert.deepEqual(h2Correction.execution,{certificationRuns:0,helperRuns:0,nativeObserverRuns:0,productRuns:0,workerRuns:0,engineeringInterpreterInvocations:2});assert.equal(h2Correction.retry,false);assert.deepEqual(record(preservedFailedHCorrectedReceiptPath),{path:prerequisiteNamespaces.preservedFailedHCorrectedEvidence+'/certification-receipt.json',byteLength:463330,sha256:'sha256:719ebafbbabe4c89f1502271310109dc8d6cb4efff8bc43da313b7dd7411e031'});assert.equal(preservedFailedHCorrected.result,'PHASE3AR2_CONCRETE_BLOCKER');assert.deepEqual(preservedFailedHCorrected.completed,['A','B','C','D','E','F','G']);assert.equal(preservedFailedHCorrected.steps.find(row=>row.step==='H').result,'FAIL');assert.deepEqual(preservedFailedHCorrected.unexecuted,['I','J','K','L','M','N','O']);for(const fixtureRoot of h2FixtureRoots)assert.ok(seal.fixtureBindings.some(row=>row.path.startsWith(fixtureRoot+'/')),fixtureRoot);assert.equal(fs.existsSync(path.join(root,h2FixtureRoots[0],'absent-output')),false,'Sealed aggregate absent-output target must remain absent');"
+        },
+        {
+          "line": 101,
+          "text": "  const toolRel=path.relative(root,T).replaceAll('\\\\','/'),allowedUntracked=[toolRel,rel,...Object.values(prerequisiteNamespaces),...h2FixtureRoots];assert.ok(statusLines.every(line=>line==='?? docs/mo1307-phase3ar2-final.md'||line==='?? docs/mo1307-phase3ar2-final-h-corrected.md'||allowedUntracked.some(prefix=>line.startsWith('?? '+prefix+'/'))),'Unexpected working-tree path before seal');"
+        },
+        {
+          "line": 107,
+          "text": "  const harnessReview=json(path.join(E,'harness-review.json'));assert.equal(harnessReview.result,'PASS');assert.deepEqual(harnessReview.observerCorrection.receipt,record(topologyObserverCorrectionReceiptPath));assert.deepEqual(harnessReview.hHarnessCorrection.receipt,record(hHarnessCorrectionReceiptPath));assert.equal(harnessReview.hHarnessCorrection.classification,'H_HARNESS_MARGIN_DEFECT');assert.deepEqual(harnessReview.preservedFailedFullGeneration,record(failedFullReceiptPath));assert.deepEqual(harnessReview.correctedPreCertificationBGate,record(correctedBGateReceiptPath));assert.deepEqual(harnessReview.preservedFailedPreCertificationBGate,record(historicalFailedBGateReceiptPath));assert.deepEqual(harnessReview.h2HarnessCorrection.receipt,record(h2HarnessCorrectionReceiptPath));assert.deepEqual(harnessReview.h2HarnessCorrection.classifications,h2FailureClassifications);assert.deepEqual(harnessReview.preservedFailedHCorrectedGeneration,record(preservedFailedHCorrectedReceiptPath));"
+        },
+        {
+          "line": 108,
+          "text": "  const preExecution=json(path.join(E,'pre-execution-gate.json'));assert.deepEqual(preExecution.observerCorrection,record(topologyObserverCorrectionReceiptPath));assert.deepEqual(preExecution.hHarnessCorrection,record(hHarnessCorrectionReceiptPath));assert.deepEqual(preExecution.preservedFailedFullGeneration,record(failedFullReceiptPath));assert.deepEqual(preExecution.preCertificationBGate,record(correctedBGateReceiptPath));assert.deepEqual(preExecution.preservedFailedBGate,record(historicalFailedBGateReceiptPath));assert.deepEqual(preExecution.h2HarnessCorrection,record(h2HarnessCorrectionReceiptPath));assert.deepEqual(preExecution.preservedFailedHCorrectedGeneration,record(preservedFailedHCorrectedReceiptPath));"
+        },
+        {
+          "line": 113,
+          "text": "  const seal={kind:'MO1307Phase3AR2C3VBNativeInstalledCampaignSeal',version:'1.0.0',sealedAt:new Date().toISOString(),candidate:HEAD,productionCommit:'98b766f9218b209f52251147213839b9775f6da3',productionTree:'b9dabf54572e06c96bb5e48c4e20671f2cc24053',integrationAuthority:authority,helperAuthority,order:steps,inventory:record(inventoryPath),...bindings,limits:fixedLimits,historicalCharacterizationH:'NOT_ESTABLISHED',replacementHelperBoundH:'NOT_ESTABLISHED',hFailureClassification:'H_HARNESS_MARGIN_DEFECT',timelyHelperEngineeringEnvelope:{artificialEofDelayMs:0,maxMs:5000,deadlineMarginMs:4000},admittedRenameSettlement:'NO_FINITE_BOUND_ESTABLISHED',execution:fixedExecution,historicalEvidencePromoted:false,scope:'PHASE_3AR2_ONLY',preCertificationBGate:record(correctedBGateReceiptPath),preservedFailedPreCertificationBGate:record(historicalFailedBGateReceiptPath),topologyObserverCorrection:record(topologyObserverCorrectionReceiptPath),hHarnessCorrection:record(hHarnessCorrectionReceiptPath),preservedFailedFullGeneration:record(failedFullReceiptPath),h2HarnessCorrection:record(h2HarnessCorrectionReceiptPath),preservedFailedHCorrectedGeneration:record(preservedFailedHCorrectedReceiptPath),h2FailureClassifications,aggregateHelperEngineeringEnvelope,eventOrderingRule:'MO1307_OBSERVER_EVENT_ORDERING@1.0.0',h2FixtureRoots,preservedPhase3BR2:'4d92f0f21c9c3aad8202f4558d61b9229c7214fc',phase3BR2Rerun:false,preservedPhase3CR2:'7d2006c6e19bb50bffb6c710672be996e3c3590b',phase3CR2Rerun:false,phase3CR2ExecutedHere:false,phase3D:false};"
+        },
+        {
+          "line": 169,
+          "text": "  const h2HarnessCorrectionReceipt=safeObject(h2HarnessCorrectionReceiptPath,'H2_HARNESS_CORRECTION_RECEIPT_MALFORMED')??{};"
+        },
+        {
+          "line": 214,
+          "text": "  write('resource-and-cleanup-observations.json',{limits:seal.limits,replacementHelperBoundH:'NOT_ESTABLISHED',hFailureClassification:'H_HARNESS_MARGIN_DEFECT',timelyHelperEngineeringEnvelope:{artificialEofDelayMs:0,maxMs:5000,deadlineMarginMs:4000,productDeadlineMs:9000},hHarnessCorrection:record(hHarnessCorrectionReceiptPath),h2FailureClassifications,aggregateHelperEngineeringEnvelope,h2HarnessCorrection:record(h2HarnessCorrectionReceiptPath),native,externalTopology:externalTopologyBinding,cleanupControls:cleanupControlsBinding,notes:'The <5000-ms timely-helper cap and the 5700-ms aggregate EOF delay are engineering envelopes, not product limits. Observed product cleanup confirmation is distinct from held-process-object external cleanup proof; unexecuted controls make no certification claim.'});"
+        },
+        {
+          "line": 259,
+          "text": "    const aggregateCase=runtimeH.cases.find(row=>row.name==='aggregate-helper-exhaustion'),aggregateCalculation=record(path.join(E,'runtime-H/aggregate-calculation.json'));assert.equal(aggregateCase.result,'PASS');assert.equal(aggregateCase.error?.code,'MO1307_TIMEOUT');assert.equal(runtimeH.aggregateFixture.targetAbsent,true);assert.deepEqual(runtimeH.aggregateFixture.after,runtimeH.aggregateFixture.before);assert.deepEqual(runtimeH.inputFixture.after,runtimeH.inputFixture.before);"
+        },
+        {
+          "line": 260,
+          "text": "    const acceptanceValidation={kind:'MO1307Phase3AR2FinalAcceptanceValidation',version:'1.0.0',result:'PASS',createdAt:new Date().toISOString(),outcome,candidate:{name:'C3VB',commit:HEAD,productionCommit:seal.productionCommit,productionTree:seal.productionTree},steps:completed,allStepsPassed:true,completedMandatoryCases,allMandatoryCasesPassed:true,noRemainingMandatoryCases:remainingMandatoryCases.length===0,integrity:record(path.join(E,'integrity-after.json')),campaignSeal:record(path.join(E,'campaign-seal.json')),campaignRunFinished:record(path.join(E,'campaign-run-finished.json')),freshPackage:{archive:candidateIdentity.archive,packageIdentity:candidateIdentity.packageIdentity,members:candidateIdentity.members,installedInventory:record(path.join(E,'installed-before.json'))},hHarnessCorrection:record(hHarnessCorrectionReceiptPath),h2HarnessCorrection:record(h2HarnessCorrectionReceiptPath),runtimeH:record(path.join(E,'runtime-H/receipt.json')),strictBoundary,aggregate:{result:aggregateCase.result,error:aggregateCase.error,elapsedMs:aggregateCase.elapsedMs,calculation:aggregateCalculation,fixtureImmutable:true,targetAbsent:true},cleanup:record(path.join(E,'cleanup-topology/receipt.json')),noRetry:true,historicalEvidencePromoted:false,phase3DPerformed:false,push:false,tag:false};"
+        },
+        {
+          "line": 272,
+          "text": "    topologyObserverCorrection:seal.topologyObserverCorrection??null,observerDefect:observerCorrectionReceipt.defect??null,syntheticObserverValidation:{result:observerCorrectionReceipt.result??null,policy:observerCorrectionReceipt.policy??null,cases:observerCorrectionReceipt.cases??null,execution:observerCorrectionReceipt.execution??null,security:observerCorrectionReceipt.security??null},hHarnessCorrection:seal.hHarnessCorrection??null,hFailureClassification:'H_HARNESS_MARGIN_DEFECT',hHarnessCorrectionResult:{result:hHarnessCorrectionReceipt.result??null,classification:hHarnessCorrectionReceipt.classification??null,correctedControl:hHarnessCorrectionReceipt.correctedControl??null,zeroProductValidation:hHarnessCorrectionReceipt.zeroProductValidation??null,execution:hHarnessCorrectionReceipt.execution??null},h2HarnessCorrection:seal.h2HarnessCorrection??null,h2FailureClassifications,aggregateHelperEngineeringEnvelope:seal.aggregateHelperEngineeringEnvelope??null,eventOrderingRule:seal.eventOrderingRule??null,preservedFailedHCorrectedGeneration:seal.preservedFailedHCorrectedGeneration??null,preservedFailedFullGeneration:seal.preservedFailedFullGeneration??null,preservedFailedFullResult:{result:preservedFailedFullReceipt.result??null,completed:preservedFailedFullReceipt.completed??null,h:preservedFailedFullReceipt.steps?.find?.(row=>row.step==='H')?.result??null,unexecuted:preservedFailedFullReceipt.unexecuted??null,resumed:false,rewritten:false},prerequisiteChain:seal.prerequisiteChain??null,"
+        },
+        {
+          "line": 280,
+          "text": "    write('phase3d-handoff.json',{kind:'MO1307Phase3AR2ToPhase3DHandoff',version:'1.0.0',result:'READY_FOR_SEPARATE_PHASE3D_INTEGRATION',createdAt:new Date().toISOString(),candidate:receipt.candidate,authorities:[seal.helperAuthority,seal.integrationAuthority],packageIdentity:receipt.package.packageIdentity,installedMemberCount:receipt.package.members,installedMemberVerification:record(path.join(E,'installed-before.json')),inventory:record(inventoryPath),seal:record(path.join(E,'campaign-seal.json')),acceptanceValidation:acceptanceValidationBinding,certificationReceipt:record(path.join(E,'certification-receipt.json')),phase3AR2Result:outcome,hFailureClassification:'H_HARNESS_MARGIN_DEFECT',hHarnessCorrection:seal.hHarnessCorrection,h2FailureClassifications,h2HarnessCorrection:seal.h2HarnessCorrection,preservedFailedHCorrectedGeneration:seal.preservedFailedHCorrectedGeneration,preservedFailedFullGeneration:seal.preservedFailedFullGeneration,topologyObserverCorrection:seal.topologyObserverCorrection,preCertificationBGate:seal.preCertificationBGate,preservedFailedPreCertificationBGate:seal.preservedFailedPreCertificationBGate,prerequisiteChain:seal.prerequisiteChain,preservedPhase3BR2:{commit:'4d92f0f21c9c3aad8202f4558d61b9229c7214fc',rerun:false,finalDelta:phase3BR2DeltaBinding},preservedPhase3CR2:{commit:'7d2006c6e19bb50bffb6c710672be996e3c3590b',rerun:false,executedHere:false,finalDelta:phase3CR2DeltaBinding},requiredBeforePhase3D:['PRESERVED_FAILED_FULL_GENERATION','ZERO_PRODUCT_H_HARNESS_MARGIN_CORRECTION','PRESERVED_FAILED_H_CORRECTED_GENERATION','ZERO_PRODUCT_H2_HARNESS_CORRECTION','FRESH_PHASE3AR2_ACCEPTANCE','PRESERVED_PHASE3BR2_ACCEPTANCE_AND_FINAL_DELTA','PRESERVED_PHASE3CR2_ACCEPTANCE_AND_FINAL_DELTA'],phase3DPerformed:false,push:false,tag:false,commit:null,commitBinding:'The local certification commit containing these already-existing immutable bytes is reported externally; a Git object cannot embed its own future commit hash.'});"
+        },
+        {
+          "line": 298,
+          "text": "    '## H2 harness correction','',"
+        },
+        {
+          "line": 299,
+          "text": "    'Exact H2 failure cause: in the preserved H-corrected generation, aggregate-helper-exhaustion expected MO1307_TIMEOUT but returned MO1307_FILESYSTEM_BOUNDARY at 23579.1962 ms (five helpers, one worker, 23257.1216 ms charged). The harness had placed the absent-output CHECK_OUTPUT target beneath the live runtime-H evidence directory; harness evidence writes changed that parent directory byteLength from 16384 (slot 4) to 24576 (slot 5) with the same file ID, and the product correctly rejected the changed stable-identity chain.',"
+        },
+        {
+          "line": 300,
+          "text": "    'Classifications: `H_AGGREGATE_FIXTURE_INPUT_ISOLATION_DEFECT` (harness; not product, not authority) and, for the independent PID 2124 `LIFETIME_CONTRADICTION`, `H_OBSERVER_EVENT_ORDERING_DEFECT` (the observer advanced lastSeenAt from a snapshot row after the held process object had already recorded its exit time).',"
+        },
+        {
+          "line": 301,
+          "text": "    'Exact harness corrections: the absent-output parent and the READ_SET input root are pre-created, sealed, quiescent fixture roots outside every evidence, cache and report write path; the aggregate control uses a 5700-ms engineering EOF delay, at most five helpers, and no publication-state mutation, so the unchanged 28000-ms product aggregate deadline terminates the fifth (CHECK_OUTPUT) helper; the observer advances lastSeenAt only while the exact held object reports exitTime100ns == 0 (`MO1307_OBSERVER_EVENT_ORDERING@1.0.0`). Product code, identity policy, expectations and limits are unchanged.',"
+        },
+        {
+          "line": 302,
+          "text": "    `Zero-product H2 validation: ${h2HarnessCorrectionReceipt.zeroProductValidation??'MISSING'}; product/helper/worker/native-observer/certification runs ${h2HarnessCorrectionReceipt.execution?.productRuns??'?'}/${h2HarnessCorrectionReceipt.execution?.helperRuns??'?'}/${h2HarnessCorrectionReceipt.execution?.workerRuns??'?'}/${h2HarnessCorrectionReceipt.execution?.nativeObserverRuns??'?'}/${h2HarnessCorrectionReceipt.execution?.certificationRuns??'?'} (${seal.h2HarnessCorrection?.sha256??'MISSING'}).`,"
+        },
+        {
+          "line": 303,
+          "text": "    'Preserved H-corrected generation: A-G PASS, H FAIL, I-O NOT_RUN; resumed false, rewritten false, promoted false.',"
+        },
+        {
+          "line": 304,
+          "text": "    '',"
+        },
+        {
+          "line": 322,
+          "text": "    `Historical evidence: ${history.length} tracked baseline files checked, ${historicalChanged.length} changed; none promoted. The complete failed-B, topology-correction, corrected-B, failed full-generation, zero-product H-correction, failed H-corrected generation, and zero-product H2-correction tool/evidence trees and the sealed H2 fixture roots are sealed and rechecked through closure. No diagnostic campaign, production change, push, tag, Phase 3BR2 rerun, Phase 3CR2 rerun, or Phase 3D execution.`,"
+        }
+      ]
+    },
+    "method.mjs": {
+      "removed": [
+        {
+          "line": 3,
+          "text": "write('observation-method.json',{C3VB:HEAD,authority:'PROSPECTIVE_HELPER_AGGREGATE_BOUND@2.0.0',helperAuthority:'PROSPECTIVE_HELPER_BOUND@2.0.0',limits:{helperWholeLifecycleMs:9000,aggregateHelperActiveMs:28000,cliMs:30000,workerMs:10000,cleanupMs:2000},historicalCharacterizationH:'NOT_ESTABLISHED',hFailureClassification:'H_HARNESS_MARGIN_DEFECT',timelyHelperEngineeringEnvelope:{artificialEofDelayMs:0,maxMs:5000,deadlineMarginMs:4000,productAuthorityChanged:false},scope:'CERTIFICATION of actual installed bin lifecycle under bounded engineering observation',actualInstalledBinExecuted:true,standaloneNodeBinLaunch:false,entry:'Trusted Node launches observer-entry.mjs with genuinely empty execArgv and clean environment. Explicit process.argv entry adaptation precedes import of exact installed bin.',sourceTransformation:false,installedOrSourceMutation:false,originalSupervisorObjectReturned:true,originalTransportAnswersReturned:true,originalErrorsPreserved:true,spawnForwarding:'Exact executable/args/options forwarded unchanged to original node:child_process.spawn; metadata listeners only.',helperCopy:false,workerReplacement:false,clockOverride:false,deadlineOverride:false,topologyIdentityPolicy:'MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0',qualifiedPostIdentityRequeryUnavailable:'Informational only after the exact validated same-session retained-object identity proof; every unresolved or contradictory identity condition remains fail-closed.',traceProcessing:'Frames retained by bounded reference during production; only metadata decoded after bin settles and supervisor disposes. No file contents or secrets logged.',measurementScope:'Transport exchange and exact supervisor charged time separately; private helper sequence time not called transport time. Bin clock, import interval and parent wall time separately. The timely-helper <5000-ms cap is an engineering envelope with 4000-ms headroom, not a new product authority.',sourceBindings:['observer-entry.mjs','runtime-observer.mjs','transport-observer.mjs','errors-observer.mjs','observe-command.py','runtime-controls-observer.py','topology_identity_policy.py','runtime-controls-run.py','core.mjs'].map(n=>record(path.join(T,n))),observerCorrection:record(path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-topology-observer-correction/receipt.json')),observerCorrectionSources:record(path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-topology-observer-correction/source-bindings.json')),hHarnessCorrection:record(path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h-harness-correction/receipt.json')),preservedFailedFullGeneration:record(path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final/certification-receipt.json')),preCertificationBGate:record(path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/gate-receipt.json')),preservedFailedPreCertificationBGate:record(path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-b-gate/gate-receipt.json')),installedBindings:['bin/memoryos-readiness.mjs','src/cli.mjs','src/runtime.mjs','src/helper-transport.mjs','src/helper-protocol.mjs','helpers/windows-inspect.ps1','src/worker-entry.mjs'].map(n=>record(path.join(packageRoot,n)))});"
+        }
+      ],
+      "added": [
+        {
+          "line": 3,
+          "text": "write('observation-method.json',{C3VB:HEAD,authority:'PROSPECTIVE_HELPER_AGGREGATE_BOUND@2.0.0',helperAuthority:'PROSPECTIVE_HELPER_BOUND@2.0.0',limits:{helperWholeLifecycleMs:9000,aggregateHelperActiveMs:28000,cliMs:30000,workerMs:10000,cleanupMs:2000},historicalCharacterizationH:'NOT_ESTABLISHED',hFailureClassification:'H_HARNESS_MARGIN_DEFECT',timelyHelperEngineeringEnvelope:{artificialEofDelayMs:0,maxMs:5000,deadlineMarginMs:4000,productAuthorityChanged:false},scope:'CERTIFICATION of actual installed bin lifecycle under bounded engineering observation',actualInstalledBinExecuted:true,standaloneNodeBinLaunch:false,entry:'Trusted Node launches observer-entry.mjs with genuinely empty execArgv and clean environment. Explicit process.argv entry adaptation precedes import of exact installed bin.',sourceTransformation:false,installedOrSourceMutation:false,originalSupervisorObjectReturned:true,originalTransportAnswersReturned:true,originalErrorsPreserved:true,spawnForwarding:'Exact executable/args/options forwarded unchanged to original node:child_process.spawn; metadata listeners only.',helperCopy:false,workerReplacement:false,clockOverride:false,deadlineOverride:false,topologyIdentityPolicy:'MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0',qualifiedPostIdentityRequeryUnavailable:'Informational only after the exact validated same-session retained-object identity proof; every unresolved or contradictory identity condition remains fail-closed.',traceProcessing:'Frames retained by bounded reference during production; only metadata decoded after bin settles and supervisor disposes. No file contents or secrets logged.',measurementScope:'Transport exchange and exact supervisor charged time separately; private helper sequence time not called transport time. Bin clock, import interval and parent wall time separately. The timely-helper <5000-ms cap is an engineering envelope with 4000-ms headroom, not a new product authority.',sourceBindings:['observer-entry.mjs','runtime-observer.mjs','transport-observer.mjs','errors-observer.mjs','observe-command.py','runtime-controls-observer.py','topology_identity_policy.py','runtime-controls-run.py','core.mjs'].map(n=>record(path.join(T,n))),observerCorrection:record(path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-topology-observer-correction/receipt.json')),observerCorrectionSources:record(path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-topology-observer-correction/source-bindings.json')),hHarnessCorrection:record(path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h-harness-correction/receipt.json')),h2HarnessCorrection:record(path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-harness-correction/receipt.json')),eventOrderingRule:{identity:'MO1307_OBSERVER_EVENT_ORDERING@1.0.0',source:record(path.join(root,'repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-harness-correction/observer_event_ordering.py')),statement:'lastSeenAt advances only while the exact held process object reports exitTime100ns == 0; identity policy unchanged.'},aggregateHelperEngineeringEnvelope:{artificialEofDelayMs:5700,engineeringMinMs:28000,engineeringMaxMs:31000,maxHelperSlots:5,publicationStateMutations:0,productAuthorityChanged:false},preservedFailedHCorrectedGeneration:record(path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h-corrected/certification-receipt.json')),preservedFailedFullGeneration:record(path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final/certification-receipt.json')),preCertificationBGate:record(path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/gate-receipt.json')),preservedFailedPreCertificationBGate:record(path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-b-gate/gate-receipt.json')),installedBindings:['bin/memoryos-readiness.mjs','src/cli.mjs','src/runtime.mjs','src/helper-transport.mjs','src/helper-protocol.mjs','helpers/windows-inspect.ps1','src/worker-entry.mjs'].map(n=>record(path.join(packageRoot,n)))});"
+        }
+      ]
+    },
+    "prepare.mjs": {
+      "removed": [
+        {
+          "line": 28,
+          "text": "const authorizationPath='C:/Users/melsa/.codex/attachments/e98db116-fc36-410b-b6b8-a9ae9d9c457e/Pasted text.txt';"
+        },
+        {
+          "line": 29,
+          "text": "const authorizationSha256='sha256:99e921a062b4804a9251da13b330b821f684484220db7ab56470e5f2b298e643';"
+        },
+        {
+          "line": 54,
+          "text": "const allowedUntracked=[toolRel,rel,failedBGateToolRel,failedBGateRel,correctionToolRel,correctionRel,bGateToolRel,bGateRel,failedFullToolRel,failedFullRel,hCorrectionToolRel,hCorrectionRel];"
+        },
+        {
+          "line": 55,
+          "text": "assert.ok(statusLines.every(line=>line==='?? '+failedFullReportRel||allowedUntracked.some(prefix=>line.startsWith('?? '+prefix+'/'))),'Unexpected working-tree path before preparation');"
+        },
+        {
+          "line": 59,
+          "text": "const authorizationBytes=fs.readFileSync(authorizationPath);assert.equal(authorizationBytes.length,7382);assert.equal(hash(authorizationBytes),authorizationSha256);"
+        },
+        {
+          "line": 64,
+          "text": "assert.deepEqual(walk(path.join(root,hCorrectionToolRel)).map(row=>row.path),['validate.mjs']);assert.equal(walk(hCorrectionRoot).length,6);assert.equal(hCorrection.result,'PASS');assert.equal(hCorrection.classification,'H_HARNESS_MARGIN_DEFECT');assert.deepEqual(hCorrection.correctedControl,{artificialEofDelayMs:0,engineeringMaxMs:5000,engineeringMinMs:null,productDeadlineMs:9000});assert.deepEqual(hCorrection.execution,{certificationRuns:0,helperRuns:0,nativeObserverRuns:0,productRuns:0,workerRuns:0});assert.equal(hCorrection.retry,false);assert.deepEqual(hCorrection.bindings.authorization,record(path.join(hCorrectionRoot,'authorization.txt')));assert.deepEqual(fs.readFileSync(path.join(hCorrectionRoot,'authorization.txt')),authorizationBytes);"
+        },
+        {
+          "line": 78,
+          "text": "for(const [name,binding] of [['runtime-controls-observer.py',correctionSources.correctedObserver],['topology_identity_policy.py',correctionSources.policy]])for(const namespace of [toolRel,bGateToolRel]){const actual=record(path.join(root,namespace,name));assert.equal(actual.byteLength,binding.byteLength);assert.equal(actual.sha256,binding.sha256);}"
+        },
+        {
+          "line": 87,
+          "text": "write('pre-execution-gate.json',{result:'PASS',verifiedAt:startedAt,worktree:path.resolve(root),branch:'codex/mo1307-phase3ar2-c3ub',HEAD:C3VB,rootTree:'68e5c57dce89cb0819b1a94ae18d4e6b9b54713d',productionCommit:C3V,productionTree,initialGateObservedBeforeTooling:{worktree:'C:\\\\Users\\\\melsa\\\\Documents\\\\Codex\\\\3ar2',branch:'codex/mo1307-phase3ar2-c3ub',HEAD:C3VB,workingTree:'TRACKED_CLEAN_WITH_PRESERVED_FAILED_GENERATIONS_CORRECTIONS_AND_FRESH_UNTRACKED_H_CORRECTED_AO_HARNESS'},currentTrackedDiff:'CLEAN',currentIndex:'CLEAN',currentUntrackedScope:'Preserved failed B/full generations, topology and H corrections, corrected one-shot B, and fresh H-corrected A-O tools only',statusLines,observerCorrection:record(correctionReceiptPath),hHarnessCorrection:record(hCorrectionReceiptPath),preservedFailedFullGeneration:record(failedFullReceiptPath),preservedFailedFullReport:record(failedFullReportPath),preCertificationBGate:record(bGatePath),preservedFailedBGate:record(failedBGatePath)});"
+        },
+        {
+          "line": 88,
+          "text": "write('campaign-config.json',{generation:'PHASE3AR2_C3VB_FINAL_H_CORRECTED_FRESH_FULL_INSTALLED_RUNTIME_20261002',startedAt,hardStopAt,engineeringGuardMinutes:180,productDeadlineAuthorities:[helperAuthority,integration],candidate:C3VB,productionCommit:C3V,productionTree,H:'NOT_ESTABLISHED',hFailureClassification:'H_HARNESS_MARGIN_DEFECT',timelyHelperEngineeringEnvelope:{artificialEofDelayMs:0,maxMs:5000,deadlineMarginMs:4000},nodeExecutable:process.execPath,helperSuccess:'elapsedMs < 9000',helperTimeout:'elapsedMs >= 9000',aggregateAccepted:'helperActiveMs < 28000',aggregateTimeout:'helperActiveMs >= 28000',observerIdentityPolicy:'MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0',observerCorrection:record(correctionReceiptPath),hHarnessCorrection:record(hCorrectionReceiptPath),preservedFailedFullGeneration:record(failedFullReceiptPath),preservedFailedFullReport:record(failedFullReportPath),preCertificationBGate:record(bGatePath),preservedFailedPreCertificationBGate:record(failedBGatePath),noRetry:true});"
+        },
+        {
+          "line": 108,
+          "text": "write('candidate-before.json',{candidate:C3VB,productionCommit:C3V,productionTree,authorities:[helperAuthority,integration],parent:git('show','-s','--format=%P','HEAD').toString().trim(),tree:git('rev-parse','HEAD^{tree}').toString().trim(),members:production,packageIdentity,check:sourceCheck,initialStatus:git('status','--porcelain=v1','--untracked-files=all').toString(),productionGitDiff:git('diff','--name-only',C3VB,'--','repositories/memoryos-readiness').toString(),binding:record(path.join(root,prospectiveRel,'binding.json')),bindingVerification:record(path.join(root,prospectiveRel,'binding-verification.json')),observerCorrection:record(correctionReceiptPath),hHarnessCorrection:record(hCorrectionReceiptPath),preservedFailedFullGeneration:record(failedFullReceiptPath),preservedFailedFullReport:record(failedFullReportPath),preCertificationBGate:record(bGatePath),preservedFailedBGate:record(failedBGatePath)});"
+        },
+        {
+          "line": 133,
+          "text": "write('candidate-identity.json',{result:'PASS',C3VB,C3V,productionTree,authorities:[helperAuthority,integration],packageRoot:installed,packageName:'memoryos-readiness',version:'0.1.0',members:89,externalProductionDependencies:0,packageIdentity,helperSha256:'sha256:97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127',archive:archiveBinding,npmPack:packed[0],repositoryAuthority:record(path.join(root,'repositories/cca-conformance/tools/mo1307-phase1/package.mjs')),candidateAuthority:record(path.join(root,prospectiveRel,'candidate.json')),candidateBinding:record(path.join(root,prospectiveRel,'binding.json')),bindingVerification:record(path.join(root,prospectiveRel,'binding-verification.json')),observerCorrection:record(correctionReceiptPath),hHarnessCorrection:record(hCorrectionReceiptPath),preservedFailedFullGeneration:record(failedFullReceiptPath),preCertificationBGate:record(bGatePath),preservedFailedBGate:record(failedBGatePath),duplicate3B:false});"
+        },
+        {
+          "line": 134,
+          "text": "write('baseline.json',{result:'PASS',startedAt,hardStopAt,HEAD:C3VB,productionCommit:C3V,productionTree,authorities:[helperAuthority,integration],branch:'codex/mo1307-phase3ar2-c3ub',installed:members,source:production,candidate:{name:'memoryos-readiness',version:'0.1.0',members:89,externalProductionDependencies:0,packageIdentity,archive:archiveBinding},runtime:record(process.execPath),productionChanges:0,observerCorrection:record(correctionReceiptPath),hHarnessCorrection:record(hCorrectionReceiptPath),preservedFailedFullGeneration:record(failedFullReceiptPath),preCertificationBGate:record(bGatePath),preservedFailedBGate:record(failedBGatePath)});"
+        }
+      ],
+      "added": [
+        {
+          "line": 27,
+          "text": "const consumedRel='repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h-corrected';"
+        },
+        {
+          "line": 28,
+          "text": "const consumedToolRel='repositories/cca-conformance/tools/mo1307-phase3ar2-final-h-corrected';"
+        },
+        {
+          "line": 29,
+          "text": "const consumedReportRel='docs/mo1307-phase3ar2-final-h-corrected.md';"
+        },
+        {
+          "line": 30,
+          "text": "const h2CorrectionRel='repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-harness-correction';"
+        },
+        {
+          "line": 31,
+          "text": "const h2CorrectionToolRel='repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-harness-correction';"
+        },
+        {
+          "line": 32,
+          "text": "const aggregateFixtureRel='repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected';"
+        },
+        {
+          "line": 33,
+          "text": "const inputFixtureRel='repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input';"
+        },
+        {
+          "line": 35,
+          "text": "const hAuthorizationSha256='sha256:99e921a062b4804a9251da13b330b821f684484220db7ab56470e5f2b298e643';"
+        },
+        {
+          "line": 60,
+          "text": "const allowedUntracked=[toolRel,rel,failedBGateToolRel,failedBGateRel,correctionToolRel,correctionRel,bGateToolRel,bGateRel,failedFullToolRel,failedFullRel,hCorrectionToolRel,hCorrectionRel,consumedToolRel,consumedRel,h2CorrectionToolRel,h2CorrectionRel,aggregateFixtureRel,inputFixtureRel];"
+        },
+        {
+          "line": 61,
+          "text": "assert.ok(statusLines.every(line=>line==='?? '+failedFullReportRel||line==='?? '+consumedReportRel||allowedUntracked.some(prefix=>line.startsWith('?? '+prefix+'/'))),'Unexpected working-tree path before preparation');"
+        },
+        {
+          "line": 65,
+          "text": "const h2CorrectionRoot=path.join(root,h2CorrectionRel),h2CorrectionReceiptPath=path.join(h2CorrectionRoot,'receipt.json'),h2Correction=JSON.parse(fs.readFileSync(h2CorrectionReceiptPath,'utf8')),h2Sources=JSON.parse(fs.readFileSync(path.join(h2CorrectionRoot,'source-bindings.json'),'utf8'));"
+        },
+        {
+          "line": 66,
+          "text": "assert.equal(h2Correction.kind,'MO1307Phase3AR2FinalH2HarnessCorrectionReceipt');assert.equal(h2Correction.result,'PASS');assert.equal(h2Correction.zeroProductValidation,'PASS');assert.deepEqual(h2Correction.classifications,['H_AGGREGATE_FIXTURE_INPUT_ISOLATION_DEFECT','H_OBSERVER_EVENT_ORDERING_DEFECT']);assert.deepEqual(h2Correction.execution,{certificationRuns:0,helperRuns:0,nativeObserverRuns:0,productRuns:0,workerRuns:0,engineeringInterpreterInvocations:2});assert.equal(h2Correction.retry,false);assert.equal(h2Correction.fullCertificationStarted,false);"
+        },
+        {
+          "line": 67,
+          "text": "assert.deepEqual(h2Correction.bindings.sourceBindings,record(path.join(h2CorrectionRoot,'source-bindings.json')));assert.deepEqual(h2Correction.bindings.authorization,record(path.join(h2CorrectionRoot,'authorization.txt')));assert.deepEqual(walk(path.join(root,toolRel)).map(row=>({...row,path:toolRel+'/'+row.path})),h2Sources.h2CampaignTools,'H2 campaign tools changed after zero-product validation');assert.deepEqual(walk(path.join(root,h2CorrectionToolRel)).map(row=>({...row,path:h2CorrectionToolRel+'/'+row.path})),h2Sources.h2CorrectionTools);assert.deepEqual(walk(path.join(root,aggregateFixtureRel)).map(row=>({...row,path:aggregateFixtureRel+'/'+row.path})),h2Sources.aggregateFixture);assert.deepEqual(walk(path.join(root,inputFixtureRel)).map(row=>({...row,path:inputFixtureRel+'/'+row.path})),h2Sources.inputFixture);assert.equal(fs.existsSync(path.join(root,aggregateFixtureRel,'absent-output')),false);"
+        },
+        {
+          "line": 68,
+          "text": "const authorizationBytes=fs.readFileSync(path.join(h2CorrectionRoot,'authorization.txt'));assert.equal(hash(authorizationBytes),h2Correction.bindings.authorization.sha256);"
+        },
+        {
+          "line": 69,
+          "text": "const consumedRoot=path.join(root,consumedRel),consumedReceiptPath=path.join(consumedRoot,'certification-receipt.json'),consumedReceipt=JSON.parse(fs.readFileSync(consumedReceiptPath,'utf8'));"
+        },
+        {
+          "line": 70,
+          "text": "assert.equal(walk(path.join(root,consumedToolRel)).length,26);assert.equal(walk(consumedRoot).length,407);assert.deepEqual(record(consumedReceiptPath),{path:consumedRel+'/certification-receipt.json',byteLength:463330,sha256:'sha256:719ebafbbabe4c89f1502271310109dc8d6cb4efff8bc43da313b7dd7411e031'});assert.deepEqual(record(path.join(root,consumedReportRel)),{path:consumedReportRel,byteLength:8233,sha256:'sha256:55cb434e002aa92f8255bce4611e8dee28249877c06eeb06e81ad6f0af2638c5'});"
+        },
+        {
+          "line": 71,
+          "text": "assert.equal(consumedReceipt.result,'PHASE3AR2_CONCRETE_BLOCKER');assert.deepEqual(consumedReceipt.completed,['A','B','C','D','E','F','G']);assert.equal(consumedReceipt.steps.find(row=>row.step==='H').result,'FAIL');assert.deepEqual(consumedReceipt.unexecuted,['I','J','K','L','M','N','O']);assert.equal(consumedReceipt.evidenceMembers.length,405);for(const member of consumedReceipt.evidenceMembers)assert.deepEqual(record(path.join(root,member.path)),member);"
+        },
+        {
+          "line": 76,
+          "text": "assert.deepEqual(walk(path.join(root,hCorrectionToolRel)).map(row=>row.path),['validate.mjs']);assert.equal(walk(hCorrectionRoot).length,6);assert.equal(hCorrection.result,'PASS');assert.equal(hCorrection.classification,'H_HARNESS_MARGIN_DEFECT');assert.deepEqual(hCorrection.correctedControl,{artificialEofDelayMs:0,engineeringMaxMs:5000,engineeringMinMs:null,productDeadlineMs:9000});assert.deepEqual(hCorrection.execution,{certificationRuns:0,helperRuns:0,nativeObserverRuns:0,productRuns:0,workerRuns:0});assert.equal(hCorrection.retry,false);assert.deepEqual(hCorrection.bindings.authorization,record(path.join(hCorrectionRoot,'authorization.txt')));assert.equal(hash(fs.readFileSync(path.join(hCorrectionRoot,'authorization.txt'))),hAuthorizationSha256);"
+        },
+        {
+          "line": 90,
+          "text": "for(const [name,binding,namespaces] of [['runtime-controls-observer.py',correctionSources.correctedObserver,[bGateToolRel]],['runtime-controls-observer.py',h2Sources.correctedObserver,[toolRel]],['topology_identity_policy.py',correctionSources.policy,[toolRel,bGateToolRel]]])for(const namespace of namespaces){const actual=record(path.join(root,namespace,name));assert.equal(actual.byteLength,binding.byteLength);assert.equal(actual.sha256,binding.sha256);}"
+        },
+        {
+          "line": 91,
+          "text": "assert.deepEqual(h2Sources.correctedObserver,record(path.join(root,toolRel,'runtime-controls-observer.py')));assert.deepEqual(h2Sources.eventOrderingRule,record(path.join(root,h2CorrectionToolRel,'observer_event_ordering.py')));assert.deepEqual(h2Sources.policy,record(path.join(root,toolRel,'topology_identity_policy.py')));assert.equal(h2Sources.policy.sha256,correctionSources.policy.sha256);"
+        },
+        {
+          "line": 100,
+          "text": "write('pre-execution-gate.json',{result:'PASS',verifiedAt:startedAt,worktree:path.resolve(root),branch:'codex/mo1307-phase3ar2-c3ub',HEAD:C3VB,rootTree:'68e5c57dce89cb0819b1a94ae18d4e6b9b54713d',productionCommit:C3V,productionTree,initialGateObservedBeforeTooling:{worktree:'C:\\\\Users\\\\melsa\\\\Documents\\\\Codex\\\\3ar2',branch:'codex/mo1307-phase3ar2-c3ub',HEAD:C3VB,workingTree:'TRACKED_CLEAN_WITH_PRESERVED_FAILED_GENERATIONS_CORRECTIONS_AND_FRESH_UNTRACKED_H2_CORRECTED_AO_HARNESS'},currentTrackedDiff:'CLEAN',currentIndex:'CLEAN',currentUntrackedScope:'Preserved failed B/full/H-corrected generations, topology, H and H2 corrections, corrected one-shot B, sealed H2 fixtures, and fresh H2-corrected A-O tools only',statusLines,observerCorrection:record(correctionReceiptPath),hHarnessCorrection:record(hCorrectionReceiptPath),h2HarnessCorrection:record(h2CorrectionReceiptPath),preservedFailedHCorrectedGeneration:record(consumedReceiptPath),preservedFailedHCorrectedReport:record(path.join(root,consumedReportRel)),preservedFailedFullGeneration:record(failedFullReceiptPath),preservedFailedFullReport:record(failedFullReportPath),preCertificationBGate:record(bGatePath),preservedFailedBGate:record(failedBGatePath)});"
+        },
+        {
+          "line": 101,
+          "text": "write('campaign-config.json',{generation:'PHASE3AR2_C3VB_FINAL_H2_CORRECTED_FRESH_FULL_INSTALLED_RUNTIME',startedAt,hardStopAt,engineeringGuardMinutes:180,productDeadlineAuthorities:[helperAuthority,integration],candidate:C3VB,productionCommit:C3V,productionTree,H:'NOT_ESTABLISHED',hFailureClassification:'H_HARNESS_MARGIN_DEFECT',h2FailureClassifications:h2Correction.classifications,timelyHelperEngineeringEnvelope:{artificialEofDelayMs:0,maxMs:5000,deadlineMarginMs:4000},aggregateHelperEngineeringEnvelope:h2Correction.aggregateControl,h2Fixtures:{aggregate:h2Sources.aggregateFixture,input:h2Sources.inputFixture},h2HarnessCorrection:record(h2CorrectionReceiptPath),preservedFailedHCorrectedGeneration:record(consumedReceiptPath),eventOrderingRule:'MO1307_OBSERVER_EVENT_ORDERING@1.0.0',nodeExecutable:process.execPath,helperSuccess:'elapsedMs < 9000',helperTimeout:'elapsedMs >= 9000',aggregateAccepted:'helperActiveMs < 28000',aggregateTimeout:'helperActiveMs >= 28000',observerIdentityPolicy:'MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0',observerCorrection:record(correctionReceiptPath),hHarnessCorrection:record(hCorrectionReceiptPath),preservedFailedFullGeneration:record(failedFullReceiptPath),preservedFailedFullReport:record(failedFullReportPath),preCertificationBGate:record(bGatePath),preservedFailedPreCertificationBGate:record(failedBGatePath),noRetry:true});"
+        },
+        {
+          "line": 121,
+          "text": "write('candidate-before.json',{candidate:C3VB,productionCommit:C3V,productionTree,authorities:[helperAuthority,integration],parent:git('show','-s','--format=%P','HEAD').toString().trim(),tree:git('rev-parse','HEAD^{tree}').toString().trim(),members:production,packageIdentity,check:sourceCheck,initialStatus:git('status','--porcelain=v1','--untracked-files=all').toString(),productionGitDiff:git('diff','--name-only',C3VB,'--','repositories/memoryos-readiness').toString(),binding:record(path.join(root,prospectiveRel,'binding.json')),bindingVerification:record(path.join(root,prospectiveRel,'binding-verification.json')),observerCorrection:record(correctionReceiptPath),hHarnessCorrection:record(hCorrectionReceiptPath),h2HarnessCorrection:record(h2CorrectionReceiptPath),preservedFailedFullGeneration:record(failedFullReceiptPath),preservedFailedFullReport:record(failedFullReportPath),preservedFailedHCorrectedGeneration:record(consumedReceiptPath),preCertificationBGate:record(bGatePath),preservedFailedBGate:record(failedBGatePath)});"
+        },
+        {
+          "line": 146,
+          "text": "write('candidate-identity.json',{result:'PASS',C3VB,C3V,productionTree,authorities:[helperAuthority,integration],packageRoot:installed,packageName:'memoryos-readiness',version:'0.1.0',members:89,externalProductionDependencies:0,packageIdentity,helperSha256:'sha256:97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127',archive:archiveBinding,npmPack:packed[0],repositoryAuthority:record(path.join(root,'repositories/cca-conformance/tools/mo1307-phase1/package.mjs')),candidateAuthority:record(path.join(root,prospectiveRel,'candidate.json')),candidateBinding:record(path.join(root,prospectiveRel,'binding.json')),bindingVerification:record(path.join(root,prospectiveRel,'binding-verification.json')),observerCorrection:record(correctionReceiptPath),hHarnessCorrection:record(hCorrectionReceiptPath),h2HarnessCorrection:record(h2CorrectionReceiptPath),preservedFailedFullGeneration:record(failedFullReceiptPath),preservedFailedHCorrectedGeneration:record(consumedReceiptPath),preCertificationBGate:record(bGatePath),preservedFailedBGate:record(failedBGatePath),duplicate3B:false});"
+        },
+        {
+          "line": 147,
+          "text": "write('baseline.json',{result:'PASS',startedAt,hardStopAt,HEAD:C3VB,productionCommit:C3V,productionTree,authorities:[helperAuthority,integration],branch:'codex/mo1307-phase3ar2-c3ub',installed:members,source:production,candidate:{name:'memoryos-readiness',version:'0.1.0',members:89,externalProductionDependencies:0,packageIdentity,archive:archiveBinding},runtime:record(process.execPath),productionChanges:0,observerCorrection:record(correctionReceiptPath),hHarnessCorrection:record(hCorrectionReceiptPath),h2HarnessCorrection:record(h2CorrectionReceiptPath),preservedFailedFullGeneration:record(failedFullReceiptPath),preservedFailedHCorrectedGeneration:record(consumedReceiptPath),preCertificationBGate:record(bGatePath),preservedFailedBGate:record(failedBGatePath)});"
+        }
+      ]
+    },
+    "record-harness-review.mjs": {
+      "removed": [
+        {
+          "line": 24,
+          "text": "assert.equal(inventoryValidation.result,'PASS');assert.equal(inventoryValidation.candidate,HEAD);assert.equal(inventoryValidation.integrationAuthority,authority);assert.equal(inventoryValidation.totalCases,80);assert.equal(inventoryValidation.checks.allCasesNotRun,true);assert.equal(inventoryValidation.checks.historicalOutcomesPromoted,false);assert.equal(inventoryValidation.checks.observerCorrectionSyntheticCasesPassed,true);assert.equal(inventoryValidation.checks.hHarnessMarginCorrectionValidatedWithZeroProductExecutions,true);assert.equal(inventoryValidation.checks.preservedFailedFullGenerationNotResumed,true);assert.equal(inventoryValidation.checks.correctedPreCertificationBGatePassedOnce,true);assert.equal(inventoryValidation.checks.failedPreCertificationBGatePreserved,true);"
+        },
+        {
+          "line": 37,
+          "text": "for(const [name,binding] of [['runtime-controls-observer.py',correctionSources.correctedObserver],['topology_identity_policy.py',correctionSources.policy]]){assert.deepEqual(record(path.join(root,'repositories/cca-conformance/tools/mo1307-phase3ar2-final-topology-observer-correction',name)),binding);for(const target of [path.join(T,name),path.join(root,'repositories/cca-conformance/tools/mo1307-phase3ar2-final-corrected-b-gate',name)]){const actual=record(target);assert.equal(actual.byteLength,binding.byteLength);assert.equal(actual.sha256,binding.sha256);}}"
+        },
+        {
+          "line": 52,
+          "text": "mustContain('runtime-controls.mjs',\"['former-equality-8000-now-success',8000,'PASS']\");mustContain('runtime-controls.mjs',\"['strict-before-9000',8999,'PASS']\");mustContain('runtime-controls.mjs',\"['equality-9000-timeout',9000,'MO1307_TIMEOUT']\");mustContain('runtime-controls.mjs',\"aggregateSuccess:'helperActiveMs < 28000'\");mustContain('runtime-controls.mjs','eofDelayMs:4000');mustContain('runtime-controls.mjs','Math.abs(atTimeout-28000)<100');mustContain('runtime-controls.mjs','remainingAllowanceMs:28000-row.snapshot.helperUsedMs');mustContain('runtime-controls.mjs','aggregateMs:28000');mustContain('runtime-controls.mjs','DEFINITIONS.limits.helperAggregateDeadlineMs-DEFINITIONS.limits.helperDeadlineMs');mustContain('runtime-controls.mjs','authorityBindings');mustContain('runtime-controls.mjs',\"historicalCharacterizationH:'NOT_ESTABLISHED'\");"
+        },
+        {
+          "line": 75,
+          "text": "  reviewer:{role:'INDEPENDENT_READ_ONLY_STATIC_AUDITOR',task:'/root/fresh_static_audit',materialization:'The delegated auditor performed the final read-only review; this deterministic preparation tool records those final reviewed bytes.'},"
+        },
+        {
+          "line": 80,
+          "text": "  hHarnessCorrection:{classification:hCorrection.classification,receipt:record(hCorrectionReceiptPath),zeroProductValidation:hCorrection.zeroProductValidation,correctedControl:hCorrection.correctedControl,execution:hCorrection.execution},preservedFailedFullGeneration:record(failedFullReceiptPath),correctedPreCertificationBGate:record(correctedReceiptPath),preservedFailedPreCertificationBGate:record(failedReceiptPath),"
+        },
+        {
+          "line": 85,
+          "text": "    'The final observer is byte-identical to the synthetically validated canonical observer and requires zero unresolved topology identities under MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0.',"
+        },
+        {
+          "line": 90,
+          "text": "  correctionsAppliedDuringReview:['zero-product A-G observer correction binding','corrected one-shot B gate binding','historical failed B separation','preserved failed full-generation separation','zero-product H harness margin correction binding','timely-helper zero-delay <5000-ms engineering envelope','strict 9000-ms helper boundary','strict 28000-ms aggregate boundary','fail-safe wrapper cleanup','topology identity policy and accepted-proof checks','driver/request/native PID joins','definition-only wrong-name oracle','complete close seal-chain integrity'],"
+        }
+      ],
+      "added": [
+        {
+          "line": 22,
+          "text": "const h2CorrectionRoot=path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-harness-correction');"
+        },
+        {
+          "line": 23,
+          "text": "const h2CorrectionReceiptPath=path.join(h2CorrectionRoot,'receipt.json'),h2CorrectionSourcesPath=path.join(h2CorrectionRoot,'source-bindings.json'),h2IndependentReviewPath=path.join(h2CorrectionRoot,'independent-review.json');"
+        },
+        {
+          "line": 24,
+          "text": "const consumedReceiptPath=path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h-corrected/certification-receipt.json');"
+        },
+        {
+          "line": 27,
+          "text": "assert.equal(inventoryValidation.result,'PASS');assert.equal(inventoryValidation.candidate,HEAD);assert.equal(inventoryValidation.integrationAuthority,authority);assert.equal(inventoryValidation.totalCases,80);assert.equal(inventoryValidation.checks.allCasesNotRun,true);assert.equal(inventoryValidation.checks.historicalOutcomesPromoted,false);assert.equal(inventoryValidation.checks.observerCorrectionSyntheticCasesPassed,true);assert.equal(inventoryValidation.checks.hHarnessMarginCorrectionValidatedWithZeroProductExecutions,true);assert.equal(inventoryValidation.checks.preservedFailedFullGenerationNotResumed,true);assert.equal(inventoryValidation.checks.h2HarnessCorrectionValidatedWithZeroProductExecutions,true);assert.equal(inventoryValidation.checks.preservedFailedHCorrectedGenerationNotResumed,true);assert.equal(inventoryValidation.checks.caseExpectationsChanged,false);assert.equal(inventoryValidation.checks.correctedPreCertificationBGatePassedOnce,true);assert.equal(inventoryValidation.checks.failedPreCertificationBGatePreserved,true);"
+        },
+        {
+          "line": 40,
+          "text": "for(const [name,binding] of [['runtime-controls-observer.py',correctionSources.correctedObserver],['topology_identity_policy.py',correctionSources.policy]]){assert.deepEqual(record(path.join(root,'repositories/cca-conformance/tools/mo1307-phase3ar2-final-topology-observer-correction',name)),binding);for(const target of name==='topology_identity_policy.py'?[path.join(T,name),path.join(root,'repositories/cca-conformance/tools/mo1307-phase3ar2-final-corrected-b-gate',name)]:[path.join(root,'repositories/cca-conformance/tools/mo1307-phase3ar2-final-corrected-b-gate',name)]){const actual=record(target);assert.equal(actual.byteLength,binding.byteLength);assert.equal(actual.sha256,binding.sha256);}}"
+        },
+        {
+          "line": 41,
+          "text": "const h2Correction=json(h2CorrectionReceiptPath),h2Sources=json(h2CorrectionSourcesPath),h2Review=json(h2IndependentReviewPath),consumed=json(consumedReceiptPath);"
+        },
+        {
+          "line": 42,
+          "text": "assert.equal(h2Correction.kind,'MO1307Phase3AR2FinalH2HarnessCorrectionReceipt');assert.equal(h2Correction.result,'PASS');assert.equal(h2Correction.zeroProductValidation,'PASS');assert.deepEqual(h2Correction.classifications,['H_AGGREGATE_FIXTURE_INPUT_ISOLATION_DEFECT','H_OBSERVER_EVENT_ORDERING_DEFECT']);assert.deepEqual(h2Correction.execution,{certificationRuns:0,helperRuns:0,nativeObserverRuns:0,productRuns:0,workerRuns:0,engineeringInterpreterInvocations:2});assert.deepEqual(h2Correction.bindings.sourceBindings,record(h2CorrectionSourcesPath));assert.deepEqual(h2Correction.bindings.independentReview,record(h2IndependentReviewPath));"
+        },
+        {
+          "line": 43,
+          "text": "assert.deepEqual(h2Sources.correctedObserver,record(path.join(T,'runtime-controls-observer.py')));assert.deepEqual(h2Sources.policy,record(path.join(T,'topology_identity_policy.py')));assert.equal(h2Sources.policy.sha256,correctionSources.policy.sha256);"
+        },
+        {
+          "line": 44,
+          "text": "assert.equal(h2Review.result,'PASS');assert.deepEqual(h2Review.blockingFindings,[]);"
+        },
+        {
+          "line": 45,
+          "text": "assert.equal(consumed.result,'PHASE3AR2_CONCRETE_BLOCKER');assert.deepEqual(consumed.completed,['A','B','C','D','E','F','G']);assert.equal(consumed.steps.find(row=>row.step==='H').result,'FAIL');assert.deepEqual(consumed.unexecuted,['I','J','K','L','M','N','O']);"
+        },
+        {
+          "line": 60,
+          "text": "mustContain('runtime-controls.mjs',\"['former-equality-8000-now-success',8000,'PASS']\");mustContain('runtime-controls.mjs',\"['strict-before-9000',8999,'PASS']\");mustContain('runtime-controls.mjs',\"['equality-9000-timeout',9000,'MO1307_TIMEOUT']\");mustContain('runtime-controls.mjs',\"aggregateSuccess:'helperActiveMs < 28000'\");mustContain('runtime-controls.mjs',\"'aggregate-helper-exhaustion',{eofDelayMs:5700,error:'MO1307_TIMEOUT',minMs:28000,maxMs:31000\");mustContain('runtime-controls.mjs',\"assert.ok(slot<=5,'Aggregate deadline must terminate before publication-state operations')\");mustContain('runtime-controls.mjs',\"aggregateFixtureRelative='repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected'\");mustContain('runtime-controls.mjs',\"inputFixtureRelative='repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input'\");mustContain('runtime-controls.mjs',\"assert.deepEqual(fixtureSnapshot(),aggregateFixtureBefore,'Aggregate fixture root mutated');assert.deepEqual(inputSnapshot(),inputFixtureBefore,'Input fixture root mutated');\");for(const forbidden of ['fs.mkdirSync(outputRoot','path.join(outputRoot,','fs.mkdirSync(inputRoot','path.join(evidence,\\'input\\')','path.join(evidence,\\'absent-output\\')','eofDelayMs:4000'])assert.equal(texts.get('runtime-controls.mjs').includes(forbidden),false,'runtime-controls.mjs contains forbidden fixture mutation token '+forbidden);"
+        },
+        {
+          "line": 61,
+          "text": "mustContain('runtime-controls-observer.py',\"row['lastSeenAt'] = EVENT_ORDERING.corrected_last_seen(\");mustContain('runtime-controls-observer.py',\"'mo1307-phase3ar2-final-h2-harness-correction' / 'observer_event_ordering.py'\");mustContain('runtime-controls.mjs','Math.abs(atTimeout-28000)<100');mustContain('runtime-controls.mjs','remainingAllowanceMs:28000-row.snapshot.helperUsedMs');mustContain('runtime-controls.mjs','aggregateMs:28000');mustContain('runtime-controls.mjs','DEFINITIONS.limits.helperAggregateDeadlineMs-DEFINITIONS.limits.helperDeadlineMs');mustContain('runtime-controls.mjs','authorityBindings');mustContain('runtime-controls.mjs',\"historicalCharacterizationH:'NOT_ESTABLISHED'\");"
+        },
+        {
+          "line": 84,
+          "text": "  reviewer:{role:'INDEPENDENT_READ_ONLY_STATIC_AUDITOR',record:record(h2IndependentReviewPath),materialization:'The delegated independent auditor performed the final read-only review of the exact H2 tool bytes before zero-product validation sealed them; this deterministic preparation tool records those final reviewed bytes.'},"
+        },
+        {
+          "line": 89,
+          "text": "  hHarnessCorrection:{classification:hCorrection.classification,receipt:record(hCorrectionReceiptPath),zeroProductValidation:hCorrection.zeroProductValidation,correctedControl:hCorrection.correctedControl,execution:hCorrection.execution},h2HarnessCorrection:{classifications:h2Correction.classifications,receipt:record(h2CorrectionReceiptPath),sourceBindings:record(h2CorrectionSourcesPath),zeroProductValidation:h2Correction.zeroProductValidation,aggregateControl:h2Correction.aggregateControl,execution:h2Correction.execution},preservedFailedHCorrectedGeneration:record(consumedReceiptPath),preservedFailedFullGeneration:record(failedFullReceiptPath),correctedPreCertificationBGate:record(correctedReceiptPath),preservedFailedPreCertificationBGate:record(failedReceiptPath),"
+        },
+        {
+          "line": 94,
+          "text": "    'The preserved H-corrected generation remains immutable at A-G PASS, H FAIL, I-O NOT_RUN. Its aggregate failure was classified H_AGGREGATE_FIXTURE_INPUT_ISOLATION_DEFECT: the absent-output CHECK_OUTPUT fixture lived beneath the live runtime-H evidence directory. In this fresh generation the absent-output parent and the READ_SET input root are pre-created, sealed, quiescent fixture roots outside every evidence/cache/report write path; the aggregate control uses a 5700-ms engineering EOF delay with at most five helpers and no publication-state mutation, so the unchanged 28000-ms aggregate deadline terminates it with the unchanged expected MO1307_TIMEOUT.',"
+        },
+        {
+          "line": 95,
+          "text": "    'The topology identity policy is byte-identical to the synthetically validated canonical policy. The observer differs from the canonical observer only by MO1307_OBSERVER_EVENT_ORDERING@1.0.0: lastSeenAt advances only while the exact held process object reports exitTime100ns == 0 (H_OBSERVER_EVENT_ORDERING_DEFECT, PID 2124). Zero unresolved topology identities remain required; initial-unknown, PID-reuse, parent, image, role, cross-session, and lifetime contradictions remain fail-closed.',"
+        },
+        {
+          "line": 100,
+          "text": "  correctionsAppliedDuringReview:['zero-product A-G observer correction binding','corrected one-shot B gate binding','historical failed B separation','preserved failed full-generation separation','zero-product H harness margin correction binding','timely-helper zero-delay <5000-ms engineering envelope','zero-product H2 harness correction binding','sealed quiescent aggregate and input fixture roots','aggregate 5700-ms five-helper engineering schedule without fixture mutation','observer held-object event-ordering rule','preserved failed H-corrected generation separation','strict 9000-ms helper boundary','strict 28000-ms aggregate boundary','fail-safe wrapper cleanup','topology identity policy and accepted-proof checks','driver/request/native PID joins','definition-only wrong-name oracle','complete close seal-chain integrity'],"
+        }
+      ]
+    },
+    "recover-inventory.mjs": {
+      "removed": [
+        {
+          "line": 195,
+          "text": "const failedBGateReceipt = json(failedBGatePath),correctionReceipt=json(correctionPath),correctionSources=json(correctionSourcesPath),bGateReceipt = json(bGatePath),failedFullReceipt=json(failedFullPath),hCorrectionReceipt=json(hCorrectionPath);"
+        },
+        {
+          "line": 198,
+          "text": "for(const [name,binding] of [['runtime-controls-observer.py',correctionSources.correctedObserver],['topology_identity_policy.py',correctionSources.policy]]){const actual=record(path.join(T,name));assert.equal(actual.byteLength,binding.byteLength);assert.equal(actual.sha256,binding.sha256);}"
+        },
+        {
+          "line": 372,
+          "text": "assert.equal(aggregateTimeout.requiredMethod.perHelperEofDelayMs, 4000);"
+        },
+        {
+          "line": 396,
+          "text": "normalizedAggregate.requiredMethod.perHelperEofDelayMs = sourceAggregate.requiredMethod.perHelperEofDelayMs;"
+        }
+      ],
+      "added": [
+        {
+          "line": 195,
+          "text": "const h2CorrectionPath = 'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-harness-correction/receipt.json';"
+        },
+        {
+          "line": 196,
+          "text": "const h2CorrectionSourcesPath = 'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-harness-correction/source-bindings.json';"
+        },
+        {
+          "line": 197,
+          "text": "const consumedPath = 'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h-corrected/certification-receipt.json';"
+        },
+        {
+          "line": 198,
+          "text": "const failedBGateReceipt = json(failedBGatePath),correctionReceipt=json(correctionPath),correctionSources=json(correctionSourcesPath),bGateReceipt = json(bGatePath),failedFullReceipt=json(failedFullPath),hCorrectionReceipt=json(hCorrectionPath),h2CorrectionReceipt=json(h2CorrectionPath),h2CorrectionSources=json(h2CorrectionSourcesPath),consumedReceipt=json(consumedPath);"
+        },
+        {
+          "line": 201,
+          "text": "for(const [name,binding] of [['runtime-controls-observer.py',h2CorrectionSources.correctedObserver],['topology_identity_policy.py',correctionSources.policy]]){const actual=record(path.join(T,name));assert.equal(actual.byteLength,binding.byteLength);assert.equal(actual.sha256,binding.sha256);}"
+        },
+        {
+          "line": 202,
+          "text": "assert.equal(h2CorrectionReceipt.kind,'MO1307Phase3AR2FinalH2HarnessCorrectionReceipt');assert.equal(h2CorrectionReceipt.result,'PASS');assert.equal(h2CorrectionReceipt.zeroProductValidation,'PASS');assert.deepEqual(h2CorrectionReceipt.classifications,['H_AGGREGATE_FIXTURE_INPUT_ISOLATION_DEFECT','H_OBSERVER_EVENT_ORDERING_DEFECT']);assert.deepEqual(h2CorrectionReceipt.execution,{certificationRuns:0,helperRuns:0,nativeObserverRuns:0,productRuns:0,workerRuns:0,engineeringInterpreterInvocations:2});"
+        },
+        {
+          "line": 203,
+          "text": "assert.equal(consumedReceipt.result,'PHASE3AR2_CONCRETE_BLOCKER');assert.deepEqual(consumedReceipt.completed,['A','B','C','D','E','F','G']);assert.equal(consumedReceipt.steps.find(row=>row.step==='H').result,'FAIL');assert.deepEqual(consumedReceipt.unexecuted,['I','J','K','L','M','N','O']);"
+        },
+        {
+          "line": 235,
+          "text": "inventory.h2HarnessCorrection = record(h2CorrectionPath);"
+        },
+        {
+          "line": 237,
+          "text": "inventory.preservedFailedHCorrectedGeneration = record(consumedPath);"
+        },
+        {
+          "line": 340,
+          "text": "const consumedAggregateMethod = structuredClone(aggregateTimeout.requiredMethod);"
+        },
+        {
+          "line": 341,
+          "text": "assert.deepEqual(consumedAggregateMethod, {sequence: 'createHelperSequence(evaluate), one session, slots1 through9', worker: 'after slot4, 250 ms nonsemantic wait', slot6: 'create output root before request', slot8: 'create pending before request', perHelperEofDelayMs: 4000});"
+        },
+        {
+          "line": 342,
+          "text": "aggregateTimeout.requiredMethod = {"
+        },
+        {
+          "line": 343,
+          "text": "  sequence: 'createHelperSequence(evaluate), one session, slots1 through5 maximum; slots4 and5 are CHECK_OUTPUT',"
+        },
+        {
+          "line": 344,
+          "text": "  worker: 'after slot4, 250 ms nonsemantic wait',"
+        },
+        {
+          "line": 345,
+          "text": "  publicationStateMutations: 'NONE; the sealed absent-output fixture is never created, written, or used as an evidence root',"
+        },
+        {
+          "line": 346,
+          "text": "  terminatingRule: 'unchanged 28000-ms product aggregate helper-active deadline terminates the fifth helper before its response',"
+        },
+        {
+          "line": 347,
+          "text": "  perHelperEofDelayMs: 5700,"
+        },
+        {
+          "line": 348,
+          "text": "  aggregateFixture: h2CorrectionSources.aggregateFixture,"
+        },
+        {
+          "line": 349,
+          "text": "  inputFixture: h2CorrectionSources.inputFixture,"
+        },
+        {
+          "line": 350,
+          "text": "};"
+        },
+        {
+          "line": 351,
+          "text": "assert.deepEqual(aggregateTimeout.expected, {code: 'MO1307_TIMEOUT', clock: '28000 ms aggregate helper-active; worker excluded', workers: 1});"
+        },
+        {
+          "line": 368,
+          "text": "  {scope: 'H_AGGREGATE_FIXTURE_INPUT_ISOLATION_CORRECTION', from: consumedAggregateMethod, to: aggregateTimeout.requiredMethod, expectedChanged: false, expected: aggregateTimeout.expected, classification: 'H_AGGREGATE_FIXTURE_INPUT_ISOLATION_DEFECT', authority: record(h2CorrectionPath), preservedFailedGeneration: record(consumedPath), productDeadlineChanged: false, historicalOutcomePromoted: false},"
+        },
+        {
+          "line": 369,
+          "text": "  {scope: 'H_OBSERVER_EVENT_ORDERING_CORRECTION', rule: 'MO1307_OBSERVER_EVENT_ORDERING@1.0.0', policy: 'MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0', policyChanged: false, classification: 'H_OBSERVER_EVENT_ORDERING_DEFECT', authority: record(h2CorrectionPath), historicalOutcomePromoted: false},"
+        },
+        {
+          "line": 393,
+          "text": "assert.equal(aggregateTimeout.requiredMethod.perHelperEofDelayMs, 5700);"
+        },
+        {
+          "line": 394,
+          "text": "assert.equal(aggregateTimeout.expected.code, 'MO1307_TIMEOUT');"
+        },
+        {
+          "line": 418,
+          "text": "normalizedAggregate.requiredMethod = structuredClone(sourceAggregate.requiredMethod);"
+        },
+        {
+          "line": 466,
+          "text": "  h2HarnessCorrection: record(h2CorrectionPath),"
+        },
+        {
+          "line": 468,
+          "text": "  preservedFailedHCorrectedGeneration: record(consumedPath),"
+        },
+        {
+          "line": 498,
+          "text": "    h2HarnessCorrectionValidatedWithZeroProductExecutions: true,"
+        },
+        {
+          "line": 499,
+          "text": "    preservedFailedHCorrectedGenerationNotResumed: true,"
+        },
+        {
+          "line": 500,
+          "text": "    caseExpectationsChanged: false,"
+        }
+      ]
+    }
+  },
+  "structuralTokens": {
+    "timelyHelper": "'timely-helper',{eofDelayMs:0,maxMs:5000}",
+    "boundary8000": "['former-equality-8000-now-success',8000,'PASS']",
+    "boundary8999": "['strict-before-9000',8999,'PASS']",
+    "boundary9000": "['equality-9000-timeout',9000,'MO1307_TIMEOUT']",
+    "aggregateExpectation": "'aggregate-helper-exhaustion',{eofDelayMs:5700,error:'MO1307_TIMEOUT',minMs:28000,maxMs:31000",
+    "aggregateAtTimeout": "Math.abs(atTimeout-28000)<100",
+    "aggregateSelectedDeadline": "DEFINITIONS.limits.helperAggregateDeadlineMs-DEFINITIONS.limits.helperDeadlineMs",
+    "runtimeLimits": "limits:{helperMs:9000,aggregateMs:28000,workerMs:10000,cliMs:30000,cleanupMs:2000}",
+    "helperRelations": "limitRelations={helperSuccess:'elapsedMs < 9000',helperTimeout:'elapsedMs >= 9000',aggregateSuccess:'helperActiveMs < 28000',aggregateTimeout:'helperActiveMs >= 28000'}"
+  },
+  "campaignLimits": "const fixedLimits={helperWholeLifecycleMs:9000,helperSuccess:'elapsedMs < 9000',helperTimeout:'elapsedMs >= 9000',aggregateHelperActiveMs:28000,aggregateSuccess:'helperActiveMs < 28000',aggregateTimeout:'helperActiveMs >= 28000',cliRenameAdmissionMs:30000,apiWorkerMs:10000,failureCleanupMs:2000};",
+  "inventoryCaseIds": "  H: ['timely-helper', 'cancel-before-helper', 'helper-timeout', 'late-helper-success-rejected', 'cancel-during-helper', 'cancel-between-helper-worker', 'aggregate-helper-exhaustion'],",
+  "changedExpectations": [],
+  "changedRequiredMethods": [
+    {
+      "case": "aggregate-helper-exhaustion",
+      "from": {
+        "perHelperEofDelayMs": 4000,
+        "slots": 9,
+        "slot6": "create output root before request",
+        "slot8": "create pending before request"
+      },
+      "to": {
+        "perHelperEofDelayMs": 5700,
+        "maxSlots": 5,
+        "publicationStateMutations": 0
+      },
+      "authority": "User transfer authorization sections 15-16 (bound as authorization.txt): the isolated absent-output fixture must remain immutable and must not be mutated into a later publication state; expected MO1307_TIMEOUT preserved."
+    }
+  ],
+  "boundaries": {
+    "timelyHelper": "intact",
+    "strict8000": "PASS",
+    "strict8999": "PASS",
+    "strict9000": "MO1307_TIMEOUT",
+    "aggregateExpected": "MO1307_TIMEOUT"
+  },
+  "resourceAuthority": {
+    "helperMs": 9000,
+    "aggregateMs": 28000,
+    "cliMs": 30000,
+    "apiWorkerMs": 10000,
+    "cleanupMs": 2000,
+    "productDefinitions": {
+      "helperDeadlineMs": 9000,
+      "helperAggregateDeadlineMs": 28000,
+      "apiDeadlineMs": 10000,
+      "cliDeadlineMs": 30000,
+      "cleanupAllowanceMs": 2000
+    },
+    "unchanged": true
+  },
+  "productIdentityRules": {
+    "windowsPathsIdentityKeys": "const IDENTITY_KEYS = ['attributes', 'byteLength', 'fileId', 'finalPath', 'isDirectory', 'linkCount', 'volumeSerial'];",
+    "windowsPathsComparison": "if (IDENTITY_KEYS.some(key => before[key] !== after[key])) boundary(",
+    "helperProtocolChainComparison": "chain.forEach((item, index) => assertStableIdentity(state.parent[index], item, { directory: true }));",
+    "helperSameIdentity": "foreach ($key in @('attributes', 'byteLength', 'fileId', 'finalPath', 'isDirectory', 'linkCount', 'volumeSerial')) {",
+    "helperByteLengthSource": "$length = [long] [BitConverter]::ToUInt32($raw, 32) * 4294967296 + [BitConverter]::ToUInt32($raw, 36)"
+  },
+  "productionBytesUnchanged": true,
+  "historicalCharacterizationH": "NOT_ESTABLISHED"
+}

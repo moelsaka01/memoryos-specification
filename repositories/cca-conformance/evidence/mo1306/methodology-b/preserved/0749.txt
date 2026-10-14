@@ -1,0 +1,18 @@
+"""Bounded representative lifecycle confirmation without full CLI retry."""
+import sys
+from pathlib import Path
+sys.dont_write_bytecode=True
+from native import Campaign,put,ref,inventory,INSTALLED
+c=Campaign();c.bindings['lifecycleDriverHarness']=ref(Path(__file__))
+status='FAIL';failure=None
+try:
+    c.preflight();c.lifecycle()
+    after=inventory(INSTALLED);assert after==c.before,'INSTALLED_CANDIDATE_CHANGED'
+    put(c.output/'installed-integrity-after.json',{'status':'PASS','members':after,'count':len(after),'before':ref(c.output/'preflight.json')})
+    assert len(c.cases)==2 and all(x['status']=='PASS' for x in c.cases)
+    status='PASS'
+except BaseException as error:
+    failure=type(error).__name__+': '+str(error);raise
+finally:
+    put(c.output/'lifecycle-summary.json',{'kind':'MemoryOSPhase3ARRepresentativeLifecycle','version':'1.0.0','status':status,'failure':failure,'run':c.id,'bindings':c.bindings,'cases':c.cases,'commands':c.commands,'scope':'Exact installed semantic failure plus deliberately cancelled helper at150ms; bounded representative lifecycle only, no successful helper completion or full CLI certification claimed.'})
+    print({'status':status,'lifecycleSummary':str(c.output/'lifecycle-summary.json'),'failure':failure},flush=True)

@@ -1,0 +1,87 @@
+"""Read-only authority and historical preservation audit; outputs only new final evidence."""
+import argparse,datetime,hashlib,json,os,subprocess,sys
+from pathlib import Path
+sys.dont_write_bytecode=True
+ROOT=Path(__file__).resolve().parents[4];MAIN=ROOT.parent/'cca-workspace'
+OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-final'
+CHECKPOINT='f236c4a2f94d8cd8e763aaa4bd6c52d703429692';C3CB='701d48ee2012675966360dda775ab13013c09ab9';C3C='39d83316f7c72d6cb49f8b6cde36c1bfa833112a';C3AB='9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44';C3A='90b9ac914e477fb90fe317d0de9ba310aae37f60';B2='0e35ffe70919d77b1db530929093826410b805f9'
+PEERS={'3B-R2':('cca-mo1306-3b-refresh2','b47f624c26badd54ee5724e8fe384c80ea083952','repositories/cca-conformance/evidence/mo1306/phase3b-r2/certification-receipt.json'),'3C-R':('cca-mo1306-3c-refresh','20aa4e4245643e1c3a7b3f676622c5d2d36015b2','repositories/cca-conformance/evidence/mo1306/phase3cr/audit-validation.json')}
+ENV={**os.environ,'GIT_OPTIONAL_LOCKS':'0','PYTHONDONTWRITEBYTECODE':'1'}
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def enc(v):return (json.dumps(v,sort_keys=True,separators=(',',':'))+'\n').encode()
+def row(p,base=ROOT):
+ b=p.read_bytes();return {'path':p.relative_to(base).as_posix(),'byteLength':len(b),'sha256':sha(b)}
+def git(root,*args,input=None):return subprocess.check_output(['git','--no-optional-locks','-c','core.quotePath=false',*args],cwd=root,env=ENV,input=input,timeout=60)
+def txt(root,*args):return git(root,*args).decode().strip()
+def state(root):
+ index=Path(txt(root,'rev-parse','--path-format=absolute','--git-path','index'));raw=index.read_bytes()
+ return {'root':str(root),'head':txt(root,'rev-parse','HEAD'),'branch':txt(root,'branch','--show-current'),'statusPorcelain':git(root,'status','--porcelain=v1','--untracked-files=all').decode(),'index':{'byteLength':len(raw),'sha256':sha(raw)}}
+def refs():return {'main':txt(ROOT,'rev-parse','refs/heads/main'),'originMain':txt(ROOT,'rev-parse','refs/remotes/origin/main'),'historicalCheckpointBranch':txt(ROOT,'rev-parse','refs/heads/mo1306/phase3a-refresh'),'tags':txt(ROOT,'for-each-ref','--format=%(refname) %(objectname)','refs/tags').splitlines()}
+def blobs(commit,names):
+ packed=git(ROOT,'cat-file','--batch',input=''.join(commit+':'+name+'\n' for name in names).encode());offset=0;out={}
+ for name in names:
+  end=packed.index(b'\n',offset);oid,kind,length=packed[offset:end].split();assert kind==b'blob';length=int(length);start=end+1;raw=packed[start:start+length];assert packed[start+length:start+length+1]==b'\n';offset=start+length+1
+  out[name]={'gitBlob':oid.decode(),'bytes':raw}
+ assert offset==len(packed);return out
+def put(name,value):
+ p=OUT/name;raw=enc(value);p.parent.mkdir(parents=True,exist_ok=True)
+ if p.exists():assert p.read_bytes()==raw,'IMMUTABLE_EVIDENCE_EXISTS '+name
+ else:p.write_bytes(raw)
+ return row(p)
+def initial():
+ graph={CHECKPOINT:C3AB,C3CB:C3C,C3C:C3AB,C3AB:C3A,C3A:B2}
+ for child,parent in graph.items():assert txt(ROOT,'show','-s','--format=%P',child)==parent
+ names=txt(ROOT,'diff-tree','--no-commit-id','--name-only','-r',CHECKPOINT).splitlines();assert len(names)==321
+ committed=blobs(CHECKPOINT,names);historic=[]
+ for name in names:
+  p=ROOT/name;assert p.read_bytes()==committed[name]['bytes'],'OLD_CHECKPOINT_BYTES '+name
+  historic.append({**row(p),'gitBlob':committed[name]['gitBlob']})
+ prior=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3ar-resolution/evidence-index.json'
+ index=json.loads(prior.read_bytes());indexed=index.get('files',index.get('entries'))
+ assert len(indexed)==125
+ for item in indexed:assert row(ROOT/item['path'])==item
+ resolution=[*indexed,row(prior)];assert len(resolution)==126
+ before_main=state(MAIN);assert before_main['head']==C3CB and before_main['statusPorcelain']==''
+ peers={}
+ for key,(folder,head,receipt) in PEERS.items():
+  root=ROOT.parent/folder;st=state(root);assert st['head']==head and st['statusPorcelain']==''
+  p=root/receipt;assert p.read_bytes()==git(root,'show',head+':'+receipt)
+  peers[key]={'state':st,'receipt':row(p,root)}
+ original=state(ROOT.parent/'cca-mo1306-3a');assert original['head']==B2 and len(original['statusPorcelain'].splitlines())==391
+ original_rows=json.loads((ROOT/'repositories/cca-conformance/evidence/mo1306/phase3ar/preservation-before.json').read_bytes())['original3A']['files']
+ for item in original_rows:assert row(ROOT.parent/'cca-mo1306-3a'/item['path'],ROOT.parent/'cca-mo1306-3a')==item
+ protected=refs();assert protected['main']==C3CB and protected['historicalCheckpointBranch']==CHECKPOINT
+ snapshot={'kind':'MemoryOSPhase3AFinalPreservation','version':'1.0.0','capturedUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'graph':graph,'historicalCheckpoint':CHECKPOINT,'candidateAuthority':C3CB,'startingRefresh':state(ROOT),'readOnlyMain':before_main,'readOnlyPeers':peers,'originalB2Worktree':original,'protectedRefs':protected,'checkpointFiles':historic,'checkpointFileCount':321,'checkpointInventorySha256':sha(enc(historic)),'resolutionFiles':resolution,'resolutionFileCount':126,'resolutionInventorySha256':sha(enc(resolution)),'originalB2Files':original_rows,'originalB2FileCount':391,'historicalDispositions':{'checkpoint':'CERTIFICATION_BLOCKED','resolution':'NATIVE_DEADLINE_BLOCKED','outer2032':'MEASUREMENT_DEFECT','oldControlledLateAcceptance':'PRODUCT_DEADLINE_VIOLATION'}}
+ put('preservation/before.json',snapshot)
+ print(json.dumps({'status':'PASS','historicalCheckpointFiles':321,'resolutionFiles':126,'originalB2Files':391,'main':C3CB,'peers':'READ_ONLY_CLEAN'}))
+def check():
+ before=json.loads((OUT/'preservation/before.json').read_bytes())
+ assert refs()==before['protectedRefs'],'PROTECTED_REFS_CHANGED'
+ protected=json.loads((OUT/'preservation/unrelated-remote-refs.json').read_bytes())['refs']
+ current=[line for line in txt(ROOT,'for-each-ref','--format=%(refname) %(objectname)','refs/remotes').splitlines() if not line.startswith('refs/remotes/origin/mo1306-certification ')]
+ assert current==protected,'UNRELATED_REMOTE_TRACKING_REFS_CHANGED'
+ assert state(MAIN)==before['readOnlyMain'],'READ_ONLY_MAIN_CHANGED'
+ for key,(folder,head,receipt) in PEERS.items():
+  root=ROOT.parent/folder;assert state(root)==before['readOnlyPeers'][key]['state'];assert row(root/receipt,root)==before['readOnlyPeers'][key]['receipt']
+ assert state(ROOT.parent/'cca-mo1306-3a')==before['originalB2Worktree']
+ for item in before['originalB2Files']:assert row(ROOT.parent/'cca-mo1306-3a'/item['path'],ROOT.parent/'cca-mo1306-3a')==item
+ relocations=json.loads((OUT/'preservation/workflow-relocations.json').read_bytes())['rows']
+ relocated={item['original']['path']:item for item in relocations};assert len(relocated)==3
+ for original,item in relocated.items():
+  assert row(ROOT/item['archive']['path'])==item['archive']
+  committed=blobs(CHECKPOINT,[original])[original]
+  assert committed['gitBlob']==item['original']['gitBlob'] and committed['bytes']==(ROOT/item['archive']['path']).read_bytes()
+ for key in ['checkpointFiles','resolutionFiles']:
+  for item in before[key]:
+   p=ROOT/item['path']
+   if not p.exists() and item['path'] in relocated:
+    assert txt(ROOT,'show','-s','--format=%P','HEAD')==C3CB,'WORKFLOW_REMOVAL_BEFORE_FINAL_CHECKOUT'
+    assert txt(ROOT,'show','-s','--format=%s','HEAD')=='cert(memoryos-1.3): certify final MO-1306 Windows and GitHub execution'
+    continue
+   actual=row(p);assert all(actual[k]==item[k] for k in actual),'HISTORICAL_BYTES_CHANGED '+item['path']
+ for child,parent in before['graph'].items():assert txt(ROOT,'show','-s','--format=%P',child)==parent
+ print(json.dumps({'status':'PASS','checkpointFiles':321,'resolutionFiles':126,'originalB2Files':391,'readOnlyMainPeersUnchanged':True,'mainOriginMainHistoricalBranchTagsUnchanged':True,'before':row(OUT/'preservation/before.json')}))
+if __name__=='__main__':
+ parser=argparse.ArgumentParser();parser.add_argument('--check',action='store_true');args=parser.parse_args()
+ check() if args.check else initial()
+

@@ -1,0 +1,82 @@
+{
+  "kind": "MO1308Phase3RegressionRecord",
+  "version": "1.0.0",
+  "commit": "0ba274e0e57bdff9864786671913ae67740a3594",
+  "candidate": {
+    "productionTreeDigest": "sha256:111bd7dd6860221bb2f00f344f38750450c9be3a509bbe888630443d47a83481"
+  },
+  "suites": [
+    {
+      "name": "mo1307",
+      "runner": "node --test",
+      "passed": 639,
+      "failed": 0,
+      "skipped": 0,
+      "total": 639,
+      "exitCode": 0,
+      "logSha256": "1e4bce5a85db9be0c0f1bab14a4ee1bd3136e5d837fe0aed732388586809e7e3",
+      "elapsedSeconds": 124,
+      "commit": "9b79e1202af9875b4a2e42d32a5bb186680299ad"
+    },
+    {
+      "name": "mo1308",
+      "runner": "node --test",
+      "passed": 220,
+      "failed": 0,
+      "skipped": 0,
+      "total": 220,
+      "exitCode": 0,
+      "logSha256": "c14442f431c8d9eb92a456512b0612634ffb9d4439abb035e7ff93f28d7bc2d2",
+      "elapsedSeconds": 3077,
+      "commit": "0ba274e0e57bdff9864786671913ae67740a3594"
+    },
+    {
+      "name": "cli",
+      "runner": "node --test",
+      "passed": 91,
+      "failed": 0,
+      "skipped": 0,
+      "total": 91,
+      "exitCode": 0,
+      "logSha256": "52feedf53bb50fdb155a5532eb13fb18276875d9633ed6ff31a0addda73b9922",
+      "elapsedSeconds": 506,
+      "commit": "9b79e1202af9875b4a2e42d32a5bb186680299ad"
+    },
+    {
+      "name": "studio",
+      "runner": "node --test",
+      "passed": 358,
+      "failed": 0,
+      "skipped": 0,
+      "total": 358,
+      "exitCode": 0,
+      "logSha256": "3425fe339c8d6cd964efb0f195c1ba3c37ee772ddecf2f78d33ff7314518737c",
+      "elapsedSeconds": 45,
+      "commit": "9b79e1202af9875b4a2e42d32a5bb186680299ad"
+    },
+    {
+      "name": "examples",
+      "runner": "node --test",
+      "passed": 22,
+      "failed": 0,
+      "skipped": 0,
+      "total": 22,
+      "exitCode": 0,
+      "logSha256": "6584cbb3c84719f84863f23da09d367521a8f27d6f5c366847979a526dbf03ad",
+      "elapsedSeconds": 34,
+      "commit": "9b79e1202af9875b4a2e42d32a5bb186680299ad"
+    }
+  ],
+  "preconditions": {
+    "freshWorktree": true,
+    "mo1307CacheBeforeRun": "ABSENT",
+    "loadSample": {
+      "cpuPercent": 8.5,
+      "sampledMs": 2000,
+      "logicalCpus": 8
+    },
+    "f22DurationMs": 2032.4426,
+    "retries": 0
+  },
+  "notes": "mo1307, cli, studio and examples ran once on 9b79e120 (fresh worktree, quiet host, no retries; mo1307 639/639 unrerun). mo1308 first ran on 9b79e120 with 18 failures diagnosed as environment (Python not on PATH: WC01-06, WC11) and process/test-fixture causes (octopus merge: A01, S03; fabricated generations colliding with the real accepted evidence: D02-D12); after the corrections the whole mo1308 suite ran again on 0ba274e0 (HEAD): 220/220. No production or MO-1307 byte differs between the two commits."
+}

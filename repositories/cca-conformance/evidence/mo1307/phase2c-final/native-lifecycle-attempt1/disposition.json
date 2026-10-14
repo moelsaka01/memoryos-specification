@@ -1,0 +1,16 @@
+{
+  "kind": "MO1307NativeLifecycleFixtureDisposition",
+  "classification": "HARNESS_DEFECT",
+  "failedAttempt": "native-lifecycle-attempt1/driver/receipt.json",
+  "acceptedCases": [
+    "evaluate-a nine actual requests",
+    "verify four actual requests",
+    "evaluate-b nine actual requests and exact deterministic bytes/summary"
+  ],
+  "actualRefusal": "Slot6 parent prefix byteLength changed 0 to4096 after the fourth child directory; all other native fields unchanged. Frozen exact-seven-field stability correctly returned OUTPUT before staging.",
+  "fixtureFailure": "The harness treated any expected OUTPUT as the intended postcommit stdout failure and attempted to read a nonexistent final.",
+  "correction": "Precreate one separate private empty parent per unfinished case before any case begins; each case creates one output child. No product change, relaxed identity rule, retry within an invocation, or larger deadline.",
+  "nextRun": "Only four unfinished cases in native-surfaces-remaining.mjs once.",
+  "review": "Independent runtime review confirms correction \u00a7105 exact-seven-field and slot6-prefix authority; no normative decision required.",
+  "sourcesUnchanged": true
+}

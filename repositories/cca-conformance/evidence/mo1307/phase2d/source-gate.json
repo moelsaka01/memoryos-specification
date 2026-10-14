@@ -1,0 +1,54 @@
+{
+  "kind": "MO1307Phase2DSourceGate",
+  "version": "1.0.0",
+  "result": "PASS",
+  "baseline": "08de262d1ef3149b6e540bcaea0cf910e02732bd",
+  "sourceReviews": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/source-gate-2a.json",
+      "byteLength": 6748,
+      "sha256": "sha256:7be84c6cb233b5fceb1c393d7217a3161fbae64ad15dd99656a1c0c311728b9b"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/source-gate-2b.json",
+      "byteLength": 41000,
+      "sha256": "sha256:949dd5b55e8365054a3d8b8ed1845e7cda8a2eda693150e8fd08ffaa8e976e1c"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/source-gate-2c.json",
+      "byteLength": 7790,
+      "sha256": "sha256:2a11c594639978d38f286faf46ffd5b1d4ff3b3ee7d206536162ff5caccb2157"
+    }
+  ],
+  "acceptedSources": [
+    {
+      "id": "2a",
+      "commit": "b628349b4e678a8f71086b1b5c807ffe2edf9a5d",
+      "base": "3883ca889911fcc5a6f46c24e569478a8c32648e",
+      "worktree": "C:/Users/melsa/Documents/Codex/cca-mo1307-2a",
+      "subject": "feat(memoryos-1.3): implement MO-1307 readiness core"
+    },
+    {
+      "id": "2b",
+      "commit": "b2877ab32c317bb67896414ba9cec64f6f436ca5",
+      "base": "3883ca889911fcc5a6f46c24e569478a8c32648e",
+      "worktree": "C:/Users/melsa/Documents/Codex/cca-mo1307-2b",
+      "subject": "feat(memoryos-1.3): implement MO-1307 evidence authority"
+    },
+    {
+      "id": "2c",
+      "commit": "24a9ed13072cf344baf56ee019d96520b7dfd4f0",
+      "base": "08de262d1ef3149b6e540bcaea0cf910e02732bd",
+      "worktree": "C:/Users/melsa/Documents/Codex/cca-mo1307-2c-resumed",
+      "subject": "feat(memoryos-1.3): implement corrected MO-1307 acquisition and publication"
+    }
+  ],
+  "correctionBinding": {
+    "result": "PASS",
+    "implementation": "a61a8ff6fe01028fd21f8abe7208d5ffbe9c5152",
+    "tree": "4aa1f334a8f57c7108b6dfb457d5b3026f940b8b",
+    "exactBoundCurrentBlobs": 184,
+    "scope": "Actual C2F/C2FB graph and bytes; historical dirty-worktree expectations are not applied to the newly accepted 2C commit."
+  },
+  "policy": "All three exact clean source commits and reviewed acceptance evidence passed before importing any production path."
+}

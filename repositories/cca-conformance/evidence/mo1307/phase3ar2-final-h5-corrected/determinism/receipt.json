@@ -1,0 +1,136 @@
+{
+  "kind": "MO1307Phase3AR2FinalByteDeterminism",
+  "stage": "N",
+  "result": "PASS",
+  "manifest": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h5-corrected/determinism-manifest.json",
+    "byteLength": 2728,
+    "sha256": "sha256:730752da2bae537a1113d3b98490ef9fb82e92ca13ede4c2eaa3de1c2ceb4c4f"
+  },
+  "vectors": [
+    {
+      "name": "mo1306-qualified",
+      "result": "PASS",
+      "cli": {
+        "path": ".cache/phase3ar2-final-h5-corrected/v0/p/primary/memoryos-readiness-result.json",
+        "byteLength": 303620,
+        "sha256": "sha256:c1aac6fcbc8a6b301c939d55a0181abc51edf4ecd07828dc791128c47996d2fe"
+      },
+      "apiReceipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h5-corrected/semantics/A-mo1306-qualified/api-parity.json",
+        "byteLength": 2454,
+        "sha256": "sha256:eb3ee58ba20cda73fe725cc7df39a1c74b0ce026dcab759d4ff2dfbb96fcf64a"
+      },
+      "expected": {
+        "path": "repositories/cca-conformance/fixtures/mo1307/bundles/mo1306-qualified/expected-result.json",
+        "byteLength": 303620,
+        "sha256": "sha256:c1aac6fcbc8a6b301c939d55a0181abc51edf4ecd07828dc791128c47996d2fe"
+      },
+      "apiEvidenceScope": "Prior mandatory evaluate/verify receipt records exact live API byte comparison; this step checks its recorded lengths, hashes, fields and digests. API result bytes were not persisted and are not reconstructed or presented as captured bytes.",
+      "canonicalRoundtrip": true,
+      "reversedPrivateObjectKeyOrderCanonicalEquality": true,
+      "readinessDigest": "sha256:e5addcc82bed243a59d31fa72068e1e2e672581f2c501eb8e9bacb5fbf3b2490",
+      "proofBindingDigest": "sha256:410c64d7ed4dcbaefc105e2fa784aaf2d106075759bb43ef20b96bd2456a1421"
+    },
+    {
+      "name": "ready",
+      "result": "PASS",
+      "cli": {
+        "path": ".cache/phase3ar2-final-h5-corrected/v1/p/primary/memoryos-readiness-result.json",
+        "byteLength": 59987,
+        "sha256": "sha256:8ec1375f09103b8d1b791985065c3589bdf8ba2a4ed661dcc081d48468049fa7"
+      },
+      "apiReceipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h5-corrected/semantics/B-ready/api-parity.json",
+        "byteLength": 2343,
+        "sha256": "sha256:82ca0902d44b2a086d551399ac1893b1b62f93312c2e9896dfa67baed1846012"
+      },
+      "expected": {
+        "path": "repositories/cca-conformance/fixtures/mo1307/bundles/ready/expected-result.json",
+        "byteLength": 59987,
+        "sha256": "sha256:8ec1375f09103b8d1b791985065c3589bdf8ba2a4ed661dcc081d48468049fa7"
+      },
+      "apiEvidenceScope": "Prior mandatory evaluate/verify receipt records exact live API byte comparison; this step checks its recorded lengths, hashes, fields and digests. API result bytes were not persisted and are not reconstructed or presented as captured bytes.",
+      "canonicalRoundtrip": true,
+      "reversedPrivateObjectKeyOrderCanonicalEquality": true,
+      "readinessDigest": "sha256:7dc59aef2472df2959b88aa6532740bc03c7dacd4c5b8763c9a1306d80ac4532",
+      "proofBindingDigest": "sha256:397770af834aa5fe0fe0958075e059a03f2f7fdd383a66ed7027dd5c19a8f157"
+    },
+    {
+      "name": "not-ready",
+      "result": "PASS",
+      "cli": {
+        "path": ".cache/phase3ar2-final-h5-corrected/v2/p/primary/memoryos-readiness-result.json",
+        "byteLength": 60504,
+        "sha256": "sha256:dd2f679e97b8e1d994ea2f949af5ec6988f587ed3e3c91ab402f20d483947051"
+      },
+      "apiReceipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h5-corrected/semantics/C-not-ready/api-parity.json",
+        "byteLength": 2378,
+        "sha256": "sha256:028afba5b4913263d40012fc0929d1fc4f5ac9e2019fcb17799cfacdeb57133f"
+      },
+      "expected": {
+        "path": "repositories/cca-conformance/fixtures/mo1307/bundles/not-ready/expected-result.json",
+        "byteLength": 60504,
+        "sha256": "sha256:dd2f679e97b8e1d994ea2f949af5ec6988f587ed3e3c91ab402f20d483947051"
+      },
+      "apiEvidenceScope": "Prior mandatory evaluate/verify receipt records exact live API byte comparison; this step checks its recorded lengths, hashes, fields and digests. API result bytes were not persisted and are not reconstructed or presented as captured bytes.",
+      "canonicalRoundtrip": true,
+      "reversedPrivateObjectKeyOrderCanonicalEquality": true,
+      "readinessDigest": "sha256:a306e1aef26ce5415918e191bb0a4e6c4c1bd77d9de8ebb707e943cab64f4f4b",
+      "proofBindingDigest": "sha256:264f7c6e2cbfcea2c99183cb07a3b67d9b74baa22b030342a2cf5bd52e72ec2e"
+    },
+    {
+      "name": "could-not-evaluate",
+      "result": "PASS",
+      "cli": {
+        "path": ".cache/phase3ar2-final-h5-corrected/v3/p/primary/memoryos-readiness-result.json",
+        "byteLength": 57439,
+        "sha256": "sha256:e506236c81ba33a03c10bf05981070131f124c228fcc1a4f15316edc9bdb25e7"
+      },
+      "apiReceipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h5-corrected/semantics/D-could-not-evaluate/api-parity.json",
+        "byteLength": 2430,
+        "sha256": "sha256:2f22b5594f1de744959eeb231a3d50f8e1b893d1e0959fa6d29d7bafc9e692f2"
+      },
+      "expected": {
+        "path": "repositories/cca-conformance/fixtures/mo1307/bundles/could-not-evaluate/expected-result.json",
+        "byteLength": 57439,
+        "sha256": "sha256:e506236c81ba33a03c10bf05981070131f124c228fcc1a4f15316edc9bdb25e7"
+      },
+      "apiEvidenceScope": "Prior mandatory evaluate/verify receipt records exact live API byte comparison; this step checks its recorded lengths, hashes, fields and digests. API result bytes were not persisted and are not reconstructed or presented as captured bytes.",
+      "canonicalRoundtrip": true,
+      "reversedPrivateObjectKeyOrderCanonicalEquality": true,
+      "readinessDigest": "sha256:bb598f22fb4576281d681305f7c436e7741b3e8186272bb80620f246a77513c6",
+      "proofBindingDigest": "sha256:df8f4455b520a0ff34fd887447667e0482bc5f73df7eaac4b6d2e27800dddb3c"
+    },
+    {
+      "name": "rest-qualified",
+      "result": "PASS",
+      "cli": {
+        "path": ".cache/phase3ar2-final-h5-corrected/v4/p/primary/memoryos-readiness-result.json",
+        "byteLength": 46039,
+        "sha256": "sha256:8de928de9e387718e99d843e4ad3b163f0e502f23fee378feb0f2cdf6f6f582e"
+      },
+      "apiReceipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h5-corrected/semantics/E-rest-qualified/api-parity.json",
+        "byteLength": 2439,
+        "sha256": "sha256:45b3f7bb0e378287b63caf17906a39e81ad63a722ad8856169afa3c0322872ac"
+      },
+      "expected": {
+        "path": "repositories/cca-conformance/fixtures/mo1307/bundles/rest-qualified/expected-result.json",
+        "byteLength": 46039,
+        "sha256": "sha256:8de928de9e387718e99d843e4ad3b163f0e502f23fee378feb0f2cdf6f6f582e"
+      },
+      "apiEvidenceScope": "Prior mandatory evaluate/verify receipt records exact live API byte comparison; this step checks its recorded lengths, hashes, fields and digests. API result bytes were not persisted and are not reconstructed or presented as captured bytes.",
+      "canonicalRoundtrip": true,
+      "reversedPrivateObjectKeyOrderCanonicalEquality": true,
+      "readinessDigest": "sha256:5b9e57de523be5977a0174ee43c2a2428241bc9d20ed1aec9679dc2a69671eb4",
+      "proofBindingDigest": "sha256:e1ac762272de5df0cee066a57f5d661c72368210424e591a117434acb88aa770"
+    }
+  ],
+  "additionalSemanticExecutions": 0,
+  "additionalNativeExecutions": 0,
+  "installedUnchanged": true,
+  "finalMO1306Confirmation": "Predeclared stage O still required after N; compare its native bytes/digests separately with primary."
+}

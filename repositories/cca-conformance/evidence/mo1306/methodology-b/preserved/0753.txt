@@ -1,0 +1,30 @@
+/** Terminal and member-set negatives that reject before starting a native helper. */
+import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {pathToFileURL} from 'node:url';import {performance} from 'node:perf_hooks';
+const [pkg,workspace,source,reportPath]=process.argv.slice(2);
+const {verifyNode,verifyDistribution}=await import(pathToFileURL(path.join(pkg,'src/integrity.mjs')));
+const {publish}=await import(pathToFileURL(path.join(pkg,'src/publication.mjs')));
+const {verifyBundle}=await import(pathToFileURL(path.join(pkg,'src/verification.mjs')));
+verifyNode();const installation=verifyDistribution();assert.equal(installation.identities.distributionDigest,'sha256:311927a980bd397ab70b95da77d546e4b212968d05973ecf998817764431d773');
+fs.mkdirSync(workspace);const cases=[];let failure=null;
+const result=JSON.parse(fs.readFileSync(path.join(source,'memoryos-ci-result.json'))),evidence=JSON.parse(fs.readFileSync(path.join(source,'memoryos-ci-evidence.json'))),normative={identity:fs.readFileSync(path.join(source,'evaluation-identity.json')),outcome:fs.readFileSync(path.join(source,'policy-outcome.json'))};
+assert.equal(result.classification,'PASS');
+async function check(id,fn){const row={id,status:'FAIL'};try{Object.assign(row,await fn());row.status='PASS';}catch(e){row.error={name:e.name,code:e.code??null,message:e.message};throw e;}finally{cases.push(row);}}
+async function rejected(fn,expected){let error;await assert.rejects(fn,e=>{error=e;return e.code===expected;});return {code:error.code};}
+try{
+ for(const mode of ['pre-aborted','expired-deadline'])await check(mode+'-publication',async()=>{
+  const directory=path.join(workspace,mode,result.runId);fs.mkdirSync(path.join(directory,'.pending'),{recursive:true});
+  const controller=new AbortController();if(mode==='pre-aborted')controller.abort();
+  const rejectedResult=await rejected(()=>publish(directory,result,evidence,normative,installation,{deadline:mode==='expired-deadline'?performance.now()-1:performance.now()+5000,signal:controller.signal}),mode==='pre-aborted'?'MO1306_CANCELLED':'MO1306_OVERALL_TIMEOUT');
+  assert.deepEqual(fs.readdirSync(directory),['.pending']);assert.deepEqual(fs.readdirSync(path.join(directory,'.pending')),[]);
+  await new Promise(resolve=>setTimeout(resolve,300));assert.deepEqual(fs.readdirSync(directory),['.pending']);assert.deepEqual(fs.readdirSync(path.join(directory,'.pending')),[]);
+  return {...rejectedResult,engineeringPreparedEmptyDirectory:true,noPublishedFiles:true,noCompleteMarker:true,settleMs:300,scope:'Terminal guard before first artifact or helper; not successful publication'};
+ });
+ for(const mode of ['extra-file','missing-outcome','missing-marker'])await check(mode+'-bundle',async()=>{
+  const directory=path.join(workspace,mode,result.runId);fs.mkdirSync(path.dirname(directory));fs.cpSync(source,directory,{recursive:true,errorOnExist:true,force:false});
+  if(mode==='extra-file')fs.writeFileSync(path.join(directory,'unexpected.txt'),'isolated negative');
+  else fs.unlinkSync(path.join(directory,mode==='missing-outcome'?'policy-outcome.json':'memoryos-ci-complete.json'));
+  return {...await rejected(()=>verifyBundle(directory,installation,{deadline:performance.now()+5000}),'MO1306_BUNDLE_INTEGRITY'),scope:'Exact member-set rejection before native helper; isolated copy'};
+ });
+ assert.equal(cases.length,5);verifyNode();assert.equal(verifyDistribution().identities.distributionDigest,installation.identities.distributionDigest);
+}catch(e){failure={name:e.name,code:e.code??null,message:e.message};process.exitCode=1;}
+finally{const report={kind:'MemoryOSPhase3ARPublicationAndBundleNegatives',version:'1.0.0',status:failure?'FAIL':'PASS',caseCount:cases.length,cases,failure,scope:'Helper-independent terminal and exact artifact-set rejection; no completion or successful publication substituted.'};fs.writeFileSync(reportPath,JSON.stringify(report)+'\n',{flag:'wx'});process.stdout.write(JSON.stringify(report)+'\n');}

@@ -1,0 +1,257 @@
+{
+  "conclusion": "NO_BLOCKING_FINDINGS",
+  "findings": [
+    {
+      "id": "R1-H-01",
+      "severity": "BLOCKING",
+      "summary": "First review: swapper absorbStray raced live appenders (ENOENT/ENOTEMPTY not tolerated) and could burn a certifying generation.",
+      "disposition": "FIXED",
+      "note": "swapper.mjs: ENOENT skipped per entry, ENOTEMPTY/EEXIST retried from a fresh listing, 60 s bound; 3A-G6 15 of 15 dev runs PASS after the fix; confirmed correct and complete by the second review (R2-H-05)."
+    },
+    {
+      "id": "R1-H-02",
+      "severity": "NON_BLOCKING",
+      "summary": "Appenders in 3A-G6 are capped at 10 runs each, so the racing window is thinner than the 200-swap count suggests.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "Assertions are not vacuous; tightening adds timeout failure modes (second review R2-H-09 agrees). Disclosed in docs/mo1308-phase3a-g6-swapper-finding.md."
+    },
+    {
+      "id": "R1-H-03",
+      "severity": "NON_BLOCKING",
+      "summary": "3A-F1 does not assert barrier.allArrived (F7 does).",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "Tightening adds a harness-timeout failure mode (R2-H-09 agrees); disclosed."
+    },
+    {
+      "id": "R1-H-04",
+      "severity": "NOTE",
+      "summary": "swapper drops a stray name that already exists in the saved directory without reporting it.",
+      "disposition": "FIXED",
+      "note": "droppedStrayNames is now reported by the swapper."
+    },
+    {
+      "id": "R1-H-05",
+      "severity": "NOTE",
+      "summary": "win.mjs:200 diagnostic regex /s+/ instead of /s+/.",
+      "disposition": "FIXED",
+      "note": "Fixed (diagnostic text only)."
+    },
+    {
+      "id": "R1-H-06",
+      "severity": "NOTE",
+      "summary": "A8.12 clean-tree check reviewed: no way for a stray path to hide.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "No change needed (env.mjs worktreePorcelain, -z, --untracked-files=all, exact path or path plus slash, rename needs both sides inside); confirmed again by the second review."
+    },
+    {
+      "id": "R2-H-04",
+      "severity": "NON_BLOCKING",
+      "summary": "win.mjs reachedInfo reads <id>.reached right after it appears; the preload writes it non-atomically, so an empty read is possible with low probability (under 1% per use).",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "Not fixed to keep the reviewed bytes stable; ten rehearsals did not hit it. If it occurs in a certifying run it is a HARNESS defect with a preserved generation, to be fixed (atomic write or retrying read) before the next generation."
+    },
+    {
+      "id": "R2-H-05",
+      "severity": "NON_BLOCKING",
+      "summary": "Swapper fixes are correct and complete; residual: a stray directory with the same name as one in the saved directory is dropped even if the saved one is partial.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "G6 accepts typed LEDGER_CORRUPT / RECORD_BYTES_MISMATCH at the final verify; droppedStrayNames is reported (0 in all 15 dev runs)."
+    },
+    {
+      "id": "R2-H-06",
+      "severity": "NON_BLOCKING",
+      "summary": "hostcapture.py (3A-A1) creates and removes an empty uniquely named directory in the worktree root for the 8.3 probe.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "Benign: empty, removed at once, ignored by git; 3A-A3 is unaffected (a rehearsal and a gate run showed it)."
+    },
+    {
+      "id": "R2-H-07",
+      "severity": "NON_BLOCKING",
+      "summary": "M1 skips registered ledgers that no longer exist without asserting a count; M4 does not compare the scratch listing.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "Weak spots, not wrong results; neither can currently fail for the reasons the protocol states; disclosed."
+    },
+    {
+      "id": "R2-H-08",
+      "severity": "NOTE",
+      "summary": "Five small observations (E1(b) via openSync events only, J12 wall-clock gate, L3 pipe timing, F5/F6 accept MO1308_IO losers, step guard vs swapper deadline).",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "No action required; kept as disclosures."
+    }
+  ],
+  "kind": "MO1308Phase3Review",
+  "reviewedAt": "2026-10-09T11:07:17.600Z",
+  "reviewer": {
+    "identity": "Claude Sonnet 5.5 read-only sub-agent (second review of the final 3A bytes; first review found R1-H-01, fixed)",
+    "role": "INDEPENDENT_SUB_AGENT"
+  },
+  "scope": "All 33 files of repositories/cca-conformance/tools/mo1308-phase3a at commit 8e7230db, against protocol sections 5-9.1 and 11, the 3A inventory, Freeze 14/R15-R25 and A8.12.",
+  "subject": [
+    {
+      "byteLength": 2085,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/campaign.mjs",
+      "sha256": "09626d281c0f4a143bfb29232d499c2e0dab1139e0ac18b4a8cf1c46c67ab2ce"
+    },
+    {
+      "byteLength": 4547,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/cases-boundary.mjs",
+      "sha256": "66a264a3ba47d995083fa9e8e3cfe03fa697ef58a650338853fe7918b550e5ff"
+    },
+    {
+      "byteLength": 13327,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/cases-ceiling.mjs",
+      "sha256": "731f003e7508fdbafffabf911f819c659e008cdd09a0bcbaea83e4453a0afdc4"
+    },
+    {
+      "byteLength": 20726,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/cases-cli.mjs",
+      "sha256": "aca567a91c6f0acd793b7f6c84549c91e8312415bde5e67876bff8c102352691"
+    },
+    {
+      "byteLength": 24274,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/cases-conc.mjs",
+      "sha256": "f7b1c35df9515f7a4d9c5fbd80389f15374a7d3ec4591ad8588c3f9768aa96da"
+    },
+    {
+      "byteLength": 11733,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/cases-det.mjs",
+      "sha256": "a76386449110f7de3bfe8a9486397b17b2484121098ab5088067c190fb140371"
+    },
+    {
+      "byteLength": 11086,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/cases-host.mjs",
+      "sha256": "ab417dece076d94a4c851f9d5302b6ef4110e495445511b75ca14ca7af2a2bfb"
+    },
+    {
+      "byteLength": 25726,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/cases-kill.mjs",
+      "sha256": "453808543900d4e0c1e157f88f110c1da2d30a31e6da17b57b8271a7ec9cd031"
+    },
+    {
+      "byteLength": 14695,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/cases-limits.mjs",
+      "sha256": "08a6aa958881bc41d9f8536a8f49b711a37238d668409a30e2a946a69933cbdc"
+    },
+    {
+      "byteLength": 27562,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/cases-ntfs.mjs",
+      "sha256": "afef79cf8e848d76359be26643c37182f42cb377a079b0a48754a8a06015e721"
+    },
+    {
+      "byteLength": 33076,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/cases-paths.mjs",
+      "sha256": "a03c5df8b27e89651d2abc8e75f99adc81e1c774d60ff395f63bea1dced93290"
+    },
+    {
+      "byteLength": 23004,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/cases-paths2.mjs",
+      "sha256": "56e02154e974013330160f561b0f67f526babb4379c8d2932fb11701fa1fcc84"
+    },
+    {
+      "byteLength": 13904,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/cases-purgehost.mjs",
+      "sha256": "b0710d1ebc927d2de4e384c944f7e8974f1abc3715d0eaf8a16c168a319d3ec4"
+    },
+    {
+      "byteLength": 13913,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/cases-res.mjs",
+      "sha256": "29ac791c07423d3d1825ca1d6d469219984b0b40ea3f996c9fd2ccea65d36fe2"
+    },
+    {
+      "byteLength": 22756,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/cases-swap.mjs",
+      "sha256": "2976f0149a21fa7064e598cb9435cbf37f618b73682a411ab2407850a1cddb55"
+    },
+    {
+      "byteLength": 23240,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/cases-transport.mjs",
+      "sha256": "620fe2db4be51351e301df891d9b56a9fc425c4fe0b93c5242012db35663a20a"
+    },
+    {
+      "byteLength": 4678,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/cases.mjs",
+      "sha256": "84ab44b10b87f74e1213da6f217d927e71ae4a1dffde27b59a4245c4fecd1472"
+    },
+    {
+      "byteLength": 2823,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/ceiling-ops.mjs",
+      "sha256": "a91dcecbcd8ead2efa1ea110234886d8bd997c5a7879faabebb9b52a7eeae1bc"
+    },
+    {
+      "byteLength": 772,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/clock-shift.mjs",
+      "sha256": "a0a7576e2d4d640f9de3550bedcd29e4e31d6e9b096bf0ca55397a929043b319"
+    },
+    {
+      "byteLength": 1270,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/dev-run.mjs",
+      "sha256": "569a644164f9fe12ad749f62d8bb199184c5620f0dac974a19f1ad9f05fd395a"
+    },
+    {
+      "byteLength": 6035,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/env.mjs",
+      "sha256": "b315f4ff2f31ff5d84fb08ebb33b5661e8b5ddae70918783194d103ba4e994d1"
+    },
+    {
+      "byteLength": 7789,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/fault-arm.mjs",
+      "sha256": "4e524d9a61467ae0d7a307a43b2f883bce96fbdc7b3ed4a943aaf82863f9fc4c"
+    },
+    {
+      "byteLength": 1359,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/fault-preload.mjs",
+      "sha256": "f5b9bab9c58a8a9c1ff86168ef41f00c370b53a887a04e5b9628ef9c30e70ad4"
+    },
+    {
+      "byteLength": 8246,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/observers/console-run.py",
+      "sha256": "5293c2f34d5b97edac2d80654009e9797e5002727c21252316758b2a9106762a"
+    },
+    {
+      "byteLength": 2111,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/observers/fileindex.py",
+      "sha256": "743198557a7209896db89b00ab9a75a5eacf2d016ef03b6a73e5805b45b3597b"
+    },
+    {
+      "byteLength": 1967,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/observers/hold.py",
+      "sha256": "7e38d1d5096c602ee33e79a77f7d1a146148a3788115bc00e0c9937071a600d4"
+    },
+    {
+      "byteLength": 3878,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/observers/hostcapture.py",
+      "sha256": "7e31e7cbf921eddff8197540d78c441f71dd46cab41ba19ddc046e26ed850fb8"
+    },
+    {
+      "byteLength": 3028,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/observers/proc.py",
+      "sha256": "df60f03a3bd749637bbeb79257bcb099cbf500ac073543a7e42d6e28b1321296"
+    },
+    {
+      "byteLength": 369,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/observers/shortpath.py",
+      "sha256": "d0629eb1d2b49b79f02e7e205993636817fe26995871f184bccd5c921eaf976a"
+    },
+    {
+      "byteLength": 1945,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/preload-probe.mjs",
+      "sha256": "1d8c06655c46ca53e1f6b2e338e811f53a89f5ff7a903add75ade3d69ace98d2"
+    },
+    {
+      "byteLength": 12439,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/support.mjs",
+      "sha256": "3af88a7c2c7a32aacf600379dfcdfd0d02f4db9bdd7507415681ac3c3b06f25f"
+    },
+    {
+      "byteLength": 4955,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/swapper.mjs",
+      "sha256": "43724df17484ee9452628e304d6aefb515e4c288ba487ef1185f1bd03b6c0ff6"
+    },
+    {
+      "byteLength": 16719,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3a/win.mjs",
+      "sha256": "55d0ab31e3ceb2c776760e0312d72b9859fc29ff89a582deec3e58eecfc01aa8"
+    }
+  ],
+  "version": "1.0.0"
+}

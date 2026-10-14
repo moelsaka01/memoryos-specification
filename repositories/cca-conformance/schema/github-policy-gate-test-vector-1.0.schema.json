@@ -1,0 +1,540 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cca://schemas/memoryos/github-policy-gate/test-vector/1.0",
+  "title": "MemoryOS GitHub Policy Gate Test Vector",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "version",
+    "vectorIdentifier",
+    "baseEvaluation",
+    "faults",
+    "presentation",
+    "expected"
+  ],
+  "properties": {
+    "kind": { "const": "MemoryOSGitHubPolicyGateTestVector" },
+    "version": { "const": "1.0.0" },
+    "vectorIdentifier": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "baseEvaluation": { "$ref": "#/$defs/baseEvaluation" },
+    "faults": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 16,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/fault" }
+    },
+    "presentation": { "$ref": "#/$defs/presentation" },
+    "expected": { "$ref": "#/$defs/expected" }
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "safeInteger": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "fileReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "rawSha256"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rawSha256": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "nullableFileReference": {
+      "anyOf": [
+        { "$ref": "#/$defs/fileReference" },
+        { "type": "null" }
+      ]
+    },
+    "baseEvaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policyKind",
+        "policy",
+        "expectedPolicySemanticDigest",
+        "candidateMip",
+        "regressionBaselineMip",
+        "policyIdentities",
+        "oracle"
+      ],
+      "properties": {
+        "policyKind": {
+          "enum": ["policy", "policy-set"]
+        },
+        "policy": { "$ref": "#/$defs/fileReference" },
+        "expectedPolicySemanticDigest": { "$ref": "#/$defs/digest" },
+        "candidateMip": { "$ref": "#/$defs/fileReference" },
+        "regressionBaselineMip": { "$ref": "#/$defs/nullableFileReference" },
+        "policyIdentities": { "$ref": "#/$defs/fileReference" },
+        "oracle": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "evaluationIdentity",
+            "evaluationIdentityDigest",
+            "outcome",
+            "outcomeDigest",
+            "gateReceipt"
+          ],
+          "properties": {
+            "evaluationIdentity": { "$ref": "#/$defs/fileReference" },
+            "evaluationIdentityDigest": { "$ref": "#/$defs/fileReference" },
+            "outcome": { "$ref": "#/$defs/fileReference" },
+            "outcomeDigest": { "$ref": "#/$defs/fileReference" },
+            "gateReceipt": { "$ref": "#/$defs/nullableFileReference" }
+          }
+        }
+      }
+    },
+    "normativeGenerationMember": {
+      "enum": [
+        "evaluation-identity.json",
+        "evaluation-identity.sha256",
+        "evaluation-outcome.json",
+        "evaluation-outcome.sha256"
+      ]
+    },
+    "distributionTamper": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "operation", "path", "replacement"],
+      "properties": {
+        "kind": { "const": "distributionTamper" },
+        "operation": { "enum": ["add", "remove", "replace"] },
+        "path": { "type": "string", "minLength": 1 },
+        "replacement": { "$ref": "#/$defs/nullableFileReference" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["operation"],
+            "properties": { "operation": { "const": "remove" } }
+          },
+          "then": {
+            "properties": { "replacement": { "type": "null" } }
+          },
+          "else": {
+            "properties": {
+              "replacement": { "$ref": "#/$defs/fileReference" }
+            }
+          }
+        }
+      ]
+    },
+    "contractIdentityMismatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "replacementEnvelope"],
+      "properties": {
+        "kind": { "const": "contractIdentityMismatch" },
+        "replacementEnvelope": { "$ref": "#/$defs/fileReference" }
+      }
+    },
+    "policyPinMismatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "form", "replacementValue"],
+      "properties": {
+        "kind": { "const": "policyPinMismatch" },
+        "form": { "enum": ["malformed", "wellFormedMismatch"] },
+        "replacementValue": { "type": "string" }
+      }
+    },
+    "inputPathAttack": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "input", "attackClass", "value"],
+      "properties": {
+        "kind": { "const": "inputPathAttack" },
+        "input": {
+          "enum": [
+            "policyPath",
+            "candidateMipPath",
+            "regressionBaselineMipPath"
+          ]
+        },
+        "attackClass": {
+          "enum": [
+            "empty",
+            "whitespace",
+            "absolute",
+            "traversal",
+            "url",
+            "glob",
+            "device",
+            "directory",
+            "fifo",
+            "socket",
+            "symlink",
+            "junction",
+            "reparseEscape",
+            "environmentExpansion",
+            "nul",
+            "alternateDataStream"
+          ]
+        },
+        "value": { "type": "string" }
+      }
+    },
+    "artifactAcquisitionFailure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "role", "condition", "archive"],
+      "properties": {
+        "kind": { "const": "artifactAcquisitionFailure" },
+        "role": { "enum": ["candidate", "baseline"] },
+        "condition": {
+          "enum": [
+            "missingArtifact",
+            "ambiguousArtifact",
+            "serviceFailure",
+            "archiveTraversal",
+            "duplicateArchiveMember",
+            "symlinkMember",
+            "nonRegularMember",
+            "zeroRegularFiles",
+            "multipleRegularFiles",
+            "unexpectedEntry"
+          ]
+        },
+        "archive": { "$ref": "#/$defs/nullableFileReference" }
+      }
+    },
+    "cliResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "invocation",
+        "termination",
+        "exitCode",
+        "stdout",
+        "stderr"
+      ],
+      "properties": {
+        "kind": { "const": "cliResponse" },
+        "invocation": {
+          "enum": [
+            "identitiesPreflight",
+            "policyDigest",
+            "evaluate",
+            "verifyIdentityArtifact",
+            "verifyOutcomeArtifact",
+            "verifyOutcomeEvaluation",
+            "identitiesPostEvaluation"
+          ]
+        },
+        "termination": {
+          "enum": ["exited", "signaled", "spawnFailed"]
+        },
+        "exitCode": {
+          "anyOf": [
+            { "$ref": "#/$defs/safeInteger" },
+            { "type": "null" }
+          ]
+        },
+        "stdout": { "$ref": "#/$defs/nullableFileReference" },
+        "stderr": { "$ref": "#/$defs/nullableFileReference" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["termination"],
+            "properties": { "termination": { "const": "exited" } }
+          },
+          "then": {
+            "properties": { "exitCode": { "$ref": "#/$defs/safeInteger" } }
+          },
+          "else": {
+            "properties": { "exitCode": { "type": "null" } }
+          }
+        }
+      ]
+    },
+    "publicationMemberTamper": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "member", "operation", "replacement"],
+      "properties": {
+        "kind": { "const": "publicationMemberTamper" },
+        "member": { "$ref": "#/$defs/normativeGenerationMember" },
+        "operation": { "enum": ["remove", "replace"] },
+        "replacement": { "$ref": "#/$defs/nullableFileReference" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["operation"],
+            "properties": { "operation": { "const": "remove" } }
+          },
+          "then": {
+            "properties": { "replacement": { "type": "null" } }
+          },
+          "else": {
+            "properties": {
+              "replacement": { "$ref": "#/$defs/fileReference" }
+            }
+          }
+        }
+      ]
+    },
+    "generationMemberMismatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "member", "replacement"],
+      "properties": {
+        "kind": { "const": "generationMemberMismatch" },
+        "member": { "$ref": "#/$defs/normativeGenerationMember" },
+        "replacement": { "$ref": "#/$defs/fileReference" }
+      }
+    },
+    "authoritativeInputMismatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "input", "replacement"],
+      "properties": {
+        "kind": { "const": "authoritativeInputMismatch" },
+        "input": {
+          "enum": ["candidateMip", "regressionBaselineMip"]
+        },
+        "replacement": { "$ref": "#/$defs/fileReference" }
+      }
+    },
+    "postIdentityMismatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "replacementEnvelope"],
+      "properties": {
+        "kind": { "const": "postIdentityMismatch" },
+        "replacementEnvelope": { "$ref": "#/$defs/fileReference" }
+      }
+    },
+    "decisionExitMismatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "replacementExitCode"],
+      "properties": {
+        "kind": { "const": "decisionExitMismatch" },
+        "replacementExitCode": { "$ref": "#/$defs/safeInteger" }
+      }
+    },
+    "artifactPublicationFailure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": { "const": "artifactPublicationFailure" }
+      }
+    },
+    "internalFailure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "phase"],
+      "properties": {
+        "kind": { "const": "internalFailure" },
+        "phase": { "$ref": "#/$defs/phase" }
+      }
+    },
+    "fault": {
+      "anyOf": [
+        { "$ref": "#/$defs/distributionTamper" },
+        { "$ref": "#/$defs/contractIdentityMismatch" },
+        { "$ref": "#/$defs/policyPinMismatch" },
+        { "$ref": "#/$defs/inputPathAttack" },
+        { "$ref": "#/$defs/artifactAcquisitionFailure" },
+        { "$ref": "#/$defs/cliResponse" },
+        { "$ref": "#/$defs/publicationMemberTamper" },
+        { "$ref": "#/$defs/generationMemberMismatch" },
+        { "$ref": "#/$defs/authoritativeInputMismatch" },
+        { "$ref": "#/$defs/postIdentityMismatch" },
+        { "$ref": "#/$defs/decisionExitMismatch" },
+        { "$ref": "#/$defs/artifactPublicationFailure" },
+        { "$ref": "#/$defs/internalFailure" }
+      ]
+    },
+    "phase": {
+      "enum": [
+        "distribution",
+        "actionInput",
+        "contractIdentityPreflight",
+        "policyPreparation",
+        "evaluationInput",
+        "evaluation",
+        "publicationGeneration",
+        "artifactVerification",
+        "authoritativeReconstruction",
+        "postEvaluationIdentityRecheck",
+        "decisionExitCrossCheck",
+        "artifactPublication",
+        "internal"
+      ]
+    },
+    "presentation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summarySink", "annotationSink"],
+      "properties": {
+        "summarySink": {
+          "enum": ["available", "unavailable", "writeFailure"]
+        },
+        "annotationSink": {
+          "enum": ["available", "unavailable", "writeFailure"]
+        }
+      }
+    },
+    "mo1301Failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "errorEnvelope"],
+      "properties": {
+        "kind": { "const": "mo1301" },
+        "errorEnvelope": { "$ref": "#/$defs/fileReference" }
+      }
+    },
+    "primaryFailure": {
+      "anyOf": [
+        { "type": "null" },
+        {
+          "$ref": "cca://schemas/memoryos/github-policy-gate/automation-failure/1.0"
+        },
+        { "$ref": "#/$defs/mo1301Failure" }
+      ]
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "gateClass",
+        "decision",
+        "originalCliExitCode",
+        "publicationValid",
+        "primaryFailure",
+        "generation",
+        "presentationAffectsMachineState"
+      ],
+      "properties": {
+        "gateClass": {
+          "enum": ["pass", "policy-fail", "policy-cne", "tool-failure"]
+        },
+        "decision": {
+          "anyOf": [
+            { "enum": ["PASS", "FAIL", "COULD_NOT_EVALUATE"] },
+            { "type": "null" }
+          ]
+        },
+        "originalCliExitCode": {
+          "anyOf": [
+            { "$ref": "#/$defs/safeInteger" },
+            { "type": "null" }
+          ]
+        },
+        "publicationValid": { "type": "boolean" },
+        "primaryFailure": { "$ref": "#/$defs/primaryFailure" },
+        "generation": {
+          "enum": [
+            "matchesOracle",
+            "notAccepted",
+            "verifiedButUploadFailed"
+          ]
+        },
+        "presentationAffectsMachineState": { "const": false }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["gateClass"],
+            "properties": { "gateClass": { "const": "pass" } }
+          },
+          "then": {
+            "properties": {
+              "decision": { "const": "PASS" },
+              "originalCliExitCode": { "const": 0 },
+              "publicationValid": { "const": true },
+              "primaryFailure": { "type": "null" },
+              "generation": { "const": "matchesOracle" }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["gateClass"],
+            "properties": { "gateClass": { "const": "policy-fail" } }
+          },
+          "then": {
+            "properties": {
+              "decision": { "const": "FAIL" },
+              "originalCliExitCode": { "const": 6 },
+              "publicationValid": { "const": true },
+              "primaryFailure": { "type": "null" },
+              "generation": { "const": "matchesOracle" }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["gateClass"],
+            "properties": { "gateClass": { "const": "policy-cne" } }
+          },
+          "then": {
+            "properties": {
+              "decision": { "const": "COULD_NOT_EVALUATE" },
+              "originalCliExitCode": { "const": 7 },
+              "publicationValid": { "const": true },
+              "primaryFailure": { "type": "null" },
+              "generation": { "const": "matchesOracle" }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["gateClass"],
+            "properties": { "gateClass": { "const": "tool-failure" } }
+          },
+          "then": {
+            "properties": {
+              "decision": { "type": "null" },
+              "primaryFailure": { "not": { "type": "null" } },
+              "generation": {
+                "enum": ["notAccepted", "verifiedButUploadFailed"]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["generation"],
+            "properties": {
+              "generation": { "const": "verifiedButUploadFailed" }
+            }
+          },
+          "then": {
+            "properties": { "publicationValid": { "const": true } }
+          }
+        },
+        {
+          "if": {
+            "required": ["generation"],
+            "properties": { "generation": { "const": "notAccepted" } }
+          },
+          "then": {
+            "properties": { "publicationValid": { "const": false } }
+          }
+        }
+      ]
+    }
+  }
+}

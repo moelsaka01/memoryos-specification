@@ -1,0 +1,82 @@
+param(
+ [Parameter(Mandatory=$true)][ValidateSet('Before','After')][string]$Phase,
+ [Parameter(Mandatory=$true)][string]$WorkspaceRoot,
+ [Parameter(Mandatory=$true)][string]$OutputDirectory
+)
+$ErrorActionPreference = 'Stop'
+$ProgressPreference = 'SilentlyContinue'
+$allowlist = @('GITHUB_WORKSPACE','RUNNER_TEMP','RUNNER_TOOL_CACHE','RUNNER_WORKSPACE','USERPROFILE','HOME','TEMP','TMP','SystemRoot','WINDIR','PROCESSOR_ARCHITECTURE')
+$clock = [Diagnostics.Stopwatch]::StartNew()
+$environment = [ordered]@{}
+foreach ($name in $allowlist) { $environment[$name] = [Environment]::GetEnvironmentVariable($name,'Process') }
+function Error-Facts($Record) {
+ return [ordered]@{ exceptionType=$Record.Exception.GetType().FullName; hresult=$Record.Exception.HResult; category=[string]$Record.CategoryInfo.Category; messageOmitted=$true }
+}
+function Path-Facts([string]$Value) {
+ $result=[ordered]@{raw=$Value;lexical=$null;length=$null;root=$null;exists=$false;type=$null;attributes=$null;reparse=$null;resolved=$null;ancestors=@();volume=$null;predicate='PASS';firstFailedPredicate=$null}
+ if ([string]::IsNullOrEmpty($Value)) { $result.predicate='FAIL';$result.firstFailedPredicate='path.empty';return $result }
+ $result.length=$Value.Length
+ try { $full=[IO.Path]::GetFullPath($Value);$result.lexical=$full;$root=[IO.Path]::GetPathRoot($full);$result.root=$root }
+ catch {$result.predicate='FAIL';$result.firstFailedPredicate='path.GetFullPath';$result.error=Error-Facts $_;return $result}
+ if ($full -ine $Value.Replace('/','\') -or $Value.Length -gt 240 -or $Value -notmatch '^[A-Za-z]:[\\/]') { $result.predicate='FAIL';$result.firstFailedPredicate='path.formOrLength' }
+ if($Value.Length -ge 2 -and $Value.Substring(2) -match '[:"''\x00-\x1f\x7f\x60$;|&<>{}\[\]()!*?]') { $result.predicate='FAIL';$result.firstFailedPredicate='path.forbiddenCharacter' }
+ try {$drive=New-Object IO.DriveInfo($root);$result.volume=[ordered]@{name=$drive.Name;driveType=[string]$drive.DriveType;isReady=$drive.IsReady;driveFormat=$drive.DriveFormat};if($drive.DriveFormat -cne 'NTFS' -and $result.predicate -eq 'PASS'){$result.predicate='FAIL';$result.firstFailedPredicate='helper.DriveFormat'}}
+ catch {$result.volumeError=Error-Facts $_;if($result.predicate -eq 'PASS'){$result.predicate='FAIL';$result.firstFailedPredicate='helper.DriveInfo'}}
+ $ancestors=New-Object 'System.Collections.Generic.List[object]'
+ $sequence=New-Object 'System.Collections.Generic.List[string]'
+ $sequence.Add($root);$cursor=$root
+ foreach($part in $full.Substring($root.Length).Split([char]'\')) {if($part.Length -gt 0){$cursor=[IO.Path]::Combine($cursor,$part);$sequence.Add($cursor)}}
+ $safeToResolve=$true
+ for($index=0;$index -lt $sequence.Count;$index++) {
+  $current=$sequence[$index];$row=[ordered]@{path=$current;exists=$false;attributes=$null;reparse=$null;directory=$null}
+  try {$attributes=[IO.File]::GetAttributes($current);$row.exists=$true;$row.attributes=[int]$attributes;$row.reparse=($attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0;$row.directory=($attributes -band [IO.FileAttributes]::Directory) -ne 0
+   if($row.reparse){$safeToResolve=$false;if($result.predicate -eq 'PASS'){$result.predicate='FAIL';$result.firstFailedPredicate='helper.ReparsePoint';$result.rejectedAncestor=$current}}
+   if($index -lt $sequence.Count-1 -and -not $row.directory){$safeToResolve=$false;if($result.predicate -eq 'PASS'){$result.predicate='FAIL';$result.firstFailedPredicate='helper.ancestorType';$result.rejectedAncestor=$current}}
+   if($index -eq $sequence.Count-1){$result.exists=$true;$result.type=if($row.directory){'directory'}else{'file-or-other'};$result.attributes=[int]$attributes;$result.reparse=$row.reparse}
+  }catch{$safeToResolve=$false;$row.error=Error-Facts $_;if($result.predicate -eq 'PASS'){$result.predicate='FAIL';$result.firstFailedPredicate='helper.GetAttributes';$result.rejectedAncestor=$current}}
+  $ancestors.Add($row)
+  if(-not $safeToResolve){break}
+ }
+ $result.ancestors=$ancestors.ToArray()
+ if($safeToResolve){try{$result.resolved=(Resolve-Path -LiteralPath $full -ErrorAction Stop).ProviderPath}catch{$result.resolveError=Error-Facts $_}}
+ else{$result.resolveSkipped='Missing, non-directory or reparse ancestor; do not follow arbitrary external links.'}
+ return $result
+}
+function Contained-Text([string]$Root,[string]$Target) {
+ try{$r=[IO.Path]::GetFullPath($Root).TrimEnd('\')+'\';$t=[IO.Path]::GetFullPath($Target);return $t.StartsWith($r,[StringComparison]::OrdinalIgnoreCase)}catch{return $false}
+}
+$tool=[IO.Path]::Combine($WorkspaceRoot,'_memoryos\tool')
+$data=[IO.Path]::Combine($WorkspaceRoot,'_memoryos\data')
+$runtime=[IO.Path]::Combine($WorkspaceRoot,'_memoryos\runtime')
+$package=$env:MEMORYOS_CI_HOME
+$config=$env:MEMORYOS_CI_CONFIG
+$paths=[ordered]@{workspace=$WorkspaceRoot;trustedTool=$tool;runtime=$runtime;node=[IO.Path]::Combine($runtime,'node.exe');candidateData=$data;configuration=$config;package=$package;packageEntry=[IO.Path]::Combine($package,'scripts\github-transport.mjs');bootstrapArchive=[IO.Path]::Combine($runtime,'node-v24.21.0-win-x64.zip');productOutput=[IO.Path]::Combine($data,'.memoryos-ci\out');runnerTemp=$environment['RUNNER_TEMP'];observerOutput=$OutputDirectory}
+$pathFacts=[ordered]@{}
+foreach($key in $paths.Keys){$pathFacts[$key]=Path-Facts $paths[$key]}
+$predicates=@(
+ [ordered]@{name='tool capability';status=if((Contained-Text $WorkspaceRoot $tool) -and $tool -ceq [IO.Path]::Combine($WorkspaceRoot,'_memoryos\tool') -and -not(Contained-Text $data $tool)){'PASS'}else{'FAIL'};expected=[IO.Path]::Combine($WorkspaceRoot,'_memoryos\tool');actual=$tool},
+ [ordered]@{name='runtime capability';status=if((Contained-Text $WorkspaceRoot $runtime) -and $runtime -ceq [IO.Path]::Combine($WorkspaceRoot,'_memoryos\runtime') -and -not(Contained-Text $data $runtime) -and -not(Contained-Text $tool $runtime)){'PASS'}else{'FAIL'};expected=[IO.Path]::Combine($WorkspaceRoot,'_memoryos\runtime');actual=$runtime},
+ [ordered]@{name='data capability';status=if((Contained-Text $WorkspaceRoot $data) -and $data -ceq [IO.Path]::Combine($WorkspaceRoot,'_memoryos\data') -and -not (Contained-Text $tool $data) -and -not(Contained-Text $runtime $data)){'PASS'}else{'FAIL'};expected=[IO.Path]::Combine($WorkspaceRoot,'_memoryos\data');actual=$data},
+ [ordered]@{name='configuration capability';status=if((Contained-Text $tool $config) -and -not (Contained-Text ([IO.Path]::Combine($data,'.memoryos-ci\out')) $config)){'PASS'}else{'FAIL'};expected='Trusted tool descendant; outside candidate output';actual=$config},
+ [ordered]@{name='package capability';status=if($package -ceq [IO.Path]::Combine($WorkspaceRoot,'_memoryos\tool\repositories\memoryos-ci')){'PASS'}else{'FAIL'};expected=[IO.Path]::Combine($WorkspaceRoot,'_memoryos\tool\repositories\memoryos-ci');actual=$package}
+)
+$predicates+=,[ordered]@{name='configuration bootstrap Ordinal prefix';status=if($null -ne $config -and $config.StartsWith($tool+'\',[StringComparison]::Ordinal)){'PASS'}else{'FAIL'};expected=$tool+'\';actual=$config}
+$helperTargets=@()
+$oraclePath=[IO.Path]::Combine($OutputDirectory,'oracle.json')
+if($Phase -eq 'After' -and [IO.File]::Exists($oraclePath)) {
+ $oracleLength=(Get-Item -LiteralPath $oraclePath).Length
+ if($oracleLength -gt 2097152){throw 'oracle metadata cap'}
+ $oracle=[IO.File]::ReadAllText($oraclePath)|ConvertFrom-Json
+ if($oracle.kind -cne 'MemoryOSHostedFilesystemPredicateOracle' -or $oracle.requests.Count -gt 3){throw 'oracle metadata shape'}
+ foreach($request in $oracle.requests){if($request.targets.Count -gt 48){throw 'oracle target cap'};foreach($target in $request.targets){$p=[string]$target.path;if($p -cne $paths.node -and $p -cne $package -and $p -cne $config -and -not(Contained-Text $package $p)){throw 'oracle target capability'};$helperTargets+=,[ordered]@{requestOrdinal=$request.ordinal;operation=$request.operation;capabilityClass=$request.capabilityClass;requestBytes=$request.byteLength;requestSha256=$request.sha256;allowMissingLeaf=$target.allowMissingLeaf;facts=(Path-Facts $p)}}}
+}
+$clock.Stop()
+$report=[ordered]@{kind='MemoryOSHostedFilesystemObservation';version='1.0.0';engineeringOnly=$true;phase=$Phase;observedUtc=[DateTime]::UtcNow.ToString('o');elapsedMs=$clock.Elapsed.TotalMilliseconds;environmentAllowlist=$allowlist;environment=$environment;powerShellVersion=$PSVersionTable.PSVersion.ToString();paths=$pathFacts;containmentPredicates=$predicates;helperTargetPredicates=$helperTargets;temporalScope=if($Phase -eq 'Before'){'Before the unchanged product bootstrap; no helper or Node is started by this observer.'}else{'After the unchanged bootstrap and later oracle; filesystem state may have changed.'};limitations=@('Later predicate failure is an oracle observation, not a captured original product rejection.','PowerShell Resolve-Path and Node realpath are distinct observations.','Lexical containment does not prove canonical containment across reparse points.','Missing runtime/output before bootstrap is recorded and is not treated as an existing-root defect.','Environment capture is limited to the eleven explicitly authorized names.');productionVerdictOverridden=$false}
+$json=($report|ConvertTo-Json -Depth 32 -Compress)+[char]10
+$utf8=New-Object Text.UTF8Encoding($false)
+$bytes=$utf8.GetBytes($json)
+if($bytes.Length -gt 2097152){throw 'observer report exceeds engineering cap'}
+$file=[IO.Path]::Combine($OutputDirectory,('observation-'+$Phase.ToLowerInvariant()+'.json'))
+$stream=[IO.File]::Open($file,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::Read)
+try{$stream.Write($bytes,0,$bytes.Length);$stream.Flush($true)}finally{$stream.Dispose()}
+[Console]::Out.WriteLine('{"observerPhase":"'+$Phase+'","recordBytes":'+$bytes.Length+'}')

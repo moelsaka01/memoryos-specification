@@ -1,0 +1,387 @@
+"""Targeted corrected installed-package Windows refresh; historical records are read only.
+
+Invoke once from the 3A worktree. Every attempted process gets a unique retained
+record. A failed assertion stops the campaign; fault copies never alter the
+installed candidate. The external observer is sampled, not kernel containment.
+"""
+import base64
+import copy
+import hashlib
+import json
+import os
+from pathlib import Path
+import platform
+import shutil
+import subprocess
+import sys
+import time
+import uuid
+
+ROOT = Path(__file__).resolve().parents[4]
+HERE = Path(__file__).resolve().parent
+CACHE = ROOT / '.cache/mo1306-phase3ar'
+OUT = ROOT / 'repositories/cca-conformance/evidence/mo1306/phase3ar'
+NODE = CACHE / 'node-v24.21.0-win-x64/node.exe'
+INSTALLED = CACHE / 'install/node_modules/memoryos-ci'
+SOURCE = ROOT / 'repositories/memoryos-ci'
+FIX = ROOT / 'repositories/cca-conformance/fixtures/mo1306'
+OLD_TOOLS = HERE.parent / 'mo1306'
+NODE_SHA = 'sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32'
+DISTRIBUTION = 'sha256:311927a980bd397ab70b95da77d546e4b212968d05973ecf998817764431d773'
+JSON_CAP = 2 * 1024 * 1024
+CAMPAIGN_SECONDS = 20 * 60
+# These modules have no evidence-writing imports. Never import phase2d/common.py.
+sys.dont_write_bytecode = True
+sys.path.insert(0, str(HERE.parent / 'mo1306-phase2d'))
+import observer
+from trace_phase2d import validate_trace
+
+
+def j(value):
+    return (json.dumps(value, sort_keys=True, separators=(',', ':'), ensure_ascii=False) + '\n').encode('utf8')
+
+
+def sha(data):
+    return 'sha256:' + hashlib.sha256(data).hexdigest()
+
+
+def ref(path):
+    raw = path.read_bytes()
+    return {'path': path.relative_to(ROOT).as_posix(), 'byteLength': len(raw), 'sha256': sha(raw)}
+
+
+def put(path, value):
+    raw = j(value)
+    assert len(raw) <= JSON_CAP, ('ENGINEERING_JSON_CAP', str(path), len(raw))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    # Run-local files are immutable after creation.
+    with path.open('xb') as stream:
+        stream.write(raw)
+    return ref(path)
+
+
+def inventory(package):
+    return [ref(p) | {'path': p.relative_to(package).as_posix()}
+            for p in sorted(package.rglob('*')) if p.is_file()]
+
+
+def compact(record):
+    result = copy.deepcopy(record)
+    dictionary = {}
+    rows = result.get('lifetimes', []) + [p for s in result.get('observation', {}).get('samples', []) for p in s['processes']]
+    for entry in rows:
+        if isinstance(entry.get('commandLine'), str):
+            raw = entry['commandLine']; key = sha(raw.encode('utf8'))
+            dictionary[key] = raw; entry['commandLine'] = {'sha256': key}
+    result['traceEncoding'] = {'kind': 'LosslessCommandLineDictionary', 'version': '1.0.0', 'commandLines': dictionary}
+    return result
+
+
+class Campaign:
+    def __init__(self):
+        self.started = time.monotonic()
+        self.id = time.strftime('%Y%m%dT%H%M%S', time.gmtime()) + '-' + uuid.uuid4().hex[:6]
+        self.work = CACHE / ('n-' + self.id)
+        self.output = OUT / 'native' / self.id
+        self.work.mkdir(parents=True, exist_ok=False)
+        self.output.mkdir(parents=True, exist_ok=False)
+        self.env = {k: os.environ[k] for k in ('SystemRoot', 'WINDIR')}
+        self.ids = {'node': str(NODE), 'powershell': str(Path(self.env['SystemRoot']) / 'System32/WindowsPowerShell/v1.0/powershell.exe'), 'conhost': str(Path(self.env['SystemRoot']) / 'System32/conhost.exe')}
+        self.cases = []
+        self.commands = []
+        self.bindings = {'harness': ref(Path(__file__)), 'observer': ref(HERE.parent / 'mo1306-phase2d/observer.py'), 'traceValidator': ref(HERE.parent / 'mo1306-phase2d/trace_phase2d.py'), 'roleValidator': ref(HERE.parent / 'mo1306-correction-a/topology.py'), 'distributionDigest': DISTRIBUTION, 'baseline': '9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44', 'correction': '90b9ac914e477fb90fe317d0de9ba310aae37f60', 'archiveSha256': 'sha256:2f1e9424ce64e44b7b1587ce206fe5f7ae72579652ca1fc891c489bc1a21925d'}
+
+    def budget(self):
+        assert time.monotonic() - self.started + 85 < CAMPAIGN_SECONDS, 'BOUNDED_CAMPAIGN_STOP'
+
+    def raw_logs(self, name, record):
+        rows = []
+        for field in ('stdout', 'stderr'):
+            value = record.get(field, '')
+            raw = value if isinstance(value, bytes) else value.encode('utf8')
+            assert len(raw) <= JSON_CAP, 'RAW_LOG_CAP'
+            p = self.output / 'logs' / (name + '.' + field + '.txt')
+            p.parent.mkdir(parents=True, exist_ok=True)
+            with p.open('xb') as stream: stream.write(raw)
+            rows.append(ref(p))
+        return rows
+
+    def preflight(self):
+        snapshot = self.output / 'attempted-native.py'
+        snapshot.write_bytes(Path(__file__).read_bytes())
+        self.bindings['harnessSnapshot'] = ref(snapshot)
+        assert sys.platform == 'win32' and platform.machine().lower() in ('amd64', 'x86_64'), 'WINDOWS_X64_REQUIRED'
+        assert sha(NODE.read_bytes()) == NODE_SHA, 'PINNED_NODE_IDENTITY'
+        manifest = json.loads((INSTALLED / 'distribution-manifest.json').read_bytes())
+        assert sha((INSTALLED / 'distribution-manifest.json').read_bytes()) == DISTRIBUTION
+        expected = {r['path']: r for r in manifest['files']}
+        expected['distribution-manifest.json'] = {'byteLength': (INSTALLED / 'distribution-manifest.json').stat().st_size, 'sha256': DISTRIBUTION}
+        self.before = inventory(INSTALLED)
+        assert {r['path'] for r in self.before} == set(expected), 'INSTALLED_MEMBER_SET'
+        for r in self.before:
+            assert r['byteLength'] == expected[r['path']]['byteLength'] and r['sha256'] == expected[r['path']]['sha256'], r['path']
+            assert (INSTALLED / r['path']).read_bytes() == (SOURCE / r['path']).read_bytes(), ('INSTALLED_SOURCE_DRIFT', r['path'])
+        limits = json.loads((INSTALLED / 'contracts/limits.json').read_bytes())
+        for key, value in {'processCount': 3, 'supervisorOldMiB': 128, 'workerOldMiB': 256, 'workerSemiMiB': 16, 'semanticMinMs': 1000, 'semanticMaxMs': 60000, 'overallAllowanceMs': 15000, 'terminationMs': 2000, 'helperMs': 2000}.items():
+            assert limits['fixed'][key] == value, ('FROZEN_LIMIT_DRIFT', key)
+        assert limits['engineering']['aggregateRssMiB'] == 768
+        self.bindings.update(node=ref(NODE), installedManifest=ref(INSTALLED / 'distribution-manifest.json'), limits=ref(INSTALLED / 'contracts/limits.json'), lifecycleDriver=ref(OLD_TOOLS / 'lifecycle-driver.mjs'), oracleDriver=ref(OLD_TOOLS / 'oracle.mjs'), os=platform.platform(), architecture=platform.machine())
+        put(self.output / 'preflight.json', {'status': 'PASS', 'bindings': self.bindings, 'installedMembers': self.before})
+
+    def observed(self, name, args, expected=0, package=INSTALLED, timeout=80):
+        self.budget()
+        argv = list(map(str, args))
+        result = None
+        partial = []
+        original_snapshot = observer.snapshot
+        def capture(*a, **kw):
+            rows = original_snapshot(*a, **kw)
+            partial.append({'elapsedMs': round((time.monotonic() - begun) * 1000), 'processes': copy.deepcopy(rows), 'totalRssBytes': sum(r['rssBytes'] for r in rows)})
+            return rows
+        begun = time.monotonic()
+        observer.snapshot = capture
+        failure = None
+        try:
+            result = observer.execute(argv, INSTALLED.parent, env=self.env, timeout=timeout, interval=.1)
+            assert result['exitCode'] == expected, ('EXIT_MISMATCH', name, expected, result['exitCode'])
+            assert result['lifetimes'], 'NO_OBSERVED_PROCESSES'
+            roots = [r for r in result['lifetimes'] if r['pid'] == result['rootPid']]
+            assert len(roots) == 1 and roots[0]['commandLine'] == subprocess.list2cmdline(argv), 'ROOT_ARGV_IDENTITY'
+            result['topologyValidation'] = validate_trace(result, self.ids, package)
+            assert result['cleanup']['elapsedMs'] <= 2100 and not result['cleanup']['remainingPids'], 'CLEANUP_BOUND'
+            assert result['elapsedMs'] <= (75000 if timeout == 80 else timeout * 1000), 'WALL_CLOCK_LIMIT'
+            result['status'] = 'PASS'
+            return result
+        except BaseException as error:
+            failure = type(error).__name__ + ': ' + str(error)
+            if result is None:
+                lifetimes = {}
+                for sample in partial:
+                    for p in sample['processes']: lifetimes[(p['pid'], p['creationTime100ns'])] = p
+                remaining = []
+                for (pid, born), p in lifetimes.items():
+                    current = observer.details(pid)
+                    if current and current['creationTime100ns'] == born: remaining.append({'pid': pid, 'creationTime100ns': born})
+                result = {'command': argv, 'elapsedMs': round((time.monotonic() - begun) * 1000), 'lifetimes': list(lifetimes.values()), 'observation': {'samples': partial}, 'cleanup': {'remainingIdentities': remaining}, 'stdout': '', 'stderr': '', 'limitation': 'Observer failed before returning complete streams; partial samples and remaining observed identities retained.'}
+            result.update(status='FAIL', validationError=failure)
+            raise
+        finally:
+            observer.snapshot = original_snapshot
+            result.update(id=name, expectedExitCode=expected, bindings=self.bindings)
+            result['rawLogs'] = self.raw_logs(name, result)
+            reference = put(self.output / 'traces' / (name + '.json'), compact(result))
+            self.commands.append({'id': name, 'status': result['status'], 'trace': reference})
+            print(name, result['status'], result.get('elapsedMs'), 'ms', flush=True)
+
+    def oracle(self, name, work, expected):
+        self.budget()
+        argv = [str(NODE), '--max-old-space-size=128', str(OLD_TOOLS / 'oracle.mjs'), str(work)]
+        started = time.monotonic()
+        record = {'id': 'sdk-' + name, 'command': argv, 'status': 'FAIL', 'bindings': self.bindings}
+        try:
+            p = subprocess.run(argv, cwd=ROOT, env=self.env, stdin=subprocess.DEVNULL, capture_output=True, timeout=15, creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP)
+            record.update(exitCode=p.returncode, stdout=p.stdout.decode('utf8'), stderr=p.stderr.decode('utf8'))
+            assert p.returncode == 0, 'SDK_ORACLE_EXIT'
+            decision = json.loads(p.stdout)['decision']
+            assert decision == {0: 'PASS', 6: 'FAIL', 7: 'COULD_NOT_EVALUATE'}[expected], ('SDK_ORACLE_EXPECTATION', name, decision)
+            record.update(status='PASS', decision=decision)
+            record['normativeOracleFiles'] = []
+            for normative_name in ('oracle-identity.json', 'oracle-outcome.json'):
+                dest = self.output / 'oracles' / (record['id'] + '-' + normative_name)
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(work / normative_name, dest)
+                record['normativeOracleFiles'].append(ref(dest))
+        except BaseException as error:
+            record['failure'] = type(error).__name__ + ': ' + str(error)
+            if isinstance(error, subprocess.TimeoutExpired): record.update(stdout=error.stdout or b'', stderr=error.stderr or b'')
+            raise
+        finally:
+            record['elapsedMs'] = round((time.monotonic() - started) * 1000)
+            record['rawLogs'] = self.raw_logs('sdk-' + name, record)
+            record.pop('stdout', None); record.pop('stderr', None)
+            put(self.output / 'oracles' / (name + '.json'), record)
+
+    def functional(self, name, vector, expected, regression=False, mutation=None, golden=True):
+        work = self.work / name; work.mkdir()
+        for filename in ('policy.json', 'candidate.mip', 'memoryos-ci.json'):
+            shutil.copyfile(FIX / vector / filename, work / filename)
+        config = json.loads((work / 'memoryos-ci.json').read_bytes())
+        if regression:
+            shutil.copyfile(work / 'candidate.mip', work / 'baseline.mip'); config['context']['baselineMip'] = 'baseline.mip'
+        if mutation == 'configuration': config['unexpected'] = True
+        elif mutation == 'input': config['context']['candidateMip'] = 'missing.mip'
+        elif mutation == 'integrity': config['policy']['expectedSemanticDigest'] = 'sha256:' + '0' * 64
+        elif mutation == 'maximum':
+            raw = (work / 'policy.json').read_bytes(); assert len(raw) <= 2048
+            (work / 'policy.json').write_bytes(raw + b' ' * (2048 - len(raw)))
+            assert (work / 'candidate.mip').stat().st_size == (work / 'baseline.mip').stat().st_size == 524288
+        (work / 'memoryos-ci.json').write_bytes(j(config))
+        case = {'id': name, 'status': 'FAIL', 'expectedExitCode': expected, 'sourceFixture': vector, 'regressionContext': regression, 'mutation': mutation, 'inputFiles': [ref(p) for p in sorted(work.iterdir()) if p.is_file()]}
+        try:
+            if expected in (0, 6, 7): self.oracle(name, work, expected)
+            result = self.observed(name, [NODE, '--max-old-space-size=128', INSTALLED / 'bin/memoryos-ci.mjs', 'run', '--workspace', work, '--config', work / 'memoryos-ci.json', '--provider', 'generic'], expected)
+            summary = json.loads(result['stdout'])
+            assert result['stdout'].encode('utf8') == j(summary), 'SUMMARY_CANONICAL_BYTES'
+            assert summary['exitCode'] == expected and summary['publication'] == 'COMPLETE'
+            bundle = work / '.memoryos-ci/out' / summary['runId']
+            self.observed('verify-' + name, [NODE, '--max-old-space-size=128', INSTALLED / 'bin/memoryos-ci.mjs', 'verify', '--bundle', bundle])
+            common = json.loads((bundle / 'memoryos-ci-result.json').read_bytes())
+            evidence = json.loads((bundle / 'memoryos-ci-evidence.json').read_bytes())
+            assert common['provider'] == 'generic' and common['process']['exitCode'] == expected
+            assert evidence['distributionSha256'] == DISTRIBUTION and evidence['runtime']['nodeSha256'] == NODE_SHA
+            assert evidence['metadata']['provider'] == 'generic' and all(v is None for k, v in evidence['metadata'].items() if k != 'provider')
+            allowed = {'memoryos-ci-result.json', 'memoryos-ci-evidence.json', 'memoryos-ci-artifacts.json', 'memoryos-ci-complete.json'}
+            if expected in (0, 6, 7):
+                allowed |= {'evaluation-identity.json', 'policy-outcome.json'}
+                for actual, oracle in [('evaluation-identity.json', 'oracle-identity.json'), ('policy-outcome.json', 'oracle-outcome.json')]:
+                    assert (bundle / actual).read_bytes() == (work / oracle).read_bytes(), ('SDK_BYTE_PARITY', name, actual)
+                    if golden: assert (bundle / actual).read_bytes() == (FIX / vector / actual).read_bytes(), ('FIXTURE_BYTE_PARITY', name, actual)
+            assert {p.name for p in bundle.iterdir()} == allowed, 'EXACT_BUNDLE_MEMBERS'
+            target = self.output / 'bundles' / name / summary['runId']; target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copytree(bundle, target)
+            case.update(normativeDigests={n: sha((target / n).read_bytes()) for n in ('evaluation-identity.json', 'policy-outcome.json')} if expected in (0,6,7) else {})
+            case.update(status='PASS', runId=summary['runId'], classification=common['classification'], bundle=target.relative_to(ROOT).as_posix(), bundleFiles=[ref(p) for p in sorted(target.iterdir())], semanticByteParity=expected in (0, 6, 7), trace=ref(self.output / 'traces' / (name + '.json')))
+            if name == 'regression-fail': case['qualification'] = 'Actual baseline/candidate regression fact context; FAIL comes from require-verification-completed, not an invented regression finding.'
+            if name == 'regression-cne': case['qualification'] = 'Regression-specific rule has no required baseline fact context; exact authoritative SDK result is CNE.'
+        except BaseException as error:
+            case['failure'] = type(error).__name__ + ': ' + str(error)
+            raise
+        finally:
+            self.cases.append(case); put(self.output / 'cases' / (name + '.json'), case)
+
+    def lifecycle(self):
+        modes = [('semantic-failure', 'MO1306_SEMANTIC_VALIDATION', None), ('helper-cancel', 'MO1306_CANCELLED', None)]
+        for mode, expected, worker in modes:
+            package = INSTALLED
+            case = {'id': 'lifecycle-' + mode, 'status': 'FAIL', 'expected': expected, 'faultInjection': worker, 'source': 'exact-installed-package' if worker is None else 'isolated-engineering-fault-copy'}
+            try:
+                if worker is not None:
+                    package = self.work / ('fault-' + mode); shutil.copytree(INSTALLED, package)
+                    (package / 'src/worker.mjs').write_bytes(worker.encode('utf8'))
+                    for r in self.before:
+                        if r['path'] != 'src/worker.mjs': assert (package / r['path']).read_bytes() == (INSTALLED / r['path']).read_bytes(), ('FAULT_COPY_UNEXPECTED_CHANGE', r['path'])
+                case['supervisor'] = ref(package / 'src/supervisor.mjs')
+                case['filesystem'] = ref(package / 'src/filesystem.mjs')
+                case['helper'] = ref(package / 'scripts/check-paths.ps1')
+                result = self.observed('lifecycle-' + mode, [NODE, '--max-old-space-size=128', OLD_TOOLS / 'lifecycle-driver.mjs', mode, package, FIX / 'evaluate-policy-pass'], package=package, timeout=12)
+                assert json.loads(result['stdout']) == {'mode': mode, 'result': expected}, ('LIFECYCLE_RESULT', mode)
+                case.update(status='PASS', trace=ref(self.output / 'traces' / ('lifecycle-' + mode + '.json')))
+            except BaseException as error:
+                case['failure'] = type(error).__name__ + ': ' + str(error)
+                raise
+            finally:
+                self.cases.append(case); put(self.output / 'cases' / ('lifecycle-' + mode + '.json'), case)
+
+    def dispatch(self):
+        case = {'id': 'corrected-cli-dispatch', 'status': 'FAIL'}
+        try:
+            witness = self.observed('dispatch-ast', [NODE, '--max-old-space-size=128', HERE / 'dispatch.mjs', ROOT, INSTALLED / 'bin/memoryos-ci.mjs', 'corrected'], timeout=20)
+            report = json.loads(witness['stdout'])
+            assert report['counts']['fail'] == 0
+            put(self.output / 'dispatch-parser.json', report)
+            names = report['prototypeNames'] + ['invalid-command']
+            results = []
+            for index, command in enumerate(names):
+                result = self.observed('invalid-command-' + str(index), [NODE, '--max-old-space-size=128', INSTALLED / 'bin/memoryos-ci.mjs', command], expected=10, timeout=10)
+                diag = [json.loads(row) for row in result['stderr'].splitlines()]
+                assert len(diag) == 1 and diag[0]['code'] == 'MO1306_USAGE'
+                assert result['stdout'] == ''
+                assert all(p['pid'] == result['rootPid'] for p in result['lifetimes']), 'EXECUTION_BYPASS_CHILD'
+                results.append({'command': command, 'exitCode': 10, 'code': diag[0]['code'], 'stdoutEmpty': True, 'noObservedDescendant': True, 'trace': ref(self.output / 'traces' / ('invalid-command-' + str(index) + '.json'))})
+            case.update(status='PASS', actualInstalledCommands=results, parserWitness=ref(self.output / 'dispatch-parser.json'), handlerBypassPrevented=True, noBypassBasis='Exact installed argv AST reports zero handler invocations for invalid inputs; actual installed CLI has usage/10, empty stdout and no observed descendants.')
+        except BaseException as error:
+            case['failure'] = type(error).__name__ + ': ' + str(error)
+            raise
+        finally:
+            self.cases.append(case); put(self.output / 'cases' / (case['id'] + '.json'), case)
+
+    def generation(self):
+        case = {'id': 'valid-generate', 'status': 'FAIL'}
+        try:
+            deploy = self.work / 'deployment.json'
+            deploy.write_bytes(j({'kind': 'MemoryOSCICDDeployment', 'version': '1.0.0', 'provider': 'generic', 'distributionDigest': DISTRIBUTION, 'options': {}}))
+            target = self.work / 'generated'
+            self.observed('valid-generate', [NODE, '--max-old-space-size=128', INSTALLED / 'bin/memoryos-ci.mjs', 'generate', '--config', FIX / 'evaluate-policy-pass/memoryos-ci.json', '--deployment', deploy, '--output', target])
+            manifest = json.loads((target / 'memoryos-ci-generation.json').read_bytes())
+            assert manifest['provider'] == 'generic'
+            assert {p.name for p in target.iterdir()} == {'memoryos-ci.json', 'memoryos-ci-generation.json'}
+            for entry in manifest['files']:
+                raw=(target / entry['path']).read_bytes()
+                assert len(raw)==entry['byteLength'] and sha(raw)==entry['sha256']
+            retained=self.output/'generated'; shutil.copytree(target,retained)
+            case.update(status='PASS', files=[ref(p) for p in sorted(retained.iterdir())], deployment=ref(deploy))
+        except BaseException as error:
+            case['failure'] = type(error).__name__ + ': ' + str(error)
+            raise
+        finally:
+            self.cases.append(case); put(self.output / 'cases' / (case['id'] + '.json'), case)
+
+    def publication(self):
+        case = {'id': 'representative-terminal-publication', 'status': 'FAIL'}
+        report_path=self.output/'publication-report.json'
+        try:
+            source=next(c for c in self.cases if c['id']=='policy-pass')
+            self.observed('terminal-publication', [NODE, '--max-old-space-size=128', HERE / 'publication.mjs', self.work / 'publication-witnesses', report_path, ROOT / source['bundle']], timeout=60)
+            report=json.loads(report_path.read_bytes())
+            assert report['status']=='PASS' and report['caseCount']==2
+            case.update(status='PASS',report=ref(report_path),caseCount=2)
+        except BaseException as error:
+            case['failure'] = type(error).__name__ + ': ' + str(error)
+            raise
+        finally:
+            self.cases.append(case); put(self.output / 'cases' / (case['id'] + '.json'), case)
+
+    def artifact_negatives(self):
+        case = {'id': 'corrected-artifact-negatives', 'status': 'FAIL', 'results': []}
+        try:
+            for cid,mutation in [('policy-pass','extra-file'),('policy-pass','run-id-binding'),('error-input','missing-complete')]:
+                source=ROOT / next(c for c in self.cases if c['id']==cid)['bundle']
+                target=self.work/('negative-'+mutation)/source.name
+                target.parent.mkdir();shutil.copytree(source,target)
+                if mutation=='extra-file': (target/'unexpected.txt').write_text('negative witness')
+                elif mutation=='missing-complete': (target/'memoryos-ci-complete.json').unlink()
+                else:
+                    marker=json.loads((target/'memoryos-ci-complete.json').read_bytes())
+                    marker['runId']='00000000-0000-4000-8000-000000000000'
+                    (target/'memoryos-ci-complete.json').write_bytes(j(marker))
+                result=self.observed('negative-'+mutation,[NODE,'--max-old-space-size=128',INSTALLED/'bin/memoryos-ci.mjs','verify','--bundle',target],expected=15,timeout=20)
+                diag=[json.loads(row) for row in result['stderr'].splitlines()]
+                assert len(diag)==1 and diag[0]['code']=='MO1306_BUNDLE_INTEGRITY'
+                case['results'].append({'sourceCase':cid,'mutation':mutation,'exitCode':15,'code':diag[0]['code'],'trace':ref(self.output/'traces'/('negative-'+mutation+'.json'))})
+            case['status']='PASS'
+        except BaseException as error:
+            case['failure'] = type(error).__name__ + ': ' + str(error)
+            raise
+        finally:
+            self.cases.append(case); put(self.output / 'cases' / (case['id'] + '.json'), case)
+
+    def run(self):
+        status = 'FAIL'; failure = None
+        try:
+            self.preflight()
+            for kind in ('policy', 'policySet'):
+                for suffix, code in [('pass', 0), ('fail', 6), ('cne', 7)]:
+                    self.functional(kind + '-' + suffix, 'evaluate-' + kind + '-' + suffix, code)
+            self.functional('regression-pass', 'evaluate-policy-cne', 0, regression=True, golden=False)
+            self.functional('regression-fail', 'evaluate-policy-fail', 6, regression=True, golden=False)
+            self.functional('regression-cne', 'evaluate-policy-cne', 7)
+            self.functional('error-input', 'evaluate-policy-pass', 11, mutation='input', golden=False)
+            self.dispatch()
+            self.generation()
+            self.lifecycle()
+            self.publication()
+            self.artifact_negatives()
+            assert inventory(INSTALLED) == self.before, 'INSTALLED_CANDIDATE_CHANGED'
+            assert len(self.cases) == 16 and all(c['status'] == 'PASS' for c in self.cases)
+            status = 'PASS'
+        except BaseException as error:
+            failure = type(error).__name__ + ': ' + str(error)
+            raise
+        finally:
+            summary = {'kind': 'MemoryOSPhase3ARCorrectedNativeExecution', 'version': '1.0.0', 'status': status, 'failure': failure, 'run': self.id, 'elapsedMs': round((time.monotonic() - self.started) * 1000), 'campaignLimitMs': CAMPAIGN_SECONDS * 1000, 'bindings': self.bindings, 'caseCount': len(self.cases), 'cases': self.cases, 'commands': self.commands, 'limitations': ['Sampled external Windows process/RSS observation; no OS-wide network or kernel process-containment claim.', 'Representative lifecycle and terminal publication use exact installed package without fault-copy mutations.', 'This targeted refreshed campaign independently invokes the SDK source oracle; unaffected historical evidence is assessed separately by exact dependency analysis.']}
+            put(self.output / 'summary.json', summary)
+            print(json.dumps({'status': status, 'caseCount': len(self.cases), 'summary': str(self.output / 'summary.json'), 'failure': failure}), flush=True)
+
+
+if __name__ == '__main__':
+    Campaign().run()

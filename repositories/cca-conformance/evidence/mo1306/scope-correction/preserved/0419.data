@@ -1,0 +1,54 @@
+"""Offline closed-write/storage/single-dispatch guards; no product or network calls."""
+import importlib.util,json,sys
+from pathlib import Path
+from unittest.mock import patch
+ROOT=Path(__file__).resolve().parents[4]
+spec=importlib.util.spec_from_file_location('campaign',Path(__file__).with_name('diagnostic_campaign.py'));m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+checks=[]
+def yes(name,fn):fn();checks.append(name)
+def no(name,fn):
+ try:fn()
+ except (AssertionError,FileExistsError):checks.append(name);return
+ raise AssertionError('Negative control accepted: '+name)
+def request(method,path,payload):return lambda:m.validate_request(method,path,payload)
+yes('GET repository',request('GET',m.PREFIX,None))
+yes('PATCH main only',request('PATCH',m.PREFIX,{'default_branch':'main'}))
+yes('PATCH certification only',request('PATCH',m.PREFIX,{'default_branch':m.BRANCH}))
+yes('POST ref only grammar',request('POST',m.PREFIX+'/actions/workflows/123/dispatches',{'ref':m.BRANCH}))
+for name,method,path,payload in [
+ ('reject other setting','PATCH',m.PREFIX,{'visibility':'private'}),('reject extra setting','PATCH',m.PREFIX,{'default_branch':'main','allow_merge_commit':False}),('reject unknown default','PATCH',m.PREFIX,{'default_branch':'other'}),('reject PUT','PUT',m.PREFIX,{}),('reject DELETE','DELETE',m.PREFIX,None),('reject ref write','POST',m.PREFIX+'/git/refs',{'ref':m.BRANCH}),('reject workflow filename dispatch','POST',m.PREFIX+'/actions/workflows/file.yml/dispatches',{'ref':m.BRANCH}),('reject dispatch otherref','POST',m.PREFIX+'/actions/workflows/123/dispatches',{'ref':'main'}),('reject dispatch inputs','POST',m.PREFIX+'/actions/workflows/123/dispatches',{'ref':m.BRANCH,'inputs':{}}),('reject GET payload','GET',m.PREFIX,{})]:no(name,request(method,path,payload))
+for name,url in [('reject HTTP storage','http://results.actions.githubusercontent.com/x'),('reject foreign storage','https://attacker.example/x'),('reject credentials storage','https://user:pass@results.actions.githubusercontent.com/x'),('reject fragment storage','https://results.actions.githubusercontent.com/x#token')]:no(name,lambda url=url:m.storage_url(url))
+yes('allow signed GitHub storage',lambda:m.storage_url('https://results.actions.githubusercontent.com/x?opaque=not-retained'))
+client=m.Client(m.OUT/'offline-no-write','NO_REAL_TOKEN');client.dispatch_path=m.PREFIX+'/actions/workflows/123/dispatches'
+no('reject other registered workflow before network',lambda:client.request('POST',m.PREFIX+'/actions/workflows/124/dispatches',{'ref':m.BRANCH}))
+class Response:
+ status=200;headers={}
+ def __enter__(self):return self
+ def __exit__(self,*args):pass
+ def read(self,n):return b'{"workflow_run_id":456}'
+class Opener:
+ def __init__(self):self.calls=0
+ def open(self,*args,**kwargs):self.calls+=1;return Response()
+seen=[];opener=Opener()
+def consume(path,value):
+ assert path==m.OUT/'dispatch-consumed.json'
+ if seen:raise FileExistsError('Already consumed')
+ seen.append(value);return {}
+client.event=lambda *args:None
+with patch.object(m,'write_new',consume),patch.object(m.urllib.request,'build_opener',lambda *args:opener):
+ yes('consume before exact one POST',lambda:client.request('POST',client.dispatch_path,{'ref':m.BRANCH}))
+ no('second POST blocked before network',lambda:client.request('POST',client.dispatch_path,{'ref':m.BRANCH}))
+assert opener.calls==1 and len(seen)==1;checks.append('exactly one offline fake request')
+source=Path(__file__).with_name('diagnostic_campaign.py').read_text()
+assert 'finally:\n  try:restoration=restore_main(client,before)' in source
+assert source.index('if restoration[\'status\']!=\'PASS\'')<source.index('inspection=inspect_artifact(result)')
+checks.append('restoration before offline artifact inspection')
+assert "'CAPTURED' if result and not error and restoration['status']=='PASS' else 'BLOCKED'" in source
+checks.append('restoration failure cannot yield captured status')
+assert 'f.flush();os.fsync(f.fileno())' in source
+checks.append('dispatch record flush and fsync before API')
+assert "for reviewed in static['reviewedFiles']:bound(reviewed)" in source
+checks.append('static reviewed source byte bindings rechecked')
+record={'kind':'MemoryOSHostedDiagnosticCampaignOfflineReview','status':'PASS','checks':checks,'count':len(checks),'campaignTool':m.row(Path(__file__).with_name('diagnostic_campaign.py')),'testTool':m.row(Path(__file__)),'productCalls':0,'networkCalls':0,'fakeHttpCalls':opener.calls,'remoteMutations':0}
+row=m.write_new(m.E/'campaign-offline-review-v2.json',record)
+print(json.dumps({'status':'PASS','count':len(checks),'receipt':row,'campaignTool':record['campaignTool']}))

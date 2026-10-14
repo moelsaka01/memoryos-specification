@@ -1,0 +1,51 @@
+{
+  "name": "aggregate-20000ms-excludes-worker",
+  "outcome": "PASS",
+  "elapsedMs": 5026.0324,
+  "error": {
+    "code": "MO1307_TIMEOUT",
+    "message": "MO1307_TIMEOUT"
+  },
+  "detail": null,
+  "snapshot": {
+    "kind": "cli",
+    "deadline": 45984.2986,
+    "helpers": 1,
+    "workers": 0,
+    "helperUsedMs": 0,
+    "activeRole": "helper",
+    "cleanupConfirmed": false,
+    "publication": null,
+    "terminalCode": "MO1307_TIMEOUT",
+    "terminalAt": 20987.2835,
+    "cleanupDeadline": 22987.2835,
+    "events": [
+      {
+        "type": "start",
+        "at": 15985.5942,
+        "role": "helper",
+        "deadline": 20985.5798,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 15997.5732,
+        "role": "helper",
+        "pid": 20872,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "terminal",
+        "at": 20987.3309,
+        "code": "MO1307_TIMEOUT",
+        "stage": "ACQUISITION"
+      },
+      {
+        "type": "cleanup",
+        "at": 21010.2159,
+        "role": "helper",
+        "confirmed": false
+      }
+    ]
+  }
+}

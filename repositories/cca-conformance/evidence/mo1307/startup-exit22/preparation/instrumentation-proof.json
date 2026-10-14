@@ -1,0 +1,306 @@
+{
+  "kind": "MO1307StartupDiagnosticInstrumentationProof",
+  "result": "PASS",
+  "reversibleAdditions": true,
+  "source": {
+    "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+    "byteLength": 29812,
+    "sha256": "sha256:658db95495072c003a849941af5d92c0761b6aa0f6f08b4911f5022a80da2688"
+  },
+  "generator": {
+    "path": "repositories/cca-conformance/tools/mo1307-startup-exit22/instrument.mjs",
+    "byteLength": 17793,
+    "sha256": "sha256:47707a7a1d2383e160dacda1c8c0d6b212a00adb34bb14da09bcb8ef654741da"
+  },
+  "diagnosticCopy": {
+    "path": "repositories/cca-conformance/evidence/mo1307/startup-exit22/preparation/instrumented.ps1",
+    "byteLength": 40796,
+    "sha256": "sha256:e0b348faf0970e83aa3c6dbee322433a85bb43eb177bc0d737f9308cf8ff96ad"
+  },
+  "inverseSha256": "sha256:658db95495072c003a849941af5d92c0761b6aa0f6f08b4911f5022a80da2688",
+  "exactInverseEquality": true,
+  "unchangedOutsideThreeSelectedRegions": true,
+  "lineEndings": "LF",
+  "ids": [
+    {
+      "id": "S05.01",
+      "operation": "AssemblyName",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S05.02",
+      "operation": "DefineDynamicAssembly",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S05.03",
+      "operation": "DefineDynamicModule",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S05.04",
+      "operation": "DefineType",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S05.06",
+      "operation": "DllImport constructor lookup",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S05.08",
+      "operation": "Select fixed native library",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S05.10",
+      "operation": "SetImplementationFlags",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S05.12",
+      "operation": "SetCustomAttribute",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S06",
+      "operation": "Native type creation",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S05.05",
+      "operation": "Native signature definitions",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S05.07",
+      "operation": "DllImport fields",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S05.09",
+      "operation": "DefinePInvokeMethod",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S05.11",
+      "operation": "DllImport attribute construction",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S07",
+      "operation": "AllocHGlobal",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S08",
+      "operation": "Initial console membership",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S12.04",
+      "operation": "Recheck sole console membership",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S20",
+      "operation": "Final console absence",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S12.01",
+      "operation": "Current console HWND/nonzero guard",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S12.03a",
+      "operation": "Recheck same console HWND",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S12.02",
+      "operation": "Current HWND owner/nonzero distinct-self guard",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S12.03b",
+      "operation": "Recheck same HWND owner",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S13.01",
+      "operation": "OpenProcess query-synchronize/nonzero guard",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S13.02",
+      "operation": "Opened handle PID equality",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S12.05",
+      "operation": "Recheck held handle PID equality",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S14",
+      "operation": "QueryFullProcessImageNameW/success guard",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S17",
+      "operation": "Held host live-object wait/258 guard",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S16",
+      "operation": "FreeConsole/success guard",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S19",
+      "operation": "Natural host exit wait/zero guard",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S21",
+      "operation": "CloseHandle original return discarded",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S08.01",
+      "operation": "Initial sole-client PID read",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S12.04a",
+      "operation": "Rechecked sole-client PID read",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S14.00",
+      "operation": "Image buffer allocation",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S15.01",
+      "operation": "System directory lookup",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S15.02",
+      "operation": "Exact system conhost image equality",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S22",
+      "operation": "FreeHGlobal",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S01.01",
+      "operation": "PowerShell major version",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S01.02",
+      "operation": "PowerShell minor version",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S02",
+      "operation": "64-bit architecture",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S03",
+      "operation": "OpenStandardInput",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S04",
+      "operation": "OpenStandardOutput",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S23",
+      "operation": "Outer startup catch; original exit22 preserved",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "S09",
+      "operation": "Toolhelp snapshot",
+      "status": "NOT_APPLICABLE",
+      "reason": "Absent from intended production helper; never introduced by diagnostics"
+    },
+    {
+      "id": "S10",
+      "operation": "Process32FirstW",
+      "status": "NOT_APPLICABLE",
+      "reason": "Absent from intended production helper; never introduced by diagnostics"
+    },
+    {
+      "id": "S11",
+      "operation": "Process32NextW traversal",
+      "status": "NOT_APPLICABLE",
+      "reason": "Absent from intended production helper; never introduced by diagnostics"
+    },
+    {
+      "id": "S18",
+      "operation": "TerminateProcess",
+      "status": "NOT_APPLICABLE",
+      "reason": "Absent from intended production helper; never introduced by diagnostics"
+    }
+  ],
+  "replacements": [
+    {
+      "id": "INITIALIZE",
+      "beforeSha256": "sha256:e71dca31aeab752f312893ed7f0156cb7c7657bd501f687012550680a404685e",
+      "afterSha256": "sha256:5b8783e675b9d79b93a3097132de5085c46981c15094834882cca4e4db145df9",
+      "beforeByteLength": 2905,
+      "afterByteLength": 3847
+    },
+    {
+      "id": "CONSOLE",
+      "beforeSha256": "sha256:558d4afe3974b11cd13717c6d39127cb8ca3aabdc5e1585be06f3a3f81ac9424",
+      "afterSha256": "sha256:e3fe01d85a5aff516dbd9c91169ab5df63c55a851e4b7a3efbb15828ff3ba043",
+      "beforeByteLength": 3401,
+      "afterByteLength": 8795
+    },
+    {
+      "id": "STARTUP",
+      "beforeSha256": "sha256:6fd0151a7604543e8ada15133c22bc7d79156d8ebae6a7df6eaf5c97f2bb2b42",
+      "afterSha256": "sha256:93b5f161b5dc995b0a19a5ee4b7d9e63cfd9cd0664b0703ec9618393c81fe298",
+      "beforeByteLength": 290,
+      "afterByteLength": 4938
+    }
+  ],
+  "stderr": {
+    "productCapBytes": 4096,
+    "entryMaximumBytes": 80,
+    "failureMaximumUtf8Bytes": 3900,
+    "newlineMaximumBytes": 4,
+    "totalMaximumBytes": 3984,
+    "events": [
+      "ENTRY",
+      "FAILURE"
+    ],
+    "recentMaximum": 6
+  },
+  "semantics": {
+    "nativeCallCountsPreserved": true,
+    "shortCircuitExpressionsPreserved": true,
+    "byReferenceLocalScopePreserved": true,
+    "GetLastWin32ErrorCapturedBeforeObservation": true,
+    "originalGetLastWin32ErrorConsumersUseCachedValue": true,
+    "firstFailureCapturedBeforeFinally": true,
+    "cleanupExceptionAlsoRetained": true,
+    "productionFailuresNotSuppressed": true,
+    "originalExit22Preserved": true,
+    "stdoutUntouched": true,
+    "requestsUnobserved": true
+  },
+  "preparationOnly": true,
+  "powershellExecutions": 0,
+  "helperExecutions": 0
+}

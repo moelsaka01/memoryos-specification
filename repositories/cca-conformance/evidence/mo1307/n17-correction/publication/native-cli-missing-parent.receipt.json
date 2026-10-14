@@ -1,0 +1,110 @@
+{
+  "id": "native-cli-missing-parent",
+  "result": "PASS",
+  "kind": "NATIVE_CLI_EXPECTED_PUBLICATION_REFUSAL",
+  "command": {
+    "id": "native-cli-missing-parent",
+    "args": [
+      "repositories/memoryos-readiness/bin/memoryos-readiness.mjs",
+      "evaluate",
+      "--input-root",
+      "C:\\m7fix\\repositories\\cca-conformance\\fixtures\\mo1307\\bundles\\ready",
+      "--config",
+      "configuration.json",
+      "--authority",
+      "authority.json",
+      "--authority-sha256",
+      "sha256:1e05efc4569fe6678e36772dcc12cf768cbecd59653e593d6007f52122db8b0a",
+      "--candidate-sha256",
+      "sha256:92f382b3d598cccef126f5a59e29face33c040d952edfa034eec626201678b05",
+      "--output-root",
+      "C:\\m7fix\\.cache\\mo1307-n17-publication-22428\\native-missing-parent\\out"
+    ],
+    "env": {
+      "SystemRoot": "C:\\Windows",
+      "WINDIR": "C:\\Windows"
+    },
+    "outerGuardMs": 32000
+  },
+  "pid": 15976,
+  "exitCode": 21,
+  "signal": null,
+  "error": null,
+  "elapsedMs": 5672.0432,
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n17-correction/publication/native-cli-missing-parent.stdout",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n17-correction/publication/native-cli-missing-parent.stderr",
+    "byteLength": 114,
+    "sha256": "sha256:50b9c13ea9be928b2050ba715bef0a7d6ddcae17c0feda790ab86c950c56c920"
+  },
+  "settlement": {
+    "observed": true,
+    "scope": "Actual outer spawned process only; no inner CLI/helper/worker event telemetry",
+    "requiredEvents": [
+      "stdin-finish",
+      "stdin-close",
+      "stdout-end",
+      "stdout-close",
+      "stderr-end",
+      "stderr-close",
+      "exit",
+      "close"
+    ],
+    "events": [
+      {
+        "event": "stdin-finish",
+        "elapsedMs": 1061.2441
+      },
+      {
+        "event": "stdin-close",
+        "elapsedMs": 1061.6873
+      },
+      {
+        "event": "stderr-end",
+        "elapsedMs": 5667.629800000001
+      },
+      {
+        "event": "stdout-end",
+        "elapsedMs": 5667.8006000000005
+      },
+      {
+        "event": "stdout-close",
+        "elapsedMs": 5667.9824
+      },
+      {
+        "event": "stderr-close",
+        "elapsedMs": 5667.9925
+      },
+      {
+        "event": "exit",
+        "elapsedMs": 5671.8503,
+        "code": 21,
+        "signal": null
+      },
+      {
+        "event": "close",
+        "elapsedMs": 5671.89,
+        "code": 21,
+        "signal": null
+      }
+    ],
+    "allRequiredObserved": true,
+    "guardExpired": false,
+    "cleanupExpired": false,
+    "closed": true,
+    "cleanupAllowanceMs": 2000
+  },
+  "nativeHelperEventTelemetry": false,
+  "parentAbsent": true,
+  "outputAbsent": true,
+  "refusal": {
+    "code": "MO1307_OUTPUT",
+    "stage": "PUBLICATION",
+    "reference": null,
+    "exitMapping": 21
+  }
+}

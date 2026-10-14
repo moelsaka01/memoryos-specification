@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: MO-1308 SDK exposes exactly the frozen history surface
+ok 1 - MO-1308 SDK exposes exactly the frozen history surface
+  ---
+  duration_ms: 0.889258
+  type: 'test'
+  ...
+# Subtest: MO-1308 SDK well-formed calls reach the history authorities and report their frozen codes
+ok 2 - MO-1308 SDK well-formed calls reach the history authorities and report their frozen codes
+  ---
+  duration_ms: 3.384604
+  type: 'test'
+  ...
+# Subtest: MO-1308 SDK rejects malformed arguments with the frozen codes
+ok 3 - MO-1308 SDK rejects malformed arguments with the frozen codes
+  ---
+  duration_ms: 1.051078
+  type: 'test'
+  ...
+# Subtest: MO-1308 createHistoryCheckpointRecord accepts only this instance's Checkpoint and returns the admitted bytes
+ok 4 - MO-1308 createHistoryCheckpointRecord accepts only this instance's Checkpoint and returns the admitted bytes
+  ---
+  duration_ms: 184.290772
+  type: 'test'
+  ...
+# Subtest: MO-1308 SDK history surface performs no I/O and does not mutate inputs (R29)
+ok 5 - MO-1308 SDK history surface performs no I/O and does not mutate inputs (R29)
+  ---
+  duration_ms: 7.105693
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 326.324566

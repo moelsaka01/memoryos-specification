@@ -1,0 +1,413 @@
+TAP version 13
+# Subtest: launcher verifier: actual reviewed installation accepts canonical operational NONE
+ok 1 - launcher verifier: actual reviewed installation accepts canonical operational NONE
+  ---
+  duration_ms: 2656.176
+  type: 'test'
+  ...
+# {"stage":".cache/mo1306/phase2b/integrated-a200bd","distributionDigest":"sha256:bd154a7a972395b801b3cb0189a728b7e9870eb05f90558346eb7fee7055fe77","transport":"canonical UTF-8 base64 argv","verifier":"scripts/verify-launch-result.mjs"}
+# Subtest: launcher negative base64: empty
+ok 2 - launcher negative base64: empty
+  ---
+  duration_ms: 1129.7744
+  type: 'test'
+  ...
+# Subtest: launcher negative base64: alphabet
+ok 3 - launcher negative base64: alphabet
+  ---
+  duration_ms: 1107.953
+  type: 'test'
+  ...
+# Subtest: launcher negative base64: space
+ok 4 - launcher negative base64: space
+  ---
+  duration_ms: 1206.9325
+  type: 'test'
+  ...
+# Subtest: launcher negative base64: newline
+ok 5 - launcher negative base64: newline
+  ---
+  duration_ms: 1195.4589
+  type: 'test'
+  ...
+# Subtest: launcher negative base64: missingPadding
+ok 6 - launcher negative base64: missingPadding
+  ---
+  duration_ms: 1126.9286
+  type: 'test'
+  ...
+# Subtest: launcher negative base64: extraPadding
+ok 7 - launcher negative base64: extraPadding
+  ---
+  duration_ms: 1082.0702
+  type: 'test'
+  ...
+# Subtest: launcher negative base64: internalPadding
+ok 8 - launcher negative base64: internalPadding
+  ---
+  duration_ms: 1107.2402
+  type: 'test'
+  ...
+# Subtest: launcher negative base64: noncanonicalTwoPad
+ok 9 - launcher negative base64: noncanonicalTwoPad
+  ---
+  duration_ms: 1145.79
+  type: 'test'
+  ...
+# Subtest: launcher negative base64: noncanonicalOnePad
+ok 10 - launcher negative base64: noncanonicalOnePad
+  ---
+  duration_ms: 1166.2891
+  type: 'test'
+  ...
+# Subtest: launcher negative base64: overEncodedBound
+ok 11 - launcher negative base64: overEncodedBound
+  ---
+  duration_ms: 1155.3858
+  type: 'test'
+  ...
+# Subtest: launcher negative base64: overDecodedBound
+ok 12 - launcher negative base64: overDecodedBound
+  ---
+  duration_ms: 1127.9287
+  type: 'test'
+  ...
+# Subtest: launcher negative UTF8: overlong
+ok 13 - launcher negative UTF8: overlong
+  ---
+  duration_ms: 1094.8097
+  type: 'test'
+  ...
+# Subtest: launcher negative UTF8: truncated
+ok 14 - launcher negative UTF8: truncated
+  ---
+  duration_ms: 1085.0622
+  type: 'test'
+  ...
+# Subtest: launcher negative UTF8: surrogate
+ok 15 - launcher negative UTF8: surrogate
+  ---
+  duration_ms: 1200.7454
+  type: 'test'
+  ...
+# Subtest: launcher negative UTF8: illegal
+ok 16 - launcher negative UTF8: illegal
+  ---
+  duration_ms: 1130.4531
+  type: 'test'
+  ...
+# Subtest: launcher negative UTF8: bom
+ok 17 - launcher negative UTF8: bom
+  ---
+  duration_ms: 1112.7633
+  type: 'test'
+  ...
+# Subtest: launcher negative JSON integrity mapping: invalid
+ok 18 - launcher negative JSON integrity mapping: invalid
+  ---
+  duration_ms: 1120.3987
+  type: 'test'
+  ...
+# Subtest: launcher negative JSON integrity mapping: truncated
+ok 19 - launcher negative JSON integrity mapping: truncated
+  ---
+  duration_ms: 1077.6865
+  type: 'test'
+  ...
+# Subtest: launcher negative JSON integrity mapping: duplicate
+ok 20 - launcher negative JSON integrity mapping: duplicate
+  ---
+  duration_ms: 1122.2304
+  type: 'test'
+  ...
+# Subtest: launcher negative JSON integrity mapping: extraText
+ok 21 - launcher negative JSON integrity mapping: extraText
+  ---
+  duration_ms: 1110.6551
+  type: 'test'
+  ...
+# Subtest: launcher negative JSON integrity mapping: array
+ok 22 - launcher negative JSON integrity mapping: array
+  ---
+  duration_ms: 1109.4251
+  type: 'test'
+  ...
+# Subtest: launcher negative JSON integrity mapping: null
+ok 23 - launcher negative JSON integrity mapping: null
+  ---
+  duration_ms: 1111.067
+  type: 'test'
+  ...
+# Subtest: launcher negative JSON integrity mapping: scalar
+ok 24 - launcher negative JSON integrity mapping: scalar
+  ---
+  duration_ms: 1107.2767
+  type: 'test'
+  ...
+# Subtest: launcher negative JSON integrity mapping: unpaired
+ok 25 - launcher negative JSON integrity mapping: unpaired
+  ---
+  duration_ms: 1086.2228
+  type: 'test'
+  ...
+# Subtest: launcher negative JSON integrity mapping: control
+ok 26 - launcher negative JSON integrity mapping: control
+  ---
+  duration_ms: 1150.4638
+  type: 'test'
+  ...
+# Subtest: launcher negative JSON integrity mapping: whitespace
+ok 27 - launcher negative JSON integrity mapping: whitespace
+  ---
+  duration_ms: 1108.2153
+  type: 'test'
+  ...
+# Subtest: launcher negative JSON integrity mapping: newline
+ok 28 - launcher negative JSON integrity mapping: newline
+  ---
+  duration_ms: 1077.4941
+  type: 'test'
+  ...
+# Subtest: launcher negative JSON integrity mapping: crlf
+ok 29 - launcher negative JSON integrity mapping: crlf
+  ---
+  duration_ms: 1082.6037
+  type: 'test'
+  ...
+# Subtest: launcher negative JSON integrity mapping: noncanonicalKeys
+ok 30 - launcher negative JSON integrity mapping: noncanonicalKeys
+  ---
+  duration_ms: 1304.983
+  type: 'test'
+  ...
+# Subtest: launcher negative JSON integrity mapping: byteLimit
+ok 31 - launcher negative JSON integrity mapping: byteLimit
+  ---
+  duration_ms: 1499.7942
+  type: 'test'
+  ...
+# Subtest: launcher negative summary schema: field
+ok 32 - launcher negative summary schema: field
+  ---
+  duration_ms: 1579.503
+  type: 'test'
+  ...
+# Subtest: launcher negative summary schema: version
+ok 33 - launcher negative summary schema: version
+  ---
+  duration_ms: 1562.428
+  type: 'test'
+  ...
+# Subtest: launcher negative summary schema: kind
+ok 34 - launcher negative summary schema: kind
+  ---
+  duration_ms: 1502.9319
+  type: 'test'
+  ...
+# Subtest: launcher negative summary schema: classification
+ok 35 - launcher negative summary schema: classification
+  ---
+  duration_ms: 1171.6249
+  type: 'test'
+  ...
+# Subtest: launcher negative summary schema: exitType
+ok 36 - launcher negative summary schema: exitType
+  ---
+  duration_ms: 1199.3094
+  type: 'test'
+  ...
+# Subtest: launcher negative summary schema: unknownExit
+ok 37 - launcher negative summary schema: unknownExit
+  ---
+  duration_ms: 1149.9401
+  type: 'test'
+  ...
+# Subtest: launcher negative summary schema: runId
+ok 38 - launcher negative summary schema: runId
+  ---
+  duration_ms: 1103.1247
+  type: 'test'
+  ...
+# Subtest: launcher negative summary schema: resultDigest
+ok 39 - launcher negative summary schema: resultDigest
+  ---
+  duration_ms: 1155.806
+  type: 'test'
+  ...
+# Subtest: launcher negative summary schema: publication
+ok 40 - launcher negative summary schema: publication
+  ---
+  duration_ms: 1157.8143
+  type: 'test'
+  ...
+# Subtest: launcher negative summary schema: missing
+ok 41 - launcher negative summary schema: missing
+  ---
+  duration_ms: 1062.2147
+  type: 'test'
+  ...
+# Subtest: launcher negative provider: azure
+ok 42 - launcher negative provider: azure
+  ---
+  duration_ms: 1092.9093
+  type: 'test'
+  ...
+# Subtest: launcher negative provider: github
+ok 43 - launcher negative provider: github
+  ---
+  duration_ms: 1131.9887
+  type: 'test'
+  ...
+# Subtest: launcher negative provider: unknown
+ok 44 - launcher negative provider: unknown
+  ---
+  duration_ms: 1035.9787
+  type: 'test'
+  ...
+# Subtest: launcher negative provider: GitLab
+ok 45 - launcher negative provider: GitLab
+  ---
+  duration_ms: 1124.6873
+  type: 'test'
+  ...
+# Subtest: launcher negative provider: __proto__
+ok 46 - launcher negative provider: __proto__
+  ---
+  duration_ms: 1105.971
+  type: 'test'
+  ...
+# Subtest: launcher negative provider: constructor
+ok 47 - launcher negative provider: constructor
+  ---
+  duration_ms: 1117.3422
+  type: 'test'
+  ...
+# Subtest: launcher negative configuration digest: empty
+ok 48 - launcher negative configuration digest: empty
+  ---
+  duration_ms: 1131.7165
+  type: 'test'
+  ...
+# Subtest: launcher negative configuration digest: uppercase
+ok 49 - launcher negative configuration digest: uppercase
+  ---
+  duration_ms: 1081.8772
+  type: 'test'
+  ...
+# Subtest: launcher negative configuration digest: algorithm
+ok 50 - launcher negative configuration digest: algorithm
+  ---
+  duration_ms: 1048.2553
+  type: 'test'
+  ...
+# Subtest: launcher negative configuration digest: length
+ok 51 - launcher negative configuration digest: length
+  ---
+  duration_ms: 1157.1954
+  type: 'test'
+  ...
+# Subtest: launcher negative configuration digest: expression
+ok 52 - launcher negative configuration digest: expression
+  ---
+  duration_ms: 1135.6756
+  type: 'test'
+  ...
+# Subtest: launcher negative configuration digest: newline
+ok 53 - launcher negative configuration digest: newline
+  ---
+  duration_ms: 1132.2846
+  type: 'test'
+  ...
+# Subtest: launcher negative argv: missing
+ok 54 - launcher negative argv: missing
+  ---
+  duration_ms: 1156.4169
+  type: 'test'
+  ...
+# Subtest: launcher negative argv: extra
+ok 55 - launcher negative argv: extra
+  ---
+  duration_ms: 1059.6602
+  type: 'test'
+  ...
+# Subtest: launcher negative captured exit: "0"
+ok 56 - launcher negative captured exit: "0"
+  ---
+  duration_ms: 1076.1732
+  type: 'test'
+  ...
+# Subtest: launcher negative captured exit: "14"
+ok 57 - launcher negative captured exit: "14"
+  ---
+  duration_ms: 1227.1725
+  type: 'test'
+  ...
+# Subtest: launcher negative captured exit: "013"
+ok 58 - launcher negative captured exit: "013"
+  ---
+  duration_ms: 1143.7309
+  type: 'test'
+  ...
+# Subtest: launcher negative captured exit: "13.0"
+ok 59 - launcher negative captured exit: "13.0"
+  ---
+  duration_ms: 1116.9719
+  type: 'test'
+  ...
+# Subtest: launcher negative captured exit: "13\\n"
+ok 60 - launcher negative captured exit: "13\\n"
+  ---
+  duration_ms: 1193.9925
+  type: 'test'
+  ...
+# Subtest: launcher negative captured exit: "SECRET-SENTINEL"
+ok 61 - launcher negative captured exit: "SECRET-SENTINEL"
+  ---
+  duration_ms: 1186.0381
+  type: 'test'
+  ...
+# Subtest: launcher negative classification/exit projection mismatch
+ok 62 - launcher negative classification/exit projection mismatch
+  ---
+  duration_ms: 1143.7446
+  type: 'test'
+  ...
+# Subtest: launcher negative semantic NONE: PASS
+ok 63 - launcher negative semantic NONE: PASS
+  ---
+  duration_ms: 2568.3554
+  type: 'test'
+  ...
+# Subtest: launcher negative semantic NONE: FAIL
+ok 64 - launcher negative semantic NONE: FAIL
+  ---
+  duration_ms: 2410.152
+  type: 'test'
+  ...
+# Subtest: launcher negative semantic NONE: COULD_NOT_EVALUATE
+ok 65 - launcher negative semantic NONE: COULD_NOT_EVALUATE
+  ---
+  duration_ms: 2417.2251
+  type: 'test'
+  ...
+# Subtest: launcher negative operational NONE with fabricated result digest
+ok 66 - launcher negative operational NONE with fabricated result digest
+  ---
+  duration_ms: 2530.7829
+  type: 'test'
+  ...
+# Subtest: launcher PowerShell 5.1: encoded summary survives real native argv without a policy override
+ok 67 - launcher PowerShell 5.1: encoded summary survives real native argv without a policy override
+  ---
+  duration_ms: 2716.0462
+  type: 'test'
+  ...
+1..67
+# tests 67
+# suites 0
+# pass 67
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 86948.4781

@@ -1,0 +1,528 @@
+{
+  "kind": "MemoryOSMCPAdvisorySources",
+  "version": "1.0.0",
+  "checkedAtUtc": "2026-09-21T13:10:07.7100589Z",
+  "registry": [
+    {
+      "name": "@modelcontextprotocol/server",
+      "latest": "2.0.0",
+      "stableVersions": [
+        "2.0.0"
+      ],
+      "latestDependencies": {
+        "zod": "^4.2.0",
+        "@modelcontextprotocol/core": "2.0.0"
+      }
+    },
+    {
+      "name": "@modelcontextprotocol/core",
+      "latest": "2.0.0",
+      "stableVersions": [
+        "2.0.0"
+      ],
+      "latestDependencies": {
+        "zod": "^4.2.0"
+      }
+    },
+    {
+      "name": "@modelcontextprotocol/client",
+      "latest": "2.0.0",
+      "stableVersions": [
+        "2.0.0"
+      ],
+      "latestDependencies": {
+        "zod": "^4.2.0",
+        "jose": "^6.1.3",
+        "cross-spawn": "^7.0.5",
+        "eventsource": "^3.0.2",
+        "pkce-challenge": "^5.0.0",
+        "eventsource-parser": "^3.0.0",
+        "@modelcontextprotocol/core": "2.0.0"
+      }
+    },
+    {
+      "name": "fast-uri",
+      "latest": "4.2.1",
+      "stableVersions": [
+        "0.0.1",
+        "0.0.2",
+        "1.0.0",
+        "1.0.1",
+        "2.0.0",
+        "2.1.0",
+        "2.2.0",
+        "2.3.0",
+        "2.3.1",
+        "2.4.0",
+        "3.0.0",
+        "3.0.1",
+        "3.0.2",
+        "3.0.3",
+        "3.0.4",
+        "3.0.5",
+        "3.0.6",
+        "3.1.0",
+        "3.1.1",
+        "3.1.2",
+        "4.0.0",
+        "4.0.1",
+        "3.1.3",
+        "4.1.0",
+        "2.4.1",
+        "2.4.2",
+        "4.1.1",
+        "2.4.3",
+        "3.1.4",
+        "4.1.2",
+        "3.1.5",
+        "2.4.4",
+        "4.1.3",
+        "3.1.6",
+        "2.4.5",
+        "3.1.7",
+        "2.4.6",
+        "4.1.4",
+        "4.1.5",
+        "3.1.8",
+        "2.4.7",
+        "4.2.0",
+        "4.2.1"
+      ],
+      "latestDependencies": null
+    }
+  ],
+  "advisories": [
+    {
+      "ghsaId": "GHSA-f65p-4m7j-42xc",
+      "cveId": "CVE-2026-75975",
+      "severity": "high",
+      "summary": "fast-uri vulnerable to server-side request forgery via malformed IPv6 normalization",
+      "description": "### Impact\n\n`fast-uri` does not validate the complete RFC 3986 grammar for bracketed IPv6 literals, so a malformed literal with invalid trailing text is silently truncated to a different valid IPv6 address with no error reported. For example, `normalize('http://[::not-valid]/private')` returns `http://[::]/private`, and `[fc00::not-hex]` and `[fe80::not-hex]` collapse to `[fc00::]` and `[fe80::]`. An application that normalizes an untrusted URL before an outbound request, redirect, or host-policy check can be routed to a local or private address such as loopback (`::1`), unique-local, or link-local. Because `parse().error` is unset for these inputs, checking it does not protect the consumer.\n\n### Patches\n\nUpgrade to `fast-uri` 2.4.5, 3.1.6, or 4.1.3. Malformed IPv6 literals are now rejected with a host error instead of being normalized to a valid address.\n\n### Workarounds\n\nReject untrusted URLs whose host is a bracketed IPv6 literal before passing them to `fast-uri`, or route outbound requests against an explicit allowlist of addresses rather than trusting the normalized host.",
+      "vulnerabilities": [
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "fast-uri"
+          },
+          "vulnerable_version_range": ">= 2.3.1, < 2.4.5",
+          "first_patched_version": "2.4.5",
+          "vulnerable_functions": []
+        },
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "fast-uri"
+          },
+          "vulnerable_version_range": ">= 3.0.0, < 3.1.6",
+          "first_patched_version": "3.1.6",
+          "vulnerable_functions": []
+        },
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "fast-uri"
+          },
+          "vulnerable_version_range": ">= 4.0.0, < 4.1.3",
+          "first_patched_version": "4.1.3",
+          "vulnerable_functions": []
+        }
+      ],
+      "references": [
+        "https://github.com/fastify/fast-uri/security/advisories/GHSA-f65p-4m7j-42xc",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-75975",
+        "https://github.com/fastify/fast-uri/commit/3728465caacef4b16bc84b7d14760f1c8fe41595",
+        "https://github.com/fastify/fast-uri/commit/607bfbe953f28a14c2e06ae64aff38c81ca2937f",
+        "https://github.com/fastify/fast-uri/commit/9161eded1ff55fad9d9714c6ad6c0f0283547799",
+        "https://cna.openjsf.org/security-advisories.html",
+        "https://github.com/fastify/fast-uri/releases/tag/v2.4.5",
+        "https://github.com/fastify/fast-uri/releases/tag/v3.1.6",
+        "https://github.com/fastify/fast-uri/releases/tag/v4.1.3",
+        "https://github.com/advisories/GHSA-f65p-4m7j-42xc"
+      ],
+      "url": "https://github.com/advisories/GHSA-f65p-4m7j-42xc",
+      "updatedAt": "2026-09-02T15:43:32Z"
+    },
+    {
+      "ghsaId": "GHSA-jqff-g426-hqxp",
+      "cveId": "CVE-2026-76172",
+      "severity": "high",
+      "summary": "fast-uri vulnerable to host confusion via percent-encoded scheme normalization",
+      "description": "### Impact\n\n`fast-uri` decodes percent-encoded characters in the scheme component with the legacy global `unescape()` and serializes the result back as raw characters, without re-escaping it or validating it as a scheme. A scheme that decodes to characters outside the RFC 3986 scheme grammar can therefore introduce structure the original input did not contain.\n\nFor example, `%2f%2fevil.example:/pwn` parses with no authority (`parse().host` is `undefined`), but `resolve()` and `normalize()` return `//evil.example:/pwn`, which reparses with host `evil.example`. The `%uXXXX` form (`%u002f%u002fevil.example:/pwn`) produces the same result, and a scheme containing `%0d%0a` reaches the output as a raw CR LF.\n\nApplications that normalize or resolve untrusted URLs before a redirect check, host allowlist, or outbound request decision, especially ones that treat a missing authority as same-origin, can be steered to an attacker-chosen authority, and a normalized URI placed in a response header can carry an injected CR LF.\n\n### Patches\n\nUpgrade to `fast-uri` >= 4.1.3, or >= 3.1.6 in the v3.x release line, or >= 2.4.5 in the v2.x release line.\n\n### Workarounds\n\nNone. Upgrade to the patched version.",
+      "vulnerabilities": [
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "fast-uri"
+          },
+          "vulnerable_version_range": ">= 2.3.1, < 2.4.5",
+          "first_patched_version": "2.4.5",
+          "vulnerable_functions": []
+        },
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "fast-uri"
+          },
+          "vulnerable_version_range": ">= 3.0.0, < 3.1.6",
+          "first_patched_version": "3.1.6",
+          "vulnerable_functions": []
+        },
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "fast-uri"
+          },
+          "vulnerable_version_range": ">= 4.0.0, < 4.1.3",
+          "first_patched_version": "4.1.3",
+          "vulnerable_functions": []
+        }
+      ],
+      "references": [
+        "https://github.com/fastify/fast-uri/security/advisories/GHSA-jqff-g426-hqxp",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-76172",
+        "https://github.com/fastify/fast-uri/commit/37f3417c82994279656854f83ce938acd81c3862",
+        "https://github.com/fastify/fast-uri/commit/a941e626411f576f8d90883231e57b6c9d0ff98b",
+        "https://github.com/fastify/fast-uri/commit/c6a74bfd9d8c6b0df5362b3c7ae88d8021cb1e39",
+        "https://cna.openjsf.org/security-advisories.html",
+        "https://github.com/fastify/fast-uri/releases/tag/v2.4.5",
+        "https://github.com/fastify/fast-uri/releases/tag/v3.1.6",
+        "https://github.com/fastify/fast-uri/releases/tag/v4.1.3",
+        "https://github.com/advisories/GHSA-jqff-g426-hqxp"
+      ],
+      "url": "https://github.com/advisories/GHSA-jqff-g426-hqxp",
+      "updatedAt": "2026-09-02T15:41:56Z"
+    },
+    {
+      "ghsaId": "GHSA-7p8r-x3mc-p8w7",
+      "cveId": "CVE-2026-18446",
+      "severity": "high",
+      "summary": "fast-uri vulnerable to host confusion via backslash authority introducer",
+      "description": "### Impact\n\n`fast-uri` v4.1.1 and earlier require a literal `//` to recognize a URI authority, so a reference that uses `\\\\`, `/\\`, or `\\/` as the authority introducer (in place of `//`, after an optional scheme) is parsed with no authority: the sequence and everything after it fold into the path. Node's native WHATWG `URL` (used by `fetch()`, `undici`, and Node's `http`/`https` clients) instead treats `\\` as interchangeable with `/` for special schemes (`http`, `https`, `ws`, `wss`, `ftp`, `file`), so the two parsers extract different hosts from the same input.\n\nFor example, `fast-uri` resolves `\\\\evil.com/path` against base `https://allowed.com/` to `https://allowed.com/%5C%5Cevil.com/path` (confined to the trusted host), while Node's WHATWG URL resolves the same reference to `https://evil.com/path`.\n\nApplications that use `fast-uri` to enforce host-based policy (allowlists, denylists, loopback/SSRF filtering, redirect validation, outbound proxy routing) before passing the same URL into Node's URL or `fetch()` consumers see a policy/use desync and can be steered to an unintended destination.\n\n### Patches\n\nUpgrade to `fast-uri` v4.1.2, v3.1.5, v2.4.4.\n\n### Workarounds\n\nNone. Upgrade to the patched version.",
+      "vulnerabilities": [
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "fast-uri"
+          },
+          "vulnerable_version_range": "< 2.4.4",
+          "first_patched_version": "2.4.4",
+          "vulnerable_functions": []
+        },
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "fast-uri"
+          },
+          "vulnerable_version_range": ">= 3.0.0, < 3.1.5",
+          "first_patched_version": "3.1.5",
+          "vulnerable_functions": []
+        },
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "fast-uri"
+          },
+          "vulnerable_version_range": ">= 4.0.0, < 4.1.2",
+          "first_patched_version": "4.1.2",
+          "vulnerable_functions": []
+        }
+      ],
+      "references": [
+        "https://github.com/fastify/fast-uri/security/advisories/GHSA-7p8r-x3mc-p8w7",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-18446",
+        "https://github.com/fastify/fast-uri/commit/f3c6c905f47831007490f466c5945012e905cc52",
+        "https://cna.openjsf.org/security-advisories.html",
+        "https://github.com/fastify/fast-uri/releases/tag/v4.1.2",
+        "https://github.com/advisories/GHSA-7p8r-x3mc-p8w7"
+      ],
+      "url": "https://github.com/advisories/GHSA-7p8r-x3mc-p8w7",
+      "updatedAt": "2026-08-03T19:16:43Z"
+    },
+    {
+      "ghsaId": "GHSA-v2hh-gcrm-f6hx",
+      "cveId": "CVE-2026-16221",
+      "severity": "high",
+      "summary": "fast-uri vulnerable to host confusion via literal backslash authority delimiter",
+      "description": "### Impact\n\n`fast-uri` v4.1.0 and earlier do not treat a literal backslash (U+005C) as an authority delimiter. Node's native WHATWG `URL` (used by `fetch()`, `undici`, and Node's `http`/`https` clients) normalizes `\\` to `/` for special schemes (`http`, `https`, `ws`, `wss`, `ftp`, `file`), so the two parsers extract different hosts from the same input string.\n\nFor example, `http://evil.com\\@allowed.com` is treated by `fast-uri` as host `allowed.com` with userinfo `evil.com\\`, while Node's WHATWG URL parser and `fetch()` see host `evil.com` with path `/@allowed.com`.\n\nApplications that use `fast-uri` to enforce host-based policy (allowlists, denylists, loopback/SSRF filtering, redirect validation, outbound proxy routing) before passing the same URL into Node's URL or `fetch()` consumers see a policy/use desync and can be steered to an unintended destination, including cloud metadata endpoints, loopback, or internal hosts.\n\n### Patches\n\nUpgrade to `fast-uri` v4.1.1, v3.1.4, or v2.4.3.\n\n### Workarounds\n\nNone. Upgrade to the patched version.",
+      "vulnerabilities": [
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "fast-uri"
+          },
+          "vulnerable_version_range": ">= 2.3.1, <= 2.4.2",
+          "first_patched_version": "2.4.3",
+          "vulnerable_functions": []
+        },
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "fast-uri"
+          },
+          "vulnerable_version_range": ">= 3.0.0, <= 3.1.3",
+          "first_patched_version": "3.1.4",
+          "vulnerable_functions": []
+        },
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "fast-uri"
+          },
+          "vulnerable_version_range": ">= 4.0.0, <= 4.1.0",
+          "first_patched_version": "4.1.1",
+          "vulnerable_functions": []
+        }
+      ],
+      "references": [
+        "https://github.com/fastify/fast-uri/security/advisories/GHSA-v2hh-gcrm-f6hx",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-16221",
+        "https://github.com/fastify/fast-uri/commit/0542a216860fd70c062a4730e620576f62ded057",
+        "https://github.com/fastify/fast-uri/commit/2d50fbabc80e4d0884fe0f6a98fe118ce6faa353",
+        "https://github.com/fastify/fast-uri/commit/9438266d6a7ded688c8bc7c4ba506da17f44a17b",
+        "https://cna.openjsf.org/security-advisories.html",
+        "https://github.com/fastify/fast-uri/releases/tag/v2.4.3",
+        "https://github.com/fastify/fast-uri/releases/tag/v3.1.4",
+        "https://github.com/fastify/fast-uri/releases/tag/v4.1.1",
+        "https://github.com/advisories/GHSA-v2hh-gcrm-f6hx"
+      ],
+      "url": "https://github.com/advisories/GHSA-v2hh-gcrm-f6hx",
+      "updatedAt": "2026-07-21T22:08:29Z"
+    },
+    {
+      "ghsaId": "GHSA-4c8g-83qw-93j6",
+      "cveId": "CVE-2026-13676",
+      "severity": "high",
+      "summary": "fast-uri vulnerable to host confusion via failed IDN canonicalization",
+      "description": "### Impact\n\n`fast-uri` versions `>= 2.3.1, <= 4.0.0` fail to canonicalize Unicode/IDN hostnames for HTTP-family URLs. The IDN conversion path calls `URL.domainToASCII(...)` on the global WHATWG `URL` constructor, where that helper does not exist. The resulting `TypeError` is silently routed into `parsed.error`, but `parse()`, `normalize()`, and `equal()` all return with the host left in its original Unicode form.\n\nFor example, `http://127。0。0。1/` is treated by `fast-uri` as host `127。0。0。1`, while Node's WHATWG URL parser and `fetch()` canonicalize the same input to `127.0.0.1`.\n\nApplications that use `fast-uri` to enforce host-based policy (denylists, loopback filtering, redirect validation, outbound proxy routing) before passing the same URL into Node's URL or `fetch()` consumers see a policy/use desync and can be steered to an unintended destination.\n\n### Patches\n\nUpgrade to `fast-uri` v4.0.1, v3.1.3, or v2.4.2\n\n### Workarounds\n\nNone. Upgrade to the patched version.",
+      "vulnerabilities": [
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "fast-uri"
+          },
+          "vulnerable_version_range": ">= 4.0.0, < 4.0.1",
+          "first_patched_version": "4.0.1",
+          "vulnerable_functions": []
+        },
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "fast-uri"
+          },
+          "vulnerable_version_range": ">= 3.0.0, < 3.1.3",
+          "first_patched_version": "3.1.3",
+          "vulnerable_functions": []
+        },
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "fast-uri"
+          },
+          "vulnerable_version_range": ">= 2.3.1, < 2.4.2",
+          "first_patched_version": "2.4.2",
+          "vulnerable_functions": []
+        }
+      ],
+      "references": [
+        "https://github.com/fastify/fast-uri/security/advisories/GHSA-4c8g-83qw-93j6",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-13676",
+        "https://github.com/fastify/fast-uri/pull/188",
+        "https://github.com/fastify/fast-uri/commit/2a6d357a18a68e6d812824379fd3388a1ae50d05",
+        "https://github.com/fastify/fast-uri/commit/21ea1f9d70495c931f55dff893a8fa38f4f2e6bd",
+        "https://github.com/fastify/fast-uri/commit/01db48010f594b98f7b323be18b393791c66ed1d",
+        "https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-13676.json",
+        "https://github.com/fastify/fast-uri/releases/tag/v4.0.1",
+        "https://github.com/fastify/fast-uri/releases/tag/v3.1.3",
+        "https://github.com/fastify/fast-uri/releases/tag/v2.4.2",
+        "https://cna.openjsf.org/security-advisories.html",
+        "https://bugzilla.redhat.com/show_bug.cgi?id=2494197",
+        "https://access.redhat.com/security/cve/CVE-2026-13676",
+        "https://access.redhat.com/errata/RHSA-2026:41929",
+        "https://access.redhat.com/errata/RHSA-2026:41928",
+        "https://access.redhat.com/errata/RHSA-2026:41066",
+        "https://access.redhat.com/errata/RHSA-2026:40945",
+        "https://access.redhat.com/errata/RHSA-2026:40262",
+        "https://access.redhat.com/errata/RHSA-2026:40118",
+        "https://access.redhat.com/errata/RHSA-2026:37628",
+        "https://access.redhat.com/errata/RHSA-2026:37585",
+        "https://access.redhat.com/errata/RHSA-2026:37186",
+        "https://access.redhat.com/errata/RHSA-2026:43038",
+        "https://access.redhat.com/errata/RHSA-2026:42815",
+        "https://access.redhat.com/errata/RHSA-2026:40765",
+        "https://access.redhat.com/errata/RHSA-2026:44239",
+        "https://access.redhat.com/errata/RHSA-2026:44268",
+        "https://access.redhat.com/errata/RHSA-2026:48126",
+        "https://access.redhat.com/errata/RHSA-2026:48124",
+        "https://access.redhat.com/errata/RHSA-2026:49642",
+        "https://access.redhat.com/errata/RHSA-2026:50479",
+        "https://access.redhat.com/errata/RHSA-2026:50340",
+        "https://access.redhat.com/errata/RHSA-2026:47728",
+        "https://access.redhat.com/errata/RHSA-2026:51196",
+        "https://access.redhat.com/errata/RHSA-2026:51197",
+        "https://access.redhat.com/errata/RHSA-2026:51342",
+        "https://access.redhat.com/errata/RHSA-2026:51348",
+        "https://access.redhat.com/errata/RHSA-2026:51349",
+        "https://access.redhat.com/errata/RHSA-2026:50758",
+        "https://access.redhat.com/errata/RHSA-2026:54760",
+        "https://access.redhat.com/errata/RHSA-2026:56366",
+        "https://access.redhat.com/errata/RHSA-2026:56431",
+        "https://access.redhat.com/errata/RHSA-2026:57013",
+        "https://access.redhat.com/errata/RHSA-2026:57191",
+        "https://access.redhat.com/errata/RHSA-2026:57194",
+        "https://access.redhat.com/errata/RHSA-2026:57590",
+        "https://access.redhat.com/errata/RHSA-2026:59593",
+        "https://access.redhat.com/errata/RHSA-2026:60386",
+        "https://access.redhat.com/errata/RHSA-2026:60520",
+        "https://access.redhat.com/errata/RHSA-2026:61314",
+        "https://access.redhat.com/errata/RHSA-2026:63371",
+        "https://access.redhat.com/errata/RHSA-2026:66488",
+        "https://access.redhat.com/errata/RHSA-2026:66545",
+        "https://github.com/advisories/GHSA-4c8g-83qw-93j6"
+      ],
+      "url": "https://github.com/advisories/GHSA-4c8g-83qw-93j6",
+      "updatedAt": "2026-09-11T15:32:26Z"
+    },
+    {
+      "ghsaId": "GHSA-q3j6-qgpj-74h6",
+      "cveId": "CVE-2026-6321",
+      "severity": "high",
+      "summary": "fast-uri vulnerable to path traversal via percent-encoded dot segments",
+      "description": "### Impact\n\n`fast-uri` v3.1.0 and earlier decodes percent-encoded path separators (`%2F`) and dot segments (`%2E`) before applying dot-segment removal in `normalize()` and `equal()`. This makes encoded path data behave like real `/` and `..`, so distinct URIs collapse onto the same normalized path.\n\nFor example, `http://example.com/public/%2e%2e/admin` normalizes to `http://example.com/admin`, and `equal()` considers them the same URI.\n\nApplications that normalize or compare attacker-controlled URLs to enforce path-based policy can be bypassed. A path that looks confined under an allowed prefix can normalize to a different location.\n\n### Patches\n\nUpgrade to `fast-uri` >= 3.1.1, or if you are in the v2.x release line, v2.4.1\n\n### Workarounds\n\nNone. Upgrade to the patched version.",
+      "vulnerabilities": [
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "fast-uri"
+          },
+          "vulnerable_version_range": ">= 3.0.0, <= 3.1.0",
+          "first_patched_version": "3.1.1",
+          "vulnerable_functions": []
+        },
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "fast-uri"
+          },
+          "vulnerable_version_range": "<= 2.4.0",
+          "first_patched_version": "2.4.1",
+          "vulnerable_functions": []
+        }
+      ],
+      "references": [
+        "https://github.com/fastify/fast-uri/security/advisories/GHSA-q3j6-qgpj-74h6",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-6321",
+        "https://cna.openjsf.org/security-advisories.html",
+        "https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-6321.json",
+        "https://github.com/fastify/fast-uri/releases/tag/v3.1.1",
+        "https://github.com/fastify/fast-uri/releases/tag/v2.4.1",
+        "https://bugzilla.redhat.com/show_bug.cgi?id=2466582",
+        "https://access.redhat.com/security/cve/CVE-2026-6321",
+        "https://access.redhat.com/errata/RHSA-2026:42079",
+        "https://access.redhat.com/errata/RHSA-2026:42078",
+        "https://access.redhat.com/errata/RHSA-2026:37385",
+        "https://access.redhat.com/errata/RHSA-2026:34342",
+        "https://access.redhat.com/errata/RHSA-2026:26420",
+        "https://access.redhat.com/errata/RHSA-2026:26416",
+        "https://access.redhat.com/errata/RHSA-2026:26234",
+        "https://access.redhat.com/errata/RHSA-2026:26214",
+        "https://access.redhat.com/errata/RHSA-2026:25123",
+        "https://access.redhat.com/errata/RHSA-2026:25089",
+        "https://access.redhat.com/errata/RHSA-2026:24977",
+        "https://access.redhat.com/errata/RHSA-2026:24866",
+        "https://access.redhat.com/errata/RHSA-2026:24766",
+        "https://access.redhat.com/errata/RHSA-2026:24473",
+        "https://access.redhat.com/errata/RHSA-2026:21338",
+        "https://access.redhat.com/errata/RHSA-2026:20338",
+        "https://access.redhat.com/errata/RHSA-2026:19238",
+        "https://access.redhat.com/errata/RHSA-2026:56431",
+        "https://access.redhat.com/errata/RHSA-2026:56366",
+        "https://access.redhat.com/errata/RHSA-2026:57013",
+        "https://access.redhat.com/errata/RHSA-2026:56928",
+        "https://github.com/advisories/GHSA-q3j6-qgpj-74h6"
+      ],
+      "url": "https://github.com/advisories/GHSA-q3j6-qgpj-74h6",
+      "updatedAt": "2026-08-20T15:33:05Z"
+    },
+    {
+      "ghsaId": "GHSA-v39h-62p7-jpjc",
+      "cveId": "CVE-2026-6322",
+      "severity": "high",
+      "summary": "fast-uri vulnerable to host confusion via percent-encoded authority delimiters",
+      "description": "### Impact\n\n`fast-uri` v3.1.1 and earlier decodes percent-encoded authority delimiters (`%40` as `@`, `%3A` as `:`) inside the host component and serializes them back as raw characters. This changes the URI structure, turning a hostname into userinfo plus a different host.\n\nFor example, `http://trusted.com%40evil.com/` normalizes to `http://trusted.com@evil.com/`, which reparses as host `evil.com` with userinfo `trusted.com`.\n\nApplications that normalize untrusted URLs before host allowlist checks, redirect validation, or outbound request routing can be steered to a different authority than the original URL appeared to contain.\n\n### Patches\n\nUpgrade to `fast-uri` >= 3.1.2, or if you are in the v2.x release line, v2.4.1\n\n### Workarounds\n\nNone. Upgrade to the patched version.",
+      "vulnerabilities": [
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "fast-uri"
+          },
+          "vulnerable_version_range": ">= 3.0.0, <= 3.1.1",
+          "first_patched_version": "3.1.2",
+          "vulnerable_functions": []
+        },
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "fast-uri"
+          },
+          "vulnerable_version_range": "<= 2.4.0",
+          "first_patched_version": "2.4.1",
+          "vulnerable_functions": []
+        }
+      ],
+      "references": [
+        "https://github.com/fastify/fast-uri/security/advisories/GHSA-v39h-62p7-jpjc",
+        "https://nvd.nist.gov/vuln/detail/CVE-2026-6322",
+        "https://cna.openjsf.org/security-advisories.html",
+        "https://access.redhat.com/errata/RHSA-2026:37186",
+        "https://access.redhat.com/errata/RHSA-2026:37385",
+        "https://access.redhat.com/errata/RHSA-2026:37628",
+        "https://access.redhat.com/errata/RHSA-2026:40118",
+        "https://access.redhat.com/errata/RHSA-2026:40945",
+        "https://access.redhat.com/errata/RHSA-2026:41066",
+        "https://access.redhat.com/errata/RHSA-2026:41928",
+        "https://access.redhat.com/errata/RHSA-2026:41951",
+        "https://access.redhat.com/errata/RHSA-2026:42078",
+        "https://access.redhat.com/errata/RHSA-2026:42142",
+        "https://access.redhat.com/errata/RHSA-2026:43038",
+        "https://access.redhat.com/security/cve/CVE-2026-6322",
+        "https://bugzilla.redhat.com/show_bug.cgi?id=2466684",
+        "https://github.com/fastify/fast-uri/releases/tag/v2.4.1",
+        "https://github.com/fastify/fast-uri/releases/tag/v3.1.2",
+        "https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-6322.json",
+        "https://access.redhat.com/errata/RHSA-2026:25271",
+        "https://access.redhat.com/errata/RHSA-2026:25273",
+        "https://access.redhat.com/errata/RHSA-2026:26225",
+        "https://access.redhat.com/errata/RHSA-2026:26234",
+        "https://access.redhat.com/errata/RHSA-2026:28571",
+        "https://access.redhat.com/errata/RHSA-2026:29197",
+        "https://access.redhat.com/errata/RHSA-2026:29795",
+        "https://access.redhat.com/errata/RHSA-2026:29796",
+        "https://access.redhat.com/errata/RHSA-2026:29800",
+        "https://access.redhat.com/errata/RHSA-2026:29834",
+        "https://access.redhat.com/errata/RHSA-2026:30076",
+        "https://access.redhat.com/errata/RHSA-2026:33683",
+        "https://access.redhat.com/errata/RHSA-2026:34160",
+        "https://access.redhat.com/errata/RHSA-2026:34342",
+        "https://access.redhat.com/errata/RHSA-2026:34374",
+        "https://access.redhat.com/errata/RHSA-2026:34766",
+        "https://access.redhat.com/errata/RHSA-2026:34770",
+        "https://access.redhat.com/errata/RHSA-2026:36651",
+        "https://access.redhat.com/errata/RHSA-2026:36754",
+        "https://access.redhat.com/errata/RHSA-2026:54395",
+        "https://access.redhat.com/errata/RHSA-2026:56366",
+        "https://access.redhat.com/errata/RHSA-2026:56431",
+        "https://access.redhat.com/errata/RHSA-2026:54555",
+        "https://access.redhat.com/errata/RHSA-2026:56928",
+        "https://access.redhat.com/errata/RHSA-2026:56968",
+        "https://access.redhat.com/errata/RHSA-2026:57013",
+        "https://access.redhat.com/errata/RHSA-2026:57487",
+        "https://access.redhat.com/errata/RHSA-2026:60520",
+        "https://access.redhat.com/errata/RHSA-2026:60855",
+        "https://access.redhat.com/errata/RHSA-2026:61783",
+        "https://github.com/advisories/GHSA-v39h-62p7-jpjc"
+      ],
+      "url": "https://github.com/advisories/GHSA-v39h-62p7-jpjc",
+      "updatedAt": "2026-09-01T15:31:44Z"
+    }
+  ]
+}

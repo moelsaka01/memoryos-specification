@@ -1,0 +1,253 @@
+{
+  "kind": "MO1307Phase3AR2FinalH2HarnessCorrectionReceipt",
+  "version": "1.0.0",
+  "createdAt": "2026-10-04T10:37:30.976Z",
+  "result": "PASS",
+  "outcome": "H2_HARNESS_CORRECTION_VALIDATED",
+  "candidate": {
+    "name": "C3VB",
+    "commit": "17fa84efe46d30e6f4be85fd2427485677a222a3",
+    "productionCommit": "98b766f9218b209f52251147213839b9775f6da3",
+    "productionTree": "b9dabf54572e06c96bb5e48c4e20671f2cc24053"
+  },
+  "classifications": [
+    "H_AGGREGATE_FIXTURE_INPUT_ISOLATION_DEFECT",
+    "H_OBSERVER_EVENT_ORDERING_DEFECT"
+  ],
+  "aggregateControl": {
+    "artificialEofDelayMs": 5700,
+    "engineeringMinMs": 28000,
+    "engineeringMaxMs": 31000,
+    "maxHelperSlots": 5,
+    "publicationStateMutations": 0,
+    "expectedError": "MO1307_TIMEOUT",
+    "productAggregateDeadlineMs": 28000
+  },
+  "fixtures": {
+    "aggregate": [
+      {
+        "path": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected/fixture-root.json",
+        "byteLength": 540,
+        "sha256": "sha256:a17d3e4902da0da791701bc1adc489acc4dff58c732c8798f8d759e73706ab9d"
+      }
+    ],
+    "input": [
+      {
+        "path": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input/authority.bin",
+        "byteLength": 3,
+        "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "path": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input/candidate.bin",
+        "byteLength": 3,
+        "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "path": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input/config.bin",
+        "byteLength": 3,
+        "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "path": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input/manifest.bin",
+        "byteLength": 3,
+        "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "path": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input/small.bin",
+        "byteLength": 3,
+        "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      }
+    ],
+    "aggregateTarget": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected/absent-output",
+    "targetAbsent": true
+  },
+  "observerCorrection": {
+    "rule": "MO1307_OBSERVER_EVENT_ORDERING@1.0.0",
+    "policy": "MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0",
+    "policyChanged": false,
+    "cases": {
+      "E": {
+        "expected": "PASS",
+        "actual": "PASS",
+        "classification": "TERMINATED_KNOWN_IDENTITY"
+      },
+      "F": {
+        "expected": "FAIL",
+        "actual": "FAIL",
+        "classification": "LIFETIME_CONTRADICTION"
+      },
+      "G": {
+        "expected": "FAIL",
+        "actual": "FAIL",
+        "classification": "PID_REUSE_OR_REPLACEMENT_EVIDENCE"
+      },
+      "H": {
+        "expected": "FAIL",
+        "actual": "FAIL",
+        "classification": "NO_PRIOR_POSITIVE_IDENTITY"
+      },
+      "I": {
+        "expected": "PASS",
+        "actual": "PASS",
+        "classification": "POST_IDENTITY_REQUERY_UNAVAILABLE"
+      }
+    }
+  },
+  "gate": {
+    "A": {
+      "title": "isolated aggregate fixture outside live evidence tree",
+      "expected": "PASS",
+      "actual": "PASS",
+      "evidence": "fixture-isolation.json#pathSetAnalysis"
+    },
+    "B": {
+      "title": "evidence writes cannot mutate aggregate fixture identity",
+      "expected": "PASS",
+      "actual": "PASS",
+      "evidence": "fixture-isolation.json#synthetic.cases.B and #pathSetAnalysis"
+    },
+    "C": {
+      "title": "synthetic mutation inside fixture root",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "detected": true,
+      "evidence": "fixture-isolation.json#synthetic.cases.C"
+    },
+    "D": {
+      "title": "byteLength remains an enforced identity component",
+      "expected": "PASS",
+      "actual": "PASS",
+      "staticRules": {
+        "windowsPathsIdentityKeys": "const IDENTITY_KEYS = ['attributes', 'byteLength', 'fileId', 'finalPath', 'isDirectory', 'linkCount', 'volumeSerial'];",
+        "windowsPathsComparison": "if (IDENTITY_KEYS.some(key => before[key] !== after[key])) boundary(",
+        "helperProtocolChainComparison": "chain.forEach((item, index) => assertStableIdentity(state.parent[index], item, { directory: true }));",
+        "helperSameIdentity": "foreach ($key in @('attributes', 'byteLength', 'fileId', 'finalPath', 'isDirectory', 'linkCount', 'volumeSerial')) {",
+        "helperByteLengthSource": "$length = [long] [BitConverter]::ToUInt32($raw, 32) * 4294967296 + [BitConverter]::ToUInt32($raw, 36)"
+      },
+      "evidence": "fixture-isolation.json#synthetic.cases.D and structural-validation.json#productIdentityRules"
+    },
+    "E": {
+      "title": "known process with consistent termination provenance",
+      "expected": "PASS",
+      "actual": "PASS",
+      "evidence": "observer-validation.json#cases.E"
+    },
+    "F": {
+      "title": "known process with contradictory lifetime",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "evidence": "observer-validation.json#cases.F"
+    },
+    "G": {
+      "title": "PID reuse",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "evidence": "observer-validation.json#cases.G"
+    },
+    "H": {
+      "title": "unknown process",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "evidence": "observer-validation.json#cases.H"
+    },
+    "I": {
+      "title": "authorized post-termination unavailable requery with exact provenance",
+      "expected": "PASS",
+      "actual": "PASS",
+      "evidence": "observer-validation.json#cases.I"
+    }
+  },
+  "zeroProductValidation": "PASS",
+  "structuralValidation": "PASS",
+  "changedExpectations": [],
+  "productionChanged": false,
+  "helperChanged": false,
+  "authoritiesChanged": false,
+  "limitsChanged": false,
+  "policyChanged": false,
+  "preservedFailedGenerationChanged": false,
+  "executionCounters": {
+    "productInvocations": 0,
+    "semanticEvaluations": 0,
+    "helperInvocations": 0,
+    "workerInvocations": 0,
+    "cliInvocations": 0,
+    "apiInvocations": 0,
+    "nativeObserverInvocations": 0,
+    "packageBuilds": 0,
+    "packageInstalls": 0,
+    "certificationCases": 0,
+    "diagnosticsRun": 0,
+    "retries": 0,
+    "replacementExecutions": 0,
+    "historicalEvidencePromotions": 0
+  },
+  "execution": {
+    "certificationRuns": 0,
+    "helperRuns": 0,
+    "nativeObserverRuns": 0,
+    "productRuns": 0,
+    "workerRuns": 0,
+    "engineeringInterpreterInvocations": 2
+  },
+  "newGenerationNamespace": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-corrected",
+  "retry": false,
+  "noRetry": true,
+  "fullCertificationStarted": false,
+  "expectedEvidenceMembers": [
+    "authorization.txt",
+    "failure-analysis.json",
+    "fixture-isolation.json",
+    "independent-review.json",
+    "observer-validation.json",
+    "source-bindings.json",
+    "structural-validation.json",
+    "zero-execution-proof.json",
+    "receipt.json"
+  ],
+  "bindings": {
+    "authorization": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-harness-correction/authorization.txt",
+      "byteLength": 41258,
+      "sha256": "sha256:51fa5b436e63a58e141089322f67859c0146e7381128492bb7de08bae745fbb6"
+    },
+    "failureAnalysis": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-harness-correction/failure-analysis.json",
+      "byteLength": 10546,
+      "sha256": "sha256:123e72cfd5c9653c08065d84f080757b646363193ea6eced67f07718b528e14c"
+    },
+    "fixtureIsolation": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-harness-correction/fixture-isolation.json",
+      "byteLength": 17774,
+      "sha256": "sha256:0f59caad6364363898261f4dc487da234d1e8a214b0e83fc6149d4d105e3e03a"
+    },
+    "independentReview": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-harness-correction/independent-review.json",
+      "byteLength": 21467,
+      "sha256": "sha256:d2d6c7910394f4d1010dc5cbe7d1438456d6625022b7239b150e203109aa4f70"
+    },
+    "observerValidation": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-harness-correction/observer-validation.json",
+      "byteLength": 16730,
+      "sha256": "sha256:c01bd03959a3616c87cb482f3cf0cb882fa43587756ca16e1da8a8b5d723e9d1"
+    },
+    "sourceBindings": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-harness-correction/source-bindings.json",
+      "byteLength": 13574,
+      "sha256": "sha256:9b34a114d2d0e688845b8a90a7d88c633c33a6e71c7f995d2755da474a109698"
+    },
+    "structuralValidation": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-harness-correction/structural-validation.json",
+      "byteLength": 92394,
+      "sha256": "sha256:d23e191d1401d37241e6d9c1cb30dd93447305aeeca378f22c78210f6ebec31b"
+    },
+    "zeroExecutionProof": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-harness-correction/zero-execution-proof.json",
+      "byteLength": 1329,
+      "sha256": "sha256:f96dd02201381372723bb318d9ee61915b16501e78ff8f9151ee8ce5fc878754"
+    }
+  },
+  "push": false,
+  "tag": false,
+  "phase3DStarted": false
+}

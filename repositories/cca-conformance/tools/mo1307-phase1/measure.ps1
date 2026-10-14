@@ -1,0 +1,180 @@
+param(
+    [Parameter(Mandatory = $true)][string] $NodePath,
+    [Parameter(Mandatory = $true)][ValidateSet('small', 'mo1306-shaped', 'maximum')][string] $Case,
+    [Parameter(Mandatory = $true)][string] $RunDirectory
+)
+# Engineering observer only. Never shipped, imported or called by the product.
+# Native Windows process sampling is observational, not an OS-enforced RSS cap.
+Set-StrictMode -Version 2.0
+$ErrorActionPreference = 'Stop'
+$workspace = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..\..\..'))
+$cacheBase = [IO.Path]::GetFullPath((Join-Path $workspace '.cache\mo1307\phase1'))
+$run = [IO.Path]::GetFullPath($RunDirectory)
+if (-not $run.StartsWith($cacheBase + '\', [StringComparison]::OrdinalIgnoreCase) -or (Test-Path -LiteralPath $run)) {
+    throw 'RunDirectory must be a new directory under the MO-1307 Phase 1 cache.'
+}
+$node = [IO.Path]::GetFullPath($NodePath)
+if (-not [IO.Path]::IsPathRooted($NodePath) -or (Get-Item -LiteralPath $node).Length -ne 93580104 -or
+    (Get-FileHash -LiteralPath $node -Algorithm SHA256).Hash.ToLowerInvariant() -cne 'ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32') {
+    throw 'The explicit executable does not match the frozen native Node pin.'
+}
+$entry = Join-Path $PSScriptRoot 'characterization.mjs'
+if (-not (Test-Path -LiteralPath $entry -PathType Leaf)) { throw 'The fixed characterization entry is missing.' }
+[void] [IO.Directory]::CreateDirectory($run)
+$stdoutPath = Join-Path $run 'child.stdout.json'
+$stderrPath = Join-Path $run 'child.stderr.txt'
+$observerPath = Join-Path $run 'observer.json'
+$known = @{}
+$samples = 0
+$peakBytes = [long] 0
+$peakProcesses = 0
+$largestIntervalMs = [double] 0
+$lastSampleMs = [double] 0
+$lastNodeSampleMs = $null
+$lateNodeSamples = 0
+$timedOut = $false
+$cleanupFailed = $false
+$childExit = $null
+$observerFailure = $null
+$child = $null
+$watch = [Diagnostics.Stopwatch]::StartNew()
+
+function Sample-Processes {
+    $now = $watch.Elapsed.TotalMilliseconds
+    if ($script:samples -gt 0) { $script:largestIntervalMs = [Math]::Max($script:largestIntervalMs, $now - $script:lastSampleMs) }
+    $script:lastSampleMs = $now
+    $aggregate = [long] 0
+    $active = 0
+    foreach ($id in @($known.Keys)) {
+        try {
+            $process = [Diagnostics.Process]::GetProcessById([int] $id)
+            if ($process.HasExited) { continue }
+            $process.Refresh()
+            if ($process.StartTime.ToUniversalTime().Ticks.ToString() -cne $known[$id].startTimeUtcTicks) { continue }
+            $rss = [long] $process.WorkingSet64
+            if ($rss -le 0) { continue }
+            $row = $known[$id]
+            $row.peakWorkingSetBytes = [Math]::Max([long] $row.peakWorkingSetBytes, $rss)
+            $row.samples = [int] $row.samples + 1
+            if ([int] $id -eq [int] $child.Id) {
+                $script:lastNodeSampleMs = $now
+                if ($now -ge 250) { $script:lateNodeSamples++ }
+            }
+            $aggregate += $rss
+            $active++
+        } catch [ArgumentException] { }
+        catch [InvalidOperationException] { }
+    }
+    if ($active -gt 0) {
+        $script:samples++
+        $script:peakBytes = [Math]::Max($script:peakBytes, $aggregate)
+        $script:peakProcesses = [Math]::Max($script:peakProcesses, $active)
+    }
+}
+
+function Discover-Descendants {
+    # This read-only OS inventory can be slower than the nominal 20ms interval;
+    # actual maximum gaps are reported, and short-lived processes may be missed.
+    $inventory = @(Get-CimInstance -ClassName Win32_Process -Property ProcessId, ParentProcessId, Name -OperationTimeoutSec 1)
+    $added = $true
+    while ($added) {
+        $added = $false
+        foreach ($process in $inventory) {
+            $id = [int] $process.ProcessId
+            if ($known.ContainsKey([int] $process.ParentProcessId) -and -not $known.ContainsKey($id)) {
+                try {
+                    $identity = [Diagnostics.Process]::GetProcessById($id)
+                    if ($identity.HasExited) { continue }
+                    $startTicks = $identity.StartTime.ToUniversalTime().Ticks.ToString()
+                    $parent = [Diagnostics.Process]::GetProcessById([int] $process.ParentProcessId)
+                    if ($parent.StartTime.ToUniversalTime().Ticks.ToString() -cne $known[[int] $process.ParentProcessId].startTimeUtcTicks) { continue }
+                } catch [ArgumentException] { continue }
+                catch [InvalidOperationException] { continue }
+                $known[$id] = [ordered] @{ pid = $id; parentPid = [int] $process.ParentProcessId; name = [string] $process.Name;
+                    startTimeUtcTicks = $startTicks; peakWorkingSetBytes = [long] 0; samples = 0 }
+                $added = $true
+            }
+        }
+    }
+}
+
+try {
+    # All arguments are fixed or closed engineering inputs; Windows paths cannot
+    # contain a double quote. Start-Process requires quoted strings for spaces.
+    $arguments = @(('"' + $entry + '"'), '--case', $Case, '--run-directory', ('"' + $run + '"'))
+    $child = Start-Process -FilePath $node -ArgumentList $arguments -PassThru -WindowStyle Hidden -WorkingDirectory $workspace `
+        -RedirectStandardOutput $stdoutPath -RedirectStandardError $stderrPath
+    $null = $child.Handle
+    $known[[int] $child.Id] = [ordered] @{ pid = [int] $child.Id; parentPid = $PID; name = 'node.exe';
+        startTimeUtcTicks = $child.StartTime.ToUniversalTime().Ticks.ToString(); peakWorkingSetBytes = [long] 0; samples = 0 }
+    Sample-Processes
+    while (-not $child.HasExited) {
+        if ($watch.Elapsed.TotalMilliseconds -ge 30000) { $timedOut = $true; break }
+        Discover-Descendants
+        Sample-Processes
+        if ($watch.Elapsed.TotalMilliseconds -ge 30000) { $timedOut = $true; break }
+        Start-Sleep -Milliseconds 20
+        $child.Refresh()
+    }
+    if (-not $timedOut) {
+        $child.WaitForExit()
+        $childExit = $child.ExitCode
+        if ($watch.Elapsed.TotalMilliseconds -ge 30000) { $timedOut = $true }
+    }
+} catch {
+    # Engineering failure category only; product log/secret guarantees are not
+    # inferred from this observer. Avoid dumping its inherited environment.
+    $observerFailure = $_.Exception.GetType().FullName
+} finally {
+    if ($timedOut -or $null -ne $observerFailure) {
+        $cleanup = [Diagnostics.Stopwatch]::StartNew()
+        do {
+            $live = 0
+            foreach ($id in @($known.Keys)) {
+                try {
+                    $process = [Diagnostics.Process]::GetProcessById([int] $id)
+                    if ($process.StartTime.ToUniversalTime().Ticks.ToString() -cne $known[$id].startTimeUtcTicks) { continue }
+                    if (-not $process.HasExited) { $live++; $process.Kill() }
+                } catch [ArgumentException] { }
+                catch [InvalidOperationException] { }
+            }
+            if ($live -eq 0) { break }
+            Start-Sleep -Milliseconds 20
+        } while ($cleanup.Elapsed.TotalMilliseconds -lt 2000)
+        foreach ($id in @($known.Keys)) {
+            try {
+                $process = [Diagnostics.Process]::GetProcessById([int] $id)
+                if ($process.StartTime.ToUniversalTime().Ticks.ToString() -ceq $known[$id].startTimeUtcTicks -and -not $process.HasExited) { $cleanupFailed = $true }
+            }
+            catch [ArgumentException] { }
+            catch [InvalidOperationException] { }
+        }
+        $cleanup.Stop()
+    }
+    $watch.Stop()
+    $withinRssBudget = $peakBytes -le 536870912
+    $status = if ($cleanupFailed) { 'CLEANUP_FAILED' } elseif ($timedOut) { 'TIMEOUT' }
+        elseif ($null -ne $observerFailure) { 'OBSERVER_ERROR' } elseif ($samples -lt 2 -or $lateNodeSamples -lt 1) { 'INSUFFICIENT_SAMPLES' }
+        elseif ($childExit -ne 0) { 'CHILD_FAILED' } elseif (-not $withinRssBudget) { 'RSS_BUDGET_EXCEEDED' } else { 'OBSERVED' }
+    $record = [ordered] @{
+        kind = 'MemoryOSReadinessPhase1ExternalObservation'; version = '1.0.0'; case = $Case; status = $status;
+        childExitCode = $childExit; elapsedMs = $watch.Elapsed.TotalMilliseconds; nominalSampleIntervalMs = 20;
+        maximumObservedSampleGapMs = $largestIntervalMs; samples = $samples; peakAggregateWorkingSetBytes = $peakBytes;
+        requiredMinimumSamples = 2; requiredLateNodeSampleAfterMs = 250; lateNodeSamples = $lateNodeSamples;
+        lastActiveNodeSampleMs = $lastNodeSampleMs;
+        peakObservedProcesses = $peakProcesses; processes = @($known.Values | Sort-Object -Property pid);
+        engineeringBudgetBytes = 536870912; productDeadlineMs = 30000; cleanupAllowanceMs = 2000;
+        sampledRssWithinEngineeringBudget = $withinRssBudget;
+        observerProcessIncludedInRss = $false; nodeWorkerThreadsIncludedInNodeRss = $true;
+        osEnforcedMemoryCap = $false; actualChildEnvironmentCertified = $false; observerFailureType = $observerFailure;
+        limitations = @('Engineering observer is excluded from product RSS and process totals.',
+            'WorkingSet64 samples may miss instantaneous peaks and short-lived descendants.',
+            'CIM and scheduler overhead may exceed the nominal 20ms sampling interval.',
+            'This observes Phase 1 fixtures only; it does not certify complete acquisition or Phase 3 behavior.')
+    }
+    $json = ($record | ConvertTo-Json -Depth 8 -Compress) + "`n"
+    [IO.File]::WriteAllText($observerPath, $json, [Text.UTF8Encoding]::new($false))
+    [Console]::Write($json)
+}
+if ($status -ne 'OBSERVED') { exit 1 }
+exit 0

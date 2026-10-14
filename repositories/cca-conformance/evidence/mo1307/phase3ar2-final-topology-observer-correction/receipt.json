@@ -1,0 +1,167 @@
+{
+  "additionalSecurityProbes": [
+    {
+      "actual": {
+        "accepted": false,
+        "checks": {
+          "exactlyOnePriorPidBinding": true,
+          "probeObjectProofPreserved": true,
+          "probePidMatchesCandidate": true,
+          "queryErrorRecorded": true,
+          "queryOperationEligible": true,
+          "sameObserverSession": false
+        },
+        "classification": "CROSS_SESSION_IDENTITY_REJECTED",
+        "policy": "MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0",
+        "priorIdentity": {
+          "creationTime100ns": 1000,
+          "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "pid": 100
+        },
+        "priorParentIdentity": {
+          "creationTime100ns": 500,
+          "executable": "C:\\pinned\\node.exe",
+          "pid": 50
+        },
+        "priorRole": "helper"
+      },
+      "expected": "CROSS_SESSION_IDENTITY_REJECTED",
+      "id": "CROSS_SESSION",
+      "result": "PASS"
+    },
+    {
+      "actual": {
+        "accepted": true,
+        "checks": {
+          "completeNativeTimingProof": true,
+          "completePriorObjectProof": true,
+          "exactBoundParentPresent": true,
+          "exactlyOnePriorPidBinding": true,
+          "imageMatchesPriorBinding": true,
+          "observationTimingConsistent": true,
+          "parentLifetimeCompatible": true,
+          "parentMatchesPriorBinding": true,
+          "pidMatchesPriorBinding": true,
+          "probeObjectProofPreserved": true,
+          "probePidMatchesCandidate": true,
+          "queryErrorRecorded": true,
+          "queryOperationEligible": true,
+          "requeryOccurredAfterSignal": true,
+          "retainedHandleSignaled": true,
+          "roleMatchesPriorBinding": true,
+          "sameObserverSession": true,
+          "sameProcessCreationTime": true,
+          "sameProcessExitTime": true,
+          "snapshotConsistentWithBoundLifetime": true
+        },
+        "classification": "POST_IDENTITY_REQUERY_UNAVAILABLE",
+        "policy": "MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0",
+        "priorIdentity": {
+          "creationTime100ns": 1000,
+          "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "pid": 100
+        },
+        "priorParentIdentity": {
+          "creationTime100ns": 500,
+          "executable": "C:\\pinned\\node.exe",
+          "pid": 50
+        },
+        "priorRole": "helper"
+      },
+      "expected": "POST_IDENTITY_REQUERY_UNAVAILABLE",
+      "id": "POST_EXIT_SNAPSHOT_CLOCK",
+      "result": "PASS"
+    }
+  ],
+  "bindings": {
+    "authorization": {
+      "byteLength": 5967,
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-topology-observer-correction/authorization.txt",
+      "sha256": "sha256:7604a8ea29a2423fd99a49a34724158e2ae9121531ea8e256f85bf44610f71a6"
+    },
+    "inputs": {
+      "byteLength": 15907,
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-topology-observer-correction/cases.json",
+      "sha256": "sha256:d5f30cae32fe0018c414e7f1448c633a077972e6edfff0d232dcacd900804bbb"
+    },
+    "results": {
+      "byteLength": 8371,
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-topology-observer-correction/case-results.json",
+      "sha256": "sha256:69f82678f882b3766cc5f133ffc3b657027189fc68cb76df540cf008f87375c9"
+    },
+    "sources": {
+      "byteLength": 1301,
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-topology-observer-correction/source-bindings.json",
+      "sha256": "sha256:bc9a6812c4ab33ca806838318021fbc8530e5e0ab744282dd83aa1e620069732"
+    },
+    "zeroExecutionProof": {
+      "byteLength": 2402,
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-topology-observer-correction/zero-execution-proof.json",
+      "sha256": "sha256:388a870f3f04e528f2469bad82b243f34af3845dd57127db3a0868cb75fc930b"
+    }
+  },
+  "budgetsModified": false,
+  "candidate": "17fa84efe46d30e6f4be85fd2427485677a222a3",
+  "cases": {
+    "acceptedExactly": [
+      "B",
+      "F"
+    ],
+    "allRequiredCasesPassed": true,
+    "failedClosedExactly": [
+      "A",
+      "C",
+      "D",
+      "E",
+      "G"
+    ],
+    "passed": 7,
+    "required": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G"
+    ]
+  },
+  "createdAt": "2026-10-01T19:21:57.779477+00:00",
+  "defect": {
+    "event": "candidate_identity_unknown",
+    "historicalIdentityOrSnapshotFailures": 1,
+    "operation": "QueryFullProcessImageNameW",
+    "parentPid": 2140,
+    "pid": 2540,
+    "winerror": 31
+  },
+  "execution": {
+    "engineeringInterpreterInvocations": 1,
+    "helperRuns": 0,
+    "nativeObserverRuns": 0,
+    "productRuns": 0,
+    "retry": false,
+    "semanticProductInvocations": 0
+  },
+  "kind": "MO1307Phase3AR2TopologyObserverSyntheticValidationReceipt",
+  "policy": "MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0",
+  "productionCommit": "98b766f9218b209f52251147213839b9775f6da3",
+  "productionModified": false,
+  "productionTree": "b9dabf54572e06c96bb5e48c4e20671f2cc24053",
+  "push": false,
+  "result": "PASS",
+  "security": {
+    "initialIdentityFailureStillFailsClosed": true,
+    "pidReuseFailsClosed": true,
+    "requiresExactCreationAndExitIdentity": true,
+    "requiresParentImageRoleAndLifetimeConsistency": true,
+    "requiresPriorPositiveIdentity": true,
+    "requiresSameObserverSession": true,
+    "toolhelpSnapshotClockIsPostCaptureUpperBound": true,
+    "unrelatedErrorsFailClosed": true,
+    "win32Error31GloballyIgnored": false
+  },
+  "tag": false,
+  "version": "1.0.0",
+  "wireModified": false
+}

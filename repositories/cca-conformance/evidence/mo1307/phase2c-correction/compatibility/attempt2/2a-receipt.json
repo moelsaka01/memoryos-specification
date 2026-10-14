@@ -1,0 +1,470 @@
+{
+  "kind": "MO1307Phase2CStreamCompatibility",
+  "version": "1.0.0",
+  "stream": "2a",
+  "baseline": "3883ca889911fcc5a6f46c24e569478a8c32648e",
+  "commit": "b628349b4e678a8f71086b1b5c807ffe2edf9a5d",
+  "classification": "UNCHANGED_REUSABLE",
+  "result": "PASS",
+  "sourceWorktree": {
+    "path": "C:/Users/melsa/Documents/Codex/cca-mo1307-2a",
+    "before": {
+      "head": "b628349b4e678a8f71086b1b5c807ffe2edf9a5d",
+      "parent": "3883ca889911fcc5a6f46c24e569478a8c32648e",
+      "status": ""
+    },
+    "after": {
+      "head": "b628349b4e678a8f71086b1b5c807ffe2edf9a5d",
+      "parent": "3883ca889911fcc5a6f46c24e569478a8c32648e",
+      "status": ""
+    },
+    "modified": false
+  },
+  "runtime": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+  },
+  "snapshot": {
+    "path": ".cache/mo1307/phase2c-correction/compatibility/attempt2/2a",
+    "files": 664,
+    "sha256": "sha256:4adeb6e53346f46b2688b20c2c8ce10db47a8c3391e7ba9c8b911b569e9c4fb8"
+  },
+  "overlay": [
+    {
+      "path": "repositories/memoryos-readiness/contracts/definitions.json",
+      "byteLength": 16555,
+      "sha256": "sha256:b621c0d17f2018ff8e73675878278f2fda10c2ad1f987a89747ebfb54b66e13e",
+      "previousSha256": "sha256:6c806bf6af4a415135897d2337a98d92a212229abb407d5a871ed401f9f4b8f3",
+      "changed": true
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/constants.mjs",
+      "byteLength": 16791,
+      "sha256": "sha256:987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9",
+      "previousSha256": "sha256:d804625278a6c9b4e81437b822994532b8f8b09582db8f73ec74bfaf08f2c0f3",
+      "changed": true
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+      "byteLength": 17308,
+      "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002",
+      "previousSha256": "sha256:f901242f66686d0aead915f4f9b939cb1c2105196d9843cea45e5f5f8aca1a4d",
+      "changed": true
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/publication.mjs",
+      "byteLength": 6796,
+      "sha256": "sha256:abd089bcbc4d9cc306d760c8116584f9bed5b772bd2bf12aeccd6761675602d4",
+      "previousSha256": "sha256:8c9d4d46dddf1ba6ebdd419f25991519ca49fdb55b855ffe057b00f2da083dfb",
+      "changed": true
+    }
+  ],
+  "definitionCheck": {
+    "changes": [
+      {
+        "path": "limits.helperAggregateDeadlineMs",
+        "before": null,
+        "after": 20000
+      },
+      {
+        "path": "limits.helperChainComponents",
+        "before": null,
+        "after": 120
+      },
+      {
+        "path": "limits.helperRequests",
+        "before": 4,
+        "after": 9
+      },
+      {
+        "path": "limits.helperVerifyRequests",
+        "before": null,
+        "after": 4
+      },
+      {
+        "path": "topology.helperOperations",
+        "before": [
+          "READ_SET",
+          "CHECK_OUTPUT"
+        ],
+        "after": [
+          "READ_SET",
+          "CHECK_OUTPUT",
+          "INSPECT_OUTPUT_ROOT",
+          "CHECK_STAGE_ROOT",
+          "INSPECT_PENDING",
+          "CHECK_FINALIZATION"
+        ]
+      },
+      {
+        "path": "topology.helperRequests",
+        "before": 4,
+        "after": 9
+      },
+      {
+        "path": "topology.helperVerifyRequests",
+        "before": null,
+        "after": 4
+      },
+      {
+        "path": "topology.publicationOperations",
+        "before": null,
+        "after": [
+          "CHECK_OUTPUT",
+          "INSPECT_OUTPUT_ROOT",
+          "CHECK_STAGE_ROOT",
+          "INSPECT_PENDING",
+          "CHECK_FINALIZATION"
+        ]
+      }
+    ],
+    "unchangedSemanticDefinitionsSha256": "sha256:970f6ae3eac193d9eb58add75a322a224d919644c2eec29a7b6018b10f469f7c",
+    "preservedTopology": [
+      "acquisitionStages",
+      "concurrentHelpers",
+      "evaluationWorkers",
+      "helperEnvironment",
+      "network",
+      "possibleConsoleHosts",
+      "supervisors",
+      "totalProcesses"
+    ]
+  },
+  "pureClosure": {
+    "members": [
+      "canonical.mjs",
+      "constants.mjs",
+      "errors.mjs",
+      "foundation.mjs",
+      "projections.mjs",
+      "readiness-core.mjs",
+      "readiness-result.mjs",
+      "schema-data.mjs",
+      "schema.mjs",
+      "windows-paths.mjs"
+    ],
+    "builtins": [
+      "node:crypto",
+      "node:path"
+    ],
+    "imports": [
+      {
+        "from": "canonical.mjs",
+        "to": "./constants.mjs"
+      },
+      {
+        "from": "canonical.mjs",
+        "to": "./errors.mjs"
+      },
+      {
+        "from": "canonical.mjs",
+        "to": "node:crypto"
+      },
+      {
+        "from": "errors.mjs",
+        "to": "./constants.mjs"
+      },
+      {
+        "from": "foundation.mjs",
+        "to": "./canonical.mjs"
+      },
+      {
+        "from": "foundation.mjs",
+        "to": "./constants.mjs"
+      },
+      {
+        "from": "foundation.mjs",
+        "to": "./errors.mjs"
+      },
+      {
+        "from": "foundation.mjs",
+        "to": "./schema.mjs"
+      },
+      {
+        "from": "foundation.mjs",
+        "to": "./windows-paths.mjs"
+      },
+      {
+        "from": "projections.mjs",
+        "to": "./canonical.mjs"
+      },
+      {
+        "from": "projections.mjs",
+        "to": "./constants.mjs"
+      },
+      {
+        "from": "projections.mjs",
+        "to": "./errors.mjs"
+      },
+      {
+        "from": "projections.mjs",
+        "to": "./foundation.mjs"
+      },
+      {
+        "from": "readiness-core.mjs",
+        "to": "./canonical.mjs"
+      },
+      {
+        "from": "readiness-core.mjs",
+        "to": "./constants.mjs"
+      },
+      {
+        "from": "readiness-core.mjs",
+        "to": "./errors.mjs"
+      },
+      {
+        "from": "readiness-core.mjs",
+        "to": "./foundation.mjs"
+      },
+      {
+        "from": "readiness-core.mjs",
+        "to": "./readiness-result.mjs"
+      },
+      {
+        "from": "readiness-core.mjs",
+        "to": "./schema.mjs"
+      },
+      {
+        "from": "readiness-result.mjs",
+        "to": "./canonical.mjs"
+      },
+      {
+        "from": "readiness-result.mjs",
+        "to": "./constants.mjs"
+      },
+      {
+        "from": "readiness-result.mjs",
+        "to": "./errors.mjs"
+      },
+      {
+        "from": "readiness-result.mjs",
+        "to": "./foundation.mjs"
+      },
+      {
+        "from": "readiness-result.mjs",
+        "to": "./projections.mjs"
+      },
+      {
+        "from": "schema.mjs",
+        "to": "./errors.mjs"
+      },
+      {
+        "from": "schema.mjs",
+        "to": "./schema-data.mjs"
+      },
+      {
+        "from": "windows-paths.mjs",
+        "to": "./constants.mjs"
+      },
+      {
+        "from": "windows-paths.mjs",
+        "to": "./errors.mjs"
+      },
+      {
+        "from": "windows-paths.mjs",
+        "to": "node:path"
+      }
+    ]
+  },
+  "effectiveSources": [
+    {
+      "path": "repositories/memoryos-readiness/src/canonical.mjs",
+      "byteLength": 6813,
+      "sha256": "sha256:b0e22be147436b7fd962c00825f9f5c1e581825653baa0af4a68a9832a0b9805"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/cli-args.mjs",
+      "byteLength": 4280,
+      "sha256": "sha256:107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/constants.mjs",
+      "byteLength": 16791,
+      "sha256": "sha256:987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/errors.mjs",
+      "byteLength": 1823,
+      "sha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/foundation.mjs",
+      "byteLength": 20700,
+      "sha256": "sha256:b68a98dc1101f9c8eb56bdd77bc585ce1889ae2699d27a027624026d41dc62b0"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+      "byteLength": 17308,
+      "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/index.mjs",
+      "byteLength": 1459,
+      "sha256": "sha256:81873bc18abb792dbe12214a183f96adfba3a02173e81a7033052d52843d5330"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/projections.mjs",
+      "byteLength": 2750,
+      "sha256": "sha256:43a8c5a6f59c6ee15f85406ae9da34a0fc9c9516a6e55116be9715a012e73d22"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/publication.mjs",
+      "byteLength": 6796,
+      "sha256": "sha256:abd089bcbc4d9cc306d760c8116584f9bed5b772bd2bf12aeccd6761675602d4"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/readiness-core.mjs",
+      "byteLength": 19830,
+      "sha256": "sha256:f892fccb2b258cbbc13ce7faddda8def30df4d3f35d3f94c6ff6b286fd302aff"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/readiness-result.mjs",
+      "byteLength": 5303,
+      "sha256": "sha256:bf9fdea6787bbbd18801e5bae7425d8bbd6223048ff7afb8e1fff7d3be2fb777"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/schema-data.mjs",
+      "byteLength": 98556,
+      "sha256": "sha256:467fa7479b88eff13d90cfb8d8984b26b5cd4b7cd1aadd8f5b3416c6ed3b6f11"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/schema.mjs",
+      "byteLength": 4308,
+      "sha256": "sha256:9b18aead5802688195a3539ef504395f374a8779580650eec7b03058100b98b7"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/windows-paths.mjs",
+      "byteLength": 5990,
+      "sha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+    }
+  ],
+  "tests": {
+    "command": {
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1304-phase3-toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "repositories/cca-conformance/tests/mo1307_phase2a_core_test.mjs",
+        "repositories/cca-conformance/tests/mo1307_phase2a_result_test.mjs"
+      ]
+    },
+    "exit": 0,
+    "error": null,
+    "counts": {
+      "tests": 84,
+      "pass": 84,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "testNames": [
+      "A01 exact independent Phase 1 result and summary bytes: could-not-evaluate",
+      "A01 exact independent Phase 1 result and summary bytes: history-blocker-unavailable",
+      "A01 exact independent Phase 1 result and summary bytes: informational-ready",
+      "A01 exact independent Phase 1 result and summary bytes: metadata-only",
+      "A01 exact independent Phase 1 result and summary bytes: mixed-precedence",
+      "A01 exact independent Phase 1 result and summary bytes: mo1306-qualified",
+      "A01 exact independent Phase 1 result and summary bytes: not-ready",
+      "A01 exact independent Phase 1 result and summary bytes: post-tag-absent",
+      "A01 exact independent Phase 1 result and summary bytes: post-tag-lightweight",
+      "A01 exact independent Phase 1 result and summary bytes: post-tag-ready",
+      "A01 exact independent Phase 1 result and summary bytes: post-tag-wrong-target",
+      "A01 exact independent Phase 1 result and summary bytes: pre-tag-present",
+      "A01 exact independent Phase 1 result and summary bytes: qualified",
+      "A01 exact independent Phase 1 result and summary bytes: ready",
+      "A01 exact independent Phase 1 result and summary bytes: rest-qualified",
+      "A01 exact independent Phase 1 result and summary bytes: selective-reuse",
+      "A02 core consumes claims rather than caller gate states and retains complete compiled profile",
+      "A03 coverage FAIL and UNEVALUABLE drive mandatory artifact",
+      "A03 coverage FAIL and UNEVALUABLE drive mandatory binding",
+      "A03 coverage FAIL and UNEVALUABLE drive mandatory history",
+      "A03 coverage FAIL and UNEVALUABLE drive mandatory provenance",
+      "A03 coverage FAIL and UNEVALUABLE drive mandatory provider.azure",
+      "A03 coverage FAIL and UNEVALUABLE drive mandatory provider.generic",
+      "A03 coverage FAIL and UNEVALUABLE drive mandatory provider.github",
+      "A03 coverage FAIL and UNEVALUABLE drive mandatory provider.gitlab",
+      "A03 coverage FAIL and UNEVALUABLE drive mandatory provider.jenkins",
+      "A03 coverage FAIL and UNEVALUABLE drive mandatory resources",
+      "A03 coverage FAIL and UNEVALUABLE drive mandatory sbom",
+      "A03 coverage FAIL and UNEVALUABLE drive mandatory scope",
+      "A03 coverage FAIL and UNEVALUABLE drive mandatory security",
+      "A03 coverage FAIL and UNEVALUABLE drive mandatory semantic",
+      "A03 coverage FAIL and UNEVALUABLE drive mandatory supply",
+      "A03 coverage FAIL and UNEVALUABLE drive mandatory tag",
+      "A03 coverage FAIL and UNEVALUABLE drive mandatory windows",
+      "A04 REST coverage failures retain same-host limitation",
+      "A05 unavailable MISSING is CNE with exact reason",
+      "A05 unavailable AUTHORITY_UNAVAILABLE is CNE with exact reason",
+      "A05 unavailable STALE is CNE with exact reason",
+      "A05 unavailable UNEVALUABLE is CNE with exact reason",
+      "A06 unavailable provider leaves optional observation empty without fabricating certification",
+      "A07 blockers dominate independent CNE and qualifications without erasing any finding",
+      "A08 CNE dominates release qualification and informational-only stays READY",
+      "A09 known provider minimum failures remain blockers, including simultaneous coverage and CNE",
+      "A10 Generic real execution requirement is independent of coverage verdict",
+      "A11 false hosted promotion and required provider disclosure omission are rejected",
+      "A12 scope qualification union rejects missing, extra, weakened and conflicting records",
+      "A13 identical qualification carriers share one result with every claim and grant reference",
+      "A14 missing scope or history retains known records and defers only completeness",
+      "A15 preserved history remains negative; observed recurrence blocks active mandatory gates",
+      "A16 currently applicable history and duplicate recurrence produce one exact blocker",
+      "A17 all applicable tag predicates are collected; absent post-tag fabricates no target failure",
+      "A18 expected negative Policy and operational outcomes remain accepted semantic certification",
+      "A19 metadata-only proof change preserves readiness and invalidates old external decision",
+      "A20 nonsemantic input collection order and repeated calls preserve exact result bytes",
+      "A21 new metadata proof is distinct from normative changed qualification identity",
+      "A22 exact comparison rejects existing altered and self-hashed false result fixtures",
+      "A23 result recomputation rejects self-consistent alterations of each normative projection",
+      "A24 V18 retains exact five providers, ten disclosures, twelve negative history rows and human actions",
+      "A25 history count 128 is retained exactly and 129 is a resource error",
+      "A26 global qualification union 128 is complete and 129 cannot be truncated",
+      "A27 128 unique historical blockers are complete and one additional known failure rejects",
+      "A28 EVALUATION numeric and logical-reference precedence is independent of collection order",
+      "A29 projection boundary rejects caller gate vectors, accessors and unknown profiles",
+      "A30 returned proof input uses the exact independent nonrecursive binding shape",
+      "A31 all twelve external human decisions bind computed results without changing readiness",
+      "A32 every one of seven qualification codes is retained with its frozen impact",
+      "A33 complete blocker CNE qualification cross-product follows frozen precedence and retains all lists",
+      "A34 permutations preserve exact gate blocker qualification history JSON and text bytes",
+      "A35 comparison rejects omitted mandatory CNE and substituted candidate profile or identity digest",
+      "A36 static pure-core import closure excludes acquisition execution network and ambient selectors",
+      "A37 coverage missing duplicate cross-partition or contradictory verdict uses INTEGRITY",
+      "A38 nested candidate accessor is rejected before calling user code",
+      "A39 informational qualification on an inactive gate remains global without activating that gate",
+      "A40 preserved-history qualification must match exact condition and affected gates",
+      "A41 unavailable scope never exempts locally invalid or omitted required provider qualifications",
+      "A42 minimum-met contradictory qualified support is an error; lower minimum unsupported facts are blockers",
+      "A43 known history only contributes blockers to active mandatory affected gates",
+      "A44 conflicting qualification scope errors choose the smallest logical ID regardless of carrier order",
+      "A45 REST unevaluable required coverage yields CNE with same-host qualification retained",
+      "result boundary: exactly 4 MiB is retained and +1 is OUTPUT/EVALUATION",
+      "text boundary: exactly 128 KiB is complete and +1 is OUTPUT/EVALUATION",
+      "result/proof/input snapshots do not share mutable output objects",
+      "global derived counts reject 128+1 before malformed rows or byte sizing",
+      "result construction cannot promote a blocked aggregate to READY"
+    ],
+    "stdout": {
+      "path": "2a.stdout.txt",
+      "byteLength": 18727,
+      "sha256": "sha256:53e8b7cc39d80d93ef2b24ab74aaf86c538ae6f3fe41d856fb71b6ff911b268f"
+    },
+    "stderr": {
+      "path": "2a.stderr.txt",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "exactAcceptedVectors": 16,
+  "elapsedMs": 33800,
+  "preservedBranchFoundation": true,
+  "preservedBranchFixtures": true,
+  "packageRegenerated": false,
+  "phase2DIntegration": false,
+  "network": false,
+  "predecessorCampaignsRerun": false,
+  "error": null
+}

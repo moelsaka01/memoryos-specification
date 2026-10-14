@@ -1,0 +1,89 @@
+{
+  "kind": "MO1307Phase2DGuardTestAdaptations",
+  "result": "REVIEWED_PENDING_EXECUTION",
+  "rows": [
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase1_core_test.mjs",
+      "acceptedSource": {
+        "commit": "24a9ed13072cf344baf56ee019d96520b7dfd4f0",
+        "byteLength": 15618,
+        "sha256": "sha256:3e05265d48754c9c31e1d331d24e0580cadef1dfb11d70d9a357152f82366041"
+      },
+      "integrated": {
+        "byteLength": 15776,
+        "sha256": "sha256:008ccdfaaef4ece503d4a78f90ae2821cc2f1dd0d90ea63976eb93250977ea94"
+      }
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs",
+      "acceptedSource": {
+        "commit": "24a9ed13072cf344baf56ee019d96520b7dfd4f0",
+        "byteLength": 23583,
+        "sha256": "sha256:0d506c7ad8b61f8e14046ba5d394a9a598fe4828c7e10d102de07a8e1b1a73c6"
+      },
+      "integrated": {
+        "byteLength": 23696,
+        "sha256": "sha256:c0524079400446040b5df90ec326d57e85c27ab04778ee4f85a69f0679fca889"
+      }
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_surfaces_test.mjs",
+      "acceptedSource": {
+        "commit": "24a9ed13072cf344baf56ee019d96520b7dfd4f0",
+        "byteLength": 11646,
+        "sha256": "sha256:0b0696ffdf558ec4980b41ba952bce122856becce14a1195a1c84fd4c7fe176e"
+      },
+      "integrated": {
+        "byteLength": 11988,
+        "sha256": "sha256:51d20c049f9d81a861aab602c8f9e134d51a21061cd34474a1356bc35268adea"
+      }
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs",
+      "acceptedSource": {
+        "commit": "24a9ed13072cf344baf56ee019d96520b7dfd4f0",
+        "byteLength": 16832,
+        "sha256": "sha256:57700ac5b79c0cd2947826d5bdb4ebcdd389d112f79a418416bac9c43f65b37e"
+      },
+      "integrated": {
+        "byteLength": 16914,
+        "sha256": "sha256:41ac036c712de739362a5d79504f4c35e12dadb9102fec59d722759f9888823c"
+      }
+    }
+  ],
+  "adaptations": [
+    {
+      "id": "C29",
+      "prior": "A structurally valid ready bundle ended with INTERNAL/EVALUATION at the unimplemented integration seam.",
+      "current": "The actual public API fixed worker must return byte-exact accepted ready result and READY."
+    },
+    {
+      "id": "N17",
+      "prior": "Actual native CLI performed acquisition and stopped at INTERNAL/EVALUATION without output.",
+      "current": "Actual native CLI must exit0, produce byte-exact accepted summary, publish only final result with exact accepted bytes, and still reject __proto__ dispatch."
+    },
+    {
+      "id": "API caller mutation",
+      "prior": "Copied inputs reached the fixed integration guard after caller buffers were mutated.",
+      "current": "The actual worker must return exact accepted result despite immediate caller buffer mutation."
+    },
+    {
+      "id": "API evaluate and verify",
+      "prior": "Both entry points returned the integration guard.",
+      "current": "Both return exact independently computed ready bytes, equal readiness/proof digests and null decision."
+    },
+    {
+      "id": "R21",
+      "prior": "Fixed production worker returned the integration guard and confirmed quiescence.",
+      "current": "Fixed production worker returns exact accepted result and still must confirm quiescence."
+    }
+  ],
+  "cardinalitiesPreserved": {
+    "phase1": 105,
+    "phase2cSurfaceClosure": 94,
+    "phase2cRuntimeClosure": 36
+  },
+  "negativeChecksRemoved": false,
+  "syntheticTransportNotPromotedToNative": true,
+  "productionChangedByThisAdaptation": false
+}

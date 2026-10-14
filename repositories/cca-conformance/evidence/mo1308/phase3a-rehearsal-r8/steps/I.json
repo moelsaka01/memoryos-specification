@@ -1,0 +1,132 @@
+{
+  "cases": [
+    {
+      "elapsedMs": 16962,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-I1",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "purgedEntryReportedAs": "PURGED",
+        "verification": {
+          "entries": 6,
+          "purged": 1,
+          "retained": 4,
+          "tombstones": 1
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 8582,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-I2",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "pendingWhileHeld": [
+          1
+        ],
+        "rerun": 0,
+        "whileHeld": "4:MO1308_IO"
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 7468,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-I3",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "resupply": "2:MO1308_RECORD_PURGED"
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 12720,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-I4",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "entriesExported": 6,
+        "exportFiles": 13,
+        "queryEntries": [
+          "0:RECORD",
+          "1:RECORD",
+          "2:RECORD",
+          "3:RECORD",
+          "4:RECORD",
+          "5:TOMBSTONE"
+        ]
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 19567,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-I5",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "results": {
+          "a bad reason": "1:MO1308_USAGE",
+          "a non-numeric target": "1:MO1308_USAGE",
+          "a retained record entry": "0:ok",
+          "a second, different target": "0:ok",
+          "a tombstone entry as the target": "2:MO1308_TOMBSTONE_INVALID",
+          "an authority reference with a control character": "1:MO1308_USAGE",
+          "an index beyond the ledger": "2:MO1308_TOMBSTONE_INVALID",
+          "the same target again": "2:MO1308_TOMBSTONE_INVALID",
+          "the same target again, other reason": "2:MO1308_TOMBSTONE_INVALID"
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 13415,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-I6",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "afterRerun": [],
+        "exportCarriesPurgedMembers": 0,
+        "exportStatus": 0,
+        "queryRetention": "PURGED",
+        "verify": {
+          "purgePending": [
+            1
+          ],
+          "purgedRecords": 1,
+          "retainedRecords": 1
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    }
+  ],
+  "elapsedMs": 78716,
+  "failureCode": null,
+  "finishedAt": "2026-10-09T04:59:57.237Z",
+  "generation": "phase3a-rehearsal-r8",
+  "kind": "MO1308Phase3StepReceipt",
+  "result": "PASS",
+  "segment": "main2",
+  "startedAt": "2026-10-09T04:58:38.525Z",
+  "step": "I",
+  "stream": "3A",
+  "version": "1.0.0"
+}

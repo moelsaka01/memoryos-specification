@@ -1,0 +1,85 @@
+{
+  "id": "R",
+  "name": "helper-helper-and-helper-worker-nonoverlap",
+  "kind": "PRODUCTION_SUPERVISOR_DOUBLE",
+  "result": "PASS",
+  "startedAt": "2026-09-30T15:40:23.759Z",
+  "nonOverlap": [
+    {
+      "attemptedRole": "helper",
+      "startFunctionCalled": false,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 30000,
+        "helpers": 1,
+        "workers": 0,
+        "helperUsedMs": 0,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": "MO1307_INTERNAL",
+        "terminalAt": 0,
+        "cleanupDeadline": 2000,
+        "events": [
+          {
+            "type": "start",
+            "at": 0,
+            "role": "helper",
+            "deadline": 5000,
+            "ordinal": 1
+          },
+          {
+            "type": "terminal",
+            "at": 0,
+            "code": "MO1307_INTERNAL",
+            "stage": "ACQUISITION"
+          },
+          {
+            "type": "cleanup",
+            "at": 0,
+            "role": "helper",
+            "confirmed": true
+          }
+        ]
+      }
+    },
+    {
+      "attemptedRole": "worker",
+      "startFunctionCalled": false,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 30000,
+        "helpers": 1,
+        "workers": 0,
+        "helperUsedMs": 0,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": "MO1307_INTERNAL",
+        "terminalAt": 0,
+        "cleanupDeadline": 2000,
+        "events": [
+          {
+            "type": "start",
+            "at": 0,
+            "role": "helper",
+            "deadline": 5000,
+            "ordinal": 1
+          },
+          {
+            "type": "terminal",
+            "at": 0,
+            "code": "MO1307_INTERNAL",
+            "stage": "EVALUATION"
+          },
+          {
+            "type": "cleanup",
+            "at": 0,
+            "role": "helper",
+            "confirmed": true
+          }
+        ]
+      }
+    }
+  ]
+}

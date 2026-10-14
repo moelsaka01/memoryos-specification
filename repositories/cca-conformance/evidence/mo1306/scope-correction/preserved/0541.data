@@ -1,0 +1,76 @@
+123914: ;// CONCATENATED MODULE: ./node_modules/@actions/artifact/lib/internal/upload/blob-upload.js
+123915: var blob_upload_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+123916:     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+123917:     return new (P || (P = Promise))(function (resolve, reject) {
+123918:         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+123919:         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+123920:         function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+123921:         step((generator = generator.apply(thisArg, _arguments || [])).next());
+123922:     });
+123923: };
+123924:
+123925:
+123926:
+123927:
+123928:
+123929:
+123930: function uploadToBlobStorage(authenticatedUploadURL, uploadStream, contentType) {
+123931:     return blob_upload_awaiter(this, void 0, void 0, function* () {
+123932:         let uploadByteCount = 0;
+123933:         let lastProgressTime = Date.now();
+123934:         const abortController = new AbortController();
+123935:         const chunkTimer = (interval) => blob_upload_awaiter(this, void 0, void 0, function* () {
+123936:             return new Promise((resolve, reject) => {
+123937:                 const timer = setInterval(() => {
+123938:                     if (Date.now() - lastProgressTime > interval) {
+123939:                         reject(new Error('Upload progress stalled.'));
+123940:                     }
+123941:                 }, interval);
+123942:                 abortController.signal.addEventListener('abort', () => {
+123943:                     clearInterval(timer);
+123944:                     resolve();
+123945:                 });
+123946:             });
+123947:         });
+123948:         const maxConcurrency = getConcurrency();
+123949:         const bufferSize = getUploadChunkSize();
+123950:         const blobClient = new BlobClient(authenticatedUploadURL);
+123951:         const blockBlobClient = blobClient.getBlockBlobClient();
+123952:         core_debug(`Uploading artifact to blob storage with maxConcurrency: ${maxConcurrency}, bufferSize: ${bufferSize}, contentType: ${contentType}`);
+123953:         const uploadCallback = (progress) => {
+123954:             info(`Uploaded bytes ${progress.loadedBytes}`);
+123955:             uploadByteCount = progress.loadedBytes;
+123956:             lastProgressTime = Date.now();
+123957:         };
+123958:         const options = {
+123959:             blobHTTPHeaders: { blobContentType: contentType },
+123960:             onProgress: uploadCallback,
+123961:             abortSignal: abortController.signal
+123962:         };
+123963:         let sha256Hash = undefined;
+123964:         const blobUploadStream = new external_stream_.PassThrough();
+123965:         const hashStream = external_crypto_namespaceObject.createHash('sha256');
+123966:         uploadStream.pipe(blobUploadStream); // This stream is used for the upload
+123967:         uploadStream.pipe(hashStream).setEncoding('hex'); // This stream is used to compute a hash of the content for integrity check
+123968:         info('Beginning upload of artifact content to blob storage');
+123969:         try {
+123970:             yield Promise.race([
+123971:                 blockBlobClient.uploadStream(blobUploadStream, bufferSize, maxConcurrency, options),
+123972:                 chunkTimer(getUploadChunkTimeout())
+123973:             ]);
+123974:         }
+123975:         catch (error) {
+123976:             if (NetworkError.isNetworkErrorCode(error === null || error === void 0 ? void 0 : error.code)) {
+123977:                 throw new NetworkError(error === null || error === void 0 ? void 0 : error.code);
+123978:             }
+123979:             throw error;
+123980:         }
+123981:         finally {
+123982:             abortController.abort();
+123983:         }
+123984:         info('Finished uploading artifact content to blob storage!');
+123985:         hashStream.end();
+123986:         sha256Hash = hashStream.read();
+123987:         info(`SHA256 digest of uploaded artifact is ${sha256Hash}`);
+123988:         if (uploadByteCount === 0) {
+123989:             warning(`No data was uploaded to blob storage. Reported upload byte count is 0.`);

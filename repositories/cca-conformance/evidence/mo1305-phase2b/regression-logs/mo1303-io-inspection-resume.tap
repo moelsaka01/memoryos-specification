@@ -1,0 +1,50 @@
+TAP version 13
+# Subtest: verifier copies exact bytes into a disposable private immutable snapshot
+ok 1 - verifier copies exact bytes into a disposable private immutable snapshot
+  ---
+  duration_ms: 2322.7151
+  type: 'test'
+  ...
+# Subtest: secure input snapshots enforce below, exact, and first-byte-above measured limits
+    # Subtest: policy
+    ok 1 - policy
+      ---
+      duration_ms: 135.5031
+      type: 'test'
+      ...
+    # Subtest: policySet
+    ok 2 - policySet
+      ---
+      duration_ms: 98.9387
+      type: 'test'
+      ...
+    # Subtest: candidateMip
+    ok 3 - candidateMip
+      ---
+      duration_ms: 102.0908
+      type: 'test'
+      ...
+    1..3
+ok 2 - secure input snapshots enforce below, exact, and first-byte-above measured limits
+  ---
+  duration_ms: 342.4831
+  type: 'test'
+  ...
+# policy exact snapshot RSS delta=65536 bytes; fixed copy buffer=65536
+# policySet exact snapshot RSS delta=61440 bytes; fixed copy buffer=65536
+# candidateMip exact snapshot RSS delta=90112 bytes; fixed copy buffer=65536
+# Subtest: verification inputs use the frozen normative outcome ceiling without creating a transport limit
+ok 3 - verification inputs use the frozen normative outcome ceiling without creating a transport limit
+  ---
+  duration_ms: 115.1217
+  type: 'test'
+  ...
+1..3
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10255.3263

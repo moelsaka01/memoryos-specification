@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: SUP01 post-rename TIMEOUT returns OUTPUT and retains exact committed result
+ok 1 - SUP01 post-rename TIMEOUT returns OUTPUT and retains exact committed result
+  ---
+  duration_ms: 367.1391
+  type: 'test'
+  ...
+# Subtest: SUP01 post-rename CANCELLED returns OUTPUT and retains exact committed result
+ok 2 - SUP01 post-rename CANCELLED returns OUTPUT and retains exact committed result
+  ---
+  duration_ms: 290.0072
+  type: 'test'
+  ...
+# Subtest: SUP02 verify stdout backpressure times out without product filesystem changes
+ok 3 - SUP02 verify stdout backpressure times out without product filesystem changes
+  ---
+  duration_ms: 305.8508
+  type: 'test'
+  ...
+# Subtest: SUP03 input root identity change between helper slots fails closed
+ok 4 - SUP03 input root identity change between helper slots fails closed
+  ---
+  duration_ms: 25.5738
+  type: 'test'
+  ...
+# Subtest: SUP04 physical file alias across bootstrap slots is rejected despite distinct paths
+ok 5 - SUP04 physical file alias across bootstrap slots is rejected despite distinct paths
+  ---
+  duration_ms: 25.1579
+  type: 'test'
+  ...
+# Subtest: SUP05 malformed external decision rejects without stdout or changes
+ok 6 - SUP05 malformed external decision rejects without stdout or changes
+  ---
+  duration_ms: 404.488
+  type: 'test'
+  ...
+# Subtest: SUP06 wrong external decision proof binding rejects
+ok 7 - SUP06 wrong external decision proof binding rejects
+  ---
+  duration_ms: 430.4901
+  type: 'test'
+  ...
+# Subtest: SUP07 contrary APPROVE preserves not-ready and reports unverified authenticity
+ok 8 - SUP07 contrary APPROVE preserves not-ready and reports unverified authenticity
+  ---
+  duration_ms: 376.4661
+  type: 'test'
+  ...
+# Subtest: SUP07 contrary APPROVE preserves could-not-evaluate and reports unverified authenticity
+ok 9 - SUP07 contrary APPROVE preserves could-not-evaluate and reports unverified authenticity
+  ---
+  duration_ms: 375.0249
+  type: 'test'
+  ...
+# Subtest: SUP08 slot4 output inspection ERROR maps to frozen OUTPUT before worker
+ok 10 - SUP08 slot4 output inspection ERROR maps to frozen OUTPUT before worker
+  ---
+  duration_ms: 72.294
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2925.3112

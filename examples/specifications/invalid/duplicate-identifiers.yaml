@@ -1,0 +1,33 @@
+$schema: cca://schemas/canonical-specification/1.0
+format_version: 1.0.0
+kind: canonical_specification
+id: fixture.duplicate-identifiers
+version: 1.0.0
+metadata: {name: Duplicate identifiers}
+categories:
+  - {id: architecture, name: Architecture, annotations: {}, extensions: {}}
+objects:
+  - type: component
+    id: architecture.duplicate
+    version: 1.0.0
+    category: architecture
+    metadata: {name: First}
+    contracts: []
+    requirements: []
+    properties: {}
+    annotations: {}
+    extensions: {}
+  - type: contract
+    id: architecture.duplicate
+    version: 1.0.0
+    category: architecture
+    metadata: {name: Second}
+    properties: {}
+    annotations: {}
+    extensions: {}
+relationships: []
+dependencies: []
+validation_rules: []
+artifacts: []
+annotations: {}
+extensions: {}

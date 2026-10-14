@@ -1,0 +1,32 @@
+"""Create a diagnostics-only C3CB scaffold without moving local HEAD or its index."""
+from pathlib import Path
+import hashlib,json,subprocess,os,datetime
+R=Path(__file__).resolve().parents[4]; E=R/'repositories/cca-conformance/evidence/mo1306/phase3a-hosted-diagnostic';T=R/'repositories/cca-conformance/tools/mo1306-phase3a-hosted-diagnostic'
+C='701d48ee2012675966360dda775ab13013c09ab9';OLD='451599e7b95a537ebc2daac627b061fd88791dea'
+def git(*args,data=None,env=None):
+ p=subprocess.run(['git',*args],input=data,capture_output=True,cwd=R,env=env);assert p.returncode==0,p.stderr.decode();return p.stdout
+
+def bind(p):
+ b=p.read_bytes();return {'path':p.relative_to(R).as_posix(),'byteLength':len(b),'sha256':'sha256:'+hashlib.sha256(b).hexdigest()}
+def main():
+ assert not (E/'remote-candidate.json').exists()
+ supplied=json.loads((E/'scaffold-inputs.json').read_text(encoding='utf-8'))['files']
+ assert len(supplied)>=3
+ index=R/'.cache/mo1306-phase3a-hosted-diagnostic/scaffold-index';index.parent.mkdir(parents=True,exist_ok=True);assert not index.exists()
+ env=dict(os.environ);env['GIT_INDEX_FILE']=str(index)
+ git('read-tree',OLD,env=env)
+ inputs=[]
+ for v in supplied:
+  source=R/v['source'];dest=v['destination'];assert dest=='.github/workflows/mo1306-hosted-diagnostic.yml' or dest.startswith('repositories/cca-conformance/tools/mo1306-phase3a-hosted-diagnostic/')
+  blob=git('hash-object','-w','--stdin',data=source.read_bytes()).decode().strip()
+  git('update-index','--add','--cacheinfo','100644',blob,dest,env=env);inputs.append(dict(bind(source),destination=dest,blob=blob))
+ tree=git('write-tree',env=env).decode().strip()
+ commit=git('commit-tree',tree,'-p',C,data=b'test(memoryos-1.3): capture hosted filesystem predicates\n').decode().strip()
+ changed=git('diff','--name-only',OLD,commit).decode().splitlines();assert sorted(changed)==sorted(v['destination'] for v in supplied)
+ assert git('diff',C,commit,'--','repositories/memoryos-ci','docs/mo1306-contract-freeze-1.md')==b''
+ assert git('diff',OLD,commit,'--','.github/workflows/mo1306-certification-pass.yml','.github/workflows/mo1306-certification-fail.yml','.github/workflows/mo1306-certification-cne.yml')==b''
+ git('diff','--check',OLD,commit)
+ v={'kind':'MemoryOSHostedDiagnosticScaffold','status':'PASS','commit':commit,'parent':C,'previousScaffold':OLD,'tree':tree,'changedFromPrevious':changed,'paths':git('diff','--name-only',C,commit).decode().splitlines(),'inputs':inputs,'productionTreeUnchanged':True,'certificationWorkflowsUnchanged':True,'headUnchanged':git('rev-parse','HEAD').decode().strip(),'createdUtc':datetime.datetime.now(datetime.timezone.utc).isoformat()}
+ (E/'remote-candidate.json').write_text(json.dumps(v,sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8')
+ print(json.dumps(v))
+if __name__=='__main__':main()

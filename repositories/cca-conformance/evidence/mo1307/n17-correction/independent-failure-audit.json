@@ -1,0 +1,126 @@
+{
+  "kind": "MO1307N17CorrectionIndependentFailureAudit",
+  "result": "PASS_STATIC",
+  "outcome": "PHASE3A_CONCRETE_IMPLEMENTATION_BLOCKER",
+  "auditMode": "READ_ONLY_NO_TEST_HELPER_OR_PRODUCT_EXECUTION",
+  "classificationPreserved": "N17_FIXTURE_SETUP_DEFECT",
+  "n17": {
+    "result": "PASS",
+    "executions": 1,
+    "attempt": 1,
+    "retries": 0,
+    "selectedId": "native-foundation-018",
+    "exitCode": 0,
+    "testPasses": 1,
+    "testFailures": 0,
+    "allEightOuterSettlementEvents": true,
+    "guardExpired": false,
+    "cleanupExpired": false,
+    "closed": true,
+    "historicalResultsPromoted": 0,
+    "resultBytes": 59987,
+    "resultSha256": "sha256:8ec1375f09103b8d1b791985065c3589bdf8ba2a4ed661dcc081d48468049fa7",
+    "receipt": {
+      "path": "repositories/cca-conformance/evidence/mo1307/n17-correction/n17/receipt.json",
+      "byteLength": 6975,
+      "sha256": "sha256:805202c0d4285296a4fd2a309ac0ed2d9f18de8f1155da5c5770f6778efee804"
+    },
+    "publicationCapture": {
+      "path": "repositories/cca-conformance/evidence/mo1307/n17-correction/n17/publication-capture.json",
+      "byteLength": 2263,
+      "sha256": "sha256:5850a996065b103d40a8b27d5e2f2113684abd64a6e3b385d73d91b78c3a2384"
+    }
+  },
+  "publication": {
+    "result": "PASS",
+    "supplementalPasses": 5,
+    "supplementalExpected": 5,
+    "selectedPasses": 12,
+    "selectedExpected": 12,
+    "notRun": 0,
+    "retries": 0,
+    "historicalResultsPromoted": 0,
+    "receipt": {
+      "path": "repositories/cca-conformance/evidence/mo1307/n17-correction/publication/receipt.json",
+      "byteLength": 71537,
+      "sha256": "sha256:bb466a8b2a5d9ba194f446d9a01faacad8eef0129dded16100614f5ef307c1ce"
+    }
+  },
+  "nativeFilesystem": {
+    "result": "FAIL",
+    "expectedCases": 35,
+    "expectedInvocations": 39,
+    "passed": 1,
+    "failed": 1,
+    "notRun": 33,
+    "completedInvocations": 3,
+    "failureCase": "native CHECK_OUTPUT slots4/5 full stable drive-parent chains",
+    "failedInvocation": {
+      "index": 3,
+      "operation": "CHECK_OUTPUT",
+      "sequence": 5,
+      "durationMs": 5024.2634,
+      "deadlineMs": 5000,
+      "exitCode": null,
+      "signal": "SIGTERM",
+      "error": "ETIMEDOUT",
+      "requestBytes": 294,
+      "responseBytes": 0,
+      "stderrBytes": 0,
+      "requestSha256": "sha256:71a9040815c137ac0980f9e985c1a03e23dfd57873f5940ba393f36d64113dad",
+      "responseSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "receipt": {
+      "path": "repositories/cca-conformance/evidence/mo1307/n17-correction/native-filesystem/receipt.json",
+      "byteLength": 8007,
+      "sha256": "sha256:b7a853083aa512d14f4e889abb660a42bf0d42a2cdfe09a531dd4a098d373b44"
+    }
+  },
+  "stop": {
+    "reason": "FIRST_MANDATORY_FAILURE",
+    "stage": "native-filesystem",
+    "noLaterStages": true,
+    "retries": 0,
+    "record": {
+      "path": "repositories/cca-conformance/evidence/mo1307/n17-correction/generation-stopped.json",
+      "byteLength": 353,
+      "sha256": "sha256:d888ddd6d476060aeb2128c0d77a6a638b106aee1e07548b53b7622cc65cb366"
+    }
+  },
+  "laterStages": {
+    "security": "ABSENT",
+    "regressions": "ABSENT",
+    "toctou": "ABSENT",
+    "package": "ABSENT",
+    "candidate": "ABSENT",
+    "certification": "ABSENT",
+    "freshWorktree": "ABSENT"
+  },
+  "source": {
+    "members": 89,
+    "mismatches": 0,
+    "sourceIdentity": "sha256:6e0e5f1984b1de1b835879471c3858897ba30d3206fa504fb7f9a7aa2cfca690",
+    "productionTree": "fa367d1ce9e55872213e35a47d419b17b70d9b1e",
+    "productionDiff": "EMPTY",
+    "validationSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/n17-correction/validation-source.json",
+      "byteLength": 197379,
+      "sha256": "sha256:b1e6a656082bd0ed8d63ea587b6d205f5a2016c941452c6b4eddfbda638239ab"
+    }
+  },
+  "fixture": {
+    "path": "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs",
+    "byteLength": 24322,
+    "sha256": "sha256:d11533eaf8d9e54a9c50500aa8cbf0e15575b298544b506f0bfbce5b6387b6f7",
+    "inverseEqualsPreservedBaseExactly": true
+  },
+  "authority": {
+    "reviewSha256": "sha256:3c96fd4521d5711f41e5e7d6eda5b4348b07931327f5916e21de7fb432e6a39c",
+    "decisionSha256": "sha256:c86c0df47fc522e86a1c8e2a9763aad73950f14e66b1dedcf629ee6349d8754b"
+  },
+  "headAtAudit": "56a3d93a0c7fdb42e93e16ec1f6c13c81770c11b",
+  "branch": "codex/mo1307-n17-fixture",
+  "candidate": null,
+  "certificationAcceptance": false,
+  "noRetry": true
+}

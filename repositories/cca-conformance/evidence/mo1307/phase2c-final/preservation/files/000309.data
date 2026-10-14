@@ -1,0 +1,87 @@
+{
+  "kind": "MO1307N24TimerAuthorityDisposition",
+  "classification": "TEST_OVERCONSTRAINT_NOT_NORMATIVE_CONTRADICTION",
+  "result": "DOCUMENTARY_REVIEW_COMPLETE_REGRESSION_NOT_RUN",
+  "authorities": [
+    {
+      "path": "docs/mo1307-contract-freeze-1.md",
+      "byteLength": 106849,
+      "sha256": "sha256:3a3aeaa1747fcbf13511437b818c697d77a31db6bca1d55be2cb3c0fe7925c53"
+    },
+    {
+      "path": "docs/mo1307-phase2c-publication-inspection-correction.md",
+      "byteLength": 27193,
+      "sha256": "sha256:216bc19652bb12e34afdeec1fe77cca87facb5855b1bf35f92454f6a66863356"
+    }
+  ],
+  "clauses": [
+    {
+      "path": "docs/mo1307-contract-freeze-1.md",
+      "startLine": 978,
+      "endLine": 978,
+      "quote": "| LAUNCH | Argv/pin syntax, trusted runtime/forbidden preload options, operational timer initialization; USAGE wins malformed launch. |"
+    },
+    {
+      "path": "docs/mo1307-contract-freeze-1.md",
+      "startLine": 1019,
+      "endLine": 1020,
+      "quote": "exists, including no default profile/stage. Each invocation assesses exactly\none candidate, with no queue, server, retry, watcher or cross-run cache."
+    },
+    {
+      "path": "docs/mo1307-contract-freeze-1.md",
+      "startLine": 1234,
+      "endLine": 1248,
+      "quote": "Deadlines use an operational monotonic clock outside the pure evaluation\nfunction. A supervisor timer plus worker isolation prevents a same-thread timer\nfrom falsely claiming preemption of synchronous parsing. Success is accepted\nonly strictly before the deadline; equality/later is TIMEOUT. Cancellation\nobserved before success is CANCELLED. Late worker/helper output is ignored;\nno success grace. Cleanup may continue within its separate allowance but cannot\npublish. If abort and deadline are first observed at the same checkpoint,\nTIMEOUT wins when now >= deadline; an abort observed strictly earlier wins\nCANCELLED. After final rename, the result is committed: later abort/deadline\ncannot retract it. The remaining overall deadline still bounds stdout transport.\nBefore rename (or for verify), timeout/abort returns TIMEOUT/CANCELLED; after\nrename, timeout/abort during stdout is OUTPUT with the committed file retained.\nA failed transport may have emitted a partial line; only one fully written\nsummary ending LF is a complete success summary. Cancel pending writes and\nterminate within the cleanup allowance; stdout backpressure cannot wait forever."
+    },
+    {
+      "path": "docs/mo1307-phase2c-publication-inspection-correction.md",
+      "startLine": 131,
+      "endLine": 131,
+      "quote": "Let `S` be invocation start, `used` the accumulated duration of fully terminated prior helpers, and `D` the absolute CLI deadline. Its effective absolute deadline is `min(D, S+5000, S+(20000-used))`. Require positive remaining budget before launch and completion strictly before every applicable deadline; equality is TIMEOUT. The active timer starts before child launch and settles only at confirmed quiescence. No slot or new phase resets accumulated use. A per-helper or aggregate expiry is terminal TIMEOUT even if CLI time remains; pending cleanup cannot admit a response or publish."
+    },
+    {
+      "path": "docs/mo1307-phase2c-publication-inspection-correction.md",
+      "startLine": 133,
+      "endLine": 133,
+      "quote": "The supervisor uses monotonic clocks and external timer enforcement; pure evaluation remains clock-free. TIMEOUT wins when abort and expiration are first observed at the same checkpoint with now at/after deadline; an abort already observed strictly earlier remains CANCELLED. Cleanup may last at most 2,000 ms after failure and never permits another helper, worker or publication; overall failed elapsed time remains bounded by CLI 32,000 / API 12,000 ms. Late output is ignored."
+    }
+  ],
+  "currentN24": {
+    "path": "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs",
+    "startLine": 308,
+    "endLine": 317,
+    "quote": "test('N24 foundation retains no-network and fixed orchestration boundaries', async () => {\n  for (const relative of ['src/windows-paths.mjs', 'src/helper-protocol.mjs', 'src/publication.mjs', 'src/cli-args.mjs', 'bin/memoryos-readiness.mjs']) {\n    const source = await fs.readFile(path.join(packageRoot, relative), 'utf8');\n    assert.doesNotMatch(source, /(?:node:)?(?:https?|net|tls|dns|dgram|child_process)['\"]/);\n    assert.doesNotMatch(source, /\\b(?:fetch|WebSocket|createServer|watch|watchFile|setInterval)\\s*\\(/);\n  }\n  const source = await fs.readFile(helper, 'utf8');\n  assert.doesNotMatch(source, /\\b(?:Invoke-Expression|Invoke-WebRequest|Invoke-RestMethod|Start-Process|Add-Type|Import-Module)\\b/);\n  assert.equal([...source].every(character => character.charCodeAt(0) < 128), true, 'PowerShell 5.1 script remains ASCII without BOM dependency');\n});"
+  },
+  "mechanicalBasis": "The same frozen architecture expressly requires operational timer initialization, a supervisor timer, and external timer enforcement. It prohibits queue/server/retry/watcher/cross-run cache architecture. Therefore N24 cannot correctly ban every occurrence of setInterval in an operational implementation merely because the API token is present. Invocation-scoped bounded timers are compatible only if absolute limits, terminality and cleanup are enforced; a timer escaping its invocation is not authorized.",
+  "currentFinding": "The publication polling timer exists only inside writePending and has a finally clearInterval. An indefinitely unsettled write can prevent that finally; cleanup on terminal observation still needs implementation/validation. Permitting bounded timers does not excuse that lifecycle defect.",
+  "plannedRegression": {
+    "cases": [
+      "success-a",
+      "write-failure",
+      "write-cancellation",
+      "success-b"
+    ],
+    "observation": "AsyncLocalStorage-scoped async_hooks observes timers plus server/watcher resources, requires destruction at settlement/disposal, zero later callbacks, and zero timer rearming across sequential invocations.",
+    "scope": "Actual owned publication file I/O with synthetic framed inspection, not native identity certification.",
+    "members": [
+      {
+        "path": "repositories/cca-conformance/tools/mo1307-phase2c-continuation/timer-witness.mjs",
+        "byteLength": 6024,
+        "sha256": "sha256:1114faffd1c4928ccfe6f67304ac0ba55526661b5ca9793f31819dcfdac8c569"
+      },
+      {
+        "path": "repositories/cca-conformance/tests/mo1307_phase2c_timer_lifetime_test.mjs",
+        "byteLength": 470,
+        "sha256": "sha256:66e70d2a1c20e5607d480675208a1de35013085caed913b86a7df5195edba3bc"
+      }
+    ],
+    "executed": false,
+    "reason": "Paused and preserved after separate submitted-rename deadline contract gap was demonstrated."
+  },
+  "phase1NativeTestChanged": false,
+  "N15N17ChangedByThisReview": false,
+  "N24RegexChanged": false,
+  "phase1Regression105Executed": false,
+  "noProductChangesByThisReview": true,
+  "noNormativeTextChanged": true
+}

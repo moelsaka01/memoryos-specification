@@ -1,0 +1,485 @@
+{
+  "kind": "MO1307Phase3AR2FinalH2FixtureIsolationValidation",
+  "version": "1.0.0",
+  "createdAt": "2026-10-04T10:37:30.976Z",
+  "result": "PASS",
+  "pathSetAnalysis": {
+    "declaredWriteSources": {
+      "commonEvidence": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-corrected",
+      "commonCache": ".cache/phase3ar2-final-h2-corrected",
+      "prepareEvidence": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-corrected",
+      "prepareCache": ".cache/phase3ar2-final-h2-corrected",
+      "prepareReport": "docs/mo1307-phase3ar2-final-h2-corrected.md",
+      "runtimeEvidence": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-corrected/runtime-",
+      "runtimeInstalled": ".cache/phase3ar2-final-h2-corrected/install/node_modules/memoryos-readiness",
+      "wrapperEvidence": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-corrected",
+      "observeEvidence": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-corrected",
+      "securityScratch": ".cache/phase3ar2-final-h2-corrected/security-",
+      "campaignReport": "docs/mo1307-phase3ar2-final-h2-corrected.md"
+    },
+    "writeRoots": [
+      "c:/users/melsa/documents/codex/3ar2/repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-corrected",
+      "c:/users/melsa/documents/codex/3ar2/.cache/phase3ar2-final-h2-corrected"
+    ],
+    "writeFiles": [
+      "c:/users/melsa/documents/codex/3ar2/docs/mo1307-phase3ar2-final-h2-corrected.md"
+    ],
+    "entryMutatedDirectories": [
+      "c:/users/melsa/documents/codex/3ar2/repositories/cca-conformance/evidence/mo1307",
+      "c:/users/melsa/documents/codex/3ar2/.cache",
+      "c:/users/melsa/documents/codex/3ar2/docs"
+    ],
+    "empiricalConsumedWriteDirectories": 244,
+    "empiricalWithinDeclaredWriteRoots": true,
+    "inspectedPaths": {
+      "aggregate": [
+        "c:/",
+        "c:/users",
+        "c:/users/melsa",
+        "c:/users/melsa/documents",
+        "c:/users/melsa/documents/codex",
+        "c:/users/melsa/documents/codex/3ar2",
+        "c:/users/melsa/documents/codex/3ar2/repositories",
+        "c:/users/melsa/documents/codex/3ar2/repositories/cca-conformance",
+        "c:/users/melsa/documents/codex/3ar2/repositories/cca-conformance/fixtures",
+        "c:/users/melsa/documents/codex/3ar2/repositories/cca-conformance/fixtures/mo1307",
+        "c:/users/melsa/documents/codex/3ar2/repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected",
+        "c:/users/melsa/documents/codex/3ar2/repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected/absent-output"
+      ],
+      "input": [
+        "c:/",
+        "c:/users",
+        "c:/users/melsa",
+        "c:/users/melsa/documents",
+        "c:/users/melsa/documents/codex",
+        "c:/users/melsa/documents/codex/3ar2",
+        "c:/users/melsa/documents/codex/3ar2/repositories",
+        "c:/users/melsa/documents/codex/3ar2/repositories/cca-conformance",
+        "c:/users/melsa/documents/codex/3ar2/repositories/cca-conformance/fixtures",
+        "c:/users/melsa/documents/codex/3ar2/repositories/cca-conformance/fixtures/mo1307",
+        "c:/users/melsa/documents/codex/3ar2/repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input",
+        "c:/users/melsa/documents/codex/3ar2/repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input/authority.bin",
+        "c:/users/melsa/documents/codex/3ar2/repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input/candidate.bin",
+        "c:/users/melsa/documents/codex/3ar2/repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input/config.bin",
+        "c:/users/melsa/documents/codex/3ar2/repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input/manifest.bin",
+        "c:/users/melsa/documents/codex/3ar2/repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input/small.bin"
+      ]
+    },
+    "sharedAncestorsWithWriteRoots": [
+      "c:/",
+      "c:/users",
+      "c:/users/melsa",
+      "c:/users/melsa/documents",
+      "c:/users/melsa/documents/codex",
+      "c:/users/melsa/documents/codex/3ar2",
+      "c:/users/melsa/documents/codex/3ar2/repositories",
+      "c:/users/melsa/documents/codex/3ar2/repositories/cca-conformance"
+    ],
+    "sharedAncestorsReceiveEntryWrites": false,
+    "violations": []
+  },
+  "hCaseScan": {
+    "consumed": {
+      "readSetInputRoot": "evidence,'input'",
+      "checkOutputTarget": "evidence,'absent-output'",
+      "pattern": "Both the READ_SET input root used by every H case and the aggregate CHECK_OUTPUT target lived beneath live runtime-H evidence."
+    },
+    "h2": {
+      "requestRoots": "sequence>=4?outputRoot:inputRoot",
+      "inputRoot": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input",
+      "outputTarget": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected/absent-output",
+      "fixtureUnderEvidence": false
+    },
+    "otherCasesWithPattern": [],
+    "fixtureTokenScan": {
+      "campaign.mjs": 2,
+      "cleanup-topology.mjs": 0,
+      "common.mjs": 0,
+      "core.mjs": 0,
+      "decisions-tags.mjs": 0,
+      "determinism.mjs": 0,
+      "errors-observer.mjs": 0,
+      "finalization-lock.ps1": 0,
+      "finalization.mjs": 0,
+      "method.mjs": 0,
+      "observe-command.py": 0,
+      "observer-entry.mjs": 0,
+      "prepare.mjs": 2,
+      "record-harness-review.mjs": 2,
+      "recover-inventory.mjs": 0,
+      "runtime-controls-observer.py": 0,
+      "runtime-controls-run.py": 0,
+      "runtime-controls-worker.mjs": 0,
+      "runtime-controls.mjs": 2,
+      "runtime-observer.mjs": 0,
+      "security-worker.mjs": 0,
+      "security.mjs": 0,
+      "stage.mjs": 0,
+      "topology_identity_policy.py": 0,
+      "transport-observer.mjs": 0
+    },
+    "otherSections": {
+      "K": {
+        "tool": "finalization.mjs",
+        "inputs": "scratch = path.join(cache, 'finalization')",
+        "location": "harness-private cache scratch created before K cases; not an evidence directory",
+        "sharesHFixtureUnderEvidencePattern": false
+      },
+      "LM": {
+        "tool": "security.mjs",
+        "inputs": "const input=path.join(scratch,'input')",
+        "location": "harness-private cache scratch per step; not an evidence directory",
+        "sharesHFixtureUnderEvidencePattern": false
+      }
+    }
+  },
+  "synthetic": {
+    "allCasesMatchExpected": true,
+    "cases": {
+      "B": {
+        "actual": "PASS",
+        "evidenceDirectoryByteLengthAfter": 196608,
+        "evidenceDirectoryByteLengthBefore": 0,
+        "evidenceWrites": 400,
+        "expected": "PASS",
+        "fixtureChainUnchanged": true,
+        "inputChainUnchanged": true,
+        "title": "evidence writes cannot mutate aggregate fixture identity"
+      },
+      "C": {
+        "actual": "FAIL",
+        "detected": true,
+        "expected": "FAIL",
+        "membersAfter": [
+          {
+            "directory": true,
+            "name": "absent-output"
+          },
+          {
+            "byteLength": 540,
+            "name": "fixture-root.json",
+            "sha256": "sha256:a17d3e4902da0da791701bc1adc489acc4dff58c732c8798f8d759e73706ab9d"
+          },
+          {
+            "byteLength": 3,
+            "name": "harness-write.bin",
+            "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+          }
+        ],
+        "membersBefore": [
+          {
+            "byteLength": 540,
+            "name": "fixture-root.json",
+            "sha256": "sha256:a17d3e4902da0da791701bc1adc489acc4dff58c732c8798f8d759e73706ab9d"
+          }
+        ],
+        "nativeFixtureIdentityAfter": {
+          "attributes": 16,
+          "byteLength": 4096,
+          "fileId": "001800000003ab71",
+          "linkCount": 1,
+          "volumeSerial": "bec58120"
+        },
+        "nativeFixtureIdentityBefore": {
+          "attributes": 16,
+          "byteLength": 0,
+          "fileId": "001800000003ab71",
+          "linkCount": 1,
+          "path": "C:\\Users\\melsa\\AppData\\Local\\Temp\\mo1307-h2-fixture-sandbox-hggld2s4\\cca-conformance\\fixtures\\mo1307\\fixture-root",
+          "volumeSerial": "bec58120"
+        },
+        "title": "synthetic mutation inside fixture root"
+      },
+      "D": {
+        "actual": "PASS",
+        "after": {
+          "attributes": 16,
+          "byteLength": 196608,
+          "fileId": "002200000003ac18",
+          "linkCount": 1,
+          "volumeSerial": "bec58120"
+        },
+        "before": {
+          "attributes": 16,
+          "byteLength": 0,
+          "fileId": "002200000003ac18",
+          "linkCount": 1,
+          "volumeSerial": "bec58120"
+        },
+        "expected": "PASS",
+        "sameFileIdDifferentByteLength": true,
+        "title": "byteLength remains an enforced identity component"
+      }
+    },
+    "execution": {
+      "helperRuns": 0,
+      "nativeObserverRuns": 0,
+      "productRuns": 0,
+      "repositoryWrites": 0,
+      "sandboxOnlyWrites": true,
+      "workerRuns": 0
+    },
+    "identityComponents": [
+      "attributes",
+      "byteLength",
+      "fileId",
+      "linkCount",
+      "volumeSerial"
+    ],
+    "realAggregateTargetAbsent": true,
+    "realFixtureChains": {
+      "aggregate": [
+        {
+          "attributes": 22,
+          "byteLength": 16384,
+          "fileId": "0005000000000005",
+          "linkCount": 1,
+          "path": "C:\\",
+          "volumeSerial": "bec58120"
+        },
+        {
+          "attributes": 17,
+          "byteLength": 4096,
+          "fileId": "004600000003046f",
+          "linkCount": 1,
+          "path": "C:\\Users",
+          "volumeSerial": "bec58120"
+        },
+        {
+          "attributes": 16,
+          "byteLength": 16384,
+          "fileId": "002e000000059963",
+          "linkCount": 1,
+          "path": "C:\\Users\\melsa",
+          "volumeSerial": "bec58120"
+        },
+        {
+          "attributes": 16,
+          "byteLength": 4096,
+          "fileId": "0003000000001490",
+          "linkCount": 1,
+          "path": "C:\\Users\\melsa\\Documents",
+          "volumeSerial": "bec58120"
+        },
+        {
+          "attributes": 16,
+          "byteLength": 12288,
+          "fileId": "000c00000009ebf2",
+          "linkCount": 1,
+          "path": "C:\\Users\\melsa\\Documents\\Codex",
+          "volumeSerial": "bec58120"
+        },
+        {
+          "attributes": 16,
+          "byteLength": 8192,
+          "fileId": "00130000000190ee",
+          "linkCount": 1,
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\3ar2",
+          "volumeSerial": "bec58120"
+        },
+        {
+          "attributes": 16,
+          "byteLength": 4096,
+          "fileId": "002000000018b2c0",
+          "linkCount": 1,
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\repositories",
+          "volumeSerial": "bec58120"
+        },
+        {
+          "attributes": 16,
+          "byteLength": 12288,
+          "fileId": "001600000018b333",
+          "linkCount": 1,
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\repositories\\cca-conformance",
+          "volumeSerial": "bec58120"
+        },
+        {
+          "attributes": 16,
+          "byteLength": 0,
+          "fileId": "001d00000019416c",
+          "linkCount": 1,
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\repositories\\cca-conformance\\fixtures",
+          "volumeSerial": "bec58120"
+        },
+        {
+          "attributes": 16,
+          "byteLength": 4096,
+          "fileId": "001000000019432a",
+          "linkCount": 1,
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\repositories\\cca-conformance\\fixtures\\mo1307",
+          "volumeSerial": "bec58120"
+        },
+        {
+          "attributes": 16,
+          "byteLength": 0,
+          "fileId": "000f00000009d1b5",
+          "linkCount": 1,
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\repositories\\cca-conformance\\fixtures\\mo1307\\phase3ar2-final-h2-corrected",
+          "volumeSerial": "bec58120"
+        }
+      ],
+      "input": [
+        {
+          "attributes": 22,
+          "byteLength": 16384,
+          "fileId": "0005000000000005",
+          "linkCount": 1,
+          "path": "C:\\",
+          "volumeSerial": "bec58120"
+        },
+        {
+          "attributes": 17,
+          "byteLength": 4096,
+          "fileId": "004600000003046f",
+          "linkCount": 1,
+          "path": "C:\\Users",
+          "volumeSerial": "bec58120"
+        },
+        {
+          "attributes": 16,
+          "byteLength": 16384,
+          "fileId": "002e000000059963",
+          "linkCount": 1,
+          "path": "C:\\Users\\melsa",
+          "volumeSerial": "bec58120"
+        },
+        {
+          "attributes": 16,
+          "byteLength": 4096,
+          "fileId": "0003000000001490",
+          "linkCount": 1,
+          "path": "C:\\Users\\melsa\\Documents",
+          "volumeSerial": "bec58120"
+        },
+        {
+          "attributes": 16,
+          "byteLength": 12288,
+          "fileId": "000c00000009ebf2",
+          "linkCount": 1,
+          "path": "C:\\Users\\melsa\\Documents\\Codex",
+          "volumeSerial": "bec58120"
+        },
+        {
+          "attributes": 16,
+          "byteLength": 8192,
+          "fileId": "00130000000190ee",
+          "linkCount": 1,
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\3ar2",
+          "volumeSerial": "bec58120"
+        },
+        {
+          "attributes": 16,
+          "byteLength": 4096,
+          "fileId": "002000000018b2c0",
+          "linkCount": 1,
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\repositories",
+          "volumeSerial": "bec58120"
+        },
+        {
+          "attributes": 16,
+          "byteLength": 12288,
+          "fileId": "001600000018b333",
+          "linkCount": 1,
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\repositories\\cca-conformance",
+          "volumeSerial": "bec58120"
+        },
+        {
+          "attributes": 16,
+          "byteLength": 0,
+          "fileId": "001d00000019416c",
+          "linkCount": 1,
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\repositories\\cca-conformance\\fixtures",
+          "volumeSerial": "bec58120"
+        },
+        {
+          "attributes": 16,
+          "byteLength": 4096,
+          "fileId": "001000000019432a",
+          "linkCount": 1,
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\repositories\\cca-conformance\\fixtures\\mo1307",
+          "volumeSerial": "bec58120"
+        },
+        {
+          "attributes": 16,
+          "byteLength": 4096,
+          "fileId": "00490000000cce69",
+          "linkCount": 1,
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\repositories\\cca-conformance\\fixtures\\mo1307\\phase3ar2-final-h2-corrected-input",
+          "volumeSerial": "bec58120"
+        }
+      ]
+    },
+    "realFixtureMembers": {
+      "aggregate": [
+        {
+          "byteLength": 540,
+          "name": "fixture-root.json",
+          "sha256": "sha256:a17d3e4902da0da791701bc1adc489acc4dff58c732c8798f8d759e73706ab9d"
+        }
+      ],
+      "input": [
+        {
+          "byteLength": 3,
+          "name": "authority.bin",
+          "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "byteLength": 3,
+          "name": "candidate.bin",
+          "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "byteLength": 3,
+          "name": "config.bin",
+          "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "byteLength": 3,
+          "name": "manifest.bin",
+          "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        },
+        {
+          "byteLength": 3,
+          "name": "small.bin",
+          "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+        }
+      ]
+    },
+    "result": "PASS",
+    "sandboxRemoved": true
+  },
+  "gate": {
+    "A": {
+      "title": "isolated aggregate fixture outside live evidence tree",
+      "expected": "PASS",
+      "actual": "PASS",
+      "evidence": "fixture-isolation.json#pathSetAnalysis"
+    },
+    "B": {
+      "title": "evidence writes cannot mutate aggregate fixture identity",
+      "expected": "PASS",
+      "actual": "PASS",
+      "evidence": "fixture-isolation.json#synthetic.cases.B and #pathSetAnalysis"
+    },
+    "C": {
+      "title": "synthetic mutation inside fixture root",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "detected": true,
+      "evidence": "fixture-isolation.json#synthetic.cases.C"
+    },
+    "D": {
+      "title": "byteLength remains an enforced identity component",
+      "expected": "PASS",
+      "actual": "PASS",
+      "staticRules": {
+        "windowsPathsIdentityKeys": "const IDENTITY_KEYS = ['attributes', 'byteLength', 'fileId', 'finalPath', 'isDirectory', 'linkCount', 'volumeSerial'];",
+        "windowsPathsComparison": "if (IDENTITY_KEYS.some(key => before[key] !== after[key])) boundary(",
+        "helperProtocolChainComparison": "chain.forEach((item, index) => assertStableIdentity(state.parent[index], item, { directory: true }));",
+        "helperSameIdentity": "foreach ($key in @('attributes', 'byteLength', 'fileId', 'finalPath', 'isDirectory', 'linkCount', 'volumeSerial')) {",
+        "helperByteLengthSource": "$length = [long] [BitConverter]::ToUInt32($raw, 32) * 4294967296 + [BitConverter]::ToUInt32($raw, 36)"
+      },
+      "evidence": "fixture-isolation.json#synthetic.cases.D and structural-validation.json#productIdentityRules"
+    }
+  }
+}

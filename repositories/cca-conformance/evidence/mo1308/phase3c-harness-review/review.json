@@ -1,0 +1,240 @@
+{
+  "conclusion": "NO_BLOCKING_FINDINGS",
+  "findings": [
+    {
+      "disposition": "FIXED",
+      "id": "H-01",
+      "note": "Hostile paths are now inside a re-sealed, sorted manifest with matching file and marker digest; exact MO1308_EXPORT_CORRUPT required from manifest validation and export verification; control row must pass. Confirmed to fail when the path rule is removed; confirmed again by the second review.",
+      "severity": "BLOCKING",
+      "summary": "First review: 3C-F2 passed for the wrong reason (hostile paths were extra files, rejected by the file-count check before any path rule)."
+    },
+    {
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "id": "H-02",
+      "note": "Disclosed in docs/mo1308-phase3c-review-dispositions.md (to be cited by the 3D release disclosures). Removal is lstat-based, link-safe, confined by a within check and runs in finally.",
+      "severity": "NON_BLOCKING",
+      "summary": "F3 and G2 make work directories under <worktree>/.p3c-work, not the short temporary root."
+    },
+    {
+      "disposition": "FIXED",
+      "id": "H-03",
+      "note": "Now asserts that SDK history regions were found; the runtime part is documented as corroboration only (second review H-19: no further action).",
+      "severity": "NON_BLOCKING",
+      "summary": "G6 runtime restore refusals are untyped and vacuous; the static audit carries the case."
+    },
+    {
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "id": "H-04",
+      "note": "Disclosed in docs/mo1308-phase3c-review-dispositions.md.",
+      "severity": "NON_BLOCKING",
+      "summary": "D5/D7/D8 reduce sizes or skip the legacy comparison at 10,000 transitions; reductions are only in comments."
+    },
+    {
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "id": "H-05",
+      "note": "Disclosed in docs/mo1308-phase3c-review-dispositions.md; tightening risks asserting more than the Freeze says.",
+      "severity": "NON_BLOCKING",
+      "summary": "Several cases accept a wider error-code set than the Freeze table."
+    },
+    {
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "id": "H-06",
+      "note": "The pre-registered rule is the protocol text; per-variant results are observed. Disclosed in docs/mo1308-phase3c-review-dispositions.md.",
+      "severity": "NON_BLOCKING",
+      "summary": "The Q03 outcome rule is CONFIRMED only if all three removals verify clean."
+    },
+    {
+      "disposition": "FIXED",
+      "id": "H-07",
+      "note": "E3 now requires a numeric, equal tombstone index. E6 and F4 accepted with disclosure (record cases; second review H-17 agrees not blocking).",
+      "severity": "NON_BLOCKING",
+      "summary": "Swallowed results in E6 (failed export), F4 (skipped alias), E3 (undefined index compare)."
+    },
+    {
+      "disposition": "FIXED",
+      "id": "H-08",
+      "note": "G1 asserts scanned > 0. I1 and I3 token-list limits accepted with disclosure (second review H-16: not blocking, runtime observer in I2 backs the claims).",
+      "severity": "NON_BLOCKING",
+      "summary": "Static audits G1, I1, I3 do not assert they scanned anything and scan fixed lists."
+    },
+    {
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "id": "H-09",
+      "note": "Disclosed in docs/mo1308-phase3c-review-dispositions.md.",
+      "severity": "NON_BLOCKING",
+      "summary": "Weak hostile rows in J2, J5, J6."
+    },
+    {
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "id": "H-10",
+      "note": "The independent recomputation in the first loop carries the case.",
+      "severity": "NOTE",
+      "summary": "B2 determinism check compares the memoized head with the manifest head."
+    },
+    {
+      "disposition": "FIXED",
+      "id": "H-11",
+      "note": "Added to the inputPaths of campaign.mjs.",
+      "severity": "NOTE",
+      "summary": "The legacy checkpoint oracle was not hash-bound."
+    },
+    {
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "id": "H-12",
+      "note": "Durations are not timestamps; accepted.",
+      "severity": "NOTE",
+      "summary": "Observations carry wall-clock durations."
+    },
+    {
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "id": "H-13",
+      "note": "Disclosed; the certifying run must be on a quiet host.",
+      "severity": "NOTE",
+      "summary": "C8 snapshot lists files only; G2 guard is 90 s inside a 300 s step guard."
+    },
+    {
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "id": "H-14",
+      "note": "The core byte-identity property holds; disclosed in docs/mo1308-phase3c-review-dispositions.md.",
+      "severity": "NON_BLOCKING",
+      "summary": "Second review: G2 appends the produced result as a duplicate of readiness-ready; that leg is mis-described."
+    },
+    {
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "id": "H-15",
+      "note": "The certifying run requires a quiet host with a recorded load sample; sample counts are not lowered.",
+      "severity": "NON_BLOCKING",
+      "summary": "Second review: step A used 585 s of its 900 s guard (A4 508 s), step C 190 s of 300 s in r4; a loaded host could expire a guard."
+    },
+    {
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "id": "H-16",
+      "note": "The product has none of these today (grep); runtime observer covers process and sockets. Disclosed.",
+      "severity": "NON_BLOCKING",
+      "summary": "Second review: I1/I3 scanners accept some forms (unprefixed banned imports, destructured process.env, new Function exemption in main.js)."
+    },
+    {
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "id": "H-17",
+      "note": "Record case; outcome depends on the remnant bytes.",
+      "severity": "NOTE",
+      "summary": "Second review: E6 swallows a failing export."
+    },
+    {
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "id": "H-18",
+      "note": "See H-10.",
+      "severity": "NOTE",
+      "summary": "Second review: B2 determinism wording."
+    },
+    {
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "id": "H-19",
+      "note": "See H-03.",
+      "severity": "NOTE",
+      "summary": "Second review: G6 runtime refusals untyped."
+    },
+    {
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "id": "H-20",
+      "note": "Strict ordering is 3A-H7; the byte-identity half is solid.",
+      "severity": "NOTE",
+      "summary": "Second review: F5 birthtime ordering has 1 ms slack."
+    }
+  ],
+  "kind": "MO1308Phase3Review",
+  "reviewedAt": "2026-10-08T18:52:17.284Z",
+  "reviewer": {
+    "identity": "Claude Sonnet 5.5 read-only sub-agent (second review of the final 3C bytes; first review found H-01)",
+    "role": "INDEPENDENT_SUB_AGENT"
+  },
+  "scope": "All 17 files of repositories/cca-conformance/tools/mo1308-phase3c at commit e7172e11, against protocol sections 5-8, 9.3 and 11 and Freeze A8.9, A8.10 and A10.",
+  "subject": [
+    {
+      "byteLength": 1208,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3c/campaign.mjs",
+      "sha256": "e42fb6e47104bbec36cbd3ec0babf13d00a54108ebcc322ed5ec9f6717ff5454"
+    },
+    {
+      "byteLength": 20483,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3c/cases-admission.mjs",
+      "sha256": "cc6d468c8d13c81643021ac07ecbbc3e80880b654890034d93dddb521d2ac156"
+    },
+    {
+      "byteLength": 15185,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3c/cases-authority.mjs",
+      "sha256": "6d76982058714d33fee398ee430733006140e7ef00a958c1f663b90409eaf7a8"
+    },
+    {
+      "byteLength": 11536,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3c/cases-data.mjs",
+      "sha256": "b3d3a6ba8d027da49b7ed1a5cc5efc7e65ca417d6c5e156d749f560088f17c6f"
+    },
+    {
+      "byteLength": 10155,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3c/cases-hostile.mjs",
+      "sha256": "ffbdcbfc972819e1f028f2324c0e715906a4b1ecb5ac7ca15c3bde5b56fd86c3"
+    },
+    {
+      "byteLength": 5927,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3c/cases-links.mjs",
+      "sha256": "45554ad761215809e7319be86cddefe1ca5f9bb0fd6bbe2450fb33e42a658d6a"
+    },
+    {
+      "byteLength": 8184,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3c/cases-native.mjs",
+      "sha256": "946b75c61420f9f0b9f945c5407335b57daa01f4b6c21d60dea0bc853857c434"
+    },
+    {
+      "byteLength": 27586,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3c/cases-purge.mjs",
+      "sha256": "bce2e8a0e1a72d0c814a463565788b8a374c36a8e5895e1cfb03ae8ed78c8595"
+    },
+    {
+      "byteLength": 16122,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3c/cases-sha.mjs",
+      "sha256": "70447e3eb5e667173cbac8c7e053b6dfe0643722c10176381fc8926c8aa2a09f"
+    },
+    {
+      "byteLength": 25816,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3c/cases-tamper.mjs",
+      "sha256": "8661522e4979b043e09c3d55f52e0b63f2bc1fa04e4df2bb3b7e613cb1b4a663"
+    },
+    {
+      "byteLength": 957,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3c/cases.mjs",
+      "sha256": "dace7e3e14b7e8bdfe3ea8fb8b76d3e51756e1b7d8af56cd819234ff719eea09"
+    },
+    {
+      "byteLength": 1313,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3c/dev-run.mjs",
+      "sha256": "dd6c47fbdb4e464d8e038650e0e3009735de8fb452859435fee97fbac233cc60"
+    },
+    {
+      "byteLength": 2048,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3c/env.mjs",
+      "sha256": "919f95c0b2cdcf6dac5f30b95a42d037415f88f5e863dfdffea9cb75dcb22a81"
+    },
+    {
+      "byteLength": 2809,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3c/links.mjs",
+      "sha256": "dbdd4e104169e1f49a5583790cf5262f73ab910ad2f344b9ba9eea6336228088"
+    },
+    {
+      "byteLength": 1536,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3c/process-observer.cjs",
+      "sha256": "baaa41a9ed1bd9a617439f00ec45b6329cdec32c925bc84b992de311b875278f"
+    },
+    {
+      "byteLength": 4401,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3c/scanner.mjs",
+      "sha256": "342977b2802d0669aae07b3a973065d391bf19463814eb14715edb39c8780cdf"
+    },
+    {
+      "byteLength": 14765,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3c/support.mjs",
+      "sha256": "0225b178316babc9c833bb80abb66bd5f486d9e8dbb39f2e6ef271b8eaaa0555"
+    }
+  ],
+  "version": "1.0.0"
+}

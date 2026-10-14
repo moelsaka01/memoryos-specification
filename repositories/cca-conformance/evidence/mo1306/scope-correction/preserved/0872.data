@@ -1,0 +1,106 @@
+"""Phase 3C-R offline provider validation, retaining fresh results and byte dependencies."""
+import contextlib, hashlib, importlib.metadata, io, json, os, pathlib, re, runpy, socket, subprocess, sys, tempfile, time, unittest
+ROOT=pathlib.Path(__file__).resolve().parents[4]
+OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3cr/provider-results'
+TOOLS=ROOT/'repositories/cca-conformance/tools'
+NODE=ROOT/'.cache/mo1305-phase3br/toolchain/node-v24.21.0-win-x64/node.exe'
+PS=pathlib.Path(os.environ['SystemRoot'])/'System32/WindowsPowerShell/v1.0/powershell.exe'
+BASELINE='9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44'
+sys.dont_write_bytecode=True
+sys.path[:0]=[str(TOOLS/'mo1306-phase2b'),str(TOOLS/'mo1306-phase2c')]
+def deny_network(*args,**kwargs):raise AssertionError('Network forbidden during Phase 3C-R offline audit')
+socket.create_connection=deny_network
+socket.socket.connect=deny_network
+ENV={k:os.environ[k] for k in ('SystemRoot','WINDIR')}
+ENV.update(PATHEXT='.COM;.EXE;.BAT;.CMD',PATH=r'C:\Program Files\Git\cmd')
+def sha(raw):return 'sha256:'+hashlib.sha256(raw).hexdigest()
+def put(name,value):
+ p=OUT/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps(value,sort_keys=True,indent=2)+'\n',encoding='utf-8',newline='\n')
+def command(argv,timeout=180):
+ start=time.monotonic();p=subprocess.run(list(map(str,argv)),cwd=ROOT,env=ENV,stdin=subprocess.DEVNULL,capture_output=True,timeout=timeout,creationflags=subprocess.CREATE_NO_WINDOW)
+ return {'argv':list(map(str,argv)),'exitCode':p.returncode,'stdout':p.stdout.decode('utf-8-sig'),'stderr':p.stderr.decode('utf-8-sig'),'elapsedMs':round((time.monotonic()-start)*1000)}
+def must_pass(row):assert row['exitCode']==0,row
+assert sys.version_info[:2]==(3,12)
+assert importlib.metadata.version('PyYAML')=='6.0.3'
+assert sha(NODE.read_bytes())=='sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32'
+import gitlab_validator as gv, jenkins_validator as jv, azure_validator as av, github_validator as gh, safe_yaml
+import test_gitlab as gt, test_jenkins as jt, test_github as ght, yaml
+summary={'kind':'MemoryOSPhase3CROfflineProviderValidation','version':'1.0.0','baseline':BASELINE,'status':'RUNNING','freshExecution':True,'historicalEvidenceReused':False,'scope':'Offline independent parsers, schemas, PowerShell AST, current generation, pure transport; no provider service, hosted certification, Linux, VM or network','runtime':{'node':str(NODE),'nodeSha256':sha(NODE.read_bytes()),'python':sys.version,'PyYAML':importlib.metadata.version('PyYAML'),'jsonschema':importlib.metadata.version('jsonschema')}}
+if '--resume-node' not in sys.argv:
+ # Reexecute original audit logic, never count a retained PASS as a fresh PASS.
+ suite=unittest.TestSuite([unittest.defaultTestLoader.loadTestsFromModule(gt),unittest.defaultTestLoader.loadTestsFromModule(jt)])
+ stream=io.StringIO();result=unittest.TextTestRunner(stream=stream,verbosity=2).run(suite)
+ put('gitlab-jenkins-tests.json',{'status':'PASS' if result.wasSuccessful() else 'FAIL','tests':result.testsRun,'output':stream.getvalue()});assert result.wasSuccessful()
+ summary['gitlabJenkinsTests']=result.testsRun
+ put('jenkins-corpus.json',jt.report())
+ summary['jenkinsNegativeCount']=len(jt.CORPUS)
+ summary['gitlabNegativeCount']=len(json.loads(gt.CORPUS.read_text(encoding='utf8'))['cases'])
+ print('GitLab/Jenkins PASS: '+str(result.testsRun)+' tests',flush=True)
+ stream=io.StringIO()
+ with contextlib.redirect_stdout(stream):azure_ns=runpy.run_path(str(TOOLS/'mo1306-phase2c/test_azure.py'),run_name='phase3cr_azure')
+ put('azure-corpus.json',azure_ns['receipt']);summary['azureNegativeCount']=azure_ns['receipt']['negativeCount']
+ print('Azure corpus PASS: '+str(summary['azureNegativeCount'])+' negatives',flush=True)
+ # Keep AST request files inside our assigned evidence subtree. The reviewed AST parser only parses text.
+ def github_ast(scripts):
+  with tempfile.TemporaryDirectory(prefix='provider-ast-',dir=OUT) as scratch:
+   req=pathlib.Path(scratch)/'request.json';req.write_text(json.dumps({'scripts':scripts}),encoding='utf-8')
+   row=command([PS,'-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',TOOLS/'mo1306-phase2c/check-github-powershell.ps1','-InputPath',req],60)
+   if row['exitCode']!=0:raise gh.ContractError('PowerShell AST/argv rejected: '+row['stderr'].strip())
+   return json.loads(row['stdout'])
+ gh.validate_ast=github_ast
+ binding=json.loads((gh.FIXTURES/'bindings.json').read_text(encoding='utf8'))
+ golden=(gh.FIXTURES/'golden.yml').read_bytes();positive=gh.validate_workflow(golden,binding)
+ negatives=[]
+ for case in json.loads((gh.FIXTURES/'negative-corpus.json').read_text(encoding='utf8'))['cases']:
+  bad=ght.mutation(golden,case)
+  try:gh.validate_workflow(bad,binding)
+  except (ValueError,UnicodeError,yaml.YAMLError) as error:negatives.append({'id':case['id'],'status':'REJECTED','sha256':sha(bad),'diagnostic':str(error)})
+  else:raise AssertionError('GitHub negative accepted: '+case['id'])
+ original_script=safe_yaml.parse_yaml(golden)['jobs']['memoryos_ci']['steps'][3]['run']
+ ast_negatives=[]
+ for suffix in ["; Write-Output 'injected'","\nWrite-Output 'injected'"," | Out-Null"]:
+  try:github_ast([{'id':'mutated','actual':original_script.rstrip('\n')+suffix+'\n','expected':original_script}])
+  except gh.ContractError as error:ast_negatives.append({'suffix':suffix,'status':'REJECTED','diagnostic':str(error)})
+  else:raise AssertionError('AST injection accepted')
+ put('github-corpus.json',{'status':'PASS','positive':positive,'negativeCount':len(negatives),'negatives':negatives,'astNegativeCount':len(ast_negatives),'astNegatives':ast_negatives})
+ summary.update(githubNegativeCount=len(negatives),githubAstNegativeCount=len(ast_negatives))
+ print('GitHub corpus PASS: '+str(len(negatives))+' negatives + 3 AST negatives',flush=True)
+ # Validate fresh current-C3AB generated bytes, not solely the golden fixtures.
+ fresh=json.loads((OUT/'fresh-probe.json').read_text(encoding='utf-8-sig'))
+ current=[]
+ for item in fresh['outputs']:
+  p=item['provider'];deployment=item['deployment'];settings=deployment['options'];pin=deployment['distributionDigest'];config=item['configurationDigest'];files={r['path']:r['text'].encode('utf8') for r in item['files']}
+  if p=='gitlab':validation=gv.validate_gitlab(files['.gitlab-ci.yml'],settings['runnerTag'],config,pin)
+  elif p=='jenkins':validation=jv.validate_jenkins(files['Jenkinsfile'],settings['agentLabel'],config,pin)
+  elif p=='azure':validation=av.validate(files['azure-pipelines.yml'],config,pin,settings['pool'])
+  elif p=='github':validation=gh.validate_workflow(files['.github/workflows/memoryos-ci.yml'],{'configurationDigest':config,'deployment':deployment})
+  else:validation={'status':'PASS','generatedFiles':sorted(files)}
+  if p in ('gitlab','jenkins'):
+   script=OUT/(p+'-script.ps1');script.write_text(validation['script'],encoding='utf8',newline='\n')
+   ast=command([PS,'-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',TOOLS/'mo1306-phase2b/check-powershell.ps1','-Path',script,'-Provider',p]);must_pass(ast);validation['freshPowerShellAST']=json.loads(ast['stdout'])
+  current.append({'provider':p,'status':'PASS','validation':validation})
+ put('current-generated-validation.json',current)
+else:
+ prior=json.loads((OUT/'gitlab-jenkins-tests.json').read_text())
+ assert prior['status']=='PASS'
+ summary.update(gitlabJenkinsTests=prior['tests'],jenkinsNegativeCount=len(jt.CORPUS),gitlabNegativeCount=len(json.loads(gt.CORPUS.read_text(encoding='utf8'))['cases']),azureNegativeCount=json.loads((OUT/'azure-corpus.json').read_text())['negativeCount'],githubNegativeCount=json.loads((OUT/'github-corpus.json').read_text())['negativeCount'],githubAstNegativeCount=json.loads((OUT/'github-corpus.json').read_text())['astNegativeCount'])
+ fresh=json.loads((OUT/'fresh-probe.json').read_text(encoding='utf-8-sig'))
+ assert all(x['status']=='PASS' for x in json.loads((OUT/'current-generated-validation.json').read_text()))
+# These retained regression suites are pure/current-source except read-only git-show oracle.
+node_tests=[TOOLS/'mo1306-phase2b/adapters.test.mjs',TOOLS/'mo1306-phase2c/generated-structure.test.mjs',TOOLS/'mo1306-phase2c/github-transport.test.mjs']
+row=command([NODE,'--test','--test-reporter=tap',*node_tests]);put('node-adapter-regressions.json',row);must_pass(row)
+match=re.search(r'^# tests (\d+)$',row['stdout'],re.M);assert match;summary['nodeTests']=int(match.group(1))
+row=command([NODE,TOOLS/'mo1306-phase2c/adapter-contract.test.mjs']);put('azure-github-api-regression.json',row);must_pass(row);summary['azureGithubApiChecks']=json.loads(row['stdout'])['checks']
+print('Node provider regressions PASS: '+str(summary['nodeTests'])+' tests',flush=True)
+# Exact bytes which fresh receipts depend on. No old evidence receipt is treated as new execution.
+paths=set()
+for folder in [ROOT/'repositories/memoryos-ci',TOOLS/'mo1306-phase2b',TOOLS/'mo1306-phase2c',ROOT/'repositories/cca-conformance/fixtures/mo1306/phase2b',ROOT/'repositories/cca-conformance/fixtures/mo1306-phase2c']:
+ paths.update(p for p in folder.rglob('*') if p.is_file())
+paths.update((ROOT/'repositories/cca-conformance/fixtures/mo1306').glob('*.json'))
+paths.add(pathlib.Path(__file__));paths.add(pathlib.Path(__file__).with_name('provider-probe.mjs'))
+identities=[{'path':p.relative_to(ROOT).as_posix(),'byteLength':p.stat().st_size,'sha256':sha(p.read_bytes())} for p in sorted(paths)]
+put('byte-dependencies.json',{'baseline':BASELINE,'identities':identities})
+summary.update(status='PASS',freshProbeCounts=fresh['counts'],currentGeneratedProviders=5,dependencyCount=len(identities),providerLabels={'generic':'REAL_EXECUTION_VALIDATED; final 3A-R certification external','gitlab':'CONTRACT_VALIDATED / NOT_LIVE_PROVIDER_CERTIFIED','jenkins':'CONTRACT_VALIDATED / NOT_LIVE_PROVIDER_CERTIFIED','azure':'CONTRACT_VALIDATED / NOT_LIVE_PROVIDER_CERTIFIED','github':'HOSTED_EXECUTION_CERTIFICATION_PENDING'})
+put('summary.json',summary)
+(OUT.parent/'provider-audit.json').write_text(json.dumps(summary,sort_keys=True,indent=2)+'\n',encoding='utf8')
+print(json.dumps(summary,sort_keys=True),flush=True)

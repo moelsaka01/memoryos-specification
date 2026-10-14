@@ -1,0 +1,6 @@
+generate 99999 entries and members on disk: ok, 265237 ms, heap +10.3 MiB
+store.query page of 1000 (list and read every entry, no members): MO1308_LEDGER_CORRUPT, 29903 ms, heap +39.7 MiB
+store.verify (list and read every entry and member): MO1308_LEDGER_CORRUPT, 86360 ms, heap +108.5 MiB
+store.append of the last allowed entry (verify the whole ledger, then publish): MO1308_LEDGER_CORRUPT, 156217 ms, heap +81.4 MiB
+store.exportLedger: MO1308_LEDGER_CORRUPT, 154557 ms, heap +86.7 MiB
+store.verifyExport: MO1308_LEDGER_NOT_FOUND, 1 ms, heap +0 MiB

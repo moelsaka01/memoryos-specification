@@ -1,0 +1,133 @@
+{
+  "id": "G",
+  "name": "membership-mismatch-refusal",
+  "kind": "EXACT_FUNCTION_NATIVE_DOUBLE",
+  "result": "PASS",
+  "startedAt": "2026-09-30T15:40:21.870Z",
+  "startupCases": [
+    {
+      "name": "unrelated-sole-client",
+      "kind": "EXACT_EXTRACTED_FUNCTION_WITH_NATIVE_DOUBLE",
+      "expectedExit": 22,
+      "accepted": false,
+      "result": "PASS",
+      "nativeProductHelper": false,
+      "realHostProof": false,
+      "events": [
+        {
+          "event": "stdin-finish",
+          "elapsedMs": 15.678499999999985
+        },
+        {
+          "event": "stdin-close",
+          "elapsedMs": 15.739700000000084
+        },
+        {
+          "event": "stdout-end",
+          "elapsedMs": 527.5738999999994
+        },
+        {
+          "event": "stdout-close",
+          "elapsedMs": 527.9263000000001
+        },
+        {
+          "event": "stderr-end",
+          "elapsedMs": 527.9996999999994
+        },
+        {
+          "event": "stderr-close",
+          "elapsedMs": 528.0416999999998
+        },
+        {
+          "event": "exit",
+          "elapsedMs": 535.6437999999998,
+          "code": 22,
+          "signal": null
+        }
+      ],
+      "pid": 14612,
+      "exitCode": 22,
+      "exitSignal": null,
+      "elapsedMs": 535.6836999999996,
+      "proof": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/security/startup/unrelated-sole-client/proof.json",
+        "byteLength": 710,
+        "sha256": "sha256:1867ab2a51ada41916fac92021c3a89656c0988eeb09e8ec09fd5f14eea59253"
+      },
+      "observed": {
+        "configuredErrorContext": null,
+        "nativeLastErrorSet": false,
+        "membershipCalls": 1,
+        "freeConsoleCalls": 0,
+        "kind": "MO1307ExtractedHeadlessStartupSimulation",
+        "scenario": "unrelated-sole-client",
+        "accepted": false,
+        "failure": "MO1307_INTERNAL",
+        "failureType": "System.InvalidOperationException",
+        "events": [
+          {
+            "name": "GetStdHandle",
+            "arguments": [
+              -10
+            ]
+          },
+          {
+            "name": "GetFileType",
+            "arguments": [
+              10
+            ]
+          },
+          {
+            "name": "GetStdHandle",
+            "arguments": [
+              -11
+            ]
+          },
+          {
+            "name": "GetFileType",
+            "arguments": [
+              11
+            ]
+          },
+          {
+            "name": "GetStdHandle",
+            "arguments": [
+              -12
+            ]
+          },
+          {
+            "name": "GetFileType",
+            "arguments": [
+              12
+            ]
+          },
+          {
+            "name": "GetConsoleProcessList",
+            "arguments": [
+              1
+            ]
+          }
+        ],
+        "detached": false,
+        "productionFunctionUnmodified": true,
+        "nativeProcessOperationsPerformed": false,
+        "realHostIdentityProof": false
+      },
+      "closed": true,
+      "timedOut": false,
+      "cleanupExpired": false,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/security/startup/unrelated-sole-client/stdout.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/security/startup/unrelated-sole-client/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdoutBytes": 0,
+      "stderrBytes": 0
+    }
+  ]
+}

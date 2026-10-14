@@ -1,0 +1,16 @@
+{
+  "kind": "MO1307FocusedAttemptDisposition",
+  "classification": "HARNESS_DEFECT",
+  "failedAttempt": "runtime-publication-attempt2/receipt.json",
+  "preservedCounts": {
+    "tests": 124,
+    "pass": 123,
+    "fail": 1
+  },
+  "failure": "New stdout cancellation witness subtracted two binary floating-point monotonic timestamps and compared to integer 2000; observed 1999.9999999999995.",
+  "correction": "Compare cleanupDeadline exactly to terminalAt + 2000, matching the contract formula and implementation addition without numeric tolerance.",
+  "productionChange": false,
+  "failedSourcePreserved": "runtime-publication-attempt2/inputs/025.data",
+  "nextRun": "Only the seven-case changed publication_wait test file; other 117 final-source cases already passed unchanged.",
+  "retryPolicy": "One diagnosed harness correction, no retry-until-pass."
+}

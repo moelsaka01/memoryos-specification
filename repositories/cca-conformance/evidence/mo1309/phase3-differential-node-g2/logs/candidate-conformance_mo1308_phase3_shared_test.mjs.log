@@ -1,0 +1,865 @@
+TAP version 13
+# Subtest: S01 stable JSON sorts keys, ends with one LF and rejects what is not reproducible
+ok 1 - S01 stable JSON sorts keys, ends with one LF and rejects what is not reproducible
+  ---
+  duration_ms: 1.974668
+  type: 'test'
+  ...
+# Subtest: S02 hashing helpers agree with node:crypto and refuse links
+ok 2 - S02 hashing helpers agree with node:crypto and refuse links
+  ---
+  duration_ms: 4.94322
+  type: 'test'
+  ...
+# Subtest: S03 the closed-shape validator rejects extra and missing members
+ok 3 - S03 the closed-shape validator rejects extra and missing members
+  ---
+  duration_ms: 0.450979
+  type: 'test'
+  ...
+# Subtest: C01 the scanner reads statements and skips comments, strings, templates and regular expressions
+ok 4 - C01 the scanner reads statements and skips comments, strings, templates and regular expressions
+  ---
+  duration_ms: 1.252694
+  type: 'test'
+  ...
+# Subtest: C02 the closure follows relative imports, separates built-ins and externals, and reports missing files
+ok 5 - C02 the closure follows relative imports, separates built-ins and externals, and reports missing files
+  ---
+  duration_ms: 0.566228
+  type: 'test'
+  ...
+# Subtest: C03 the static closure of the CLI and SDK equals the set Node actually loads
+ok 6 - C03 the static closure of the CLI and SDK equals the set Node actually loads
+  ---
+  duration_ms: 342.195276
+  type: 'test'
+  ...
+# Subtest: I01 the committed inventory equals the source byte for byte and validates
+ok 7 - I01 the committed inventory equals the source byte for byte and validates
+  ---
+  duration_ms: 2.964455
+  type: 'test'
+  ...
+# Subtest: I02 stream, step and case counts are the protocol ones
+ok 8 - I02 stream, step and case counts are the protocol ones
+  ---
+  duration_ms: 0.944329
+  type: 'test'
+  ...
+# Subtest: I03 every Freeze requirement R01-R37 and every qualification Q01-Q15 is covered
+ok 9 - I03 every Freeze requirement R01-R37 and every qualification Q01-Q15 is covered
+  ---
+  duration_ms: 2.216026
+  type: 'test'
+  ...
+# Subtest: I04 the owner decisions D6 and D7 are in the inventory
+ok 10 - I04 the owner decisions D6 and D7 are in the inventory
+  ---
+  duration_ms: 0.892487
+  type: 'test'
+  ...
+# Subtest: P01 the protocol document is APPROVED as Amendment A8, current with the inventory, and names exactly the inventory cases
+ok 11 - P01 the protocol document is APPROVED as Amendment A8, current with the inventory, and names exactly the inventory cases
+  ---
+  duration_ms: 6.285884
+  type: 'test'
+  ...
+# Subtest: A01 every path changed since BF up to the corrected candidate is in the allowed set; unrelated paths are not
+ok 12 - A01 every path changed since BF up to the corrected candidate is in the allowed set; unrelated paths are not
+  ---
+  duration_ms: 13.694585
+  type: 'test'
+  ...
+# Subtest: A02 this branch changes no production path and adds no evidence beyond the A3.x precondition evidence, protocol-defined rehearsal evidence and verifying certifying generations
+not ok 13 - A02 this branch changes no production path and adds no evidence beyond the A3.x precondition evidence, protocol-defined rehearsal evidence and verifying certifying generations
+  ---
+  duration_ms: 945.074055
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1308_phase3_shared_test.mjs:217:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/cli.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/examples.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/mo1307.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/mo1308-first-run-9b79e120.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/mo1308.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/studio.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1308/phase3d-regression/regression.json: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-audit.json: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/comparison.json: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/disposition.md: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_architecture.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_cli-contract.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_closed-output.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_history-grammar.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_history-limit-order.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_history-store-windows.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_history-store.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_human-output.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_investigate.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_package-workflow.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_policy-cli.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_session.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_boundary_contract_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_compatibility_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_component_evidence_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_coverage_gap_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_independent_assessment_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1301_integration_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1302_action_foundation_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1302_cross_platform_closure_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1302_github_product_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1303_phase1_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1303_phase2_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1303_phase3_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1304_phase1_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1304_phase2_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1304_phase3_ubuntu_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1304_phase3_windows_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1304_platform_support_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1305_host_guard_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1305_phase1_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1305_phase2_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1305_phase3_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1305_release_metadata_correction_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase1_core_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase1_fixtures_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase1_native_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase1_package_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2a_core_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2a_result_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2b_authority_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2b_fixture_lineage_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2b_graph_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2b_history_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2b_limits_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2b_projection_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2b_review_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_api_bootstrap_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_correction_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_finalization_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_launch_policy_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_native_runtime_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_publication_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_publication_wait_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_runtime_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_supplement_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_surfaces_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_timer_lifetime_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2d_semantic_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase1_entry_obligations_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase1_workspace_check_correction_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase2_corrections_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase2a_ledger_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase2b_admission_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase2d_integration_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase3_shared_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase3a_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase3b_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase3c_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase3d_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_normative_vectors_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_reference_implementation_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_report_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_requirement_selector_catalog_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_schema_validation_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_specification_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_ai_runtime_adapter_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_cognitive_investigation_explorer_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_cognitive_regression_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_investigation_core_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_investigation_policy_contracts_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_investigation_policy_engine_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_investigation_policy_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_memory_investigation_package_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_memory_studio_integration_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_memory_studio_web_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_memoryos_history_contract_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_memoryos_history_sdk_guard_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_memoryos_policy_sdk_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_memoryos_sdk_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_mip_adversarial_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_mip_canonical_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_mip_derived_edge_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_mip_ordering_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_mip_pipeline_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_mip_schema_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_policy_canonical_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_policy_fact_context_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_regression_policy_fact_source_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_architecture.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_cli-contract.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_closed-output.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_history-grammar.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_history-limit-order.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_history-store-windows.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_history-store.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_human-output.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_investigate.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_package-workflow.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_policy-cli.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_session.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_boundary_contract_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_compatibility_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_component_evidence_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_coverage_gap_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_independent_assessment_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1301_integration_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1302_action_foundation_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1302_cross_platform_closure_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1302_github_product_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1303_phase1_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1303_phase2_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1303_phase3_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1304_phase1_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1304_phase2_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1304_phase3_ubuntu_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1304_phase3_windows_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1304_platform_support_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1305_host_guard_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1305_phase1_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1305_phase2_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1305_phase3_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1305_release_metadata_correction_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase1_core_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase1_fixtures_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase1_native_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase1_package_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2a_core_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2a_result_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2b_authority_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2b_fixture_lineage_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2b_graph_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2b_history_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2b_limits_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2b_projection_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2b_review_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_api_bootstrap_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_correction_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_finalization_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_launch_policy_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_native_runtime_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_publication_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_publication_wait_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_runtime_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_supplement_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_surfaces_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_timer_lifetime_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2d_semantic_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase1_entry_obligations_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase1_workspace_check_correction_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase2_corrections_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase2a_ledger_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase2b_admission_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase2d_integration_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase3_shared_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase3a_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase3b_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase3c_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase3d_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1309_audit_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1309_campaigns_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1309_inventory_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1309_manifest_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1309_validator_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_normative_vectors_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_reference_implementation_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_report_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_requirement_selector_catalog_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_schema_validation_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_specification_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_ai_runtime_adapter_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_cognitive_investigation_explorer_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_cognitive_regression_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_investigation_core_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_investigation_policy_contracts_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_investigation_policy_engine_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_investigation_policy_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_memory_investigation_package_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_memory_studio_integration_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_memory_studio_web_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_memoryos_history_contract_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_memoryos_history_sdk_guard_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_memoryos_policy_sdk_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_memoryos_sdk_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_mip_adversarial_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_mip_canonical_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_mip_derived_edge_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_mip_ordering_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_mip_pipeline_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_mip_schema_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_policy_canonical_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_policy_fact_context_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_regression_policy_fact_source_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/receipt.json: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-regression/logs/001-dashboard-unit-run1.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-regression/logs/002-dashboard-browser-run1.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-regression/logs/003-dashboard-differential-10k-run1.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-regression/logs/004-mo1309-tools-run1.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-regression/logs/005-studio-existing-run1.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-regression/logs/006-dashboard-browser-run2.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-regression/rows.json: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-rehearsal/4a/gen-1/4a-receipt.json: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-rehearsal/4b/gen-1/4b-receipt.json: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1309/phase3-rehearsal/4c/gen-1/4c-receipt.json: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/cli.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    1: 'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/examples.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    2: 'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/mo1307.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    3: 'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/mo1308-first-run-9b79e120.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    4: 'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/mo1308.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    5: 'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/studio.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    6: 'repositories/cca-conformance/evidence/mo1308/phase3d-regression/regression.json: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    7: 'repositories/cca-conformance/evidence/mo1309/phase3-audit.json: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    8: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/comparison.json: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    9: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/disposition.md: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    10: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_architecture.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    11: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_cli-contract.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    12: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_closed-output.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    13: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_history-grammar.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    14: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_history-limit-order.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    15: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_history-store-windows.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    16: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_history-store.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    17: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_human-output.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    18: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_investigate.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    19: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_package-workflow.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    20: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_policy-cli.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    21: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-cli_session.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    22: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_boundary_contract_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    23: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_compatibility_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    24: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_component_evidence_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    25: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_coverage_gap_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    26: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_independent_assessment_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    27: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1301_integration_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    28: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1302_action_foundation_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    29: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1302_cross_platform_closure_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    30: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1302_github_product_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    31: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1303_phase1_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    32: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1303_phase2_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    33: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1303_phase3_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    34: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1304_phase1_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    35: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1304_phase2_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    36: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1304_phase3_ubuntu_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    37: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1304_phase3_windows_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    38: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1304_platform_support_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    39: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1305_host_guard_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    40: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1305_phase1_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    41: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1305_phase2_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    42: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1305_phase3_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    43: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1305_release_metadata_correction_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    44: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase1_core_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    45: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase1_fixtures_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    46: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase1_native_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    47: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase1_package_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    48: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2a_core_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    49: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2a_result_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    50: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2b_authority_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    51: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2b_fixture_lineage_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    52: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2b_graph_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    53: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2b_history_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    54: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2b_limits_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    55: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2b_projection_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    56: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2b_review_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    57: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_api_bootstrap_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    58: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_correction_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    59: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_finalization_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    60: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_launch_policy_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    61: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_native_runtime_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    62: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_publication_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    63: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_publication_wait_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    64: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_runtime_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    65: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_supplement_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    66: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_surfaces_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    67: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2c_timer_lifetime_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    68: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1307_phase2d_semantic_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    69: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase1_entry_obligations_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    70: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase1_workspace_check_correction_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    71: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase2_corrections_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    72: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase2a_ledger_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    73: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase2b_admission_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    74: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase2d_integration_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    75: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase3_shared_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    76: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase3a_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    77: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase3b_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    78: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase3c_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    79: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_mo1308_phase3d_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    80: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_normative_vectors_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    81: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_reference_implementation_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    82: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_report_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    83: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_requirement_selector_catalog_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    84: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_schema_validation_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    85: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-conformance_specification_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    86: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_ai_runtime_adapter_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    87: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_cognitive_investigation_explorer_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    88: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_cognitive_regression_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    89: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_investigation_core_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    90: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_investigation_policy_contracts_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    91: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_investigation_policy_engine_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    92: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_investigation_policy_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    93: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_memory_investigation_package_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    94: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_memory_studio_integration_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    95: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_memory_studio_web_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    96: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_memoryos_history_contract_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    97: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_memoryos_history_sdk_guard_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    98: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_memoryos_policy_sdk_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    99: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_memoryos_sdk_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    100: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_mip_adversarial_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    101: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_mip_canonical_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    102: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_mip_derived_edge_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    103: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_mip_ordering_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    104: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_mip_pipeline_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    105: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_mip_schema_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    106: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_policy_canonical_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    107: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_policy_fact_context_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    108: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/base-studio_regression_policy_fact_source_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    109: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_architecture.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    110: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_cli-contract.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    111: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_closed-output.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    112: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_history-grammar.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    113: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_history-limit-order.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    114: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_history-store-windows.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    115: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_history-store.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    116: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_human-output.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    117: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_investigate.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    118: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_package-workflow.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    119: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_policy-cli.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    120: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-cli_session.test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    121: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_boundary_contract_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    122: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_compatibility_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    123: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_component_evidence_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    124: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_coverage_gap_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    125: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_independent_assessment_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    126: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1301_integration_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    127: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1302_action_foundation_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    128: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1302_cross_platform_closure_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    129: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1302_github_product_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    130: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1303_phase1_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    131: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1303_phase2_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    132: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1303_phase3_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    133: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1304_phase1_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    134: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1304_phase2_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    135: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1304_phase3_ubuntu_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    136: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1304_phase3_windows_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    137: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1304_platform_support_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    138: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1305_host_guard_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    139: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1305_phase1_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    140: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1305_phase2_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    141: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1305_phase3_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    142: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1305_release_metadata_correction_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    143: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase1_core_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    144: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase1_fixtures_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    145: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase1_native_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    146: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase1_package_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    147: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2a_core_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    148: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2a_result_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    149: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2b_authority_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    150: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2b_fixture_lineage_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    151: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2b_graph_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    152: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2b_history_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    153: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2b_limits_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    154: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2b_projection_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    155: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2b_review_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    156: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_api_bootstrap_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    157: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_correction_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    158: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_finalization_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    159: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_launch_policy_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    160: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_native_runtime_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    161: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_publication_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    162: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_publication_wait_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    163: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_runtime_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    164: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_supplement_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    165: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_surfaces_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    166: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2c_timer_lifetime_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    167: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1307_phase2d_semantic_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    168: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase1_entry_obligations_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    169: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase1_workspace_check_correction_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    170: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase2_corrections_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    171: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase2a_ledger_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    172: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase2b_admission_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    173: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase2d_integration_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    174: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase3_shared_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    175: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase3a_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    176: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase3b_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    177: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase3c_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    178: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1308_phase3d_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    179: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1309_audit_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    180: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1309_campaigns_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    181: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1309_inventory_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    182: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1309_manifest_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    183: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_mo1309_validator_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    184: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_normative_vectors_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    185: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_reference_implementation_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    186: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_report_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    187: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_requirement_selector_catalog_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    188: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_schema_validation_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    189: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-conformance_specification_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    190: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_ai_runtime_adapter_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    191: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_cognitive_investigation_explorer_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    192: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_cognitive_regression_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    193: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_investigation_core_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    194: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_investigation_policy_contracts_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    195: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_investigation_policy_engine_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    196: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_investigation_policy_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    197: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_memory_investigation_package_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    198: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_memory_studio_integration_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    199: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_memory_studio_web_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    200: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_memoryos_history_contract_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    201: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_memoryos_history_sdk_guard_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    202: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_memoryos_policy_sdk_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    203: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_memoryos_sdk_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    204: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_mip_adversarial_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    205: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_mip_canonical_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    206: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_mip_derived_edge_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    207: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_mip_ordering_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    208: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_mip_pipeline_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    209: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_mip_schema_conformance_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    210: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_policy_canonical_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    211: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_policy_fact_context_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    212: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/logs/candidate-studio_regression_policy_fact_source_test.mjs.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    213: 'repositories/cca-conformance/evidence/mo1309/phase3-differential-node-g1/receipt.json: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    214: 'repositories/cca-conformance/evidence/mo1309/phase3-regression/logs/001-dashboard-unit-run1.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    215: 'repositories/cca-conformance/evidence/mo1309/phase3-regression/logs/002-dashboard-browser-run1.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    216: 'repositories/cca-conformance/evidence/mo1309/phase3-regression/logs/003-dashboard-differential-10k-run1.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    217: 'repositories/cca-conformance/evidence/mo1309/phase3-regression/logs/004-mo1309-tools-run1.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    218: 'repositories/cca-conformance/evidence/mo1309/phase3-regression/logs/005-studio-existing-run1.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    219: 'repositories/cca-conformance/evidence/mo1309/phase3-regression/logs/006-dashboard-browser-run2.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    220: 'repositories/cca-conformance/evidence/mo1309/phase3-regression/rows.json: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    221: 'repositories/cca-conformance/evidence/mo1309/phase3-rehearsal/4a/gen-1/4a-receipt.json: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    222: 'repositories/cca-conformance/evidence/mo1309/phase3-rehearsal/4b/gen-1/4b-receipt.json: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    223: 'repositories/cca-conformance/evidence/mo1309/phase3-rehearsal/4c/gen-1/4c-receipt.json: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1308_phase3_shared_test.mjs:220:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: A03 the evidence allowance classifies exactly the A3.x precondition evidence, the protocol-defined rehearsal directories and certifying generation directories
+ok 14 - A03 the evidence allowance classifies exactly the A3.x precondition evidence, the protocol-defined rehearsal directories and certifying generation directories
+  ---
+  duration_ms: 0.260897
+  type: 'test'
+  ...
+# Subtest: A04 a certifying generation directory is allowed only when its evidence seal verifies; a tampered or unsealed one is rejected
+ok 15 - A04 a certifying generation directory is allowed only when its evidence seal verifies; a tampered or unsealed one is rejected
+  ---
+  duration_ms: 41.97334
+  type: 'test'
+  ...
+# Subtest: K01 the candidate identity is exactly reproducible from git objects at B2
+ok 16 - K01 the candidate identity is exactly reproducible from git objects at B2
+  ---
+  duration_ms: 2206.233643
+  type: 'test'
+  ...
+# Subtest: K02 a tampered identity is detected
+ok 17 - K02 a tampered identity is detected
+  ---
+  duration_ms: 1674.068512
+  type: 'test'
+  ...
+# Subtest: K03 the identity command line verifies and fails closed
+ok 18 - K03 the identity command line verifies and fails closed
+  ---
+  duration_ms: 1467.808491
+  type: 'test'
+  ...
+# Subtest: R01 the corpus manifest regenerates byte for byte and its digest seals it
+ok 19 - R01 the corpus manifest regenerates byte for byte and its digest seals it
+  ---
+  duration_ms: 4936.906008
+  type: 'test'
+  ...
+# Subtest: R02 the corpus holds the records every campaign needs
+ok 20 - R02 the corpus holds the records every campaign needs
+  ---
+  duration_ms: 171.172948
+  type: 'test'
+  ...
+# Subtest: R03 every corpus record is admissible, and the recipes reach their recorded heads
+ok 21 - R03 every corpus record is admissible, and the recipes reach their recorded heads
+  ---
+  duration_ms: 1198.13449
+  type: 'test'
+  ...
+# Subtest: R04 the decision claims carry both consistency labels through the all recipe
+ok 22 - R04 the decision claims carry both consistency labels through the all recipe
+  ---
+  duration_ms: 267.178813
+  type: 'test'
+  ...
+# Subtest: R05 limit vectors are the Freeze limits, with deterministic filler
+ok 23 - R05 limit vectors are the Freeze limits, with deterministic filler
+  ---
+  duration_ms: 1.059614
+  type: 'test'
+  ...
+# Subtest: R06 the sampling generator is deterministic, sorted, distinct and pinned
+ok 24 - R06 the sampling generator is deterministic, sorted, distinct and pinned
+  ---
+  duration_ms: 0.968092
+  type: 'test'
+  ...
+# Subtest: R07 canaries are distinct and the F7 plan states the owner threshold
+ok 25 - R07 canaries are distinct and the F7 plan states the owner threshold
+  ---
+  duration_ms: 0.395524
+  type: 'test'
+  ...
+# Subtest: V01 generation ids, the approval status and the placement rule
+ok 26 - V01 generation ids, the approval status and the placement rule
+  ---
+  duration_ms: 0.697063
+  type: 'test'
+  ...
+# Subtest: V02 dispositions: the owner-review rule, the rerun ordinal and the historical class
+ok 27 - V02 dispositions: the owner-review rule, the rerun ordinal and the historical class
+  ---
+  duration_ms: 0.502788
+  type: 'test'
+  ...
+# Subtest: V03 reviews: an open blocking finding contradicts a clean conclusion
+ok 28 - V03 reviews: an open blocking finding contradicts a clean conclusion
+  ---
+  duration_ms: 0.397962
+  type: 'test'
+  ...
+# Subtest: U01 a certifying generation: seal, run, close, verify; the receipt says ACCEPTED
+ok 29 - U01 a certifying generation: seal, run, close, verify; the receipt says ACCEPTED
+  ---
+  duration_ms: 23.961427
+  type: 'test'
+  ...
+# Subtest: U02 a certifying seal is refused without approval, a review or a matching generation id
+ok 30 - U02 a certifying seal is refused without approval, a review or a matching generation id
+  ---
+  duration_ms: 24.367906
+  type: 'test'
+  ...
+# Subtest: U03 a rehearsal is non-promotable and cannot be mistaken for a certification
+ok 31 - U03 a rehearsal is non-promotable and cannot be mistaken for a certification
+  ---
+  duration_ms: 12.707344
+  type: 'test'
+  ...
+# Subtest: U04 the first mandatory failure stops the generation: the rest of the step and every later step is NOT_RUN
+ok 32 - U04 the first mandatory failure stops the generation: the rest of the step and every later step is NOT_RUN
+  ---
+  duration_ms: 24.029632
+  type: 'test'
+  ...
+# Subtest: U05 an observation that is not stable JSON (a fraction) fails the case instead of being recorded
+ok 33 - U05 an observation that is not stable JSON (a fraction) fails the case instead of being recorded
+  ---
+  duration_ms: 9.634079
+  type: 'test'
+  ...
+# Subtest: U06 a record case without an observation fails with RECORD_WITHOUT_OBSERVATION
+ok 34 - U06 a record case without an observation fails with RECORD_WITHOUT_OBSERVATION
+  ---
+  duration_ms: 12.544472
+  type: 'test'
+  ...
+# Subtest: U07 an observation larger than the bound is a harness failure, not silently truncated
+ok 35 - U07 an observation larger than the bound is a harness failure, not silently truncated
+  ---
+  duration_ms: 8.295793
+  type: 'test'
+  ...
+# Subtest: U08 a non-mandatory failure is recorded but does not stop the generation or the stream result
+ok 36 - U08 a non-mandatory failure is recorded but does not stop the generation or the stream result
+  ---
+  duration_ms: 28.528052
+  type: 'test'
+  ...
+# Subtest: U09 an escalation stops the generation and ends ESCALATED_PRESERVED, not FAILED
+ok 37 - U09 an escalation stops the generation and ends ESCALATED_PRESERVED, not FAILED
+  ---
+  duration_ms: 22.974638
+  type: 'test'
+  ...
+# Subtest: U10 one-shot: no second run of a segment, no ceiling before main, no run or close after closing
+ok 38 - U10 one-shot: no second run of a segment, no ceiling before main, no run or close after closing
+  ---
+  duration_ms: 30.639188
+  type: 'test'
+  ...
+# Subtest: U11 a case cannot be retried, an unknown case is refused, and executor misuse fails the step
+ok 39 - U11 a case cannot be retried, an unknown case is refused, and executor misuse fails the step
+  ---
+  duration_ms: 34.39696
+  type: 'test'
+  ...
+# Subtest: U11a cases run one at a time: an overlapping case is an executor defect
+ok 40 - U11a cases run one at a time: an overlapping case is an executor defect
+  ---
+  duration_ms: 10.664606
+  type: 'test'
+  ...
+# Subtest: U12 an executor that skips cases fails the step with CASES_NOT_REPORTED
+ok 41 - U12 an executor that skips cases fails the step with CASES_NOT_REPORTED
+  ---
+  duration_ms: 10.229721
+  type: 'test'
+  ...
+# Subtest: U13 a step guard that expires fails the step and aborts the signal; a late result is discarded
+ok 42 - U13 a step guard that expires fails the step and aborts the signal; a late result is discarded
+  ---
+  duration_ms: 100.70949
+  type: 'test'
+  ...
+# Subtest: U14 an exhausted segment budget stops the generation with BUDGET_EXHAUSTED
+ok 43 - U14 an exhausted segment budget stops the generation with BUDGET_EXHAUSTED
+  ---
+  duration_ms: 22.254942
+  type: 'test'
+  ...
+# Subtest: U15 an interrupted run (start records without receipts) closes as a failure, never as a pass
+ok 44 - U15 an interrupted run (start records without receipts) closes as a failure, never as a pass
+  ---
+  duration_ms: 14.971047
+  type: 'test'
+  ...
+# Subtest: U16 a bound file that changes after the seal refuses the run and the close
+ok 45 - U16 a bound file that changes after the seal refuses the run and the close
+  ---
+  duration_ms: 27.377612
+  type: 'test'
+  ...
+# Subtest: U17 verifyEvidence detects tampering with any closed generation file
+ok 46 - U17 verifyEvidence detects tampering with any closed generation file
+  ---
+  duration_ms: 38.908642
+  type: 'test'
+  ...
+# Subtest: U18 a rerun needs the failed generation, a valid disposition and the next ordinal
+ok 47 - U18 a rerun needs the failed generation, a valid disposition and the next ordinal
+  ---
+  duration_ms: 27.936211
+  type: 'test'
+  ...
+# Subtest: U19 an accepted or open generation cannot be superseded; a rehearsal never supersedes
+ok 48 - U19 an accepted or open generation cannot be superseded; a rehearsal never supersedes
+  ---
+  duration_ms: 21.494434
+  type: 'test'
+  ...
+# Subtest: M01 Amendment A8 is appended to the Freeze and binds the protocol, inventory, candidate and corpus by hash
+ok 49 - M01 Amendment A8 is appended to the Freeze and binds the protocol, inventory, candidate and corpus by hash
+  ---
+  duration_ms: 1.891555
+  type: 'test'
+  ...
+# Subtest: M02 guards fit the budgets by design in every segment of every stream (A8 decision 8)
+ok 50 - M02 guards fit the budgets by design in every segment of every stream (A8 decision 8)
+  ---
+  duration_ms: 1.961983
+  type: 'test'
+  ...
+# Subtest: M03 the ceiling segment is the only one of 3A with the 180-minute budget and runs after both main segments
+ok 51 - M03 the ceiling segment is the only one of 3A with the 180-minute budget and runs after both main segments
+  ---
+  duration_ms: 0.373274
+  type: 'test'
+  ...
+# Subtest: M04 a qualification case must observe CONFIRMED or NOT_CONFIRMED; anything else fails (A8 decision 6)
+ok 52 - M04 a qualification case must observe CONFIRMED or NOT_CONFIRMED; anything else fails (A8 decision 6)
+  ---
+  duration_ms: 24.235411
+  type: 'test'
+  ...
+# Subtest: M05 the stream receipt carries each qualification case outcome
+ok 53 - M05 the stream receipt carries each qualification case outcome
+  ---
+  duration_ms: 17.716079
+  type: 'test'
+  ...
+# Subtest: M06 the disclosure check states the recorded outcome of every qualification case and nothing else
+ok 54 - M06 the disclosure check states the recorded outcome of every qualification case and nothing else
+  ---
+  duration_ms: 2.15267
+  type: 'test'
+  ...
+# Subtest: M07 recorded outcomes are read from step receipts of passed cases only
+ok 55 - M07 recorded outcomes are read from step receipts of passed cases only
+  ---
+  duration_ms: 8.160214
+  type: 'test'
+  ...
+# Subtest: M08 a rerun after an escalation needs an owner approval reference (A8 decision 5)
+ok 56 - M08 a rerun after an escalation needs an owner approval reference (A8 decision 5)
+  ---
+  duration_ms: 19.409131
+  type: 'test'
+  ...
+# Subtest: D01 a rehearsal may declare a case host-only (NOT_RUN, reason kept, no stop); a certifying generation never may
+ok 57 - D01 a rehearsal may declare a case host-only (NOT_RUN, reason kept, no stop); a certifying generation never may
+  ---
+  duration_ms: 22.431128
+  type: 'test'
+  ...
+# Subtest: D02 a skip does not hide a failure: a rehearsal with a failing case is REHEARSAL_FAILED
+ok 58 - D02 a skip does not hide a failure: a rehearsal with a failing case is REHEARSAL_FAILED
+  ---
+  duration_ms: 13.921365
+  type: 'test'
+  ...
+# Subtest: D03 the driver checks a definition against the inventory and never lets an unimplemented case pass
+ok 59 - D03 the driver checks a definition against the inventory and never lets an unimplemented case pass
+  ---
+  duration_ms: 3.453171
+  type: 'test'
+  ...
+# Subtest: D04 rehearse seals, runs and closes a non-certifying generation and summarizes executed, skipped and failed cases
+ok 60 - D04 rehearse seals, runs and closes a non-certifying generation and summarizes executed, skipped and failed cases
+  ---
+  duration_ms: 14.644354
+  type: 'test'
+  ...
+# Subtest: U20a the close and verify steps refuse an inventory other than the sealed one; the shared tools can all be bound
+ok 61 - U20a the close and verify steps refuse an inventory other than the sealed one; the shared tools can all be bound
+  ---
+  duration_ms: 12.601715
+  type: 'test'
+  ...
+# Subtest: U20 the runner has no platform-specific code and writes nothing outside its evidence directory
+ok 62 - U20 the runner has no platform-specific code and writes nothing outside its evidence directory
+  ---
+  duration_ms: 1.216076
+  type: 'test'
+  ...
+# Subtest: U21 the temporary root is short by design: C:/tt on Windows, configurable, never the system temp path, refused when long
+ok 63 - U21 the temporary root is short by design: C:/tt on Windows, configurable, never the system temp path, refused when long
+  ---
+  duration_ms: 0.260055
+  type: 'test'
+  ...
+# Subtest: U22 makeTemp makes <root>/<stream>-<n> with the first free counter, records it and removes only what it made
+ok 64 - U22 makeTemp makes <root>/<stream>-<n> with the first free counter, records it and removes only what it made
+  ---
+  duration_ms: 0.913945
+  type: 'test'
+  ...
+1..64
+# tests 64
+# suites 0
+# pass 63
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14114.545319

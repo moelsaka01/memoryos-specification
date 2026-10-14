@@ -1,0 +1,207 @@
+{
+  "kind": "MO1307IntegrationOverlapMatrix",
+  "version": "1.0.0",
+  "pairs": [
+    {
+      "left": "2a",
+      "right": "2b",
+      "count": 4,
+      "paths": [
+        "repositories/cca-conformance/tools/mo1307-phase1/package.mjs",
+        "repositories/memoryos-readiness/distribution-manifest.json",
+        "repositories/memoryos-readiness/package.json",
+        "repositories/memoryos-readiness/sbom.spdx.json"
+      ]
+    },
+    {
+      "left": "2a",
+      "right": "2c",
+      "count": 4,
+      "paths": [
+        "repositories/cca-conformance/tools/mo1307-phase1/package.mjs",
+        "repositories/memoryos-readiness/distribution-manifest.json",
+        "repositories/memoryos-readiness/package.json",
+        "repositories/memoryos-readiness/sbom.spdx.json"
+      ]
+    },
+    {
+      "left": "2b",
+      "right": "2c",
+      "count": 4,
+      "paths": [
+        "repositories/cca-conformance/tools/mo1307-phase1/package.mjs",
+        "repositories/memoryos-readiness/distribution-manifest.json",
+        "repositories/memoryos-readiness/package.json",
+        "repositories/memoryos-readiness/sbom.spdx.json"
+      ]
+    }
+  ],
+  "threeWay": [
+    "repositories/cca-conformance/tools/mo1307-phase1/package.mjs",
+    "repositories/memoryos-readiness/distribution-manifest.json",
+    "repositories/memoryos-readiness/package.json",
+    "repositories/memoryos-readiness/sbom.spdx.json"
+  ],
+  "overlaps": [
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase1/package.mjs",
+      "classification": "shared-interface reconciliation",
+      "sourceMembers": [
+        {
+          "stream": "2a",
+          "base": "3883ca889911fcc5a6f46c24e569478a8c32648e",
+          "commit": "b628349b4e678a8f71086b1b5c807ffe2edf9a5d",
+          "path": "repositories/cca-conformance/tools/mo1307-phase1/package.mjs",
+          "byteLength": 11333,
+          "sha256": "sha256:72023d4c97ed9b3cbe0e9950d8735d75d723e4428153d97628ff16767458c3f2",
+          "category": "engineering-only"
+        },
+        {
+          "stream": "2b",
+          "base": "3883ca889911fcc5a6f46c24e569478a8c32648e",
+          "commit": "b2877ab32c317bb67896414ba9cec64f6f436ca5",
+          "path": "repositories/cca-conformance/tools/mo1307-phase1/package.mjs",
+          "byteLength": 11353,
+          "sha256": "sha256:728598f91ba5d8fcb02b5287cfea0c47d042cee1193735b447d6a85537ffc5e8",
+          "category": "engineering-only"
+        },
+        {
+          "stream": "2c",
+          "base": "08de262d1ef3149b6e540bcaea0cf910e02732bd",
+          "commit": "24a9ed13072cf344baf56ee019d96520b7dfd4f0",
+          "path": "repositories/cca-conformance/tools/mo1307-phase1/package.mjs",
+          "byteLength": 11407,
+          "sha256": "sha256:d07eeaf208e3c0f5d9f2e04e5456a419d0ab01cf25d3d4cbfda225aee28ba1ef",
+          "category": "engineering-only"
+        }
+      ],
+      "main": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase1/package.mjs",
+        "byteLength": 11297,
+        "sha256": "sha256:7ebaa06918e6b697e930395f7669ba1733934f5b51353a3c291dccd8977e7091"
+      },
+      "mainAuthority": "08de262d1ef3149b6e540bcaea0cf910e02732bd",
+      "decision": "PENDING_MANUAL_RECONCILIATION"
+    },
+    {
+      "path": "repositories/memoryos-readiness/distribution-manifest.json",
+      "classification": "generated-metadata conflict",
+      "sourceMembers": [
+        {
+          "stream": "2a",
+          "base": "3883ca889911fcc5a6f46c24e569478a8c32648e",
+          "commit": "b628349b4e678a8f71086b1b5c807ffe2edf9a5d",
+          "path": "repositories/memoryos-readiness/distribution-manifest.json",
+          "byteLength": 11039,
+          "sha256": "sha256:e99273eee04cb2dc35b189388f0c778b0160b082b3767d80264becde4fda32a5",
+          "category": "package metadata"
+        },
+        {
+          "stream": "2b",
+          "base": "3883ca889911fcc5a6f46c24e569478a8c32648e",
+          "commit": "b2877ab32c317bb67896414ba9cec64f6f436ca5",
+          "path": "repositories/memoryos-readiness/distribution-manifest.json",
+          "byteLength": 11179,
+          "sha256": "sha256:5c4b9e1e8dcb1ff67e5d2d578080697bef228180143991f144af15d8335953f8",
+          "category": "package metadata"
+        },
+        {
+          "stream": "2c",
+          "base": "08de262d1ef3149b6e540bcaea0cf910e02732bd",
+          "commit": "24a9ed13072cf344baf56ee019d96520b7dfd4f0",
+          "path": "repositories/memoryos-readiness/distribution-manifest.json",
+          "byteLength": 11945,
+          "sha256": "sha256:b65027ae3d3e754046f33b8a944153cff479b870ea4d6fe2d2549cd96cebda1f",
+          "category": "package metadata"
+        }
+      ],
+      "main": {
+        "path": "repositories/memoryos-readiness/distribution-manifest.json",
+        "byteLength": 10767,
+        "sha256": "sha256:b0c7ee188d437ed616bde42f74cce559f5ca18bb7edb3bfef008a649a18b33f9"
+      },
+      "mainAuthority": "08de262d1ef3149b6e540bcaea0cf910e02732bd",
+      "decision": "PENDING_MANUAL_RECONCILIATION"
+    },
+    {
+      "path": "repositories/memoryos-readiness/package.json",
+      "classification": "generated-metadata conflict",
+      "sourceMembers": [
+        {
+          "stream": "2a",
+          "base": "3883ca889911fcc5a6f46c24e569478a8c32648e",
+          "commit": "b628349b4e678a8f71086b1b5c807ffe2edf9a5d",
+          "path": "repositories/memoryos-readiness/package.json",
+          "byteLength": 2997,
+          "sha256": "sha256:c52c10043c8b03f037b3ee4468f4e9638bdc268c0d7207456e1207cc810fe7d6",
+          "category": "package metadata"
+        },
+        {
+          "stream": "2b",
+          "base": "3883ca889911fcc5a6f46c24e569478a8c32648e",
+          "commit": "b2877ab32c317bb67896414ba9cec64f6f436ca5",
+          "path": "repositories/memoryos-readiness/package.json",
+          "byteLength": 3025,
+          "sha256": "sha256:67e412be2806e645536d467b66f83da2a9731a1b275d67468274738e0c6f2ace",
+          "category": "package metadata"
+        },
+        {
+          "stream": "2c",
+          "base": "08de262d1ef3149b6e540bcaea0cf910e02732bd",
+          "commit": "24a9ed13072cf344baf56ee019d96520b7dfd4f0",
+          "path": "repositories/memoryos-readiness/package.json",
+          "byteLength": 3127,
+          "sha256": "sha256:f7fa4f9898c5180a4f797ac43fa2aef69522ff4290bd305f0f714b1243895408",
+          "category": "package metadata"
+        }
+      ],
+      "main": {
+        "path": "repositories/memoryos-readiness/package.json",
+        "byteLength": 2945,
+        "sha256": "sha256:3567e56ebe007ee4af23d2dac5f3288fee66fb0bbe97fcae171444e1e6bb4bb5"
+      },
+      "mainAuthority": "08de262d1ef3149b6e540bcaea0cf910e02732bd",
+      "decision": "PENDING_MANUAL_RECONCILIATION"
+    },
+    {
+      "path": "repositories/memoryos-readiness/sbom.spdx.json",
+      "classification": "generated-metadata conflict",
+      "sourceMembers": [
+        {
+          "stream": "2a",
+          "base": "3883ca889911fcc5a6f46c24e569478a8c32648e",
+          "commit": "b628349b4e678a8f71086b1b5c807ffe2edf9a5d",
+          "path": "repositories/memoryos-readiness/sbom.spdx.json",
+          "byteLength": 41121,
+          "sha256": "sha256:153dc8442db08a392711d7bc9097c8bc082dc1a13ff44d6bfa9b6dabdcd598b8",
+          "category": "package metadata"
+        },
+        {
+          "stream": "2b",
+          "base": "3883ca889911fcc5a6f46c24e569478a8c32648e",
+          "commit": "b2877ab32c317bb67896414ba9cec64f6f436ca5",
+          "path": "repositories/memoryos-readiness/sbom.spdx.json",
+          "byteLength": 41644,
+          "sha256": "sha256:0c73704698dd81778f9bda4b513f514903c52661bc30ad1fb16b91e73c9e9e5d",
+          "category": "package metadata"
+        },
+        {
+          "stream": "2c",
+          "base": "08de262d1ef3149b6e540bcaea0cf910e02732bd",
+          "commit": "24a9ed13072cf344baf56ee019d96520b7dfd4f0",
+          "path": "repositories/memoryos-readiness/sbom.spdx.json",
+          "byteLength": 44721,
+          "sha256": "sha256:bcdb26197e7f69857db2d762c59079a8c20a1a4ac6a7b7302588d6442f7a7007",
+          "category": "package metadata"
+        }
+      ],
+      "main": {
+        "path": "repositories/memoryos-readiness/sbom.spdx.json",
+        "byteLength": 40079,
+        "sha256": "sha256:f3655d1b3d2fe19deca3514047df8868deabe22c6b760b192b29afa820a227b9"
+      },
+      "mainAuthority": "08de262d1ef3149b6e540bcaea0cf910e02732bd",
+      "decision": "PENDING_MANUAL_RECONCILIATION"
+    }
+  ]
+}

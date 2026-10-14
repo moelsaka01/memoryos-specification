@@ -1,0 +1,156 @@
+{
+  "name": "native-size-mutation",
+  "result": "PASS",
+  "scope": "ENGINEERING_CONTROLLED_FILESYSTEM_MUTATION",
+  "tags": [
+    "file changes between initial and post-read identity"
+  ],
+  "mutation": "resize",
+  "exactResponseEqual": true,
+  "code": "MO1307_FILESYSTEM_BOUNDARY",
+  "status": "ERROR",
+  "request": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-size-mutation/request.bin",
+    "byteLength": 397,
+    "sha256": "sha256:753168b6824eae1cb826594164d6a5a41036d9c6293ad8b4917c2b3eadd121d4"
+  },
+  "b2": {
+    "code": 0,
+    "signal": null,
+    "pid": 5828,
+    "elapsedMs": 2095.5217999999877,
+    "exitMs": 2095.494799999986,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-size-mutation/b2.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-size-mutation/b2.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-size-mutation/b2-instrumented.ps1",
+      "byteLength": 33243,
+      "sha256": "sha256:72245ac2a02731751b44b06cc5eb0a1060c3149cd013040d485bdf0a6c48c1e4"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\repositories\\cca-conformance\\evidence\\mo1307\\phase3a-readset-correction\\equivalence\\attempt1\\native-size-mutation\\b2-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "candidate": {
+    "code": 0,
+    "signal": null,
+    "pid": 21268,
+    "elapsedMs": 2610.6947999999975,
+    "exitMs": 2610.664599999989,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-size-mutation/candidate.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-size-mutation/candidate.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-size-mutation/candidate-instrumented.ps1",
+      "byteLength": 33689,
+      "sha256": "sha256:6d2d3a74ab1d648d5747d0284fa5d8f0ace59bc042a5199be92ca7c8866d5a78"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\repositories\\cca-conformance\\evidence\\mo1307\\phase3a-readset-correction\\equivalence\\attempt1\\native-size-mutation\\candidate-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "nativeObservationCountsEqual": true,
+  "telemetry": {
+    "b2": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 21,
+        "initial:GetFileInformationByHandle": 21,
+        "post-read:Open-Native": 11,
+        "initial:GetFinalPathNameByHandleW": 21,
+        "post-read:GetFileInformationByHandle": 21,
+        "post-read:GetFinalPathNameByHandleW": 21,
+        "initial:Read-Identity": 21,
+        "initial:Assert-SameIdentity": 10,
+        "post-read:Read-Identity": 21,
+        "initial:Open-Native": 21
+      },
+      "mutations": 1,
+      "mutation": "resize",
+      "workingSet64": 146341888,
+      "peakWorkingSet64": 146341888,
+      "managedBytes": 62920352,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-size-mutation/b2-telemetry.json",
+        "byteLength": 484,
+        "sha256": "sha256:d892280d7d879ce19993267fe9c224a7bb73b436c482fbfd862a6aa5e6f85591"
+      }
+    },
+    "candidate": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 21,
+        "initial:GetFileInformationByHandle": 21,
+        "post-read:Open-Native": 11,
+        "initial:GetFinalPathNameByHandleW": 21,
+        "post-read:GetFileInformationByHandle": 21,
+        "post-read:GetFinalPathNameByHandleW": 21,
+        "initial:Read-Identity": 21,
+        "initial:Assert-SameIdentity": 10,
+        "post-read:Read-Identity": 21,
+        "initial:Open-Native": 21
+      },
+      "mutations": 1,
+      "mutation": "resize",
+      "workingSet64": 133201920,
+      "peakWorkingSet64": 133201920,
+      "managedBytes": 14519256,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-size-mutation/candidate-telemetry.json",
+        "byteLength": 484,
+        "sha256": "sha256:cde96cf3b3ca7ef4f0c81494b3a9d5dcb5b888e3ebd1ef369f2bdb27fff0c8cf"
+      }
+    }
+  }
+}

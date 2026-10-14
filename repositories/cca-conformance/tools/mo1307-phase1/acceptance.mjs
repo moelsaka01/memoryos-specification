@@ -1,0 +1,48 @@
+// Finite, offline engineering checks. Writes only its new explicit receipt directory.
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import assert from 'node:assert/strict';
+import { performance } from 'node:perf_hooks';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../../..');
+const tool='repositories/cca-conformance/tools/mo1307-phase1/';
+const tests=['core','fixtures','package','native'].map(n=>`repositories/cca-conformance/tests/mo1307_phase1_${n}_test.mjs`);
+const hash=b=>'sha256:'+createHash('sha256').update(b).digest('hex');
+const pin='sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32';
+assert.equal(process.version,'v24.21.0');assert.equal(process.platform,'win32');assert.equal(process.arch,'x64');assert.equal(hash(fs.readFileSync(process.execPath)),pin);
+assert.equal(process.argv.length,4);assert.equal(process.argv[2],'--output');
+const directory=path.resolve(root,process.argv[3]);
+assert.ok(directory.startsWith(root+path.sep));assert.ok(!fs.existsSync(directory));fs.mkdirSync(directory,{recursive:true});
+const python=path.resolve(process.env.USERPROFILE,'.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe');
+const rows=[];let okay=true;
+function run(id,exe,args,timeout=60000){
+  const started=performance.now();
+  const r=spawnSync(exe,args,{cwd:root,windowsHide:true,encoding:null,timeout,maxBuffer:8*1024*1024});
+  const stdout=r.stdout??Buffer.alloc(0),stderr=r.stderr??Buffer.alloc(0);
+  fs.writeFileSync(path.join(directory,id+'.stdout.txt'),stdout);fs.writeFileSync(path.join(directory,id+'.stderr.txt'),stderr);
+  const row={id,executable:exe,args,exit:r.status,error:r.error?.code??null,elapsedMs:Math.round((performance.now()-started)*1000)/1000,
+    stdout:{byteLength:stdout.length,sha256:hash(stdout)},stderr:{byteLength:stderr.length,sha256:hash(stderr)},result:r.status===0&&!r.error?'PASS':'FAIL'};
+  if(id==='phase1-tests'){
+    const out=stdout.toString('utf8'),number=name=>Number(new RegExp('^# '+name+' (\\d+)$','m').exec(out)?.[1]??NaN);
+    row.tests={count:number('tests'),pass:number('pass'),fail:number('fail'),cancelled:number('cancelled'),skipped:number('skipped'),todo:number('todo')};
+    row.testNames=[...out.matchAll(/^# Subtest: (.+)$/gm)].map(m=>m[1]);
+    if(!row.tests.count||row.tests.pass!==row.tests.count||row.tests.fail||row.tests.cancelled||row.tests.skipped||row.tests.todo)row.result='FAIL';
+  }
+  rows.push(row);if(row.result!=='PASS')okay=false;
+  process.stdout.write(JSON.stringify({id,result:row.result,elapsedMs:row.elapsedMs,tests:row.tests})+'\n');
+  return row.result==='PASS';
+}
+const src=fs.readdirSync(path.join(root,'repositories/memoryos-readiness/src')).filter(n=>n.endsWith('.mjs')).sort();
+for(const name of src)if(!run('syntax-'+name.replace('.mjs',''),process.execPath,['--check','repositories/memoryos-readiness/src/'+name]))break;
+if(okay)run('schemas',python,['-I','-S','-B',tool+'validate-schemas.py']);
+if(okay)run('fixtures',process.execPath,[tool+'generate-fixtures.mjs','--check']);
+if(okay)run('package',process.execPath,[tool+'package.mjs','check']);
+if(okay)run('phase1-tests',process.execPath,['--test','--test-reporter=tap','--test-concurrency=1',...tests]);
+// Characterization is separately externally sampled exactly once per fixed case.
+if(okay)run('workspace',python,['-B','tools/verify_workspace.py','--root','.']);
+if(okay)run('diff-check','git',['diff','--check']);
+const receipt={kind:'MemoryOSReadinessPhase1Acceptance',version:'1.0.0',freezeCommit:'e0cb8e9cc6aa73e26945db30756a6667a8d9e322',phase:'FOUNDATION_ONLY',productionCertification:false,
+  runtime:{node:process.version,platform:process.platform,arch:process.arch,sha256:pin},commands:rows,result:okay?'PASS':'FAIL'};
+fs.writeFileSync(path.join(directory,'receipt.json'),JSON.stringify(receipt)+'\n');process.exitCode=okay?0:1;

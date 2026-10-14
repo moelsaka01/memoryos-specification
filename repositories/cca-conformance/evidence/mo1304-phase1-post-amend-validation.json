@@ -1,0 +1,58 @@
+{
+  "kind": "MemoryOSMO1304PostAmendValidation",
+  "version": "1.0.0",
+  "status": "PASS",
+  "implementationRevision": "6ab8ed0abb105f90cf44220b1798341133f2716d",
+  "implementationParent": "9d12ea46c6971efd01619bcfdba804431b4149f3",
+  "node": "24.21.0",
+  "nodeExecutableSha256": "ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32",
+  "npm": "11.19.0",
+  "acceptanceEvidence": {
+    "path": "repositories/memoryos-mcp/measurements/phase1-validation.json",
+    "byteLength": 5426,
+    "sha256": "8fa16d2a97bda8550f66461d74f70872ee569abb96ed8caa7c577ab268cd9c49"
+  },
+  "allAcceptanceRunsFreshAfterAmend": true,
+  "cleanInstall": {
+    "command": "npm ci --ignore-scripts --no-audit --no-fund --offline --cache <workspace>/.cache/mo1304-npm",
+    "exitCode": 0,
+    "installedPackages": 14,
+    "lifecycleScriptsExecuted": false,
+    "executedAfterAmend": true
+  },
+  "runtimeClosureDependencyContractAndDistributionVerification": {
+    "command": "node repositories/memoryos-mcp/scripts/verify.mjs",
+    "exitCode": 0,
+    "result": {
+      "status": "VERIFIED_PHASE1_FOUNDATION",
+      "files": 48
+    },
+    "stdoutSha256": "4860c37cec595c91ec82c6d12bb9d7ffe30ce40eb39048c1d133e8dd8249a631",
+    "stderrByteLength": 0
+  },
+  "implementationCommitWhitespaceCheck": {
+    "command": "git diff --check HEAD^ HEAD",
+    "head": "6ab8ed0abb105f90cf44220b1798341133f2716d",
+    "exitCode": 0,
+    "outputByteLength": 0
+  },
+  "productionUnchangedFromImplementation": {
+    "revision": "6ab8ed0abb105f90cf44220b1798341133f2716d",
+    "paths": [
+      "repositories/memoryos-mcp/bin",
+      "repositories/memoryos-mcp/src",
+      "repositories/memoryos-mcp/runtime",
+      "repositories/memoryos-mcp/contracts",
+      "repositories/memoryos-mcp/distribution",
+      "repositories/memoryos-mcp/package.json",
+      "repositories/memoryos-mcp/package-lock.json"
+    ],
+    "diffByteLength": 0
+  },
+  "advisoryEvidence": {
+    "path": "repositories/memoryos-mcp/measurements/advisory-disposition.json",
+    "byteLength": 4162,
+    "sha256": "0f3e54f356c839e5a97f621bebde58d52c0aab558f66c33e8f95c6f71e12902b"
+  },
+  "scope": "Phase 1 implementation validation only; Phase 2/3, release and tag certification remain pending."
+}

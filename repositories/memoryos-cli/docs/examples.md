@@ -1,0 +1,192 @@
+# CLI Examples
+
+## Purpose
+
+These examples use explicit identifiers and files. They never inject controller state, derive a package, or infer a semantic selection. Assume `investigation.mip` contains Trace `trace-observation-b` and Evolution `evolution-observation-a-observation-b`.
+
+## Investigation Policy commands
+
+The exact CLI 1.1 examples for all seven Policy subcommands, PASS/FAIL/CNE
+status handling, raw outcomes, sidecars, inspection, verification, and frozen
+identity reporting are maintained in the [Investigation Policy CLI
+Guide](policy-guide.md). The compact command inventory is:
+
+```sh
+memoryos policy validate --policy policy.json --json
+memoryos policy digest --policy policy.json --canonical-output policy.canonical.json --json
+memoryos policy inspect --outcome outcome.json --json
+memoryos policy evaluate --policy policy.json --package candidate.mip --outcome outcome.json --json
+memoryos policy verify-identity identity.json --mode artifact --expected-evaluation-identity-digest "$IDENTITY_DIGEST" --json
+memoryos policy verify-outcome outcome.json --mode artifact --expected-identity identity.json --expected-outcome-digest "$OUTCOME_DIGEST" --json
+memoryos policy identities --json
+```
+
+The shell variables above are transport placeholders, not Policy environment
+interpolation. The CLI receives their resulting literal values and never
+resolves environment variables inside artifact content or paths.
+
+Completed Policy decisions remain successful evaluations with distinct gate
+statuses. A Policy requiring an absent lifecycle state produces a normative
+FAIL outcome and exit `6`:
+
+```sh
+memoryos policy evaluate --policy require-archived.json \
+  --package candidate.mip --outcome fail.outcome.json --json
+```
+
+A Policy that requires Cognitive Regression facts, when no trusted baseline is
+supplied, produces a normative COULD_NOT_EVALUATE outcome and exit `7`:
+
+```sh
+memoryos policy evaluate --policy require-regression-source.json \
+  --package candidate.mip --outcome cne.outcome.json --json
+```
+
+Both output files are complete canonical artifacts. Automation preserves the
+process status and reads the embedded `decision`; it never infers either
+decision from presentation text.
+
+## Version and help
+
+```sh
+memoryos version
+memoryos version --json
+memoryos help
+memoryos help replay
+```
+
+## Observe
+
+```sh
+memoryos observe \
+  --workspace workspace.json \
+  --snapshot snapshot.json \
+  --id observation-example
+```
+
+Optional observation inputs remain explicit:
+
+```sh
+memoryos observe \
+  --workspace workspace.json \
+  --snapshot snapshot.json \
+  --query query.json \
+  --operation Observe \
+  --result-code OK \
+  --json
+```
+
+## Trace
+
+```sh
+memoryos trace investigation.mip \
+  --reflection trace-observation-b \
+  --json
+```
+
+## Replay
+
+Open Replay without advancing it:
+
+```sh
+memoryos replay investigation.mip --trace trace-observation-b
+```
+
+Apply explicit SDK actions in order:
+
+```sh
+memoryos replay investigation.mip \
+  --trace trace-observation-b \
+  --action next \
+  --action pause \
+  --action play \
+  --json
+```
+
+## Compare
+
+```sh
+memoryos compare investigation.mip \
+  --trace trace-observation-b \
+  --evolution evolution-observation-a-observation-b \
+  --json
+```
+
+This is single-Investigation comparison. `memoryos compare left.mip right.mip` is unsupported because the frozen SDK does not combine investigations.
+
+## Cognitive regression
+
+Compare two complete investigations:
+
+```sh
+memoryos regression baseline.mip candidate.mip
+memoryos regression baseline.mip candidate.mip --json
+```
+
+The SDK returns observed differences in Replay, Reflection, Evidence, Retrieval, Evolution, Verification, transition history, and lifecycle. The CLI renders that report without interpreting it. The `compare` command remains the single-Investigation Evolution workflow; `regression` is the explicit two-Investigation analysis.
+
+## Investigate Regression evidence
+
+Create one canonical CLI report and navigate it without recomputing Regression:
+
+```sh
+memoryos regression baseline.mip candidate.mip --json > regression.json
+memoryos investigate regression.json --category evidence --json
+memoryos investigate regression.json --category replay
+memoryos investigate regression.json --category verification
+memoryos investigate regression.json --reflection reflection-001
+memoryos investigate regression.json --transition replay-complete
+```
+
+A raw SDK Regression Report is also accepted. Omit selectors to retrieve every exact difference. Empty matches are successful deterministic results, not errors.
+
+## Verify, import, export, and inspect
+
+```sh
+memoryos verify investigation.mip
+memoryos verify investigation.mip --json
+memoryos import investigation.mip --id imported-example --json
+memoryos export investigation.mip --output exported.mip
+memoryos verify exported.mip
+memoryos inspect investigation.mip
+memoryos inspect investigation.mip --json
+```
+
+POSIX byte stream:
+
+```sh
+memoryos export investigation.mip --output - | memoryos verify -
+```
+
+Export is byte-identical to the package returned by the SDK. The CLI does not serialize a native Investigation into a new MIP.
+
+## Session and checkpoint restoration
+
+Create `workflow.memoryos`:
+
+```jsonl
+{"command":"import","package":"investigation.mip","identifier":"session-example"}
+{"command":"checkpoint","name":"imported"}
+{"command":"restore","name":"imported"}
+{"command":"trace","reflection":"trace-observation-b"}
+{"command":"replay","action":"open"}
+{"command":"replay","action":"next"}
+{"command":"inspect"}
+```
+
+```sh
+memoryos session workflow.memoryos --json
+memoryos session --json < workflow.memoryos
+```
+
+`imported` is a process-local lookup name, not serialized Checkpoint data. The actual opaque object never leaves the live process. A Checkpoint is integrity-bound rather than a rollback snapshot; after another authoritative transition, restoring the stale Checkpoint is rejected by the Core.
+
+## Executable conformance example
+
+From `repositories/memoryos-cli`:
+
+```sh
+npm run test:examples
+```
+
+[`../examples/run-cli-examples.mjs`](../examples/run-cli-examples.mjs) materializes temporary inputs from the released `referenceSnapshot` and approved complete MIP fixture, runs all thirteen top-level commands, verifies exact export bytes, and exercises checkpoint/restore in one live session.

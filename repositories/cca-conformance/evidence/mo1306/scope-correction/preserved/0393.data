@@ -1,0 +1,152 @@
+"""One final M3 witness. Preparation is separate; the exclusive durable consumed record prevents a second execution."""
+import copy,ctypes,hashlib,json,os,shutil,subprocess,sys,time,uuid
+from pathlib import Path
+from datetime import datetime,timezone
+sys.dont_write_bytecode=True
+ROOT=Path(__file__).resolve().parents[4];HERE=Path(__file__).resolve().parent
+BASE=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-certification'
+CACHE=ROOT/'.cache/mo1306-phase3a-final'
+INSTALLED=ROOT/'.cache/mo1306-phase3a-final/install/node_modules/memoryos-ci'
+NODE=ROOT/'.cache/mo1306-phase3a-final/node-v24.21.0-win-x64/node.exe'
+OLD=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-final/native/20260927T120240-b3df86'
+sys.path.insert(0,str(HERE.parent/'mo1306-phase2d'))
+import observer
+from trace_phase2d import validate_trace
+ENV={k:os.environ[k] for k in ['SystemRoot','WINDIR']}
+IDS={'node':str(NODE),'powershell':str(Path(ENV['SystemRoot'])/'System32/WindowsPowerShell/v1.0/powershell.exe'),'conhost':str(Path(ENV['SystemRoot'])/'System32/conhost.exe')}
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def ref(p):
+ b=p.read_bytes();return {'path':p.relative_to(ROOT).as_posix(),'byteLength':len(b),'sha256':sha(b)}
+def read(p):return json.loads(p.read_bytes())
+def put(p,v):
+ raw=(json.dumps(v,sort_keys=True,separators=(',',':'))+'\n').encode();assert len(raw)<2*1024*1024
+ p.parent.mkdir(parents=True,exist_ok=True)
+ with p.open('xb') as f:
+  f.write(raw);f.flush();os.fsync(f.fileno())
+ return ref(p)
+def inventory():return [{'path':p.relative_to(INSTALLED).as_posix(),'byteLength':p.stat().st_size,'sha256':sha(p.read_bytes())} for p in sorted(INSTALLED.rglob('*')) if p.is_file()]
+def compact(record):
+ r=copy.deepcopy(record);dictionary={}
+ for entry in r.get('lifetimes',[])+[p for s in r.get('observation',{}).get('samples',[]) for p in s['processes']]:
+  if isinstance(entry.get('commandLine'),str):
+   command=entry['commandLine'];key=sha(command.encode());dictionary[key]=command;entry['commandLine']={'sha256':key}
+ r['traceEncoding']={'kind':'LosslessCommandLineDictionary','version':'1.0.0','commandLines':dictionary};return r
+K=ctypes.WinDLL('kernel32',use_last_error=True);A=ctypes.WinDLL('advapi32',use_last_error=True)
+K.GetFileAttributesW.argtypes=[ctypes.c_wchar_p];K.GetFileAttributesW.restype=ctypes.c_uint32
+K.LocalFree.argtypes=[ctypes.c_void_p];K.LocalFree.restype=ctypes.c_void_p
+A.GetNamedSecurityInfoW.argtypes=[ctypes.c_wchar_p,ctypes.c_int,ctypes.c_uint32,ctypes.POINTER(ctypes.c_void_p),ctypes.POINTER(ctypes.c_void_p),ctypes.POINTER(ctypes.c_void_p),ctypes.POINTER(ctypes.c_void_p),ctypes.POINTER(ctypes.c_void_p)];A.GetNamedSecurityInfoW.restype=ctypes.c_uint32
+A.ConvertSecurityDescriptorToStringSecurityDescriptorW.argtypes=[ctypes.c_void_p,ctypes.c_uint32,ctypes.c_uint32,ctypes.POINTER(ctypes.c_void_p),ctypes.POINTER(ctypes.c_uint32)];A.ConvertSecurityDescriptorToStringSecurityDescriptorW.restype=ctypes.c_int
+
+def path_state(path):
+ path=Path(path);attr=K.GetFileAttributesW(str(path));winerror=ctypes.get_last_error() if attr==0xffffffff else 0
+ result={'path':str(path),'length':len(str(path)),'parent':str(path.parent),'exists':path.exists(),'windowsAttributes':None if attr==0xffffffff else attr,'windowsError':winerror,'readOnly':bool(attr&1) if attr!=0xffffffff else None,'reparsePoint':bool(attr&1024) if attr!=0xffffffff else None,'directory':bool(attr&16) if attr!=0xffffffff else None}
+ if attr!=0xffffffff:
+  sd=ctypes.c_void_p();out=ctypes.c_void_p();length=ctypes.c_uint32();code=A.GetNamedSecurityInfoW(str(path),1,7,None,None,None,None,ctypes.byref(sd));result['aclReadWindowsError']=code
+  if code==0:
+   try:
+    if A.ConvertSecurityDescriptorToStringSecurityDescriptorW(sd,1,7,ctypes.byref(out),ctypes.byref(length)):
+     result['sddl']=ctypes.wstring_at(out);K.LocalFree(out)
+    else:result['sddlWindowsError']=ctypes.get_last_error()
+   finally:K.LocalFree(sd)
+ return result
+
+
+M3='85a0f85c1ebd013c545ccf2b3efe58a760e6cf37'
+C3CB='701d48ee2012675966360dda775ab13013c09ab9'
+ARCHIVE=CACHE/'assembly-a/memoryos-ci-0.1.0.tgz'
+RULE='Any failure, interruption, unaccounted execution, incomplete publication, integrity violation or recurrence stops certification immediately. No retry, new campaign, alternate directory or confirmation run.'
+PREP=BASE/'final-witness-preflight.json';LEDGER=BASE/'final-witness-ledger-start.json';CONSUMED=BASE/'final-witness-authorization-consumed.json'
+
+def assert_identity():
+ members=inventory()
+ assert len(members)==94 and members==read(OLD/'installed-integrity-after.json')['members']
+ assert ref(ARCHIVE)['byteLength']==197290 and ref(ARCHIVE)['sha256']=='sha256:7649f6df77c3f6163eb94b343974abaeccebbd5bcb8a2208cc889128904ce45d'
+ assert sha(NODE.read_bytes())=='sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32'
+ assert sha((INSTALLED/'distribution-manifest.json').read_bytes())=='sha256:b41d024d8ec1c588ca3fc919f8e3ac59a622aebc7cff3377f6a20ce7fc2ca4f3'
+ package=read(INSTALLED/'package.json');assert package['name']=='memoryos-ci' and package['version']=='0.1.0' and not package.get('dependencies',{})
+ assert len([m for m in members if m['path'].startswith('runtime/authoritative/')])==25
+ return members
+
+def history():
+ previous=ROOT/'repositories/cca-conformance/evidence/mo1306'
+ rows=[{'attemptId':'20260927T120240-b3df86','runId':'e89b8e91-c3c5-402d-9e6f-000bd2a102ba','class':'HISTORICAL','status':'FAIL','cause':'UNRESOLVED','publication':'NONE','processExitCode':17,'underlyingInputExitCode':11,'receipt':ref(previous/'phase3a-final/native-summary.json')}]
+ for rid in ['20260927T205808-b8cd68','20260927T210033-e28397','20260927T210127-639d33']:
+  p=previous/'phase3a-publication-diagnostic/reproductions'/rid/'summary.json';v=read(p)
+  rows.append({'attemptId':rid,'runId':v['actual']['runId'],'class':'FAITHFUL_DIAGNOSTIC','status':'OBSERVED','actual':v['actual'],'receipt':ref(p)})
+ p=previous/'phase3a-environment-capture/runs/20260927T212537-f27c81/summary.json';v=read(p)
+ rows.append({'attemptId':'20260927T212537-f27c81','runId':v['actual']['runId'],'class':'ENHANCED_DIAGNOSTIC','status':'OBSERVED','actual':v['actual'],'receipt':ref(p)})
+ return rows
+
+def prepare():
+ assert not PREP.exists() and not LEDGER.exists() and not CONSUMED.exists(),'Preparation is exclusive; no alternate attempt'
+ gate=BASE/'m3-verification.json';assert gate.exists() and read(gate)['status']=='PASS'
+ before=assert_identity();rid=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S')+'-'+uuid.uuid4().hex[:6]
+ output=BASE/'native'/rid;work=CACHE/('n-'+rid)/'error-input';output.mkdir(parents=True,exist_ok=False);work.mkdir(parents=True,exist_ok=False)
+ oldcase=read(OLD/'cases/error-input.json');oldtrace=read(OLD/'traces/error-input.json')
+ for row in oldcase['inputFiles']:
+  source=ROOT/row['path'];assert ref(source)==row;shutil.copyfile(source,work/source.name)
+ assert {p.name for p in work.iterdir()}=={'candidate.mip','policy.json','memoryos-ci.json'}
+ assert read(work/'memoryos-ci.json')['context']['candidateMip']=='missing.mip' and not (work/'missing.mip').exists() and not (work/'.memoryos-ci').exists()
+ argv=list(oldtrace['command']);oldwork=argv[5];argv[5]=str(work);argv[7]=str(work/'memoryos-ci.json')
+ operand=work/'.memoryos-ci/out/00000000-0000-4000-8000-000000000000/.pending/memoryos-ci-artifacts.json'
+ assert len(str(work))==len(oldwork)==117 and len(str(operand))==207
+ events=output/'events.json';external=[str(NODE),'--max-old-space-size=128',str(HERE/'observe-publication.mjs'),str(events),str(INSTALLED/'bin/memoryos-ci.mjs'),*argv[3:]]
+ protocol={'version':'1.0.0','singleFinalWitness':True,'maximumExecutions':1,'expected':{'classification':'INPUT_ERROR','exitCode':11,'publication':'COMPLETE','files':['memoryos-ci-artifacts.json','memoryos-ci-complete.json','memoryos-ci-evidence.json','memoryos-ci-result.json']},'recurrenceRule':RULE,'timers':'All production timer arguments, clocks and absolute deadlines remain unchanged. Engineering parent cap80seconds is outside product frozen deadlines.','observation':'Byte-identical previously reviewed buffered fs/helper observer and existing100ms process topology observer. No injected fault, delay, Windows watcher or polling extension.','consumerAcceptance':'Independent offline exact schemas, result relationships, canonical bytes, four-file set, marker/digests and installation identity; no second product or verify CLI execution.','deviations':['Fresh equal-length workspace/config operands.','External Node entry script is reviewed observer; visible product argv is exact installed CLI shape and execArgv remains --max-old-space-size=128.','Nonzero observer bookkeeping is measured and never subtracted from deadlines.']}
+ protocolref=put(BASE/'final-witness-protocol.json',protocol)
+ pre={'status':'PREPARED_NOT_EXECUTED','attemptId':rid,'methodologyAuthority':M3,'productionAuthority':C3CB,'archive':ref(ARCHIVE),'node':ref(NODE),'distribution':ref(INSTALLED/'distribution-manifest.json'),'installedMembersBefore':before,'sdkClosureCount':25,'productionDependencyCount':0,'originalArgv':oldtrace['command'],'productCommand':argv,'productArgv':[argv[0],*argv[2:]],'externalArgv':external,'cwd':str(INSTALLED.parent),'environment':ENV,'workspace':str(work),'evidenceDirectory':str(output),'maximumPublicationOperandLength':207,'sameWorkspaceLengthAsHistorical':True,'inputFiles':[ref(p) for p in sorted(work.iterdir())],'initialOutputAbsent':True,'freshWorkspaceCreatedExclusive':True,'filesystemBefore':[path_state(p) for p in [work,*sorted(work.iterdir()),work/'missing.mip',work/'.memoryos-ci']],'protocol':protocolref,'runner':ref(Path(__file__)),'wrapper':ref(HERE/'observe-publication.mjs'),'reviewedWrapper':ref(HERE.parent/'mo1306-phase3a-environment-capture/observe-publication.mjs'),'observer':ref(HERE.parent/'mo1306-phase2d/observer.py'),'traceValidator':ref(HERE.parent/'mo1306-phase2d/trace_phase2d.py')}
+ assert pre['wrapper']['sha256']==pre['reviewedWrapper']['sha256']
+ put(PREP,pre)
+ ledger={'kind':'MemoryOSFinalWitnessAppendOnlyStart','version':'1.0.0','recordedUtc':datetime.now(timezone.utc).isoformat(),'state':'PREPARED_NOT_EXECUTED','maximumFinalExecutions':1,'authorizationConsumed':False,'methodologyAuthority':M3,'productionAuthority':C3CB,'methodologyGate':ref(gate),'attemptId':rid,'preflight':ref(PREP),'protocol':protocolref,'historicalAndDiagnosticAttempts':history(),'finalAttempt':{'attemptId':rid,'state':'PREPARED_NOT_EXECUTED','workspace':str(work),'outputRoot':str(work/'.memoryos-ci/out'),'expected':protocol['expected']},'recurrenceRule':RULE,'durability':'Exclusive create, write, flush, fsync before any product launch; subsequent state is separate append-only consumed/outcome files.'}
+ put(LEDGER,ledger);print(json.dumps({'status':'PREPARED_NOT_EXECUTED','ledger':ref(LEDGER),'preflight':ref(PREP),'attemptId':rid,'output':str(output)}))
+
+def execute():
+ assert PREP.exists() and LEDGER.exists() and not CONSUMED.exists(),'One authorization only; no retry'
+ pre=read(PREP);ledger=read(LEDGER);assert ledger['preflight']==ref(PREP) and pre['runner']==ref(Path(__file__))
+ for key in ['wrapper','reviewedWrapper','observer','traceValidator','protocol']:
+  row=pre[key];assert ref(ROOT/row['path'])==row
+ gate=BASE/'m3-verification.json';approval=BASE/'final-witness-go.json';assert gate.exists() and approval.exists(),'Root GO and independent M3 gate required'
+ go=read(approval);assert go['status']=='GO' and go['attemptLedger']==ref(LEDGER) and go['methodologyGate']==ref(gate)
+ assert go['methodologyAuthority']==M3 and go['productionAuthority']==C3CB
+ before=assert_identity();assert before==pre['installedMembersBefore'] and ENV==pre['environment']
+ work=Path(pre['workspace']);output=Path(pre['evidenceDirectory'])
+ for row in pre['inputFiles']:assert ref(ROOT/row['path'])==row
+ assert not (work/'missing.mip').exists() and not (work/'.memoryos-ci').exists()
+ put(CONSUMED,{'kind':'MemoryOSFinalWitnessAuthorizationConsumed','version':'1.0.0','recordedUtc':datetime.now(timezone.utc).isoformat(),'attemptId':pre['attemptId'],'state':'AUTHORIZATION_CONSUMED_BEFORE_LAUNCH','authorizationConsumed':True,'ledger':ref(LEDGER),'preflight':ref(PREP),'methodologyGate':ref(gate),'rootGo':ref(approval),'recurrenceRule':RULE})
+ result=None;began=datetime.now(timezone.utc).isoformat()
+ try:
+  result=observer.execute(pre['externalArgv'],INSTALLED.parent,env=ENV,timeout=80,interval=.1)
+  for stream in ['stdout','stderr']:
+   with (output/(stream+'.txt')).open('xb') as f:f.write(result[stream].encode())
+  put(output/'raw-trace.json',compact(result))
+  result['topologyValidation']=validate_trace(result,IDS,INSTALLED)
+  put(output/'trace.json',compact(result))
+  events=read(output/'events.json');actual=json.loads(result['stdout']);bundle=work/'.memoryos-ci/out'/actual['runId']
+  if bundle.exists():shutil.copytree(bundle,output/'bundle')
+  after=inventory();put(output/'installed-integrity-after.json',{'status':'PASS' if before==after else 'FAIL','count':len(after),'members':after,'before':ref(PREP)})
+  observed={'status':'OBSERVED_PENDING_INDEPENDENT_VALIDATION','attemptId':pre['attemptId'],'startedUtc':began,'endedUtc':datetime.now(timezone.utc).isoformat(),'exitCode':result['exitCode'],'actual':actual,'actualBundlePath':str(bundle),'bundleFiles':[ref(p) for p in sorted((output/'bundle').rglob('*')) if p.is_file()] if (output/'bundle').exists() else [],'preflight':ref(PREP),'ledger':ref(LEDGER),'consumed':ref(CONSUMED),'trace':ref(output/'trace.json'),'events':ref(output/'events.json'),'stdout':ref(output/'stdout.txt'),'stderr':ref(output/'stderr.txt'),'installedIntegrity':ref(output/'installed-integrity-after.json'),'cleanup':result['cleanup'],'topology':result['topologyValidation'],'helperCount':events['helperCount']}
+  put(output/'observed.json',observed)
+  assert result['exitCode']==11 and actual['classification']=='INPUT_ERROR' and actual['publication']=='COMPLETE','FINAL_WITNESS_FAILED'
+  assert sorted(p.name for p in bundle.iterdir())==read(BASE/'final-witness-protocol.json')['expected']['files'],'FINAL_WITNESS_UNEXPECTED_FILES'
+  assert after==before and not result['cleanup']['remainingPids'] and result['cleanup']['elapsedMs']<=2000
+  assert events['productArgv']==pre['productArgv'] and events['execArgvAtExit']==['--max-old-space-size=128'] and events['environment']==ENV and not events['remainingTrackedFileDescriptors']
+  assert events['helperCount']==20 and not [e for e in events['events'] if e['event'] in ['timerFireBefore','helperKillBefore','helperStderr']]
+  helperrows=[]
+  for ordinal in range(1,21):
+   own=[e for e in events['events'] if e.get('ordinal')==ordinal];arm=next(e for e in own if e['event']=='timerArmed');close=next(e for e in own if e['event']=='helperEventBefore' and e['eventName']=='close');response=''.join(e['text'] for e in own if e['event']=='helperStdout')
+   assert response=='{"kind":"MemoryOSCICDPathCheck","safe":true,"version":"1.0.0"}\n' and close['args']==[0,None] and close['atMs']<arm['dueLowerMs']
+   helperrows.append({'ordinal':ordinal,'closeAtMs':close['atMs'],'dueLowerMs':arm['dueLowerMs'],'marginMs':arm['dueLowerMs']-close['atMs']})
+  put(output/'deadline-cleanup.json',{'status':'PASS','helpers':helperrows,'cleanup':result['cleanup'],'topology':result['topologyValidation'],'remainingDescriptors':events['remainingTrackedFileDescriptors'],'observerMeasuredMs':events['measuredBookkeepingMs'],'overheadNeverSubtracted':True})
+  put(BASE/'final-witness-outcome.json',{'status':'OBSERVED_PASS_PENDING_INDEPENDENT_VALIDATION','attemptId':pre['attemptId'],'authorizationConsumed':True,'executionCount':1,'additionalExecutionsAllowed':0,'historicalCause':'UNRESOLVED','historicalDisposition':'FAIL','observed':ref(output/'observed.json'),'deadlineCleanup':ref(output/'deadline-cleanup.json'),'ledger':ref(LEDGER),'consumed':ref(CONSUMED)})
+  print(json.dumps({'status':'OBSERVED_PASS_PENDING_INDEPENDENT_VALIDATION','actual':actual,'attemptId':pre['attemptId'],'outcome':ref(BASE/'final-witness-outcome.json')}))
+ except BaseException as error:
+  if result:
+   for stream in ['stdout','stderr']:
+    p=output/(stream+'.txt')
+    if not p.exists():p.write_bytes(result[stream].encode())
+   if not (output/'raw-trace.json').exists():put(output/'raw-trace.json',compact(result))
+  failure={'status':'FINAL_WITNESS_FAILED','attemptId':pre['attemptId'],'authorizationConsumed':True,'type':type(error).__name__,'message':str(error),'utc':datetime.now(timezone.utc).isoformat(),'recurrenceRule':RULE}
+  put(BASE/'final-witness-failure.json',failure);print(json.dumps(failure));raise
+
+if __name__=='__main__':
+ assert sys.argv[1:] in [['--prepare'],['--execute-once']]
+ prepare() if sys.argv[1]=='--prepare' else execute()

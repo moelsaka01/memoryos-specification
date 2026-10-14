@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: policy namespace exposes exactly the seven frozen commands
+ok 1 - policy namespace exposes exactly the seven frozen commands
+  ---
+  duration_ms: 11759.4104
+  type: 'test'
+  ...
+# Subtest: unexpected Policy operational failure maps to exit 5 and the exact JSON semantic projection
+ok 2 - unexpected Policy operational failure maps to exit 5 and the exact JSON semantic projection
+  ---
+  duration_ms: 3.636
+  type: 'test'
+  ...
+# Subtest: validate, digest, identities, and presentation envelopes preserve frozen bytes
+ok 3 - validate, digest, identities, and presentation envelopes preserve frozen bytes
+  ---
+  duration_ms: 9242.8038
+  type: 'test'
+  ...
+# Subtest: evaluate preserves PASS, FAIL, CNE, exact artifacts, and outcome-last generation
+ok 4 - evaluate preserves PASS, FAIL, CNE, exact artifacts, and outcome-last generation
+  ---
+  duration_ms: 12433.6949
+  type: 'test'
+  ...
+# Subtest: all detached inspections and both verification modes remain SDK-owned
+ok 5 - all detached inspections and both verification modes remain SDK-owned
+  ---
+  duration_ms: 19314.5766
+  type: 'test'
+  ...
+# Subtest: policy transport rejects collisions, multiple stdin inputs, URLs, and output-only stdin
+ok 6 - policy transport rejects collisions, multiple stdin inputs, URLs, and output-only stdin
+  ---
+  duration_ms: 9521.3721
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 63616.4254

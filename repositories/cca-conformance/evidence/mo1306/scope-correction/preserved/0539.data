@@ -1,0 +1,92 @@
+85955:                     log_logger.warning("Error when cleaning up abortListener on httpRequest", e);
+85956:                 });
+85957:             }
+85958:         }
+85959:     }
+85960:     makeRequest(request, abortController, body) {
+85961:         const url = new URL(request.url);
+85962:         const isInsecure = url.protocol !== "https:";
+85963:         if (isInsecure && !request.allowInsecureConnection) {
+85964:             throw new Error(`Cannot connect to ${request.url} while allowInsecureConnection is false.`);
+85965:         }
+85966:         const agent = request.agent ?? this.getOrCreateAgent(request, isInsecure);
+85967:         const options = {
+85968:             agent,
+85969:             hostname: url.hostname,
+85970:             path: `${url.pathname}${url.search}`,
+85971:             port: url.port,
+85972:             method: request.method,
+85973:             headers: request.headers.toJSON({ preserveCase: true }),
+85974:             ...request.requestOverrides,
+85975:         };
+85976:         return new Promise((resolve, reject) => {
+85977:             const req = isInsecure ? external_node_http_.request(options, resolve) : external_node_https_namespaceObject.request(options, resolve);
+85978:             req.once("error", (err) => {
+85979:                 reject(new restError_RestError(err.message, { code: err.code ?? restError_RestError.REQUEST_SEND_ERROR, request }));
+85980:             });
+85981:             abortController.signal.addEventListener("abort", () => {
+85982:                 const abortError = new AbortError("The operation was aborted. Rejecting from abort signal callback while making request.");
+85983:                 req.destroy(abortError);
+85984:                 reject(abortError);
+85985:             });
+85986:             if (body && nodeHttpClient_isReadableStream(body)) {
+85987:                 body.pipe(req);
+85988:             }
+85989:             else if (body) {
+85990:                 if (typeof body === "string" || Buffer.isBuffer(body)) {
+85991:                     req.end(body);
+85992:                 }
+85993:                 else if (isArrayBuffer(body)) {
+85994:                     req.end(ArrayBuffer.isView(body) ? Buffer.from(body.buffer) : Buffer.from(body));
+85995:                 }
+85996:                 else {
+85997:                     log_logger.error("Unrecognized body type", body);
+85998:                     reject(new restError_RestError("Unrecognized body type"));
+85999:                 }
+86000:             }
+86001:             else {
+86002:                 // streams don't like "undefined" being passed as data
+86003:                 req.end();
+86004:             }
+86005:         });
+86006:     }
+86007:     getOrCreateAgent(request, isInsecure) {
+86008:         const disableKeepAlive = request.disableKeepAlive;
+86009:         // Handle Insecure requests first
+86010:         if (isInsecure) {
+86011:             if (disableKeepAlive) {
+86012:                 // keepAlive:false is the default so we don't need a custom Agent
+86013:                 return external_node_http_.globalAgent;
+86014:             }
+86015:             if (!this.cachedHttpAgent) {
+86016:                 // If there is no cached agent create a new one and cache it.
+86017:                 this.cachedHttpAgent = new external_node_http_.Agent({ keepAlive: true });
+86018:             }
+86019:             return this.cachedHttpAgent;
+86020:         }
+86021:         else {
+86022:             if (disableKeepAlive && !request.tlsSettings) {
+86023:                 // When there are no tlsSettings and keepAlive is false
+86024:                 // we don't need a custom agent
+86025:                 return external_node_https_namespaceObject.globalAgent;
+86026:             }
+86027:             // We use the tlsSettings to index cached clients
+86028:             const tlsSettings = request.tlsSettings ?? DEFAULT_TLS_SETTINGS;
+86029:             // Get the cached agent or create a new one with the
+86030:             // provided values for keepAlive and tlsSettings
+86031:             let agent = this.cachedHttpsAgents.get(tlsSettings);
+86032:             if (agent && agent.options.keepAlive === !disableKeepAlive) {
+86033:                 return agent;
+86034:             }
+86035:             log_logger.info("No cached TLS Agent exist, creating a new Agent");
+86036:             agent = new external_node_https_namespaceObject.Agent({
+86037:                 // keepAlive is true if disableKeepAlive is false.
+86038:                 keepAlive: !disableKeepAlive,
+86039:                 // Since we are spreading, if no tslSettings were provided, nothing is added to the agent options.
+86040:                 ...tlsSettings,
+86041:             });
+86042:             this.cachedHttpsAgents.set(tlsSettings, agent);
+86043:             return agent;
+86044:         }
+86045:     }
+86046: }

@@ -1,0 +1,265 @@
+{
+  "id": "L",
+  "name": "FreeConsole-false-or-throw-silent22",
+  "kind": "EXACT_FUNCTION_NATIVE_DOUBLE",
+  "result": "PASS",
+  "startedAt": "2026-09-30T15:40:22.504Z",
+  "startupCases": [
+    {
+      "name": "detach-failure",
+      "kind": "EXACT_EXTRACTED_FUNCTION_WITH_NATIVE_DOUBLE",
+      "expectedExit": 22,
+      "accepted": false,
+      "result": "PASS",
+      "nativeProductHelper": false,
+      "realHostProof": false,
+      "events": [
+        {
+          "event": "stdin-finish",
+          "elapsedMs": 15.459700000000339
+        },
+        {
+          "event": "stdin-close",
+          "elapsedMs": 16.202299999999923
+        },
+        {
+          "event": "stdout-end",
+          "elapsedMs": 541.9169000000002
+        },
+        {
+          "event": "stdout-close",
+          "elapsedMs": 542.1370999999999
+        },
+        {
+          "event": "stderr-end",
+          "elapsedMs": 542.1800999999996
+        },
+        {
+          "event": "stderr-close",
+          "elapsedMs": 542.2245000000003
+        },
+        {
+          "event": "exit",
+          "elapsedMs": 552.1521000000012,
+          "code": 22,
+          "signal": null
+        }
+      ],
+      "pid": 19124,
+      "exitCode": 22,
+      "exitSignal": null,
+      "elapsedMs": 552.2049000000006,
+      "proof": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/security/startup/detach-failure/proof.json",
+        "byteLength": 741,
+        "sha256": "sha256:cfcc7afa106907015bff79aa5c6e3ecd2ab1085714333926a636c696d82a7d13"
+      },
+      "observed": {
+        "configuredErrorContext": null,
+        "nativeLastErrorSet": false,
+        "membershipCalls": 1,
+        "freeConsoleCalls": 1,
+        "kind": "MO1307ExtractedHeadlessStartupSimulation",
+        "scenario": "detach-failure",
+        "accepted": false,
+        "failure": "MO1307_INTERNAL",
+        "failureType": "System.InvalidOperationException",
+        "events": [
+          {
+            "name": "GetStdHandle",
+            "arguments": [
+              -10
+            ]
+          },
+          {
+            "name": "GetFileType",
+            "arguments": [
+              10
+            ]
+          },
+          {
+            "name": "GetStdHandle",
+            "arguments": [
+              -11
+            ]
+          },
+          {
+            "name": "GetFileType",
+            "arguments": [
+              11
+            ]
+          },
+          {
+            "name": "GetStdHandle",
+            "arguments": [
+              -12
+            ]
+          },
+          {
+            "name": "GetFileType",
+            "arguments": [
+              12
+            ]
+          },
+          {
+            "name": "GetConsoleProcessList",
+            "arguments": [
+              1
+            ]
+          },
+          {
+            "name": "FreeConsole",
+            "arguments": []
+          }
+        ],
+        "detached": false,
+        "productionFunctionUnmodified": true,
+        "nativeProcessOperationsPerformed": false,
+        "realHostIdentityProof": false
+      },
+      "closed": true,
+      "timedOut": false,
+      "cleanupExpired": false,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/security/startup/detach-failure/stdout.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/security/startup/detach-failure/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdoutBytes": 0,
+      "stderrBytes": 0
+    },
+    {
+      "name": "detach-throw",
+      "kind": "EXACT_EXTRACTED_FUNCTION_WITH_NATIVE_DOUBLE",
+      "expectedExit": 22,
+      "accepted": false,
+      "result": "PASS",
+      "nativeProductHelper": false,
+      "realHostProof": false,
+      "events": [
+        {
+          "event": "stdin-finish",
+          "elapsedMs": 10.913699999999153
+        },
+        {
+          "event": "stdin-close",
+          "elapsedMs": 10.998499999999694
+        },
+        {
+          "event": "stdout-end",
+          "elapsedMs": 559.5030999999999
+        },
+        {
+          "event": "stderr-end",
+          "elapsedMs": 559.7034999999996
+        },
+        {
+          "event": "stderr-close",
+          "elapsedMs": 560.1926000000003
+        },
+        {
+          "event": "stdout-close",
+          "elapsedMs": 560.2140999999992
+        },
+        {
+          "event": "exit",
+          "elapsedMs": 569.2228999999988,
+          "code": 22,
+          "signal": null
+        }
+      ],
+      "pid": 23452,
+      "exitCode": 22,
+      "exitSignal": null,
+      "elapsedMs": 569.3635999999988,
+      "proof": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/security/startup/detach-throw/proof.json",
+        "byteLength": 753,
+        "sha256": "sha256:bca6b9217c46ec18fbe0551a34d8864906f87660b2aff9f81872f520e25352cd"
+      },
+      "observed": {
+        "configuredErrorContext": null,
+        "nativeLastErrorSet": false,
+        "membershipCalls": 1,
+        "freeConsoleCalls": 1,
+        "kind": "MO1307ExtractedHeadlessStartupSimulation",
+        "scenario": "detach-throw",
+        "accepted": false,
+        "failure": "ENGINEERING_FREECONSOLE_THROW",
+        "failureType": "System.InvalidOperationException",
+        "events": [
+          {
+            "name": "GetStdHandle",
+            "arguments": [
+              -10
+            ]
+          },
+          {
+            "name": "GetFileType",
+            "arguments": [
+              10
+            ]
+          },
+          {
+            "name": "GetStdHandle",
+            "arguments": [
+              -11
+            ]
+          },
+          {
+            "name": "GetFileType",
+            "arguments": [
+              11
+            ]
+          },
+          {
+            "name": "GetStdHandle",
+            "arguments": [
+              -12
+            ]
+          },
+          {
+            "name": "GetFileType",
+            "arguments": [
+              12
+            ]
+          },
+          {
+            "name": "GetConsoleProcessList",
+            "arguments": [
+              1
+            ]
+          },
+          {
+            "name": "FreeConsole",
+            "arguments": []
+          }
+        ],
+        "detached": false,
+        "productionFunctionUnmodified": true,
+        "nativeProcessOperationsPerformed": false,
+        "realHostIdentityProof": false
+      },
+      "closed": true,
+      "timedOut": false,
+      "cleanupExpired": false,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/security/startup/detach-throw/stdout.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/security/startup/detach-throw/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdoutBytes": 0,
+      "stderrBytes": 0
+    }
+  ]
+}

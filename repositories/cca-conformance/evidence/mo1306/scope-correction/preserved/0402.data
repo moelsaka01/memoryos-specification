@@ -1,0 +1,28 @@
+"""Read-only authoritative M3 gate; writes only this new certification receipt."""
+import datetime,hashlib,json,os,subprocess,sys
+from pathlib import Path
+sys.dont_write_bytecode=True
+ROOT=Path(__file__).resolve().parents[4];MAIN=Path(r'C:\Users\melsa\Documents\Codex\cca-workspace');OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-certification';TOOLS=MAIN/'repositories/cca-conformance/tools/mo1306-methodology-b';PY=sys.executable
+M3='85a0f85c1ebd013c545ccf2b3efe58a760e6cf37';BASE='701d48ee2012675966360dda775ab13013c09ab9';SUBJECT='conformance(memoryos-1.3): define unresolved observation certification rule'
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def row(p):
+ b=p.read_bytes();return {'path':str(p),'byteLength':len(b),'sha256':sha(b)}
+def git(*args):return subprocess.run(['git','-C',str(MAIN),*args],capture_output=True,check=True,env={**os.environ,'GIT_OPTIONAL_LOCKS':'0'},timeout=60).stdout
+started=datetime.datetime.now(datetime.timezone.utc).isoformat();assert git('rev-parse','HEAD').decode().strip()==M3
+idx=Path(git('rev-parse','--git-path','index').decode().strip());idx=idx if idx.is_absolute() else MAIN/idx;index_before=sha(idx.read_bytes());refs_before=git('for-each-ref','--format=%(refname) %(objectname)').decode()
+assert git('rev-list','--parents','-n','1',M3).decode().split()==[M3,BASE];assert git('show','-s','--format=%s',M3).decode().strip()==SUBJECT
+assert not git('status','--porcelain=v1','--untracked-files=all').strip()
+changed=git('diff','--name-status',BASE,M3).decode().splitlines();allowed=['docs/mo1306-phase3-unresolved-observation-methodology.md','repositories/cca-conformance/mo1306-unresolved-observation-methodology.json','repositories/cca-conformance/tools/mo1306-methodology-b/','repositories/cca-conformance/evidence/mo1306/methodology-b/']
+assert all(line.startswith('A\t') and any(line[2:]==a or a.endswith('/') and line[2:].startswith(a) for a in allowed) for line in changed)
+assert not git('diff','--name-only',BASE,M3,'--','repositories/memoryos-ci','repositories/memoryos-sdk','repositories/cca-runtime').strip()
+source=[MAIN/allowed[0],MAIN/allowed[1],*sorted(TOOLS.glob('*.py'))];source_rows=[]
+for p in source:
+ b=p.read_bytes();assert b==git('show',M3+':'+p.relative_to(MAIN).as_posix());source_rows.append(row(p))
+commands=[]
+for args in [[PY,'-B',str(TOOLS/'validate.py'),'--post'],[PY,'-B',str(TOOLS/'tests.py')]]:
+ p=subprocess.run(args,cwd=MAIN,capture_output=True,env={**os.environ,'PYTHONDONTWRITEBYTECODE':'1','GIT_OPTIONAL_LOCKS':'0'},timeout=120);record={'argv':args,'exitCode':p.returncode,'stdout':p.stdout.decode(),'stderr':p.stderr.decode(),'productExecutions':0};commands.append(record);assert p.returncode==0,record
+validated=json.loads(commands[0]['stdout']);tests=json.loads(commands[1]['stdout']);assert validated['status']=='PASS' and validated['head']==M3 and validated['parent']==BASE and validated['productFilesChanged']==0 and validated['productExecutions']==0 and validated['eligibility']=={'PASS':18,'FAIL':0,'NOT_ESTABLISHED':0} and validated['decision']=='ELIGIBLE_FOR_ONE_FINAL_WITNESS';assert tests['status']=='PASS' and tests['productExecutions']==0
+eligibility=MAIN/'repositories/cca-conformance/evidence/mo1306/methodology-b/eligibility.json';case=json.loads(eligibility.read_bytes());assert len(case['matrix'])==18 and all(r['status']=='PASS' for r in case['matrix']);assert case['plan']['finalWitnessLimit']==1 and case['plan']['finalAttemptsConsumed']==0
+assert sha(idx.read_bytes())==index_before and git('for-each-ref','--format=%(refname) %(objectname)').decode()==refs_before and not git('status','--porcelain=v1','--untracked-files=all').strip()
+v={'kind':'MemoryOSPhase3AFinalM3Verification','status':'PASS','methodologyRevision':M3,'productionAuthority':BASE,'parent':BASE,'subject':SUBJECT,'productionFilesChanged':0,'methodologyOnlyPathsAdded':len(changed),'sourceBindings':source_rows,'commands':commands,'methodologyValidation':validated,'methodologyTests':tests,'eligibility':{'PASS':18,'FAIL':0,'NOT_ESTABLISHED':0},'eligibilityReceipt':row(eligibility),'eligibilityDecision':'YES_EXACTLY_ONE_FINAL_MISSING_INPUT_WITNESS','finalWitnessLimit':1,'attemptsConsumedAtGate':0,'permission':'Prospective after successful actual M3 post-validation; create durable ledger before execution. Any failed/interrupted/unaccounted final attempt consumes authorization and stops; no retry or campaign reset.','historicalDisposition':'FAIL / UNRESOLVED','historicalCause':'UNRESOLVED','productExecutions':0,'mainReadOnly':{'head':M3,'clean':True,'indexSha256':index_before,'refsUnchanged':True,'indexUnchanged':True},'startedUtc':started,'endedUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'tool':row(Path(__file__))}
+p=OUT/'m3-verification.json';assert not p.exists();p.write_text(json.dumps(v,sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8');print(json.dumps({'status':'PASS','receipt':row(p),'eligibility':v['eligibility'],'decision':v['eligibilityDecision'],'tests':tests}))

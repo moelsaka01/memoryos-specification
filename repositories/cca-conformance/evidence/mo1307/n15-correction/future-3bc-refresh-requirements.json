@@ -1,0 +1,1508 @@
+{
+  "kind": "MO1307N15CorrectionFuture3BCRefreshRequirements",
+  "status": "FUTURE_ONLY_NOT_EXECUTED_PENDING_N15_VALIDATION_AND_PHASE3A",
+  "candidate": null,
+  "packageTree": null,
+  "productionBaseline": "defe93989efc6501b1a730b82e79e705884b269b",
+  "applicability": "No Phase3B or Phase3C execution is authorized in this task. This is an exact prospective dependency selection for the current N15 correction on top of the final-headless working bytes. Require complete source-bound validation, a new exact candidate, fresh Phase3A acceptance, separate future authorization, and final candidate dependency reconciliation. No historical PASS is promoted.",
+  "acceptedHistorical": {
+    "phase3B": {
+      "commit": "702c1b6381f6112a50ac844831d195275dac3350",
+      "receipt": "repositories/cca-conformance/evidence/mo1307/phase3b-c3rb-cert/certification-receipt.json",
+      "gitBlob": "14a74fbe594d5da3839a716384abc89e15d3a7f7",
+      "disposition": "Preserve unchanged; accepted for C3RB only."
+    },
+    "phase3C": {
+      "commit": "b02fc0226a1a2d800185a02071674ca80bdf4a1d",
+      "receipt": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/certification-receipt.json",
+      "gitBlob": "84fd131988b662d04d63470e1038b18743ed2d71",
+      "disposition": "Preserve unchanged; accepted for C3RB only."
+    }
+  },
+  "actualChangedShippedMembers": [
+    "distribution-manifest.json",
+    "helpers/README.md",
+    "helpers/windows-inspect.ps1",
+    "sbom.spdx.json",
+    "src/helper-transport.mjs"
+  ],
+  "unchangedContract": "contracts/contract.json and all 53 contract members are outside the production correction; any reuse must verify exact bytes.",
+  "phase3C": {
+    "inventoryAuthority": {
+      "commit": "b02fc0226a1a2d800185a02071674ca80bdf4a1d",
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/inventory-recovery.json",
+      "gitBlob": "c29ab34c110882150727b0857302211e1670940b",
+      "array": "rows",
+      "historicalPrimaryCount": 551
+    },
+    "selection": {
+      "suiteSelectors": [
+        {
+          "suite": "equivalence",
+          "count": 67
+        },
+        {
+          "suite": "protocol",
+          "count": 12
+        },
+        {
+          "suite": "toctou",
+          "count": 2
+        }
+      ],
+      "explicitAdditionalIds": [
+        "runtime-boundary:fixed-helper-environment-poison",
+        "refresh:deadline-timeout-exact-mapping",
+        "refresh:deadline-late-native-success-refused",
+        "refresh:deadline-crash-closed-transport",
+        "refresh:helper-path-count129",
+        "refresh:deadline-resource-native-declared-file-cap",
+        "runtime-boundary:fixed-powershell-launch"
+      ],
+      "expectedUniqueCount": 88
+    },
+    "reasons": [
+      "All 67 equivalence controls execute the changed helper or source-instrumented copies of it. Direct historical helper launches must be adapted to the new fixed launch topology without changing expected outcomes.",
+      "All 12 protocol controls depend on a newly generated ordinary native helper frame, even where their final check is JavaScript-only.",
+      "Both native TOCTOU controls execute engineering helper copies; keep reversible source instrumentation and frozen filesystem expectations.",
+      "Six deadline primary controls already depend on actual helper/transport execution. The 129-path control additionally has a native raw witness; retain both layers.",
+      "runtime-boundary:fixed-powershell-launch remains the additional primary affected by helper-transport comments and consolePolicy HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES. The actual detached:false launch matches C3RB, but the final launch specification and corrected observation policy require exact new-candidate bindings.",
+      "The neighboring launch refusal controls at runtime-boundary.mjs:61-63 exercise unchanged validateLaunch, not helperLaunchSpecification. Their names alone do not make them affected.",
+      "The source contains actual-fixed-transport-poisoned-parent in runtime-boundary-supplement.mjs:24, but selectedIds excludes it; its obligation is already represented by fixed-helper-environment-poison, so it must not be counted twice.",
+      "CreateFileW now uses DefineMethod with one authoritative complete DllImportAttribute instead of first establishing its mapping with DefinePInvokeMethod. Effective SetLastError and ExactSpelling change false-to-true; signatures and all other7 declarations remain unchanged. Refresh all native READ_SET, publication absence and boundary-error controls, including negative malformed/native frames whose startup initializes the changed type, both TOCTOU copies, and native deadline/raw resource witnesses. The existing67+12+2+6 dependency selection already contains these paths."
+    ],
+    "sourceReferences": {
+      "toolPrefix": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert3/",
+      "commit": "b02fc0226a1a2d800185a02071674ca80bdf4a1d",
+      "fixedLaunch": "runtime-boundary.mjs:59-60",
+      "unchangedLaunchRefusals": "runtime-boundary.mjs:61-63",
+      "nativeDeadlineLaunch": "deadline-cleanup.mjs:139-175",
+      "nativeCases": "deadline-cleanup.mjs:181-190",
+      "unselectedSupplement": "runtime-boundary-supplement.mjs:15-24",
+      "nativeProtocolFrameDependency": "protocol.mjs:6"
+    },
+    "additionalNativeRawWitnesses": [
+      "fixed-native-timely",
+      "timeout-exact-mapping",
+      "late-native-success-refused",
+      "crash-closed-transport",
+      "fixed-launch-combined-environment-poison",
+      "resource-native-path-cap129",
+      "resource-native-request-prefix-cap",
+      "resource-native-declared-file-cap",
+      "resource-native-observed-file-cap",
+      "resource-sample-corrected"
+    ],
+    "rawWitnessCounting": "These are dependent raw evidence, not ten additional historical primary IDs. Retain per-layer accounting.",
+    "sourceAuditRefresh": [
+      {
+        "record": "helper-delta-review.json",
+        "requirement": "Prove the complete C3RB-to-candidate helper/transport diff and the separate N15 delta. Explicitly review positive sole-self membership, mandatory successful FreeConsole and no post-detach query/host acquisition/termination. For N15, prove only CreateFileW mapping construction changes, while filesystem predicates, wire semantics, stable parent/held/fresh checks, error2-only absence, and all deadlines remain unchanged."
+      },
+      {
+        "record": "network-secrets-source.json",
+        "requirement": "Refresh fixedLaunch, nativeBoundary and deadline bindings. Bind detached:false and HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES; classify optional passive host observations separately from product quiescence, with no host-death assertion when absent."
+      },
+      {
+        "record": "call-site-dominance.json",
+        "requirement": "Rebind helper and shifted line references; prove filesystem call sites, native arguments, read/held/fresh ordering, identity comparisons and disposal unchanged. Record that CreateFileW effective SetLastError and ExactSpelling are intentionally corrected at shared emission; do not describe the entire native binding block as byte-identical."
+      },
+      {
+        "record": "deadline-cleanup/attempt-1/bounded-state-and-fixed-source-review.json",
+        "requirement": "Refresh exact helper/transport source bindings and changed native console/process primitive inventory while preserving all limits."
+      },
+      {
+        "record": "deadline-cleanup/attempt-1/campaign.json and boundary-closure.json",
+        "requirement": "Fresh candidate launch/topology and observer/cleanup provenance. Existing native timing or process observations cannot certify a different launch topology."
+      },
+      {
+        "record": "governance release-effect inventory",
+        "requirement": "Fresh manual source/effect review of changed helper and helper-transport, following governance.mjs history-mode inventory shape. This is a source-review obligation, not an additional selected primary control."
+      },
+      {
+        "record": "binding.json, pre-execution-seal.json, final-seal.json and certification receipt",
+        "requirement": "Future candidate-specific source/tool/fixture/output and package identities; preserve historical records in place and create separate new records."
+      }
+    ],
+    "additionalConsoleCaseRequirements": [
+      {
+        "id": "A",
+        "requirement": "Normal fixed detached:false startup completes required valid frame and quiescence."
+      },
+      {
+        "id": "B",
+        "requirement": "Positive count exactly one and current helper PID; successful self-only FreeConsole; no post-detach membership query."
+      },
+      {
+        "id": "C",
+        "requirement": "Each invalid product standard pipe fails closed."
+      },
+      {
+        "id": "D",
+        "requirement": "Extra console client fails closed."
+      },
+      {
+        "id": "E",
+        "requirement": "Every initial zero return fails closed, including former zero/error6 route; no cached-error success predicate."
+      },
+      {
+        "id": "F",
+        "requirement": "Count overflow fails closed without larger buffer or retry."
+      },
+      {
+        "id": "G",
+        "requirement": "Sole mismatched PID fails closed."
+      },
+      {
+        "id": "H",
+        "requirement": "No console-host lookup or process-object acquisition."
+      },
+      {
+        "id": "I",
+        "requirement": "No console-host termination or unidentified-host death claim."
+      },
+      {
+        "id": "J",
+        "requirement": "No console allocation/attachment or alternative post-detach witness."
+      },
+      {
+        "id": "K",
+        "requirement": "Helper crash remains terminal."
+      },
+      {
+        "id": "L",
+        "requirement": "FreeConsole failure remains silent startup exit22."
+      },
+      {
+        "id": "M",
+        "requirement": "Timeout remains terminal and bounded."
+      },
+      {
+        "id": "N",
+        "requirement": "Reconcile every silent22 refusal, without replacement executions."
+      },
+      {
+        "id": "O",
+        "requirement": "Late output cannot restore terminal success."
+      },
+      {
+        "id": "P",
+        "requirement": "Valid frame, helper exit, stdout/stderr EOF, stdin completion and all three stream closures are required."
+      },
+      {
+        "id": "Q",
+        "requirement": "No active helper and all known owned resources closed at transition."
+      },
+      {
+        "id": "R",
+        "requirement": "No helper/helper or helper/worker overlap."
+      },
+      {
+        "id": "S",
+        "requirement": "Preserve 5000/20000/30000/10000/2000 limits and strict forward J relation; H remains NOT_ESTABLISHED."
+      }
+    ],
+    "additionalCaseCounting": "Correction-specific A-S19 controls and native-binding metadata proof supplement historical88 selection. They are not historical primary IDs, and current engineering receipts are not automatically future3C PASS.",
+    "reuseBoundary": "No blanket reuse of the remaining historical primary outcomes is granted. A future dependency review may reference historical outcomes only for byte-identical exercised code, fixture/expectation bytes, and unchanged applicable launch/environment assumptions. Reading an unchanged module or listing an unused function is not execution of the changed helper.",
+    "executionPerformed": false,
+    "affectedPrimaryIds": [
+      "runtime-boundary:wire-valid-control",
+      "runtime-boundary:wire-response-wrong-session",
+      "runtime-boundary:wire-response-wrong-sequence",
+      "runtime-boundary:wire-response-wrong-operation",
+      "runtime-boundary:wire-response-unknown-field",
+      "runtime-boundary:wire-response-bad-base64",
+      "runtime-boundary:wire-response-noncanonical-base64",
+      "runtime-boundary:fixed-powershell-launch",
+      "runtime-boundary:native-ordinary-handle-control",
+      "runtime-boundary:native-traversal",
+      "runtime-boundary:native-drive-relative",
+      "runtime-boundary:native-unc",
+      "runtime-boundary:native-device",
+      "runtime-boundary:native-ads",
+      "runtime-boundary:native-reserved",
+      "runtime-boundary:native-wrong-type",
+      "runtime-boundary:native-missing-input",
+      "runtime-boundary:native-oversized-file",
+      "runtime-boundary:native-unknown-field",
+      "runtime-boundary:native-wrong-version",
+      "runtime-boundary:native-wrong-operation",
+      "runtime-boundary:native-hardlink",
+      "runtime-boundary:native-file-symlink",
+      "runtime-boundary:native-junction",
+      "runtime-boundary:native-directory-symlink",
+      "runtime-boundary:native-wire-duplicate-key",
+      "runtime-boundary:native-wire-noncanonical",
+      "runtime-boundary:native-wire-truncated-length",
+      "runtime-boundary:native-wire-oversized-length",
+      "runtime-boundary:native-wire-extra-frame",
+      "runtime-boundary:native-wire-trailing-bytes",
+      "runtime-boundary:native-wire-debug-prefix",
+      "runtime-boundary:fixed-helper-environment-poison",
+      "refresh:equivalence-mixed-case-root",
+      "refresh:equivalence-unicode-root",
+      "refresh:equivalence-mo1306-exact",
+      "refresh:equivalence-ready-exact",
+      "refresh:equivalence-wrong-root",
+      "refresh:equivalence-malformed-request",
+      "refresh:equivalence-wrong-session",
+      "refresh:equivalence-wrong-sequence",
+      "refresh:equivalence-changed-identity",
+      "refresh:equivalence-wrong-volume",
+      "refresh:equivalence-changed-ancestor-identity",
+      "refresh:equivalence-changed-size-observation",
+      "refresh:equivalence-changed-link-observation",
+      "refresh:equivalence-changed-attributes-observation",
+      "refresh:equivalence-wrong-final-path",
+      "refresh:equivalence-changed-final-expectation",
+      "refresh:equivalence-native-file-replacement",
+      "refresh:equivalence-native-size-mutation",
+      "refresh:equivalence-native-reparse-mutation",
+      "refresh:equivalence-native-ancestor-replacement",
+      "refresh:equivalence-observed-final-ads",
+      "refresh:equivalence-observed-final-trailing-dot",
+      "refresh:equivalence-observed-final-trailing-space",
+      "refresh:equivalence-observed-final-separator",
+      "refresh:equivalence-observed-final-control",
+      "refresh:equivalence-observed-final-alternate-root",
+      "refresh:equivalence-observed-final-bad-prefix",
+      "refresh:equivalence-dot-path-alias",
+      "refresh:equivalence-backslash-relative",
+      "refresh:equivalence-forward-separator-root",
+      "refresh:equivalence-truncated-frame",
+      "refresh:equivalence-publication-check_output-4",
+      "refresh:equivalence-publication-check_output-4-traversal",
+      "refresh:equivalence-publication-check_output-5",
+      "refresh:equivalence-publication-check_output-5-traversal",
+      "refresh:equivalence-publication-inspect_output_root-6",
+      "refresh:equivalence-publication-inspect_output_root-6-traversal",
+      "refresh:equivalence-publication-check_stage_root-7",
+      "refresh:equivalence-publication-check_stage_root-7-traversal",
+      "refresh:equivalence-publication-inspect_pending-8",
+      "refresh:equivalence-publication-inspect_pending-8-traversal",
+      "refresh:equivalence-publication-check_finalization-9",
+      "refresh:equivalence-publication-check_finalization-9-traversal",
+      "refresh:protocol-response-wrong-version",
+      "refresh:protocol-response-truncated-frame",
+      "refresh:protocol-response-extra-frame",
+      "refresh:protocol-response-trailing-bytes",
+      "refresh:protocol-sequence-entry-bypass",
+      "refresh:before-read-replacement",
+      "refresh:held-to-fresh-replacement",
+      "refresh:deadline-timeout-exact-mapping",
+      "refresh:deadline-late-native-success-refused",
+      "refresh:deadline-crash-closed-transport",
+      "refresh:helper-path-count129",
+      "refresh:deadline-resource-native-declared-file-cap"
+    ],
+    "selectedControlDependencies": [
+      {
+        "id": "runtime-boundary:wire-valid-control",
+        "suite": "protocol",
+        "tool": "protocol.mjs",
+        "caseId": "native-frame-control",
+        "dependency": "Consumer of fresh unmodified native frame"
+      },
+      {
+        "id": "runtime-boundary:wire-response-wrong-session",
+        "suite": "protocol",
+        "tool": "protocol.mjs",
+        "caseId": "response-wrong-session",
+        "dependency": "Consumer of fresh unmodified native frame"
+      },
+      {
+        "id": "runtime-boundary:wire-response-wrong-sequence",
+        "suite": "protocol",
+        "tool": "protocol.mjs",
+        "caseId": "response-wrong-sequence",
+        "dependency": "Consumer of fresh unmodified native frame"
+      },
+      {
+        "id": "runtime-boundary:wire-response-wrong-operation",
+        "suite": "protocol",
+        "tool": "protocol.mjs",
+        "caseId": "response-wrong-operation",
+        "dependency": "Consumer of fresh unmodified native frame"
+      },
+      {
+        "id": "runtime-boundary:wire-response-unknown-field",
+        "suite": "protocol",
+        "tool": "protocol.mjs",
+        "caseId": "response-unknown-field",
+        "dependency": "Consumer of fresh unmodified native frame"
+      },
+      {
+        "id": "runtime-boundary:wire-response-bad-base64",
+        "suite": "protocol",
+        "tool": "protocol.mjs",
+        "caseId": "response-malformed-base64",
+        "dependency": "Consumer of fresh unmodified native frame"
+      },
+      {
+        "id": "runtime-boundary:wire-response-noncanonical-base64",
+        "suite": "protocol",
+        "tool": "protocol.mjs",
+        "caseId": "response-noncanonical-base64",
+        "dependency": "Consumer of fresh unmodified native frame"
+      },
+      {
+        "id": "runtime-boundary:fixed-powershell-launch",
+        "suite": "runtime-main",
+        "tool": "runtime-boundary.mjs",
+        "caseId": "fixed-powershell-launch",
+        "dependency": "Current helperLaunchSpecification and corrected headless launch policy"
+      },
+      {
+        "id": "runtime-boundary:native-ordinary-handle-control",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "ordinary",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-traversal",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "traversal",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-drive-relative",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "drive-relative",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-unc",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "unc",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-device",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "device",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-ads",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "ads",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-reserved",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "reserved-device",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-wrong-type",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "wrong-type",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-missing-input",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "missing-file",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-oversized-file",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "oversized-file",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-unknown-field",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "unknown-field",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-wrong-version",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "wrong-version",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-wrong-operation",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "wrong-operation",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-hardlink",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "hardlink",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-file-symlink",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "file-symlink",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-junction",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "directory-junction",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-directory-symlink",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "directory-symlink",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-wire-duplicate-key",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "duplicate-key",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-wire-noncanonical",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "noncanonical",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-wire-truncated-length",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "truncated-length",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-wire-oversized-length",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "oversized-length",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-wire-extra-frame",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "extra-frame",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-wire-trailing-bytes",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "trailing-bytes",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:native-wire-debug-prefix",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "debug-prefix",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "runtime-boundary:fixed-helper-environment-poison",
+        "suite": "deadline-cleanup",
+        "tool": "deadline-cleanup.mjs",
+        "caseId": "fixed-launch-combined-environment-poison",
+        "dependency": "Actual native helper/transport or dependent raw native resource witness"
+      },
+      {
+        "id": "refresh:equivalence-mixed-case-root",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "mixed-case-root",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-unicode-root",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "unicode-root",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-mo1306-exact",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "mo1306-exact",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-ready-exact",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "ready-exact",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-wrong-root",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "wrong-root",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-malformed-request",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "malformed-request",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-wrong-session",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "wrong-session",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-wrong-sequence",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "wrong-sequence",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-changed-identity",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "changed-identity",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-wrong-volume",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "wrong-volume",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-changed-ancestor-identity",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "changed-ancestor-identity",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-changed-size-observation",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "changed-size-observation",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-changed-link-observation",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "changed-link-observation",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-changed-attributes-observation",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "changed-attributes-observation",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-wrong-final-path",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "wrong-final-path",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-changed-final-expectation",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "changed-final-expectation",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-native-file-replacement",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "native-file-replacement",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-native-size-mutation",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "native-size-mutation",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-native-reparse-mutation",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "native-reparse-mutation",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-native-ancestor-replacement",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "native-ancestor-replacement",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-observed-final-ads",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "observed-final-ads",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-observed-final-trailing-dot",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "observed-final-trailing-dot",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-observed-final-trailing-space",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "observed-final-trailing-space",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-observed-final-separator",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "observed-final-separator",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-observed-final-control",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "observed-final-control",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-observed-final-alternate-root",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "observed-final-alternate-root",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-observed-final-bad-prefix",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "observed-final-bad-prefix",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-dot-path-alias",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "dot-path-alias",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-backslash-relative",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "backslash-relative",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-forward-separator-root",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "forward-separator-root",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-truncated-frame",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "truncated-frame",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-publication-check_output-4",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "publication-check_output-4",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-publication-check_output-4-traversal",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "publication-check_output-4-traversal",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-publication-check_output-5",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "publication-check_output-5",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-publication-check_output-5-traversal",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "publication-check_output-5-traversal",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-publication-inspect_output_root-6",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "publication-inspect_output_root-6",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-publication-inspect_output_root-6-traversal",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "publication-inspect_output_root-6-traversal",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-publication-check_stage_root-7",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "publication-check_stage_root-7",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-publication-check_stage_root-7-traversal",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "publication-check_stage_root-7-traversal",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-publication-inspect_pending-8",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "publication-inspect_pending-8",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-publication-inspect_pending-8-traversal",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "publication-inspect_pending-8-traversal",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-publication-check_finalization-9",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "publication-check_finalization-9",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:equivalence-publication-check_finalization-9-traversal",
+        "suite": "equivalence",
+        "tool": "equivalence.mjs",
+        "caseId": "publication-check_finalization-9-traversal",
+        "dependency": "Actual helper or reversible native helper copy; shared initializer and filesystem/wire outcome"
+      },
+      {
+        "id": "refresh:protocol-response-wrong-version",
+        "suite": "protocol",
+        "tool": "protocol.mjs",
+        "caseId": "response-wrong-version",
+        "dependency": "Consumer of fresh unmodified native frame"
+      },
+      {
+        "id": "refresh:protocol-response-truncated-frame",
+        "suite": "protocol",
+        "tool": "protocol.mjs",
+        "caseId": "response-truncated-frame",
+        "dependency": "Consumer of fresh unmodified native frame"
+      },
+      {
+        "id": "refresh:protocol-response-extra-frame",
+        "suite": "protocol",
+        "tool": "protocol.mjs",
+        "caseId": "response-extra-frame",
+        "dependency": "Consumer of fresh unmodified native frame"
+      },
+      {
+        "id": "refresh:protocol-response-trailing-bytes",
+        "suite": "protocol",
+        "tool": "protocol.mjs",
+        "caseId": "response-trailing-bytes",
+        "dependency": "Consumer of fresh unmodified native frame"
+      },
+      {
+        "id": "refresh:protocol-sequence-entry-bypass",
+        "suite": "protocol",
+        "tool": "protocol.mjs",
+        "caseId": "sequence-entry-bypass",
+        "dependency": "Consumer of fresh unmodified native frame"
+      },
+      {
+        "id": "refresh:before-read-replacement",
+        "suite": "toctou",
+        "tool": "toctou-boundaries.mjs",
+        "caseId": "before-read-replacement",
+        "dependency": "Reversible actual helper copy; held/fresh native identity checks"
+      },
+      {
+        "id": "refresh:held-to-fresh-replacement",
+        "suite": "toctou",
+        "tool": "toctou-boundaries.mjs",
+        "caseId": "held-to-fresh-replacement",
+        "dependency": "Reversible actual helper copy; held/fresh native identity checks"
+      },
+      {
+        "id": "refresh:deadline-timeout-exact-mapping",
+        "suite": "deadline-cleanup",
+        "tool": "deadline-cleanup.mjs",
+        "caseId": "timeout-exact-mapping",
+        "dependency": "Actual native helper/transport or dependent raw native resource witness"
+      },
+      {
+        "id": "refresh:deadline-late-native-success-refused",
+        "suite": "deadline-cleanup",
+        "tool": "deadline-cleanup.mjs",
+        "caseId": "late-native-success-refused",
+        "dependency": "Actual native helper/transport or dependent raw native resource witness"
+      },
+      {
+        "id": "refresh:deadline-crash-closed-transport",
+        "suite": "deadline-cleanup",
+        "tool": "deadline-cleanup.mjs",
+        "caseId": "crash-closed-transport",
+        "dependency": "Actual native helper/transport or dependent raw native resource witness"
+      },
+      {
+        "id": "refresh:helper-path-count129",
+        "suite": "deadline-cleanup",
+        "tool": "deadline-cleanup.mjs",
+        "caseId": "resource-request-path-cap128-129",
+        "dependency": "Actual native helper/transport or dependent raw native resource witness"
+      },
+      {
+        "id": "refresh:deadline-resource-native-declared-file-cap",
+        "suite": "deadline-cleanup",
+        "tool": "deadline-cleanup.mjs",
+        "caseId": "resource-native-declared-file-cap",
+        "dependency": "Actual native helper/transport or dependent raw native resource witness"
+      }
+    ],
+    "n15AdditionalEvidenceRequirements": [
+      {
+        "id": "N15_EFFECTIVE_CREATEFILEW_METADATA",
+        "requirement": "Bind exact before/candidate Initialize-Native source and reflect effective emitted metadata in bounded engineering processes with an inert Confirm stub; no helper requests or native API calls. Require only CreateFileW SetLastError:false-to-true and ExactSpelling:false-to-true, all8 signatures/library/entry points/calling conventions/character sets/PreserveSig unchanged, other7 effective declarations unchanged. Preserve output, runtime identity, source identity and once-only disposition.",
+        "counting": "New correction-specific proof, not an extra historical primary ID."
+      },
+      {
+        "id": "N15_ABSENCE_AND_FILESYSTEM_PRESERVATION",
+        "requirement": "Bind exact N15 CHECK_OUTPUT slots4/5 positiveABSENT evidence and existing native boundaries: outside declared root, traversal, device/ADS, wrong type, reparse/symlink/junction, hardlink, missing ancestor and final-handle-path mismatch. Preserve error2-only absence admission and fail-closed unknown/nonabsence errors; no weakened expected tuple.",
+        "counting": "Existing affected historical IDs retain their exact outcomes. Additional current engineering35-case receipt is provenance, not automatic future3C acceptance."
+      }
+    ]
+  },
+  "phase3B": {
+    "futureCandidateBoundRequirements": [
+      "Recompute and bind exact source89-member inventory and source Git blobs to the new candidate.",
+      "Recompute runtime import closure, distribution88 entries and SPDX87 file bindings plus package verification code; rebind unchanged contract53/schema semantics by exact dependency proof.",
+      "Produce two independent fresh deterministic offline archives from the candidate and verify equal archive bytes and all safe regular member bytes against source.",
+      "Perform a fresh offline installation from the newly selected archive with empty install cache, scripts/audit/fund/network fallback disabled, and zero production dependencies.",
+      "Verify all89 installed members against new source and archive before and after installed-context smoke; record persistence and source independence for the new installation.",
+      "Bind new installed public-name API-ready vector and closed invalid-CLI-dispatch smoke. These smoke controls contain no native helper execution and cannot establish console cleanup.",
+      "Create candidate/archive/distribution/SBOM/helper provenance, bounded advisory dependency record, preservation evidence and separate fresh review/seal/acceptance records.",
+      "Explicitly bind the corrected CreateFileW helper bytes and effective native-binding proof in candidate/archive/distribution/SBOM/installed provenance. No prior archive, installed helper, installation receipt or whole3B acceptance is inherited."
+    ],
+    "artifactBoundTamperControls": [
+      "archive-byte-tamper",
+      "missing-member",
+      "unexpected-member",
+      "unsafe-tar-path",
+      "nonregular-tar-member",
+      "duplicate-member",
+      "missing-tar-terminator",
+      "trailing-tar-data",
+      "helper-tamper",
+      "distribution-hash-tamper",
+      "distribution-length-tamper",
+      "sbom-checksum-tamper",
+      "extra-package-file",
+      "missing-package-file",
+      "provenance-byte-tamper",
+      "installed-helper-mutation"
+    ],
+    "otherHistoricalTamperControlsForDependencyReview": [
+      "schema-tamper",
+      "unexpected-production-dependency",
+      "external-runtime-import",
+      "source-worktree-import",
+      "network-builtin-import",
+      "runtime-identity-mismatch"
+    ],
+    "tamperBoundary": "The first list consumes new archive/source/install/provenance artifacts and requires fresh candidate evidence. The second list is only a possible reuse scope after exact checker/input dependency proof; this report grants no inherited tamper PASS.",
+    "reusableSlicesSubjectToProof": [
+      "Exact unchanged toolchain bytes and license/source provenance",
+      "Exact unchanged schema and contract bytes plus validators",
+      "Unchanged package metadata, zero-dependency and lifecycle policy definitions",
+      "Byte API semantic expectations and fixtures whose executed closure is unchanged"
+    ],
+    "authoritativeReuseBoundary": {
+      "commit": "702c1b6381f6112a50ac844831d195275dac3350",
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3b-c3rb-cert/reuse-details.json",
+      "field": "reuseScope",
+      "text": "Explicit exact dependency and scope checks under Freeze section 8. No archive, assembly, installation, tamper or complete fresh receipt result is inherited."
+    },
+    "executionPerformed": false
+  },
+  "processLimitsMs": {
+    "helper": 5000,
+    "aggregateHelper": 20000,
+    "cli": 30000,
+    "apiWorker": 10000,
+    "cleanup": 2000,
+    "nativeHostWait": 1000
+  },
+  "noNewAcceptance": true,
+  "historicalEvidenceModified": false,
+  "productionOrHelperExecutionByThisReport": false,
+  "basis": {
+    "path": "repositories/cca-conformance/evidence/mo1307/final-headless/future-3bc-refresh-requirements.json",
+    "byteLength": 20521,
+    "sha256": "sha256:5a7059f007b6586a3f8b1df50503e12211ef7ff94986d03235c92df43e9aca93",
+    "use": "Prior explicit88-ID dependency selection, independently reselected against immutable accepted3C inventory; historical outcomes not adopted."
+  },
+  "actualDiffReconciliation": {
+    "status": "WORKING_DIFF_DEPENDENCY_SELECTION_PENDING_FINAL_CANDIDATE",
+    "changedShippedMembers": 5,
+    "n15AdditionalChangedShippedMembers": [
+      "distribution-manifest.json",
+      "helpers/README.md",
+      "helpers/windows-inspect.ps1",
+      "sbom.spdx.json"
+    ],
+    "detachedMatchesC3RB": true,
+    "transportSourceStillChanged": true,
+    "existingAffectedPrimaryControls": 88,
+    "historicalRemaining": 463,
+    "reason": "The CreateFileW-only mapping repair is inside the shared native initializer. Every actual helper or reversible helper copy initializes that emitted type, and every fresh-frame consumer depends on its output. These are already inside the independently reselected87 native/frame-dependent historical controls. The fixed-launch primary remains affected by the preceding headless transport policy change, yielding88 exact unique IDs. No additional historical primary row is selected merely because its module imports a helper transport; synthetic JS-only controls require individual exercised-dependency proof before reuse.",
+    "remainingReuse": "No blanket463 reuse. Per-row proof must establish byte-identical exercised production functions, source-instrumented assumptions, fixture and expectation bytes, and applicable launch/runtime/environment dependencies. Any later source or fixture change requires reselection."
+  },
+  "authority": {
+    "authorization": {
+      "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/authorization.txt",
+      "byteLength": 10145,
+      "sha256": "sha256:1a9f21fb91dbd90a83d58b365e8597315893ff3da5b5911329f7266b1eb6410b"
+    },
+    "correctionSpecification": {
+      "path": "docs/mo1307-n15-correction.md",
+      "byteLength": 7248,
+      "sha256": "sha256:3c7d4895418f0fc6bb331ec1f27c8f38c68325970fccc2c8bdb47aa0ec795bb2"
+    },
+    "headlessAddendum": {
+      "path": "docs/mo1307-final-headless-correction-addendum.md",
+      "byteLength": 11416,
+      "sha256": "sha256:40303f1c51637de94057fc5203c6729bf9763496d4e63640278f1d10b0be6024"
+    },
+    "decision": {
+      "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/correction-decision.json",
+      "byteLength": 22697,
+      "sha256": "sha256:87ccfc79e43a82f186c99d832a23b5af56e44b360ba4953ed043813d1c143c32"
+    },
+    "classification": "N15_FILESYSTEM_BOUNDARY_DEFECT",
+    "candidate": null,
+    "preparationBaseline": "b73f4bd6ce71228372614889d9c6da1b778df49d"
+  },
+  "nativeHostWaitScope": "Historical bound retained only where applicable; no host handle or host wait exists in the final-headless success path.",
+  "n15WorkingSource": {
+    "sourceIdentity": "sha256:6e0e5f1984b1de1b835879471c3858897ba30d3206fa504fb7f9a7aa2cfca690",
+    "candidate": null,
+    "packageMembers": [
+      {
+        "path": "repositories/memoryos-readiness/LICENSE-NOTICE.md",
+        "byteLength": 468,
+        "sha256": "sha256:38242c10d734faf4cdf2ca223760a4ade3ab44516cd42989e95dbf6e66f15413"
+      },
+      {
+        "path": "repositories/memoryos-readiness/NOTICES.md",
+        "byteLength": 990,
+        "sha256": "sha256:5380d51bbf7a3772e97d607c22a40fef6b51c91631223aa25e5af1b838885437"
+      },
+      {
+        "path": "repositories/memoryos-readiness/README.md",
+        "byteLength": 5994,
+        "sha256": "sha256:a878c1493437899f0b461c9ac0aab4710e3515ef0e4a1003dd553a31d8a21d7c"
+      },
+      {
+        "path": "repositories/memoryos-readiness/bin/memoryos-readiness.mjs",
+        "byteLength": 854,
+        "sha256": "sha256:2aa002a153e87b5127cf26001c9a1bb774142838c0faf7c324c040013e988321"
+      },
+      {
+        "path": "repositories/memoryos-readiness/contracts/contract.json",
+        "byteLength": 7981,
+        "sha256": "sha256:95810fd28917b123b8809ac0677462ab4879635d1b97a5a372047c4e0aaeddc5"
+      },
+      {
+        "path": "repositories/memoryos-readiness/contracts/definitions.json",
+        "byteLength": 16555,
+        "sha256": "sha256:b621c0d17f2018ff8e73675878278f2fda10c2ad1f987a89747ebfb54b66e13e"
+      },
+      {
+        "path": "repositories/memoryos-readiness/distribution-manifest.json",
+        "byteLength": 12631,
+        "sha256": "sha256:873e02d542f2cf0e8b0cc6522e2323a94447fac142cbe2ccb9c1440260a2b85f"
+      },
+      {
+        "path": "repositories/memoryos-readiness/helpers/README.md",
+        "byteLength": 12837,
+        "sha256": "sha256:f60c25549eabd260a2298ceec21a506a2cb334cd3a4f4d976c62f3a01ed04305"
+      },
+      {
+        "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "byteLength": 29136,
+        "sha256": "sha256:f9d68d43cba57b5fc64e6bca13605ccf82f6afa9e1b0ac110bf9e4357bdbce69"
+      },
+      {
+        "path": "repositories/memoryos-readiness/package.json",
+        "byteLength": 3258,
+        "sha256": "sha256:21c9a7f9121f2d9171c332bb04e59656a7981fad98e328df0f4d8abf118ae2d6"
+      },
+      {
+        "path": "repositories/memoryos-readiness/sbom.spdx.json",
+        "byteLength": 47328,
+        "sha256": "sha256:756d333ec5574f19bdb7391b8f1626023235f384cf59e91e7450b7d707ce8c92"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/assessment-1.0.0.schema.json",
+        "byteLength": 111,
+        "sha256": "sha256:773b9d56360d4a19145ee39b53280bb762bcb74ea4cb2807d703d12f25a8568c"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/assumption-1.0.0.schema.json",
+        "byteLength": 111,
+        "sha256": "sha256:ce27f9be6367c67fd8e89e8d63d366a2b4b3f9f383a456c6afda6059fc85b565"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/audit-1.0.0.schema.json",
+        "byteLength": 106,
+        "sha256": "sha256:eae09ceabc8e2168803a86393e8bd726858ee93fa29085a65993f93a15760819"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/authority-1.0.0.schema.json",
+        "byteLength": 110,
+        "sha256": "sha256:28090b4c3e0ad932c6d730074821dc7af93807718ecebd922d0fa79442c8c166"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/authority-source-1.0.0.schema.json",
+        "byteLength": 116,
+        "sha256": "sha256:c4e76103c0cd8dcb3d8bfc28233aecf3842ede119add74107b11aad3cdcba892"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/blocker-1.0.0.schema.json",
+        "byteLength": 108,
+        "sha256": "sha256:c020e225b6108e6dda23c9b7d917d3bb5fdf5b85c447d6163e9ce68a4db5fab1"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/candidate-1.0.0.schema.json",
+        "byteLength": 110,
+        "sha256": "sha256:265ee28abecb976c8216f509bd4f8f5eb60b10b41fcd976858258fa2abe2b957"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/claim-1.0.0.schema.json",
+        "byteLength": 106,
+        "sha256": "sha256:3c3ab7dad3ee5ae25769c0c84f25767ae37d4c1a0ceb7f549ba86c9acdd5f352"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/cne-reason-1.0.0.schema.json",
+        "byteLength": 110,
+        "sha256": "sha256:45ba361684b6c8ffe0d4850dcbab22c376fd59f0f7639f2d25cba15f0fdecf49"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/code-1.0.0.schema.json",
+        "byteLength": 105,
+        "sha256": "sha256:c4c3ee22c6481a1fef69497210c0327c6b5c61553a3e5e089a59f3b76b540d84"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/component-1.0.0.schema.json",
+        "byteLength": 110,
+        "sha256": "sha256:fc4f35ef9d0167b699b2310f0e3a5dd34a2705de93f2d8bf5c1c5babea11aa8e"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/configuration-1.0.0.schema.json",
+        "byteLength": 114,
+        "sha256": "sha256:80511fe12f10aca88ed6d7206d5bc561e00cdc0fdef7a58afe17db27b497c7b5"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/contract-manifest-1.0.0.schema.json",
+        "byteLength": 117,
+        "sha256": "sha256:0ca35fbafd3d5bcd3ccbfa2b066a13ad54b693555c146a1d495c59e8ded42302"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/decision-projection-1.0.0.schema.json",
+        "byteLength": 119,
+        "sha256": "sha256:b444b1ee6a5b8c933a3566e7faa7a68259cb149303b8e67984b2e5ec07d4075a"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/dependency-1.0.0.schema.json",
+        "byteLength": 111,
+        "sha256": "sha256:0be69194601ce78dc37ff0a1f30fa46ff1d2a1b9c32317797d4b68a409861eea"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/derived-qualification-1.0.0.schema.json",
+        "byteLength": 121,
+        "sha256": "sha256:665d9a9c3749ed0a886d58a19ec8c81696e93a373df10edb635a6edeffa9a14c"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/digest-1.0.0.schema.json",
+        "byteLength": 107,
+        "sha256": "sha256:a01d44321afc286b3805f5de4ad7cb4dd60efbf9e209d872ec59edab8820ad76"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/distribution-manifest-1.0.0.schema.json",
+        "byteLength": 121,
+        "sha256": "sha256:b3940e289676341a81f2863accf8989a7ed3c690b48b1366eddb978798320586"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/error-1.0.0.schema.json",
+        "byteLength": 106,
+        "sha256": "sha256:6cb67bcf429d037871dc61e36779d6e15a7e36e04b955d3e00354ca9803b65a6"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/evidence-1.0.0.schema.json",
+        "byteLength": 109,
+        "sha256": "sha256:60d6d4d266b4922cbeefbe451958ec1abc73d86073e0c287b928aaf98c20b8c6"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/file-member-1.0.0.schema.json",
+        "byteLength": 111,
+        "sha256": "sha256:5b8d3a04e21d5093807e72e7c53999123d83aa78a892cdc3a073c116db27db59"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/gate-definition-1.0.0.schema.json",
+        "byteLength": 115,
+        "sha256": "sha256:e02d27ed14eff9ace68ebbf72eb1ea792688a8134f5b41ae67955b048642d37f"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/gate-result-1.0.0.schema.json",
+        "byteLength": 111,
+        "sha256": "sha256:cbfc9891347afec3f3dbc6c95d27f7274e425340934cf326f47ed22b0237f259"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/grant-1.0.0.schema.json",
+        "byteLength": 106,
+        "sha256": "sha256:01fabc2ee8ac1d4915489642a05e3674caa6ba65d262e3794f250d6caeca26ad"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/graph-1.0.0.schema.json",
+        "byteLength": 106,
+        "sha256": "sha256:59900f67dc53b5fe2124adec263534b121c8d61ea7037d1b1ec0d0b17ddd06d2"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/history-1.0.0.schema.json",
+        "byteLength": 108,
+        "sha256": "sha256:6a3c3c8859ace61f382675ba6d13ea53c83cd468e507fc85f292a8b28e64ea32"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/history-projection-1.0.0.schema.json",
+        "byteLength": 118,
+        "sha256": "sha256:52af97dd6a6b2a9daa57b99a346c039cea0200144a3b4aed28770faf3371a460"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/human-decision-1.0.0.schema.json",
+        "byteLength": 114,
+        "sha256": "sha256:13b6036fb35db9b2633d6dee1798adcccf558694301a8b55ac1241bbc45bcc82"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/id-1.0.0.schema.json",
+        "byteLength": 103,
+        "sha256": "sha256:364342bc9972e0901a5b05f1dc84e8aa90617afc397d7b056c7fe0d564b51263"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/identity-1.0.0.schema.json",
+        "byteLength": 109,
+        "sha256": "sha256:19440bf404254f418c5eacdc5d0cb479d3808d2b95e2e2704a323b5915f93108"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/integer-1.0.0.schema.json",
+        "byteLength": 108,
+        "sha256": "sha256:7a8a6c2204db56802077fba49b9a03787ad4d4be8e07809950bdd427d5270d21"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/manifest-1.0.0.schema.json",
+        "byteLength": 109,
+        "sha256": "sha256:ff5a3822707d15c803325b5c41387320e626595ba1627ec74f53363b08c2ff4d"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/manifest-entry-1.0.0.schema.json",
+        "byteLength": 114,
+        "sha256": "sha256:3040c1613e8dc2898b6c2b37f6dab57a4836b9bc93337d343898ed1a10bae6bc"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/normalized-authority-1.0.0.schema.json",
+        "byteLength": 120,
+        "sha256": "sha256:733e689add594ccb261ae0e622fc8ae4e3ae6606e3ddc1d845d0445d17cdf44f"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/normalized-authority-source-1.0.0.schema.json",
+        "byteLength": 126,
+        "sha256": "sha256:d85cc121db700854ff8d167757b5a8087ccfdb184504b4ecf722018c8d10b81c"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/normalized-grant-1.0.0.schema.json",
+        "byteLength": 116,
+        "sha256": "sha256:cf67227dfcde597cf706cd584513ca6f52c22595985aeb4f5f99e4a2a9797047"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/normalized-slot-1.0.0.schema.json",
+        "byteLength": 115,
+        "sha256": "sha256:5edf7393cabdfd4a0b94518575f2d8815cbeac0dc5585e64cfa85c74489e28af"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/product-version-1.0.0.schema.json",
+        "byteLength": 115,
+        "sha256": "sha256:89232556d0128a0da610580f5a5bae821f4fd36ea93d9378a56ce3fed758af18"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/proof-binding-1.0.0.schema.json",
+        "byteLength": 113,
+        "sha256": "sha256:ebc12795220250cf47e5264faaacf45f78abc176e8f426b0ce506906c0b88b9f"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/provider-detail-1.0.0.schema.json",
+        "byteLength": 115,
+        "sha256": "sha256:8efacbe3f41fb5e186c9f764157d2524c91f1753280443946c6b87aecf12afcd"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/qualification-1.0.0.schema.json",
+        "byteLength": 114,
+        "sha256": "sha256:b22237b94c636209d63b0dcdf256b63fa1869109eb06fed9095bda7b8187c69e"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/relative-file-1.0.0.schema.json",
+        "byteLength": 113,
+        "sha256": "sha256:8d68f38409f550398b3c7333224bd28c4281de28d6cf77bea20711a175f435fd"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/result-1.0.0.schema.json",
+        "byteLength": 107,
+        "sha256": "sha256:f9592abbdcaf104613fe383f0120a130c72e060184978dca19014146cee14de4"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/revision-1.0.0.schema.json",
+        "byteLength": 109,
+        "sha256": "sha256:e72340eda5d07fbeec25c831e1e0af6c62e5c484a246f568405e13cbc7b15e0e"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/semantic-contract-1.0.0.schema.json",
+        "byteLength": 117,
+        "sha256": "sha256:016898c9d4276fb8555524976b8d169b06c0800a61b588ab215332ff58523d5d"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/shared-1.0.0.schema.json",
+        "byteLength": 90965,
+        "sha256": "sha256:d5bd0ea081ef981740a64160e35d301696a51bb1dbfffd0fc3c53a310ab49a4e"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/slot-1.0.0.schema.json",
+        "byteLength": 105,
+        "sha256": "sha256:03c145b78db6f78dee87b46afbed0dcc2afe2f9cc3dc04e26b90fbb4fdf9cab1"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/string-1.0.0.schema.json",
+        "byteLength": 107,
+        "sha256": "sha256:4b2f4bd5684000066419e2973ad3e5f2730fa56a4b7b5f0a1c31927895257c4b"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/summary-1.0.0.schema.json",
+        "byteLength": 108,
+        "sha256": "sha256:b0b868cde08a9a03e87ead8bcfd7980241bf1e5228d4fc1d5e9766cdb6b4ed45"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/tag-name-1.0.0.schema.json",
+        "byteLength": 108,
+        "sha256": "sha256:d5db6abb9e0caeba9098ff3efcc89d1d504592f72c319908915b121345ed2970"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/tag-observation-1.0.0.schema.json",
+        "byteLength": 115,
+        "sha256": "sha256:a5a0ffd56666fd06d0ef014ff6f6ea186cd6c37410d5f3efc3534975517558c8"
+      },
+      {
+        "path": "repositories/memoryos-readiness/schemas/timestamp-1.0.0.schema.json",
+        "byteLength": 110,
+        "sha256": "sha256:cc505464fa1d6643920b008f7ba100c70bdd1cbf547db4ac2f3cdb9fd4e07447"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/acquisition.mjs",
+        "byteLength": 6409,
+        "sha256": "sha256:1ecab53426287a92279153903785bd56a38d4a9840696dbdfb3a446a8e83b066"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/api-input.mjs",
+        "byteLength": 7030,
+        "sha256": "sha256:57cd2e2309efac7f0c890b82ff4ca3f70f8cb324512611eba9b303e2da32e194"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/canonical.mjs",
+        "byteLength": 6813,
+        "sha256": "sha256:b0e22be147436b7fd962c00825f9f5c1e581825653baa0af4a68a9832a0b9805"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/cli-args.mjs",
+        "byteLength": 4280,
+        "sha256": "sha256:107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/cli.mjs",
+        "byteLength": 4448,
+        "sha256": "sha256:3632c653e86e1315ac3b858137932b9750ed621526ad71d75c7f040935cfa5f2"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/constants.mjs",
+        "byteLength": 16791,
+        "sha256": "sha256:987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/errors.mjs",
+        "byteLength": 1823,
+        "sha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/evidence-graph.mjs",
+        "byteLength": 10839,
+        "sha256": "sha256:cc8a353da76fef3c8610085c6b0237021cdfedb4879d5bfe3ad4ae749166673c"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/evidence-history.mjs",
+        "byteLength": 13155,
+        "sha256": "sha256:16c5377d07bbc894f8aaa26495e7f215e5a2d2b80b73fdf36254393a7e7769bc"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/evidence-verifier.mjs",
+        "byteLength": 17846,
+        "sha256": "sha256:684d088b6578f463a7ed1b6e40cde63ec5de2bf039458050b9ebce4494ded3a0"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/foundation.mjs",
+        "byteLength": 22098,
+        "sha256": "sha256:19008f20e562376cd76161d26f18169bb46eded4e480b71d1832307e1db8280d"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+        "byteLength": 17308,
+        "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/helper-transport.mjs",
+        "byteLength": 6268,
+        "sha256": "sha256:e320a36d203a4635e13930663a7f075a064c2211e753700da4fff8ae81e477a1"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/index.mjs",
+        "byteLength": 1179,
+        "sha256": "sha256:10aba8aa5b7c23d82b2d365db4366a030e1223f66543605ef56a99886488c5d4"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/integration.mjs",
+        "byteLength": 2959,
+        "sha256": "sha256:c73e278db2b2cdd5b38e3e9a6046ba529aafe92af5abfee4e0ced8b0ec02c64e"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/output.mjs",
+        "byteLength": 2386,
+        "sha256": "sha256:eea2e7f6dc23f88b8afdca19b273939a020ccc145ec78d4f701983e0d8449aca"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/projections.mjs",
+        "byteLength": 2750,
+        "sha256": "sha256:43a8c5a6f59c6ee15f85406ae9da34a0fc9c9516a6e55116be9715a012e73d22"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/publication.mjs",
+        "byteLength": 13610,
+        "sha256": "sha256:dcba8a23b848ceede6c5a9deb10e46b2ef795ae9573755bc78d44abd5943236b"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/readiness-core.mjs",
+        "byteLength": 19885,
+        "sha256": "sha256:7891139345e71030709adf2fdb1ff93342a74282980d1b09d1535e44fa0ef1cd"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/readiness-result.mjs",
+        "byteLength": 5303,
+        "sha256": "sha256:847525fb9be50cc956c5859e8accd271806db61fdf083e9b5165bd8cf91d9fea"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/runtime.mjs",
+        "byteLength": 16904,
+        "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/schema-data.mjs",
+        "byteLength": 98556,
+        "sha256": "sha256:467fa7479b88eff13d90cfb8d8984b26b5cd4b7cd1aadd8f5b3416c6ed3b6f11"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/schema.mjs",
+        "byteLength": 4308,
+        "sha256": "sha256:9b18aead5802688195a3539ef504395f374a8779580650eec7b03058100b98b7"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/windows-paths.mjs",
+        "byteLength": 5990,
+        "sha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/worker-entry.mjs",
+        "byteLength": 681,
+        "sha256": "sha256:958dfaf21e7ed62d6214a09f7624b7c4c799aeddbdcd11daac8625a439ab35a7"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/worker-policy.mjs",
+        "byteLength": 1260,
+        "sha256": "sha256:29e0ccb0bb366199857753abd11c08f8cdec72bfe43672ef6ba9e8784e5b0831"
+      }
+    ],
+    "correction": "Only CreateFileW uses DefineMethod plus a complete authoritative DllImportAttribute. All8 signatures/mappings are unchanged except CreateFileW effective SetLastError and ExactSpelling false-to-true; all other7 declarations and native filesystem/startup predicates remain unchanged. README explains repair; manifest/SBOM regenerated.",
+    "validationResult": "NOT_ASSERTED_BY_THIS_SCOPE_REPORT",
+    "metadataReceipt": {
+      "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/native-binding-metadata/receipt.json",
+      "byteLength": 12622,
+      "sha256": "sha256:4b792d8ab820982e8b1573612eed9a72e716bf25a7a980baba2dc79b4e6a424f"
+    }
+  },
+  "immutableSelectionCheck": {
+    "inventoryCommit": "b02fc0226a1a2d800185a02071674ca80bdf4a1d",
+    "inventoryPath": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/inventory-recovery.json",
+    "inventoryGitBlob": "c29ab34c110882150727b0857302211e1670940b",
+    "inventoryRows": 551,
+    "selectedRows": 88,
+    "uniqueSelectedIds": 88,
+    "priorSelectionByteIdentity": "Exact ID-set equality independently checked; expected tuples are unchanged and must remain bound in any future campaign.",
+    "selectionExecutions": 0
+  }
+}

@@ -1,0 +1,44 @@
+"""Bounded GET-only current-state preflight; no mutation methods or campaign execution."""
+from pathlib import Path
+import sys,json,os,subprocess,concurrent.futures
+ROOT=Path(__file__).resolve().parents[4]
+sys.path.insert(0,str(ROOT/'repositories/cca-conformance/tools/mo1306-phase3a-certification'))
+from remote_state import credential,get,put,row,now,SETTINGS,REPO,BRANCH,MAIN
+OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-hosted-diagnostic/github'
+OLD=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-certification/github'
+CERT='451599e7b95a537ebc2daac627b061fd88791dea';RUN=36357568243
+
+def load(p):return json.loads(p.read_text(encoding='utf-8-sig'))
+def main():
+    assert not (OUT/'remote-preflight.json').exists()
+    previous=load(OLD/'final-state-blocked.json');previousRefs=load(ROOT/previous['gitRefs']['current']['path'])['refs']
+    paths={'repository':f'repos/{REPO}','main-ref':f'repos/{REPO}/git/ref/heads/main','certification-ref':f'repos/{REPO}/git/ref/heads/{BRANCH}','certification-runs':f'repos/{REPO}/actions/runs?branch={BRANCH}&per_page=100','blocked-run':f'repos/{REPO}/actions/runs/{RUN}','blocked-jobs':f'repos/{REPO}/actions/runs/{RUN}/jobs?per_page=100','blocked-artifacts':f'repos/{REPO}/actions/runs/{RUN}/artifacts?per_page=100','actions-permissions':f'repos/{REPO}/actions/permissions','rulesets':f'repos/{REPO}/rulesets?includes_parents=true','main-branch':f'repos/{REPO}/branches/main','certification-branch':f'repos/{REPO}/branches/{BRANCH}'}
+    token=credential();responses={};bodies={}
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+        futures={name:pool.submit(get,path,token) for name,path in paths.items()}
+        for name,future in futures.items():
+            response=future.result();responses[name]=put(OUT/'initial-remote'/(name+'.json'),response)
+            assert response['status']==200,(name,response['status']);bodies[name]=response['body']
+    token=None
+    git=subprocess.run(['git','ls-remote','--heads','--tags','origin'],cwd=ROOT,capture_output=True,timeout=60,creationflags=subprocess.CREATE_NO_WINDOW,env={**os.environ,'GIT_TERMINAL_PROMPT':'0','GCM_INTERACTIVE':'Never','GIT_OPTIONAL_LOCKS':'0'})
+    refs={ref:commit for commit,ref in (line.split() for line in git.stdout.decode().splitlines())} if git.returncode==0 else {}
+    delta={ref:{'previousBlockedReadback':previousRefs.get(ref),'current':refs.get(ref)} for ref in sorted(set(refs)|set(previousRefs)) if refs.get(ref)!=previousRefs.get(ref)}
+    gitRow=put(OUT/'initial-remote/git-refs.json',{'argv':['git','ls-remote','--heads','--tags','origin'],'observedUtc':now(),'exitCode':git.returncode,'stdout':git.stdout.decode(),'stderr':git.stderr.decode(),'refs':refs,'changesSinceBlockedReadback':delta})
+    assert git.returncode==0,'Read-only Git remote query failed'
+    repo=bodies['repository'];settings={key:repo[key] for key in SETTINGS if key in repo}
+    checks={'defaultBranchMain':repo['default_branch']=='main','mainUnchanged':bodies['main-ref']['object']['sha']==MAIN and refs.get('refs/heads/main')==MAIN,'certificationUnchanged':bodies['certification-ref']['object']['sha']==CERT and refs.get('refs/heads/'+BRANCH)==CERT,'settingsUnchanged':settings==previous['repositorySettings'],'onlyUnrelatedDependabotRefChanges':all(key.startswith('refs/heads/dependabot/') for key in delta),'tagsUnchanged':{k:v for k,v in refs.items() if k.startswith('refs/tags/')}=={k:v for k,v in previousRefs.items() if k.startswith('refs/tags/')}}
+    runs=bodies['certification-runs'];run=bodies['blocked-run'];jobs=bodies['blocked-jobs'];arts=bodies['blocked-artifacts']
+    checks['singleRetainedRun']=runs['total_count']==1 and len(runs['workflow_runs'])==1 and runs['workflow_runs'][0]['id']==RUN
+    checks['failedRunUnchanged']=run['id']==RUN and run['run_attempt']==1 and run['head_sha']==CERT and run['head_branch']==BRANCH and run['workflow_id']==368631903 and run['status']=='completed' and run['conclusion']=='failure'
+    checks['failedJobUnchanged']=jobs['total_count']==1 and jobs['jobs'][0]['id']==108728221298 and jobs['jobs'][0]['conclusion']=='failure'
+    checks['zeroArtifacts']=arts['total_count']==0 and arts['artifacts']==[]
+    for name in ['actions-permissions','rulesets']:
+        checks[name+'Unchanged']=bodies[name]==load(ROOT/previous['responses'][name]['path'])['body']
+    for name in ['main-branch','certification-branch']:
+        old=load(ROOT/previous['responses'][name]['path'])['body'];new=bodies[name]
+        checks[name+'ProtectionUnchanged']=all(old.get(key)==new.get(key) for key in ['protected','protection','protection_url'])
+    record={'kind':'MemoryOSPhase3AHostedDiagnosticRemotePreflight','version':'1.0.0','status':'PASS' if all(checks.values()) else 'BLOCKED','observedUtc':now(),'checks':checks,'repository':REPO,'defaultBranch':repo['default_branch'],'remoteMain':bodies['main-ref']['object']['sha'],'certificationCommit':bodies['certification-ref']['object']['sha'],'certificationRunCount':runs['total_count'],'runIds':[item['id'] for item in runs['workflow_runs']],'retainedFailedRun':{'id':run['id'],'attempt':run['run_attempt'],'workflowId':run['workflow_id'],'headSha':run['head_sha'],'conclusion':run['conclusion'],'updatedAt':run['updated_at'],'jobId':jobs['jobs'][0]['id']},'artifactCount':arts['total_count'],'newTaskRelatedRuns':[] if checks['singleRetainedRun'] else [item['id'] for item in runs['workflow_runs'] if item['id']!=RUN],'noObservedTaskRelatedRemoteChangesSinceBlockedReadback':all(checks.values()),'comparisonScope':'Current refs/settings and complete certification-branch run list versus previous blocked readback; snapshots cannot prove that no temporary change occurred and was reversed between observations.','repositorySettings':settings,'remoteRefChangesSinceBlockedReadback':delta,'unrelatedRefAttribution':'Any Dependabot-named branch movement is recorded without actor/cause attribution.','allRemoteRefsCurrentlyUnchanged':not bool(delta),'previousBlockedState':row(OLD/'final-state-blocked.json'),'previousRefs':previous['gitRefs']['current'],'responses':responses,'gitRefs':gitRow,'tool':row(Path(__file__).resolve()),'safeGetDependency':row(ROOT/'repositories/cca-conformance/tools/mo1306-phase3a-certification/remote_state.py'),'remoteMutations':[],'dispatches':[]}
+    receipt=put(OUT/'remote-preflight.json',record)
+    print(json.dumps({'receipt':receipt,'status':record['status'],'defaultBranch':record['defaultBranch'],'remoteMain':record['remoteMain'],'certificationCommit':record['certificationCommit'],'runCount':record['certificationRunCount'],'artifactCount':record['artifactCount'],'refDelta':delta,'checks':checks}))
+if __name__=='__main__':main()
+

@@ -1,0 +1,22 @@
+generate 100000 entries: 13911 ms, heap +91.5 MiB
+file:///C:/Users/melsa/Documents/Codex/m8-2a/repositories/cca-studio/web/js/memoryos-history-contract.js:221
+  throw new MemoryOSHistoryError(suffix, stage);
+        ^
+
+MemoryOSHistoryError: The ledger failed integrity verification.
+    at historyFail (file:///C:/Users/melsa/Documents/Codex/m8-2a/repositories/cca-studio/web/js/memoryos-history-contract.js:221:9)
+    at exactKeys (file:///C:/Users/melsa/Documents/Codex/m8-2a/repositories/cca-studio/web/js/memoryos-history-contract.js:245:98)
+    at validateEntry (file:///C:/Users/melsa/Documents/Codex/m8-2a/repositories/cca-studio/web/js/memoryos-history-contract.js:328:5)
+    at verifyChain (file:///C:/Users/melsa/Documents/Codex/m8-2a/repositories/cca-studio/web/js/memoryos-history-ledger.js:104:19)
+    at queryHistoryLedger (file:///C:/Users/melsa/Documents/Codex/m8-2a/repositories/cca-studio/web/js/memoryos-history-ledger.js:326:17)
+    at file:///C:/Users/melsa/Documents/Codex/m8-2a/repositories/cca-conformance/tools/mo1308-phase2a/characterize.mjs:52:79
+    at measure (file:///C:/Users/melsa/Documents/Codex/m8-2a/repositories/cca-conformance/tools/mo1308-phase2a/characterize.mjs:17:17)
+    at file:///C:/Users/melsa/Documents/Codex/m8-2a/repositories/cca-conformance/tools/mo1308-phase2a/characterize.mjs:52:11
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26 {
+  code: 'MO1308_LEDGER_CORRUPT',
+  stage: 'VERIFICATION',
+  exitCode: 3
+}
+
+Node.js v24.21.0

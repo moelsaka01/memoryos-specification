@@ -1,0 +1,358 @@
+"""Guarded, bounded GitHub registration/campaign. Never changes Git refs.
+
+Read-only preflight is separate. Execution requires an explicit reviewed native
+gate. The only setting write accepted is default_branch, with unconditional
+restoration handling around the potentially applied temporary switch.
+"""
+from pathlib import Path
+from datetime import datetime, timezone
+import argparse, base64, hashlib, json, os, re, subprocess, sys, time
+import urllib.request, urllib.error, urllib.parse
+from remote_state import ROOT, OUT, REPO, BRANCH, CHECKPOINT, MAIN, API_VERSION, SETTINGS, credential, row, sha
+C3CB='701d48ee2012675966360dda775ab13013c09ab9'
+DISTRIBUTION='sha256:b41d024d8ec1c588ca3fc919f8e3ac59a622aebc7cff3377f6a20ce7fc2ca4f3'
+CANDIDATE_RECEIPT=OUT/'remote-candidate.json'
+CANDIDATE=json.loads(CANDIDATE_RECEIPT.read_bytes())['commit'] if CANDIDATE_RECEIPT.exists() else None
+
+
+API_ROOT='https://api.github.com/'
+PREFIX='repos/'+REPO
+CASES=[('pass','success',0),('fail','failure',6),('cne','failure',7)]
+MAX_CAMPAIGN_SECONDS=2100
+MAX_RUN_SECONDS=720
+ALLOWED_STORAGE_SUFFIXES=('.githubusercontent.com','.blob.core.windows.net')
+
+def now():return datetime.now(timezone.utc).isoformat()
+def canonical(v):return (json.dumps(v,sort_keys=True,separators=(',',':'))+'\n').encode()
+def write_new(path,value):
+ path.parent.mkdir(parents=True,exist_ok=True)
+ with path.open('xb') as f:f.write(value if isinstance(value,bytes) else canonical(value))
+ return row(path)
+
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+ def redirect_request(self,*args,**kwargs):return None
+
+class StorageRedirect(urllib.request.HTTPRedirectHandler):
+ def redirect_request(self,req,fp,code,msg,headers,newurl):
+  storage_url(newurl)
+  # No API credential is sent to signed artifact/log storage or further redirects.
+  return urllib.request.Request(newurl,headers={'User-Agent':'MO1306-Artifact-Retrieval'},method='GET')
+
+def storage_url(url):
+ parsed=urllib.parse.urlsplit(url)
+ assert parsed.scheme=='https' and not parsed.username and not parsed.password and not parsed.fragment
+ assert parsed.hostname and any(parsed.hostname.endswith(s) for s in ALLOWED_STORAGE_SUFFIXES),'Unexpected storage host'
+ return parsed
+
+def validate_request(method,path,payload):
+ assert not path.startswith('/') and '..' not in path.split('/')
+ if method=='GET':
+  assert payload is None
+  assert path=='user' or path==PREFIX or path.startswith(PREFIX+'/')
+ elif method=='PATCH':
+  assert path==PREFIX and isinstance(payload,dict) and list(payload)==['default_branch']
+  assert payload['default_branch'] in ['main',BRANCH]
+ elif method=='POST':
+  assert re.fullmatch(re.escape(PREFIX)+r'/actions/workflows/[1-9][0-9]*/dispatches',path)
+  assert payload=={'ref':BRANCH}
+ else:raise AssertionError('Mutation outside closed authorization')
+
+class Client:
+ def __init__(self,folder,token):
+  self.folder=folder;self.token=token;self.sequence=0
+ def event(self,label,value):
+  self.sequence+=1
+  return write_new(self.folder/'journal'/('%04d-%s.json'%(self.sequence,label)),value)
+ def request(self,method,path,payload=None):
+  validate_request(method,path,payload)
+  self.event('request-start',{'startedUtc':now(),'method':method,'path':path,'payload':payload,'apiVersion':API_VERSION})
+  headers={'User-Agent':'MO1306-Registration-Resolution','Accept':'application/vnd.github+json',
+   'X-GitHub-Api-Version':API_VERSION,'Authorization':'Bearer '+self.token}
+  request=urllib.request.Request(API_ROOT+path,data=None if payload is None else canonical(payload),headers=headers,method=method)
+  start=now()
+  try:
+   try:
+    with urllib.request.build_opener(NoRedirect()).open(request,timeout=30) as response:
+     status=response.status;raw=response.read(4194305);received=response.headers
+   except urllib.error.HTTPError as error:
+    status=error.code;raw=error.read(4194305);received=error.headers
+   assert len(raw)<=4194304
+   try:body=json.loads(raw) if raw else None
+   except ValueError:body=raw.decode('utf-8','replace')
+   if isinstance(body,dict) and 'temp_clone_token' in body:body['temp_clone_token']=None
+   result={'method':method,'path':path,'status':status,'startedUtc':start,'endedUtc':now(),'body':body,
+    'responseHeaders':{k:received.get(k) for k in ['date','x-github-request-id','x-oauth-scopes',
+     'x-accepted-github-permissions','github-authentication-token-expiration'] if received.get(k)}}
+   # Signed Location URLs are used only in memory; their query credentials are never retained.
+   location=received.get('Location')
+   self.event('request-result',result)
+   return result,location
+  except BaseException as error:
+   self.event('request-error',{'method':method,'path':path,'startedUtc':start,'endedUtc':now(),
+    'errorType':type(error).__name__,'message':'API request failed; inspect preceding request identity. No credential output.'})
+   raise
+ def get(self,path):
+  result,_=self.request('GET',path)
+  assert result['status']==200,'GitHub GET failed: '+path+' HTTP '+str(result['status'])
+  return result['body']
+ def download(self,path,target,limit):
+  result,location=self.request('GET',path)
+  assert result['status'] in [301,302,303,307] and location,'Expected API signed-download redirect'
+  parsed=storage_url(location)
+  request=urllib.request.Request(location,headers={'User-Agent':'MO1306-Artifact-Retrieval'},method='GET')
+  start=now();target.parent.mkdir(parents=True,exist_ok=True)
+  with urllib.request.build_opener(StorageRedirect()).open(request,timeout=60) as response:
+   assert response.status==200
+   final=storage_url(response.url)
+   length=response.headers.get('Content-Length')
+   if length is not None:assert int(length)<=limit
+   count=0
+   with target.open('xb') as file:
+    while True:
+     data=response.read(65536)
+     if not data:break
+     count+=len(data);assert count<=limit,'Download byte cap'
+     file.write(data)
+  receipt={'startedUtc':start,'endedUtc':now(),'apiPath':path,'storageHost':final.hostname,
+   'storagePath':final.path,'authorizationForwarded':False,'bytes':count,'file':row(target)}
+  self.event('download',receipt);return receipt
+
+def settings(repo):return {key:repo[key] for key in SETTINGS if key in repo}
+def refs(client):
+ main=client.get(PREFIX+'/git/ref/heads/main')['object']['sha']
+ cert=client.get(PREFIX+'/git/ref/heads/'+BRANCH)['object']['sha']
+ assert main==MAIN,'External main change; STOP'
+ assert cert==CANDIDATE,'External certification branch change; STOP'
+ return {'main':main,'certification':cert}
+def reviewed_workflows(client):
+ review=json.loads((OUT/'workflow-review.json').read_bytes())
+ assert review['status']=='PASS' and review['candidateRevision']==C3CB and review['distributionDigest']==DISTRIBUTION
+ expected={entry['workflowPath']:entry for entry in review['workflows']}
+ assert set(expected)=={'.github/workflows/mo1306-certification-'+case+'.yml' for case,_,_ in CASES}
+ for path,record in expected.items():
+  data=client.get(PREFIX+'/contents/'+path+'?ref='+CANDIDATE)
+  assert data['type']=='file' and data['encoding']=='base64'
+  raw=base64.b64decode(data['content'])
+  assert len(raw)==record['byteLength'] and sha(raw)==record['sha256'] and (ROOT/record['path']).read_bytes()==raw
+ return expected
+
+def snapshot(client):
+ repo=client.get(PREFIX)
+ assert repo['id']==1312267996 and repo['full_name']==REPO
+ return {'repository':{'id':repo['id'],'full_name':repo['full_name'],'settings':settings(repo),
+           'permissions':repo.get('permissions',{})},'refs':refs(client),
+  'actionsPermissions':client.get(PREFIX+'/actions/permissions'),
+  'rulesets':client.get(PREFIX+'/rulesets?includes_parents=true&per_page=100'),
+  'branches':{branch:client.get(PREFIX+'/branches/'+branch) for branch in ['main',BRANCH]}}
+
+def restore_main(client,before,sleep=time.sleep):
+ """Idempotent inverse operation; independently read back after every attempt."""
+ observations=[]
+ for attempt,delay in enumerate([0,2,5],1):
+  if delay:sleep(delay)
+  try:
+   repo=client.get(PREFIX)
+   if repo['default_branch']!='main':
+    response,_=client.request('PATCH',PREFIX,{'default_branch':'main'})
+    observations.append({'attempt':attempt,'patchStatus':response['status']})
+   else:observations.append({'attempt':attempt,'alreadyMain':True})
+   # A new GET verifies actual state, independently of the PATCH response.
+   restored=client.get(PREFIX)
+   assert restored['default_branch']=='main','Default not restored'
+   current_refs=refs(client)
+   expected=dict(before['repository']['settings']);expected['default_branch']='main'
+   assert settings(restored)==expected,'Repository settings changed'
+   actions=client.get(PREFIX+'/actions/permissions')
+   rules=client.get(PREFIX+'/rulesets?includes_parents=true&per_page=100')
+   assert actions==before['actionsPermissions'] and rules==before['rulesets'],'Actions/rules settings drift'
+   current_branches={branch:client.get(PREFIX+'/branches/'+branch) for branch in ['main',BRANCH]}
+   for branch in current_branches:
+    assert current_branches[branch]['protected']==before['branches'][branch]['protected']
+    assert current_branches[branch]['commit']['sha']==before['branches'][branch]['commit']['sha']
+   receipt={'status':'PASS','defaultBranch':'main','refs':current_refs,'settingsUnchanged':True,
+    'observations':observations,'verifiedUtc':now(),'independentReadback':True}
+   client.event('restoration-verified',receipt)
+   return receipt
+  except BaseException as error:
+   observations.append({'attempt':attempt,'errorType':type(error).__name__})
+   client.event('restoration-attempt-error',observations[-1])
+ client.event('restoration-blocked',{'status':'REMOTE_STATE_BLOCKED','observations':observations})
+ raise RuntimeError('MO-1306 PHASE 3A REMOTE STATE BLOCKED: default restoration/readback not verified')
+
+def validate_native_gate(path):
+ assert path.resolve().is_relative_to(ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-final')
+ gate=json.loads(path.read_bytes())
+ assert gate['kind']=='MemoryOSPhase3AFinalHostedAuthorization'
+ assert gate['status']=='PASS' and gate['allowHostedRegistration'] is True
+ assert gate['checkpoint']==CHECKPOINT and gate['candidate']==C3CB
+ assert gate['nativeTimingResolved'] is True and gate['nativeStopRequired'] is False
+ assert gate['reviewedRemoteMain']==MAIN and gate['reviewedCertificationCommit']==CANDIDATE
+ assert gate['campaignTool']==row(Path(__file__)), 'Root review must bind exact current campaign tool'
+ for evidence in gate['nativeEvidence']:
+  target=ROOT/evidence['path'];assert target.resolve().is_relative_to(ROOT)
+  assert row(target)==evidence
+ assert gate['nativeEvidence'],'Native resolution evidence required'
+ return gate
+
+def register(client,expected,deadline):
+ for delay in [0,5,10,20,30,45,60]:
+  if delay:time.sleep(delay)
+  assert time.monotonic()<deadline
+  data=client.get(PREFIX+'/actions/workflows?per_page=100')
+  assert data['total_count']<=100
+  bypath={workflow['path']:workflow for workflow in data['workflows']}
+  if set(expected)<=set(bypath):
+   confirmed={}
+   for path in expected:
+    entry=bypath[path]
+    assert entry['name']=='MemoryOS Provider-Neutral CI' and entry['state']=='active'
+    detail=client.get(PREFIX+'/actions/workflows/'+str(entry['id']))
+    assert detail['id']==entry['id'] and detail['path']==path and detail['state']=='active'
+    confirmed[path]=detail
+   reviewed_workflows(client)
+   client.event('registration-verified',confirmed)
+   return confirmed
+ raise RuntimeError('MO-1306 PHASE 3A HOSTED REGISTRATION BLOCKED: fixed workflows not registered')
+
+def hosted_case(client,case,expected_conclusion,expected_exit,workflow,deadline):
+ refs(client)
+ assert client.get(PREFIX)['default_branch']==BRANCH
+ path=PREFIX+'/actions/workflows/'+str(workflow['id'])+'/dispatches'
+ response,_=client.request('POST',path,{'ref':BRANCH})
+ assert response['status']==200,'Dispatch refused; no blind retry'
+ run_id=response['body']['workflow_run_id']
+ assert isinstance(run_id,int) and run_id>0
+ assert response['body']['run_url']==API_ROOT+PREFIX+'/actions/runs/'+str(run_id)
+ client.event('dispatch-accepted',{'case':case,'workflowId':workflow['id'],'runId':run_id})
+ print('Hosted '+case+' accepted run '+str(run_id),flush=True)
+ case_deadline=min(deadline,time.monotonic()+MAX_RUN_SECONDS)
+ while True:
+  run=client.get(PREFIX+'/actions/runs/'+str(run_id))
+  assert run['id']==run_id and run['workflow_id']==workflow['id']
+  assert run['head_sha']==CANDIDATE and run['head_branch']==BRANCH and run['event']=='workflow_dispatch'
+  assert run['run_attempt']==1 and run['path']==workflow['path']
+  if run['status']=='completed':break
+  assert time.monotonic()<case_deadline,'Bounded hosted run wait exhausted'
+  time.sleep(15)
+ jobs=client.get(PREFIX+'/actions/runs/'+str(run_id)+'/jobs?filter=all&per_page=100')
+ artifacts=client.get(PREFIX+'/actions/runs/'+str(run_id)+'/artifacts?per_page=100')
+ folder=client.folder/'runs'/str(run_id)
+ write_new(folder/'run.json',run);write_new(folder/'jobs.json',jobs);write_new(folder/'artifacts.json',artifacts)
+ downloads=[]
+ # Preserve actual logs even for a failed setup/bootstrap/infra attempt.
+ downloads.append(client.download(PREFIX+'/actions/runs/'+str(run_id)+'/logs',folder/'logs.zip',33554432))
+ assert artifacts['total_count']<=10,'Unexpected artifact count'
+ for artifact in artifacts['artifacts']:
+  assert artifact['name']=='memoryos-ci-'+str(run_id)+'-1','Unexpected artifact name'
+  assert artifact['expired'] is False
+  downloads.append(client.download(PREFIX+'/actions/artifacts/'+str(artifact['id'])+'/zip',
+   folder/('artifact-'+str(artifact['id'])+'.zip'),1048576))
+ record={'case':case,'runId':run_id,'workflowId':workflow['id'],'attempt':run['run_attempt'],
+  'headSha':run['head_sha'],'branch':run['head_branch'],'conclusion':run['conclusion'],
+  'startedAt':run.get('run_started_at'),'createdAt':run['created_at'],'updatedAt':run['updated_at'],
+  'expectedConclusion':expected_conclusion,'expectedCommonExit':expected_exit,
+  'jobs':[{'id':j['id'],'name':j['name'],'conclusion':j['conclusion'],'started_at':j['started_at'],
+   'completed_at':j['completed_at'],'runner_name':j.get('runner_name'),'runner_id':j.get('runner_id'),
+   'runner_group_name':j.get('runner_group_name'),'labels':j.get('labels'),'steps':j['steps']} for j in jobs['jobs']],
+  'downloads':downloads,'semanticAndArtifactValidation':'PENDING_AFTER_DEFAULT_RESTORATION'}
+ write_new(folder/'case-receipt.json',record)
+ assert run['conclusion']==expected_conclusion,'Hosted run conclusion unexpected; preserve and STOP'
+ assert jobs['total_count']==1 and len(jobs['jobs'])==1,'Unexpected job set'
+ job=jobs['jobs'][0];assert job['name']=='MemoryOS CI' and job['conclusion']==expected_conclusion
+ assert artifacts['total_count']==1 and len(artifacts['artifacts'])==1,'Required verified bundle missing'
+ # The frozen seven explicit steps follow GitHub Set up job. Gate intentionally
+ # projects FAIL/CNE as failure after successful evaluate/upload. Exact gate exit
+ # and image/OS metadata are validated later from retained logs.
+ steps=job['steps'];assert len(steps)>=8 and steps[0]['name']=='Set up job'
+ core=steps[1:8];assert len(core)==7
+ assert all(s['status']=='completed' for s in core)
+ assert all(s['conclusion']=='success' for s in core[:6])
+ assert core[6]['conclusion']==expected_conclusion
+ record['operationalStatus']='EXPECTED_GATING_OBSERVED'
+ client.event('case-operationally-verified',record)
+ print('Hosted '+case+' finished '+expected_conclusion+'; artifacts/logs retained.',flush=True)
+ return record
+
+def execute(gate_path):
+ assert CANDIDATE and re.fullmatch(r'[0-9a-f]{40}',CANDIDATE)
+ candidate_binding=json.loads(CANDIDATE_RECEIPT.read_bytes())
+ assert candidate_binding['commit']==CANDIDATE and candidate_binding['parent']==C3CB
+ assert sorted(candidate_binding['paths'])==sorted('.github/workflows/mo1306-certification-'+case+'.yml' for case,_,_ in CASES)
+ gate=validate_native_gate(gate_path)
+ assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT).decode().strip()==CHECKPOINT
+ stamp=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
+ folder=OUT/('campaign-'+stamp);folder.mkdir(parents=True,exist_ok=False)
+ client=Client(folder,credential())
+ profile_result,_=client.request('GET','user');assert profile_result['status']==200
+ scopes=[s.strip() for s in profile_result['responseHeaders'].get('x-oauth-scopes','').split(',')]
+ assert 'repo' in scopes,'Restoration capability requires verified classic repo scope for this reviewed path'
+ before=snapshot(client);write_new(folder/'before.json',before)
+ assert before['repository']['settings']['default_branch']=='main'
+ assert before['repository']['permissions'].get('admin') is True
+ assert not before['repository']['settings'].get('archived') and not before['repository']['settings'].get('disabled')
+ commit=client.get(PREFIX+'/git/commits/'+CANDIDATE)
+ assert [p['sha'] for p in commit['parents']]==[C3CB]
+ expected=reviewed_workflows(client)
+ initial_registry=client.get(PREFIX+'/actions/workflows?per_page=100')
+ assert initial_registry['total_count']<=100
+ assert not any(w['path'] in expected for w in initial_registry['workflows']),'Registration already exists; temporary setting change unnecessary'
+ write_new(folder/'authorization.json',{'gate':row(gate_path),'harness':row(Path(__file__)),
+  'remoteCandidate':row(CANDIDATE_RECEIPT),'onlySettingPayload':{'default_branch':BRANCH},'restorePayload':{'default_branch':'main'},'before':row(folder/'before.json')})
+ attempted=False;cases=[];error=None;restoration=None
+ started=now();deadline=time.monotonic()+MAX_CAMPAIGN_SECONDS
+ try:
+  attempted=True
+  response,_=client.request('PATCH',PREFIX,{'default_branch':BRANCH})
+  assert response['status']==200,'Temporary default switch refused; STOP'
+  readback=client.get(PREFIX)
+  desired=dict(before['repository']['settings']);desired['default_branch']=BRANCH
+  assert readback['default_branch']==BRANCH and settings(readback)==desired
+  refs(client);registered=register(client,expected,deadline)
+  for case,conclusion,exit_code in CASES:
+   assert time.monotonic()<deadline
+   workflow=registered['.github/workflows/mo1306-certification-'+case+'.yml']
+   cases.append(hosted_case(client,case,conclusion,exit_code,workflow,deadline))
+ except BaseException as failure:
+  error={'type':type(failure).__name__,'message':str(failure)[:1000]}
+  client.event('campaign-error',error)
+ finally:
+  restoration_error=None
+  if attempted:
+   # Also runs if PATCH response was lost after the server applied the write.
+   try:restoration=restore_main(client,before)
+   except BaseException as failure:
+    restoration_error=failure
+    restoration={'status':'REMOTE_STATE_BLOCKED','errorType':type(failure).__name__}
+  write_new(folder/'campaign-summary.json',{'kind':'MemoryOSPhase3AFinalHostedRegistrationCampaign','version':'1.0.0',
+   'status':'OPERATIONAL_CAMPAIGN_COMPLETE_VALIDATION_PENDING' if error is None else 'BLOCKED',
+   'startedUtc':started,'endedUtc':now(),'candidate':C3CB,'certificationCommit':CANDIDATE,
+   'cases':cases,'error':error,'restoration':restoration,'nativeGate':row(gate_path),
+   'newPushes':[],'tagsCreated':[],'onlyRepositorySettingWritten':'default_branch',
+   'productAuthorityUnchanged':True,'semanticParity':'PENDING_LOCAL_VALIDATION'})
+  if restoration_error is not None:raise restoration_error
+ if error:raise RuntimeError(error['message'])
+ print(json.dumps({'status':'DEFAULT_MAIN_RESTORED_VALIDATION_PENDING','campaign':str(folder.relative_to(ROOT)),
+   'runs':[c['runId'] for c in cases]}),flush=True)
+
+def main():
+ parser=argparse.ArgumentParser(description=__doc__)
+ group=parser.add_mutually_exclusive_group(required=True)
+ group.add_argument('--execute-reviewed-campaign',action='store_true')
+ group.add_argument('--restore-main-from-campaign',type=Path)
+ parser.add_argument('--native-gate',type=Path)
+ args=parser.parse_args()
+ if args.execute_reviewed_campaign:
+  assert args.native_gate is not None
+  execute(args.native_gate.resolve())
+ else:
+  folder=args.restore_main_from_campaign.resolve()
+  assert folder.is_relative_to(OUT.resolve()) and folder.name.startswith('campaign-')
+  before=json.loads((folder/'before.json').read_bytes())
+  assert before['refs']=={'main':MAIN,'certification':CANDIDATE}
+  assert before['repository']['settings']['default_branch']=='main'
+  recovery=folder/('recovery-'+datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ'))
+  recovery.mkdir(exist_ok=False)
+  client=Client(recovery,credential())
+  print(json.dumps(restore_main(client,before)),flush=True)
+if __name__=='__main__':main()
+

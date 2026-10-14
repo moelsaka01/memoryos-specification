@@ -1,0 +1,126 @@
+name: 'MemoryOS Hosted Filesystem Diagnostic'
+'on':
+  workflow_dispatch: {}
+permissions:
+  contents: 'read'
+jobs:
+  memoryos_diagnostic:
+    name: 'MemoryOS Diagnostic'
+    runs-on: 'windows-2022'
+    timeout-minutes: 10
+    steps:
+      - id: 'tools'
+        uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
+        with:
+          repository: 'moelsaka01/memoryos-specification'
+          ref: '701d48ee2012675966360dda775ab13013c09ab9'
+          path: '_memoryos/tool'
+          persist-credentials: false
+          submodules: false
+          lfs: false
+      - id: 'data'
+        uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
+        with:
+          ref: ${{ github.sha }}
+          path: '_memoryos/data'
+          persist-credentials: false
+          submodules: false
+          lfs: false
+      - id: 'prepare_fixture'
+        shell: 'powershell'
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $dataRoot = [IO.Path]::Combine($env:GITHUB_WORKSPACE, '_memoryos\data')
+          $fixtureRoot = [IO.Path]::Combine($dataRoot, 'repositories\cca-conformance\fixtures\mo1306\evaluate-policy-pass')
+          $source = [IO.Path]::Combine($fixtureRoot, 'candidate.mip')
+          $target = [IO.Path]::Combine($dataRoot, 'candidate.mip')
+          $cursor = $source
+          while ($cursor) {
+            $item = Get-Item -LiteralPath $cursor -Force
+            if (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) { throw 'Fixture reparse point' }
+            $cursor = [IO.Path]::GetDirectoryName($cursor)
+          }
+          if ((Get-Item -LiteralPath $source).PSIsContainer -or (Get-Item -LiteralPath $source).Length -ne 2518) { throw 'Fixture kind/length' }
+          if ((Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash.ToLowerInvariant() -cne '36cdf11919c58727cc3b5ec0293ffbb1716b57c35899cf06e1a92b130b6b9483') { throw 'Fixture digest' }
+          [IO.File]::Copy($source, $target, $false)
+          $source = [IO.Path]::Combine($fixtureRoot, 'policy.json')
+          $target = [IO.Path]::Combine($dataRoot, 'policy.json')
+          $cursor = $source
+          while ($cursor) {
+            $item = Get-Item -LiteralPath $cursor -Force
+            if (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) { throw 'Fixture reparse point' }
+            $cursor = [IO.Path]::GetDirectoryName($cursor)
+          }
+          if ((Get-Item -LiteralPath $source).PSIsContainer -or (Get-Item -LiteralPath $source).Length -ne 202) { throw 'Fixture kind/length' }
+          if ((Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash.ToLowerInvariant() -cne 'e93598764c4429a1a5d7a9f3cda369be5122e3e1c59067953e1138b3ccaa743a') { throw 'Fixture digest' }
+          [IO.File]::Copy($source, $target, $false)
+      - id: 'diagnostic_before'
+        shell: 'powershell'
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $env:MEMORYOS_CI_HOME = [IO.Path]::Combine($env:GITHUB_WORKSPACE, '_memoryos\tool\repositories\memoryos-ci')
+          $env:MEMORYOS_CI_CONFIG = [IO.Path]::Combine($env:GITHUB_WORKSPACE, '_memoryos\tool\repositories\cca-conformance\fixtures\mo1306\evaluate-policy-pass\memoryos-ci.json')
+          $diagRoot = [IO.Path]::Combine($env:RUNNER_TEMP, 'mo1306-hosted-diagnostic')
+          if (Test-Path -LiteralPath $diagRoot) { throw 'Diagnostic output already exists' }
+          $null = New-Item -ItemType Directory -Path $diagRoot
+          $observer = [IO.Path]::Combine($env:GITHUB_WORKSPACE, '_memoryos\data\repositories\cca-conformance\tools\mo1306-phase3a-hosted-diagnostic\observe.ps1')
+          & $observer -Phase 'Before' -WorkspaceRoot $env:GITHUB_WORKSPACE -OutputDirectory $diagRoot
+          if ($LASTEXITCODE -and $LASTEXITCODE -ne 0) { throw 'Before observer failed' }
+      - id: 'bootstrap'
+        continue-on-error: true
+        shell: 'powershell'
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $env:MEMORYOS_CI_HOME = [IO.Path]::Combine($env:GITHUB_WORKSPACE, '_memoryos\tool\repositories\memoryos-ci')
+          $env:MEMORYOS_CI_CONFIG = [IO.Path]::Combine($env:GITHUB_WORKSPACE, '_memoryos\tool\repositories\cca-conformance\fixtures\mo1306\evaluate-policy-pass\memoryos-ci.json')
+          & ([IO.Path]::Combine($env:MEMORYOS_CI_HOME, 'scripts\Initialize-GitHubCI.ps1')) -WorkspaceRoot $env:GITHUB_WORKSPACE -ConfigurationDigest 'sha256:12ddefe6af24e3364dfee0c081ad4a41061bcf8aa4804716bb6ee65aa5483afb' -DistributionDigest 'sha256:b41d024d8ec1c588ca3fc919f8e3ac59a622aebc7cff3377f6a20ce7fc2ca4f3'
+          exit $LASTEXITCODE
+      - id: 'diagnostic_after'
+        if: always()
+        shell: 'powershell'
+        env:
+          DIAGNOSTIC_BOOTSTRAP_OUTCOME: ${{ steps.bootstrap.outcome }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $env:MEMORYOS_CI_HOME = [IO.Path]::Combine($env:GITHUB_WORKSPACE, '_memoryos\tool\repositories\memoryos-ci')
+          $env:MEMORYOS_CI_CONFIG = [IO.Path]::Combine($env:GITHUB_WORKSPACE, '_memoryos\tool\repositories\cca-conformance\fixtures\mo1306\evaluate-policy-pass\memoryos-ci.json')
+          $diagRoot = [IO.Path]::Combine($env:RUNNER_TEMP, 'mo1306-hosted-diagnostic')
+          if (-not (Test-Path -LiteralPath $diagRoot)) { $null = New-Item -ItemType Directory -Path $diagRoot }
+          $engineeringRoot = [IO.Path]::Combine($env:GITHUB_WORKSPACE, '_memoryos\data\repositories\cca-conformance\tools\mo1306-phase3a-hosted-diagnostic')
+          $node = [IO.Path]::Combine($env:GITHUB_WORKSPACE, '_memoryos\runtime\node.exe')
+          $oracleState = 'PINNED_NODE_UNAVAILABLE'
+          $oracleExit = $null
+          try {
+            if ((Test-Path -LiteralPath $node) -and (Get-Item -LiteralPath $node).Length -eq 93580104 -and (Get-FileHash -LiteralPath $node -Algorithm SHA256).Hash.ToLowerInvariant() -ceq 'ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32') {
+              foreach ($name in @('NODE_OPTIONS','NODE_PATH','NODE_INSPECT_RESUME_ON_START','NODE_REPL_EXTERNAL_MODULE')) { [Environment]::SetEnvironmentVariable($name,$null) }
+              $env:MEMORYOS_CI_NODE = $node
+              & $node '--max-old-space-size=128' ([IO.Path]::Combine($engineeringRoot,'oracle.mjs')) '--workspace' $env:GITHUB_WORKSPACE '--output' ([IO.Path]::Combine($diagRoot,'oracle.json')) '--configuration-digest' 'sha256:12ddefe6af24e3364dfee0c081ad4a41061bcf8aa4804716bb6ee65aa5483afb' '--distribution-digest' 'sha256:b41d024d8ec1c588ca3fc919f8e3ac59a622aebc7cff3377f6a20ce7fc2ca4f3'
+              $oracleExit = $LASTEXITCODE
+              $oracleState = 'EXECUTED'
+            }
+          } catch { $oracleState = 'OBSERVER_EXECUTION_ERROR' }
+          $summary = @{kind='MemoryOSHostedDiagnosticWorkflow';version='1.0.0';bootstrapOutcome=$env:DIAGNOSTIC_BOOTSTRAP_OUTCOME;bootstrapNumericExit='RETAINED_RUNNER_LOG_IF_AVAILABLE';oracleState=$oracleState;oracleExit=$oracleExit;certification=$false} | ConvertTo-Json -Compress
+          [IO.File]::WriteAllText([IO.Path]::Combine($diagRoot,'diagnostic-summary.json'),$summary+[char]10,(New-Object Text.UTF8Encoding($false)))
+          & ([IO.Path]::Combine($engineeringRoot,'observe.ps1')) -Phase 'After' -WorkspaceRoot $env:GITHUB_WORKSPACE -OutputDirectory $diagRoot
+          if ($oracleState -ne 'EXECUTED' -or $oracleExit -ne 0) { throw 'Diagnostic oracle incomplete' }
+      - id: 'diagnostic_upload'
+        if: always()
+        uses: 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a'
+        with:
+          name: 'memoryos-diagnostic-${{ github.run_id }}-${{ github.run_attempt }}'
+          path: '${{ runner.temp }}/mo1306-hosted-diagnostic/*.json'
+          if-no-files-found: 'error'
+          retention-days: 7
+      - id: 'diagnostic_gate'
+        if: always()
+        shell: 'powershell'
+        env:
+          DIAGNOSTIC_BOOTSTRAP_OUTCOME: ${{ steps.bootstrap.outcome }}
+          DIAGNOSTIC_BEFORE_OUTCOME: ${{ steps.diagnostic_before.outcome }}
+          DIAGNOSTIC_AFTER_OUTCOME: ${{ steps.diagnostic_after.outcome }}
+          DIAGNOSTIC_UPLOAD_OUTCOME: ${{ steps.diagnostic_upload.outcome }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:DIAGNOSTIC_BOOTSTRAP_OUTCOME -cne 'success') { exit 1 }
+          if ($env:DIAGNOSTIC_BEFORE_OUTCOME -cne 'success' -or $env:DIAGNOSTIC_AFTER_OUTCOME -cne 'success' -or $env:DIAGNOSTIC_UPLOAD_OUTCOME -cne 'success') { exit 1 }
+          exit 0

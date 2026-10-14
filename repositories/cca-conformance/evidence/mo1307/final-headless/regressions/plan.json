@@ -1,0 +1,1633 @@
+{
+  "commands": [
+    {
+      "id": "package-check",
+      "args": [
+        "repositories/cca-conformance/tools/mo1307-phase1/package.mjs",
+        "check"
+      ],
+      "expectedTests": null,
+      "outerGuardMs": 60000
+    },
+    {
+      "id": "package-tests-001",
+      "suite": "package-tests",
+      "testName": "package metadata and deterministic nonrecursive bindings",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^package metadata and deterministic nonrecursive bindings$",
+        "repositories/cca-conformance/tests/mo1307_phase1_package_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 8,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "package-tests-002",
+      "suite": "package-tests",
+      "testName": "unexpected member is rejected without refreshing the binding",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^unexpected member is rejected without refreshing the binding$",
+        "repositories/cca-conformance/tests/mo1307_phase1_package_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 8,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "package-tests-003",
+      "suite": "package-tests",
+      "testName": "changed shipped source fails exact distribution binding",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^changed shipped source fails exact distribution binding$",
+        "repositories/cca-conformance/tests/mo1307_phase1_package_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 8,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "package-tests-004",
+      "suite": "package-tests",
+      "testName": "schema drift cannot be hidden by rebuilding manifests",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^schema drift cannot be hidden by rebuilding manifests$",
+        "repositories/cca-conformance/tests/mo1307_phase1_package_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 8,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "package-tests-005",
+      "suite": "package-tests",
+      "testName": "constants drift cannot be hidden by rebuilding manifests",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^constants drift cannot be hidden by rebuilding manifests$",
+        "repositories/cca-conformance/tests/mo1307_phase1_package_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 8,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "package-tests-006",
+      "suite": "package-tests",
+      "testName": "dependencies, lifecycle hooks, extra exports and traversal allowlist are rejected",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^dependencies, lifecycle hooks, extra exports and traversal allowlist are rejected$",
+        "repositories/cca-conformance/tests/mo1307_phase1_package_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 8,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "package-tests-007",
+      "suite": "package-tests",
+      "testName": "network and external imports are rejected before manifest regeneration",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^network and external imports are rejected before manifest regeneration$",
+        "repositories/cca-conformance/tests/mo1307_phase1_package_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 8,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "package-tests-008",
+      "suite": "package-tests",
+      "testName": "missing fixed helper and mutated manifest rows are rejected",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^missing fixed helper and mutated manifest rows are rejected$",
+        "repositories/cca-conformance/tests/mo1307_phase1_package_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 8,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "launch-policy-001",
+      "suite": "launch-policy",
+      "testName": "LP01 exact trusted Windows PowerShell 5.1 executable",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP01 exact trusted Windows PowerShell 5\\.1 executable$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "launch-policy-002",
+      "suite": "launch-policy",
+      "testName": "LP02 exact fixed argument ordering and Bypass value",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP02 exact fixed argument ordering and Bypass value$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "launch-policy-003",
+      "suite": "launch-policy",
+      "testName": "LP03 fixed packaged helper path from module location",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP03 fixed packaged helper path from module location$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "launch-policy-004",
+      "suite": "launch-policy",
+      "testName": "LP04 no encoded command, expression or shell authority",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP04 no encoded command, expression or shell authority$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "launch-policy-005",
+      "suite": "launch-policy",
+      "testName": "LP05 caller object cannot supply executable, script or policy",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP05 caller object cannot supply executable, script or policy$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "launch-policy-006",
+      "suite": "launch-policy",
+      "testName": "LP06 launch specification and nested authority are immutable",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP06 launch specification and nested authority are immutable$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "launch-policy-007",
+      "suite": "launch-policy",
+      "testName": "LP07 ambient PATH, system-root, policy and script poisons cannot select launch",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP07 ambient PATH, system-root, policy and script poisons cannot select launch$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "launch-policy-008",
+      "suite": "launch-policy",
+      "testName": "LP08 actual transport calls spawn with fixed array and sanitized environment",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP08 actual transport calls spawn with fixed array and sanitized environment$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "launch-policy-009",
+      "suite": "launch-policy",
+      "testName": "LP09 CLI cannot select --script",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP09 CLI cannot select --script$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "launch-policy-010",
+      "suite": "launch-policy",
+      "testName": "LP09 CLI cannot select --execution-policy",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP09 CLI cannot select --execution-policy$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "launch-policy-011",
+      "suite": "launch-policy",
+      "testName": "LP09 CLI cannot select --powershell",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP09 CLI cannot select --powershell$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "launch-policy-012",
+      "suite": "launch-policy",
+      "testName": "LP10 no persistent policy or registry mutation code is introduced",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP10 no persistent policy or registry mutation code is introduced$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "launch-policy-013",
+      "suite": "launch-policy",
+      "testName": "LP11 public package exports cannot expose launch override",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP11 public package exports cannot expose launch override$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-001",
+      "suite": "runtime",
+      "testName": "R01 api exact absolute deadline and equality",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R01 api exact absolute deadline and equality$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-002",
+      "suite": "runtime",
+      "testName": "R01 cli exact absolute deadline and equality",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R01 cli exact absolute deadline and equality$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-003",
+      "suite": "runtime",
+      "testName": "R02 earlier cancellation stays terminal after deadline",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R02 earlier cancellation stays terminal after deadline$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-004",
+      "suite": "runtime",
+      "testName": "R03 timeout wins simultaneous first cancellation observation",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R03 timeout wins simultaneous first cancellation observation$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-005",
+      "suite": "runtime",
+      "testName": "R04 preaborted signal prevents any launch",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R04 preaborted signal prevents any launch$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-006",
+      "suite": "runtime",
+      "testName": "R05 monotonic decreasing clock rejects",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R05 monotonic decreasing clock rejects$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-007",
+      "suite": "runtime",
+      "testName": "R06 API cannot launch helper",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R06 API cannot launch helper$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-008",
+      "suite": "runtime",
+      "testName": "R07 helper deadline includes all active time; equality rejects",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R07 helper deadline includes all active time; equality rejects$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-009",
+      "suite": "runtime",
+      "testName": "R08 aggregate deadline does not reset across helpers",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R08 aggregate deadline does not reset across helpers$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-010",
+      "suite": "runtime",
+      "testName": "R09 worker time is excluded from helper aggregate but inside overall",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R09 worker time is excluded from helper aggregate but inside overall$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-011",
+      "suite": "runtime",
+      "testName": "R10 helper overlap is terminal and cleans prior owned role",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R10 helper overlap is terminal and cleans prior owned role$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-012",
+      "suite": "runtime",
+      "testName": "R11 helper and worker cannot overlap",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R11 helper and worker cannot overlap$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-013",
+      "suite": "runtime",
+      "testName": "R12 frame alone cannot advance before actual close",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R12 frame alone cannot advance before actual close$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-014",
+      "suite": "runtime",
+      "testName": "R13 launch uses only fixed executable/script/environment and no shell",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R13 launch uses only fixed executable/script/environment and no shell$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-015",
+      "suite": "runtime",
+      "testName": "R14 helper trailing byte fails closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R14 helper trailing byte fails closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-016",
+      "suite": "runtime",
+      "testName": "R14 helper extra frame fails closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R14 helper extra frame fails closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-017",
+      "suite": "runtime",
+      "testName": "R14 helper debug stdout fails closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R14 helper debug stdout fails closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-018",
+      "suite": "runtime",
+      "testName": "R14 helper truncated frame fails closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R14 helper truncated frame fails closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-019",
+      "suite": "runtime",
+      "testName": "R14 helper oversized prefix fails closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R14 helper oversized prefix fails closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-020",
+      "suite": "runtime",
+      "testName": "R14 helper stderr overflow fails closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R14 helper stderr overflow fails closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-021",
+      "suite": "runtime",
+      "testName": "R14 helper nonzero exit fails closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R14 helper nonzero exit fails closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-022",
+      "suite": "runtime",
+      "testName": "R15 cancellation in launch terminates and ignores later valid frame",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R15 cancellation in launch terminates and ignores later valid frame$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-023",
+      "suite": "runtime",
+      "testName": "R16 cancellation during transport cleans child",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R16 cancellation during transport cleans child$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-024",
+      "suite": "runtime",
+      "testName": "R17 fixed actual worker has empty environment and exact heap intent",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R17 fixed actual worker has empty environment and exact heap intent$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-025",
+      "suite": "runtime",
+      "testName": "R18 successful worker result waits for termination",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R18 successful worker result waits for termination$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-026",
+      "suite": "runtime",
+      "testName": "R19 actual worker crash fails closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R19 actual worker crash fails closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-027",
+      "suite": "runtime",
+      "testName": "R19 actual worker duplicate fails closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R19 actual worker duplicate fails closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-028",
+      "suite": "runtime",
+      "testName": "R19 actual worker stdout fails closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R19 actual worker stdout fails closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-029",
+      "suite": "runtime",
+      "testName": "R20 cancellation actually terminates CPU-bound worker thread",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R20 cancellation actually terminates CPU-bound worker thread$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-030",
+      "suite": "runtime",
+      "testName": "R21 production worker executes accepted 2A/2B and confirms quiescence",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R21 production worker executes accepted 2A/2B and confirms quiescence$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-031",
+      "suite": "runtime",
+      "testName": "R22 adapter matches closed 2A handoff; operational/session fields excluded",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R22 adapter matches closed 2A handoff; operational/session fields excluded$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-032",
+      "suite": "runtime",
+      "testName": "R23 verify evidence seam excludes result and decision bytes",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R23 verify evidence seam excludes result and decision bytes$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-033",
+      "suite": "runtime",
+      "testName": "R24 malformed decision uses dedicated mismatch, cap uses resource",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R24 malformed decision uses dedicated mismatch, cap uses resource$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-034",
+      "suite": "runtime",
+      "testName": "R25 actual worker policy denies filesystem/network/process/module escape imports",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R25 actual worker policy denies filesystem/network/process/module escape imports$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-035",
+      "suite": "runtime",
+      "testName": "R26 cancellation preempts pending publication promise without another role",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R26 cancellation preempts pending publication promise without another role$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "runtime-036",
+      "suite": "runtime",
+      "testName": "R27 late publication promise cannot restore terminal success",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R27 late publication promise cannot restore terminal success$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-001",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C01 corrected limits leave all byte ceilings unchanged",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C01 corrected limits leave all byte ceilings unchanged$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-002",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C02 every required observation has a canonical closed framed representation",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C02 every required observation has a canonical closed framed representation$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-003",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C03 old wire version missing session unknown fields and arbitrary operations reject",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C03 old wire version missing session unknown fields and arbitrary operations reject$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-004",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C04 operation sequence and fixed output leaf authority are closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C04 operation sequence and fixed output leaf authority are closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-005",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C05 bounded frames reject trailing requests responses and alternate session",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C05 bounded frames reject trailing requests responses and alternate session$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-006",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C06 complete acquisition then terminated worker then five publication requests",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C06 complete acquisition then terminated worker then five publication requests$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-007",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C07 helper completion cannot substitute for fully quiescent exit",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C07 helper completion cannot substitute for fully quiescent exit$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-008",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C08 helper and worker overlap and repeated worker transition are terminal",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C08 helper and worker overlap and repeated worker transition are terminal$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-009",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C09 verify remains four reads followed by worker and cannot publish",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C09 verify remains four reads followed by worker and cannot publish$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-010",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C10 request failure abort and transport failure permit no retry",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C10 request failure abort and transport failure permit no retry$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-011",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C11 full component chains reject missing ancestors wrong paths reparse and hardlinks",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C11 full component chains reject missing ancestors wrong paths reparse and hardlinks$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-012",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C12 acquisition parent cannot be reused after native identity change",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C12 acquisition parent cannot be reused after native identity change$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-013",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C13 path and cross-invocation session substitutions terminate assessment",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C13 path and cross-invocation session substitutions terminate assessment$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-014",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C14 capability branding root binding and single claim exclude substitution",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C14 capability branding root binding and single claim exclude substitution$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-015",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C15 unclaimed out-of-order or concurrent inspection cannot be retried",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C15 unclaimed out-of-order or concurrent inspection cannot be retried$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-016",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C16 bridge requires exact transport fields and confirmed process quiescence",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C16 bridge requires exact transport fields and confirmed process quiescence$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-017",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C17 per-invocation deadline includes response parsing and process exit",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C17 per-invocation deadline includes response parsing and process exit$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-018",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C18 aggregate helper budget cannot silently multiply with sequential invocations",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C18 aggregate helper budget cannot silently multiply with sequential invocations$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-019",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C19 overall CLI deadline and nonmonotonic clock fail without grace",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C19 overall CLI deadline and nonmonotonic clock fail without grace$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-020",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C20 framed publication performs exact five observations and one final rename",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C20 framed publication performs exact five observations and one final rename$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-021",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C21 cancellation after each publication inspection is terminal and retains incomplete attempt",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C21 cancellation after each publication inspection is terminal and retains incomplete attempt$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-022",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C22 immediate pre-rename checkpoint blocks timeout after final native observation",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C22 immediate pre-rename checkpoint blocks timeout after final native observation$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-023",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C23 final native pending identity comparison rejects stale replacement and retains bytes",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C23 final native pending identity comparison rejects stale replacement and retains bytes$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "protocol-publication-correction-024",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C24 mismatched branded capability and legacy callback cannot create an output root",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C24 mismatched branded capability and legacy callback cannot create an output root$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "timer-lifetime-001",
+      "suite": "timer-lifetime",
+      "testName": "N24-C invocation timers clear after success, write/rename failure and pre/post-admission cancellation including a stalled write; no server, watcher or cross-run callbacks",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N24-C invocation timers clear after success, write/rename failure and pre/post-admission cancellation including a stalled write; no server, watcher or cross-run callbacks$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_timer_lifetime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 1,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-001",
+      "suite": "native-foundation",
+      "testName": "N01 pinned native runtime and fixed PowerShell installation",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N01 pinned native runtime and fixed PowerShell installation$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-002",
+      "suite": "native-foundation",
+      "testName": "N02 closed CLI commands and defaults",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N02 closed CLI commands and defaults$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-003",
+      "suite": "native-foundation",
+      "testName": "N03 prototype-sensitive and invented commands reject as usage",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N03 prototype-sensitive and invented commands reject as usage$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-004",
+      "suite": "native-foundation",
+      "testName": "N04 duplicate unknown missing extra flags reject",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N04 duplicate unknown missing extra flags reject$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-005",
+      "suite": "native-foundation",
+      "testName": "N05 forbidden runtime environment and Node options reject before I/O",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N05 forbidden runtime environment and Node options reject before I/O$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-006",
+      "suite": "native-foundation",
+      "testName": "N04b inspectable configuration path failures select lowest logical ID",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N04b inspectable configuration path failures select lowest logical ID$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-007",
+      "suite": "native-foundation",
+      "testName": "N06 relative lexical boundaries and hostile spellings",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N06 relative lexical boundaries and hostile spellings$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-008",
+      "suite": "native-foundation",
+      "testName": "N07 absolute roots full paths overlap and case aliases",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N07 absolute roots full paths overlap and case aliases$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-009",
+      "suite": "native-foundation",
+      "testName": "N08 identity policy rejects any reparse flag hardlink wrong type and changes",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N08 identity policy rejects any reparse flag hardlink wrong type and changes$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-010",
+      "suite": "native-foundation",
+      "testName": "N09 helper canonical round-trip and closed operation fields",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N09 helper canonical round-trip and closed operation fields$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-011",
+      "suite": "native-foundation",
+      "testName": "N10 helper frame prefix truncation trailing data and caps",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N10 helper frame prefix truncation trailing data and caps$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-012",
+      "suite": "native-foundation",
+      "testName": "N11 helper sorted explicit allowlist path and per-file boundaries",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N11 helper sorted explicit allowlist path and per-file boundaries$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-013",
+      "suite": "native-foundation",
+      "testName": "N12 acquisition needs four serial exits and invalid overlap or retry is terminal",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N12 acquisition needs four serial exits and invalid overlap or retry is terminal$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-014",
+      "suite": "native-foundation",
+      "testName": "N13 helper response exact snapshot identity and base64 validation",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N13 helper response exact snapshot identity and base64 validation$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-015",
+      "suite": "native-foundation",
+      "testName": "N14 helper decoded aggregate boundary and +1",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N14 helper decoded aggregate boundary and \\+1$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-016",
+      "suite": "native-foundation",
+      "testName": "N15 native fixed PowerShell snapshots and checked inspection sanitization",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N15 native fixed PowerShell snapshots and checked inspection sanitization$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-017",
+      "suite": "native-foundation",
+      "testName": "N16 native helper rejects hostile operation extra fields and oversized frame",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N16 native helper rejects hostile operation extra fields and oversized frame$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-018",
+      "suite": "native-foundation",
+      "testName": "N17 native CLI evaluates and publishes exact integrated result",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N17 native CLI evaluates and publishes exact integrated result$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-019",
+      "suite": "native-foundation",
+      "testName": "N18 publication exclusive create exact pending and single-file commit",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N18 publication exclusive create exact pending and single-file commit$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-020",
+      "suite": "native-foundation",
+      "testName": "N19 existing final destination never replaced and pending retained",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N19 existing final destination never replaced and pending retained$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-021",
+      "suite": "native-foundation",
+      "testName": "N20 pending collision and mutation fail closed without cleanup",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N20 pending collision and mutation fail closed without cleanup$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-022",
+      "suite": "native-foundation",
+      "testName": "N21 publication byte ceiling boundary and +1 before write",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N21 publication byte ceiling boundary and \\+1 before write$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-023",
+      "suite": "native-foundation",
+      "testName": "N22 branded framed inspection required and identity change rejects",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N22 branded framed inspection required and identity change rejects$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-024",
+      "suite": "native-foundation",
+      "testName": "N23 primitive late checkpoint prevents rename and retains pending",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N23 primitive late checkpoint prevents rename and retains pending$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    },
+    {
+      "id": "native-foundation-025",
+      "suite": "native-foundation",
+      "testName": "N24 foundation retains no-network and fixed orchestration boundaries",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N24 foundation retains no-network and fixed orchestration boundaries$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000
+    }
+  ],
+  "inventory": {
+    "path": "repositories/cca-conformance/tools/mo1307-final-headless/regression-inventory.json",
+    "byteLength": 11407,
+    "sha256": "sha256:a0561c5f149993c4421653d9e81340cd1fdc40b9b2d0821e433ca5aff2cef1b5"
+  },
+  "expectedTests": 107,
+  "stopBoundary": "One predeclared exact-name callback per fresh Node test process; stop before any later mandatory test after the first selected-test or command failure. Original assertions and fixtures are unchanged.",
+  "excludedRegistrations": "Nonselected registrations may be omitted or reported as filtered skips by Node. They are not executions, mandatory skips or prior PASS promotion. The selected callback must pass exactly once without skip or todo.",
+  "outerGuards": "Engineering command hang guards only; fixed product deadlines remain unchanged.",
+  "prerequisite": "Minimum wire exchange and complete finite console/security validation must pass before this driver is launched.",
+  "remainingSeparateRequirements": [
+    "native-filesystem driver",
+    "two TOCTOU controls",
+    "fresh installed-runtime Phase3A A-O after validation and new candidate binding"
+  ]
+}

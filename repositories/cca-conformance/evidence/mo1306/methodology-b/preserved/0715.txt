@@ -1,0 +1,31 @@
+import sys,json,hashlib
+from pathlib import Path
+from datetime import datetime,timezone
+sys.dont_write_bytecode=True
+root=Path.cwd();out=root/'repositories/cca-conformance/evidence/mo1306/phase3a-publication-diagnostic'
+sys.path.insert(0,str(root/'repositories/cca-conformance/tools/mo1306-phase3a-final'))
+from remote_state import credential,get,put,row,REPO,MAIN,CANDIDATE,BRANCH
+token=credential();responses={}
+for label,path in [
+ ('repository','repos/'+REPO),
+ ('main-ref','repos/'+REPO+'/git/ref/heads/main'),
+ ('certification-ref','repos/'+REPO+'/git/ref/heads/'+BRANCH),
+ ('certification-runs','repos/'+REPO+'/actions/runs?branch='+BRANCH+'&per_page=100')]:
+ value=get(path,token);assert value['status']==200
+ responses[label]=value
+ put(out/'remote-readonly'/(label+'.json'),value)
+assert responses['repository']['body']['full_name']==REPO
+assert responses['repository']['body']['default_branch']=='main'
+assert responses['main-ref']['body']['object']['sha']==MAIN
+assert responses['certification-ref']['body']['object']['sha']==CANDIDATE
+runs=responses['certification-runs']['body']
+assert runs['total_count']==0 and runs['workflow_runs']==[]
+value={'kind':'MemoryOSPhase3APublicationDiagnosticRemoteState','status':'PASS',
+ 'scope':'Four GET-only observations; no hosted certification execution or artifact listing.',
+ 'observedUtc':datetime.now(timezone.utc).isoformat(),'defaultBranch':'main','remoteMain':MAIN,
+ 'certificationCommit':CANDIDATE,'certificationBranch':BRANCH,'certificationRunCount':0,
+ 'remoteMutations':[],'dispatches':[],'pushes':[],'settingChanges':[],
+ 'responses':{name:row(out/'remote-readonly'/(name+'.json')) for name in responses},
+ 'harness':row(Path(__file__)),'getImplementation':row(root/'repositories/cca-conformance/tools/mo1306-phase3a-final/remote_state.py')}
+print(json.dumps(put(out/'remote-state.json',value)))
+

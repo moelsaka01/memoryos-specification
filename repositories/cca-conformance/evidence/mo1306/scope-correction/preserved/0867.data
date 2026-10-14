@@ -1,0 +1,10 @@
+"""Read-only correction validator replay with local archive placement only."""
+import runpy,shutil,sys
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[4]
+a=runpy.run_path(str(Path(__file__).with_name('authority-audit.py')))
+for label in ['assembly-a','assembly-b']:
+ target=ROOT/'.cache/c3a'/label/'memoryos-ci-0.1.0.tgz';target.parent.mkdir(parents=True,exist_ok=True)
+ if not target.exists():shutil.copyfile(ROOT/'.cache/c3r/memoryos-ci-0.1.0.tgz',target)
+a['run']('correction-validator',[sys.executable,'-B',ROOT/'repositories/cca-conformance/tools/mo1306-phase3-correction/conformance.py','post'])
+print('Correction binding validator and eight negative controls PASS')

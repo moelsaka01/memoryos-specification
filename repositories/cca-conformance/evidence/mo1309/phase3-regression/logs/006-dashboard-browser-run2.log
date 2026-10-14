@@ -1,0 +1,90 @@
+TAP version 13
+# Subtest: every fixture renders, CSP-clean, request-free, with registry-only chrome and a closed read-only control set (DB06 DB07 DB08 DB13 DB14)
+ok 1 - every fixture renders, CSP-clean, request-free, with registry-only chrome and a closed read-only control set (DB06 DB07 DB08 DB13 DB14)
+  ---
+  duration_ms: 779.616006
+  type: 'test'
+  ...
+# Subtest: adversarial untrusted data stays inert text: no markup, no state, no control, no script (DB08 DB14 4C-S4 preview)
+ok 2 - adversarial untrusted data stays inert text: no markup, no state, no control, no script (DB08 DB14 4C-S4 preview)
+  ---
+  duration_ms: 257.350082
+  type: 'test'
+  ...
+# Subtest: CONTRARY_TO_READINESS is a neutral, disclosed observation with the same presentation as CONSISTENT (DB17)
+ok 3 - CONTRARY_TO_READINESS is a neutral, disclosed observation with the same presentation as CONSISTENT (DB17)
+  ---
+  duration_ms: 101.790497
+  type: 'test'
+  ...
+# Subtest: DB12 in the browser: filters give the MO-1308 query result for record kind, subject and retention; sort and clear work
+ok 4 - DB12 in the browser: filters give the MO-1308 query result for record kind, subject and retention; sort and clear work
+  ---
+  duration_ms: 217.477695
+  type: 'test'
+  ...
+# Subtest: paging: 100 rows per page, sorted, reset on filter, focus moves to the entries heading; touches only the current page
+ok 5 - paging: 100 rows per page, sorted, reset on filter, focus moves to the entries heading; touches only the current page
+  ---
+  duration_ms: 234.814899
+  type: 'test'
+  ...
+# Subtest: long values are shortened with a visible note and Copy returns the full value (section 9.1)
+ok 6 - long values are shortened with a visible note and Copy returns the full value (section 9.1)
+  ---
+  duration_ms: 118.798235
+  type: 'test'
+  ...
+# Subtest: DB24 no horizontal page scroll at 320, 768 and 1280 CSS px, and at 200% zoom (640 and 160 CSS px equivalents)
+ok 7 - DB24 no horizontal page scroll at 320, 768 and 1280 CSS px, and at 200% zoom (640 and 160 CSS px equivalents)
+  ---
+  duration_ms: 1029.816085
+  type: 'test'
+  ...
+# Subtest: DB23 contrast at least 4.5:1 in light, dark and forced-colors; reduced motion has no animation; no colour-only meaning
+ok 8 - DB23 contrast at least 4.5:1 in light, dark and forced-colors; reduced motion has no animation; no colour-only meaning
+  ---
+  duration_ms: 662.405661
+  type: 'test'
+  ...
+# Subtest: DB23 keyboard operation, visible focus, landmarks and accessible names
+ok 9 - DB23 keyboard operation, visible focus, landmarks and accessible names
+  ---
+  duration_ms: 151.909181
+  type: 'test'
+  ...
+# Subtest: DB07 DB06 CSP is enforced: inline injection, eval and network are refused; a one-byte script change prevents the page running
+ok 10 - DB07 DB06 CSP is enforced: inline injection, eval and network are refused; a one-byte script change prevents the page running
+  ---
+  duration_ms: 328.585445
+  type: 'test'
+  ...
+# Subtest: an unreadable data block shows only the registry error and nothing else
+ok 11 - an unreadable data block shows only the registry error and nothing else
+  ---
+  duration_ms: 112.619566
+  type: 'test'
+  ...
+# Subtest: DB07 DB25 zero requests after load with the network blocked; identical behaviour and DOM from file:// and a static HTTP host
+ok 12 - DB07 DB25 zero requests after load with the network blocked; identical behaviour and DOM from file:// and a static HTTP host
+  ---
+  duration_ms: 443.413213
+  type: 'test'
+  ...
+# Subtest: determinism: the rendered DOM for a fixed fixture, viewport and interaction script is identical across runs (section 11)
+ok 13 - determinism: the rendered DOM for a fixed fixture, viewport and interaction script is identical across runs (section 11)
+  ---
+  duration_ms: 346.882215
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4985.76123
+
+--- stderr ---

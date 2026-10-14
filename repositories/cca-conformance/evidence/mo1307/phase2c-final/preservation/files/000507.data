@@ -1,0 +1,64 @@
+{
+  "kind": "MemoryOSReadinessNativeHelperWitness",
+  "attemptName": "smoke2",
+  "runtime": {
+    "version": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64"
+  },
+  "rows": [
+    {
+      "name": "native READ_SET same-handle bytes and seven-field identity",
+      "outcome": "PASS",
+      "durationMs": 1706.2213,
+      "detail": {
+        "roots": [
+          {
+            "id": "input",
+            "identity": {
+              "attributes": 16,
+              "byteLength": 0,
+              "fileId": "00140000000d63ab",
+              "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-native\\smoke2\\input",
+              "isDirectory": true,
+              "linkCount": 1,
+              "volumeSerial": "bec58120"
+            }
+          }
+        ],
+        "file": {
+          "attributes": 32,
+          "byteLength": 6,
+          "fileId": "00150000000d63ae",
+          "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-native\\smoke2\\input\\a.bin",
+          "isDirectory": false,
+          "linkCount": 1,
+          "volumeSerial": "bec58120"
+        }
+      }
+    }
+  ],
+  "invocations": [
+    {
+      "index": "001",
+      "durationMs": 1696.8224,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "requestBytes": 377,
+      "responseBytes": 761,
+      "stderrBytes": 0,
+      "requestSha256": "87d9fdf0174e942d84f74cdf969f3265415dd2ec454c41328323a467839e75a5",
+      "responseSha256": "51db56ae731c8e15245c021a8bee179ce65942bdcafc52c861be691bf63d3f05"
+    }
+  ],
+  "passed": 1,
+  "failed": 0,
+  "stopped": false,
+  "failure": null,
+  "limitations": [
+    "Internal native component checks execute in every real helper; deterministic adversarial concurrent namespace mutation is excluded by private immutable-root precondition.",
+    "Cross-slot equality rejection belongs to protocol/publication tests; this witness records actual native changes.",
+    "No other-volume fixture created; reparse mount/junction and final-handle-path validation remain fixed native checks."
+  ]
+}

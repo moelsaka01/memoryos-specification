@@ -1,0 +1,132 @@
+TAP version 13
+# Subtest: MO-1305 Phase 1 inventory, actual artifacts and external binding graph agree
+not ok 1 - MO-1305 Phase 1 inventory, actual artifacts and external binding graph agree
+  ---
+  duration_ms: 187.3116
+  type: 'test'
+  location: 'C:\\n7b\\repositories\\cca-conformance\\tests\\mo1305_phase1_conformance_test.mjs:12:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat 'C:\\n7b\\.cache\\mo1305-phase3-correction\\accepted-build\\memoryos-rest-0.1.0.tgz'"
+  code: 'ENOENT'
+  stack: |-
+    lstatSync (node:fs:1770:25)
+    artifact (file:///C:/n7b/repositories/cca-conformance/tools/mo1305-evidence.mjs:14:134)
+    validateInventory (file:///C:/n7b/repositories/cca-conformance/tools/mo1305-evidence.mjs:165:35)
+    validateCurrent (file:///C:/n7b/repositories/cca-conformance/tests/mo1305_phase1_conformance_test.mjs:6:92)
+    TestContext.<anonymous> (file:///C:/n7b/repositories/cca-conformance/tests/mo1305_phase1_conformance_test.mjs:13:2)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    Test.start (node:internal/test_runner/test:1262:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+  ...
+# Subtest: Phase 1 receipts prove every resource, functional, boundary, stress, parity, package, HTTP and security case
+not ok 2 - Phase 1 receipts prove every resource, functional, boundary, stress, parity, package, HTTP and security case
+  ---
+  duration_ms: 64.0907
+  type: 'test'
+  location: 'C:\\n7b\\repositories\\cca-conformance\\tests\\mo1305_phase1_conformance_test.mjs:15:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    ARTIFACT_LENGTH
+    
+    9079 !== 8996
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 8996
+  actual: 9079
+  operator: 'strictEqual'
+  stack: |-
+    artifact (file:///C:/n7b/repositories/cca-conformance/tools/mo1305-evidence.mjs:14:297)
+    validateReceipt (file:///C:/n7b/repositories/cca-conformance/tools/mo1305-evidence.mjs:95:380)
+    TestContext.<anonymous> (file:///C:/n7b/repositories/cca-conformance/tests/mo1305_phase1_conformance_test.mjs:16:132)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+    Test.postRun (node:internal/test_runner/test:1542:19)
+    Test.run (node:internal/test_runner/test:1467:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: receipt schema rejects unknown, missing, false PASS and malformed nested fields
+ok 3 - receipt schema rejects unknown, missing, false PASS and malformed nested fields
+  ---
+  duration_ms: 13.7386
+  type: 'test'
+  ...
+# Subtest: canonical reader rejects duplicate keys, trailing newline, floats and excess depth
+ok 4 - canonical reader rejects duplicate keys, trailing newline, floats and excess depth
+  ---
+  duration_ms: 8.0811
+  type: 'test'
+  ...
+# Subtest: artifact verifier rejects wrong hashes, missing files, absolute paths and traversal
+ok 5 - artifact verifier rejects wrong hashes, missing files, absolute paths and traversal
+  ---
+  duration_ms: 3.586
+  type: 'test'
+  ...
+# Subtest: resource gate rejects a removed catalog case and weakened final memory budget
+ok 6 - resource gate rejects a removed catalog case and weakened final memory budget
+  ---
+  duration_ms: 102.8547
+  type: 'test'
+  ...
+# Subtest: package and inventory reject archive/revision mismatch and missing Windows state
+not ok 7 - package and inventory reject archive/revision mismatch and missing Windows state
+  ---
+  duration_ms: 1.6536
+  type: 'test'
+  location: 'C:\\n7b\\repositories\\cca-conformance\\tests\\mo1305_phase1_conformance_test.mjs:39:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'archive')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/n7b/repositories/cca-conformance/tests/mo1305_phase1_conformance_test.mjs:40:56)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+    Test.postRun (node:internal/test_runner/test:1542:19)
+    Test.run (node:internal/test_runner/test:1467:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: execution receipts reject PASS projections over failed or unrelated raw runs
+not ok 8 - execution receipts reject PASS projections over failed or unrelated raw runs
+  ---
+  duration_ms: 2.9778
+  type: 'test'
+  location: 'C:\\n7b\\repositories\\cca-conformance\\tests\\mo1305_phase1_conformance_test.mjs:44:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'local')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/n7b/repositories/cca-conformance/tests/mo1305_phase1_conformance_test.mjs:46:97)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+    Test.postRun (node:internal/test_runner/test:1542:19)
+    Test.run (node:internal/test_runner/test:1467:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: native measurement windows must contain real captures before and after each request
+ok 9 - native measurement windows must contain real captures before and after each request
+  ---
+  duration_ms: 16.5145
+  type: 'test'
+  ...
+# Subtest: bounded methodology rejects obsolete sample counts, wrong correction and weakened stress coverage
+ok 10 - bounded methodology rejects obsolete sample counts, wrong correction and weakened stress coverage
+  ---
+  duration_ms: 131.3416
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 6
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1972.3698

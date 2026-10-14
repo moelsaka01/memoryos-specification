@@ -1,0 +1,61 @@
+name: MemoryOS Deterministic Policy Gate
+description: Evaluate and verify a pinned MemoryOS Investigation Policy or Policy Set against authoritative Memory Investigation Package input.
+inputs:
+  policy-kind:
+    description: Policy artifact kind, exactly policy or policy-set.
+    required: true
+  policy-path:
+    description: Workspace-relative path to the Policy or Policy Set JSON artifact.
+    required: true
+  expected-policy-semantic-digest:
+    description: Expected frozen semantic digest of the Policy or Policy Set.
+    required: true
+  candidate-mip-path:
+    description: Workspace-relative path to the candidate Memory Investigation Package.
+    required: true
+  regression-baseline-mip-path:
+    description: Optional workspace-relative path to the Regression baseline Memory Investigation Package.
+    required: false
+    default: ""
+outputs:
+  gate-class:
+    description: Frozen gate classification.
+  decision:
+    description: Verified Policy decision, or empty for tool failure.
+  cli-exit-code:
+    description: Original protocol-valid policy evaluation exit, when available.
+  publication-valid:
+    description: Whether the retained normative publication generation is verified.
+  policy-semantic-digest:
+    description: Verified Policy or Policy Set semantic digest.
+  evaluation-identity-digest:
+    description: Verified Evaluation Identity digest.
+  outcome-digest:
+    description: Verified outcome digest.
+  policy-fact-context-digest:
+    description: Verified PolicyFactContext digest.
+  regression-source-digest:
+    description: Verified Regression source digest, or empty when absent.
+  evaluation-identity-path:
+    description: Absolute retained Evaluation Identity path.
+  outcome-path:
+    description: Absolute retained outcome path.
+  artifact-directory:
+    description: Absolute retained six-file artifact directory.
+  stable-code:
+    description: Frozen primary stable code, when applicable.
+  failure-class:
+    description: Frozen failure class, or empty for a verified Policy decision.
+  phase:
+    description: Frozen failure phase, or empty for a verified Policy decision.
+  artifact-kind:
+    description: Verified or failure-associated artifact kind, when available.
+  limit-identifier:
+    description: Root resource-limit identifier, when applicable.
+  distribution-repository:
+    description: Verified Action distribution repository.
+  distribution-revision:
+    description: Verified immutable Action distribution revision.
+runs:
+  using: node24
+  main: dist/index.js

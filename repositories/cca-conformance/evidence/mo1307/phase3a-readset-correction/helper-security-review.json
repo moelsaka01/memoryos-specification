@@ -1,0 +1,153 @@
+{
+  "kind": "MO1307ReadSetIndependentHelperSecurityReview",
+  "version": "1.0.0",
+  "result": "PASS",
+  "scope": "Independent source/diff proof review of pass1 only; native corpus and performance acceptance are separate receipts",
+  "optimizationPass": 1,
+  "baseline": "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+  "oldHelper": {
+    "gitCommit": "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+    "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+    "byteLength": 29771,
+    "sha256": "sha256:ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b"
+  },
+  "newHelper": {
+    "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+    "byteLength": 30210,
+    "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+  },
+  "sourceBindings": [
+    {
+      "path": "repositories/memoryos-readiness/contracts/definitions.json",
+      "byteLength": 16555,
+      "sha256": "sha256:b621c0d17f2018ff8e73675878278f2fda10c2ad1f987a89747ebfb54b66e13e"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+      "byteLength": 17308,
+      "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-transport.mjs",
+      "byteLength": 6250,
+      "sha256": "sha256:ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/runtime.mjs",
+      "byteLength": 16904,
+      "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/acquisition.mjs",
+      "byteLength": 6409,
+      "sha256": "sha256:1ecab53426287a92279153903785bd56a38d4a9840696dbdfb3a446a8e83b066"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/publication.mjs",
+      "byteLength": 13610,
+      "sha256": "sha256:dcba8a23b848ceede6c5a9deb10e46b2ef795ae9573755bc78d44abd5943236b"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/windows-paths.mjs",
+      "byteLength": 5990,
+      "sha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/cli.mjs",
+      "byteLength": 4448,
+      "sha256": "sha256:3632c653e86e1315ac3b858137932b9750ed621526ad71d75c7f040935cfa5f2"
+    }
+  ],
+  "mechanicalProof": {
+    "noncommentExecutableText": "Exact original after deleting only the single Assert-Root $observed statement",
+    "nativeCallSitesChanged": false,
+    "nativeSignaturesChanged": false,
+    "serializerChanged": false,
+    "newCacheOrAllocationStructure": false,
+    "unchangedSharedSources": [
+      "contracts/definitions.json",
+      "src/helper-protocol.mjs",
+      "src/helper-transport.mjs",
+      "src/runtime.mjs",
+      "src/acquisition.mjs",
+      "src/publication.mjs",
+      "src/windows-paths.mjs",
+      "src/cli.mjs"
+    ]
+  },
+  "trustedExpectedPathProof": [
+    "Only Open-Chain initial inspection and Assert-ChainStable held/fresh inspection call Read-Identity.",
+    "Open-Chain calls full Assert-Root before constructing expected component strings. Every prefix has the same validated ordinary drive and complete validated segments, with no larger length than the full path.",
+    "Request roots are normalized to backslashes before chain use; relative paths are fully validated and converted before full-path construction.",
+    "Expected strings are existing immutable string values retained in request-local chain entries; no entry path is derived from the returned native identity or untrusted response.",
+    "Each native observation still calls GetFinalPathNameByHandleW, validates count and the exact native prefix, strips it and compares the entire result to the validated expected path using the same OrdinalIgnoreCase comparer.",
+    "Within the supported ordinary drive-path grammar, case-only differences do not introduce separators, control characters, ADS, dot segments, reserved names or invalid suffixes. Native ordinary-drive spelling and expected path provenance remain part of trusted OS/helper authority.",
+    "The complete original observed finalPath string remains in the returned Identity. Assert-SameIdentity still compares all seven fields case-sensitively, preserving exact post-read stability."
+  ],
+  "freshnessMatrix": [
+    {
+      "point": "Initial root and file chain",
+      "requiredObservations": "Every ancestor opens and receives fresh native identity/final path; type/reparse/link/volume checks remain.",
+      "unchanged": true
+    },
+    {
+      "point": "Post-read held handle",
+      "requiredObservations": "Every held component is reobserved with native information, file type and final path, then compared to original seven-field identity.",
+      "unchanged": true
+    },
+    {
+      "point": "Post-read fresh path",
+      "requiredObservations": "Every required path is reopened and freshly observed, compared, then closed; no pre-read native state substitutes for that observation.",
+      "unchanged": true
+    },
+    {
+      "point": "Final root stability",
+      "requiredObservations": "Held and reopened native checks repeat for root chain after file set.",
+      "unchanged": true
+    },
+    {
+      "point": "Publication inspection and CHECK_OUTPUT",
+      "requiredObservations": "Shared Read-Identity uses same unchanged native calls and checked expected prefixes; full operation sequence and no-overlap authority remain.",
+      "unchanged": true
+    }
+  ],
+  "errorEquivalenceProof": {
+    "removedFailureCode": "MO1307_FILESYSTEM_BOUNDARY",
+    "remainingMismatchedPathCode": "MO1307_FILESYSTEM_BOUNDARY",
+    "priority": "All earlier native information/type/link/final-prefix/count checks remain ordered exactly. If a returned path differs from the validated expectation, the next unchanged equality check rejects with the same code and no intervening externally visible action. Invalid request path validation remains before native acquisition.",
+    "codeStageFrameContractChanged": false
+  },
+  "resourceAndTopology": {
+    "helperDeadlineMs": 5000,
+    "helperAggregateDeadlineMs": 20000,
+    "cliAdmissionMs": 30000,
+    "workerAndApiMs": 10000,
+    "cleanupMs": 2000,
+    "evaluateRequests": 9,
+    "verifyRequests": 4,
+    "wire": "2.0.0",
+    "identityFields": 7,
+    "productionAdditionalRetainedStructures": 0,
+    "freshNativeObservationsRemoved": 0,
+    "newProcessesOrThreads": 0,
+    "newPInvokeOrCompiler": false,
+    "persistentOrCrossRequestCache": false
+  },
+  "reviewedHarnessScope": {
+    "equivalence": "Unchanged-algorithm B2 response oracle under separate engineering guard; exact frame equality and phase-specific native call counters; production budget unchanged.",
+    "freshness": "Synthetic observation/expectation mutation labeled separately from controlled filesystem mutations. Engineering leaf disposal permits changes that unchanged production sharing normally prevents; no product mutation hook.",
+    "performance": "Actual uninstrumented fixed helper and supervisor, exact original request/root, strict full-exchange and helper-active under5000ms, real cleanup flag; no claim from engineering oracle duration.",
+    "cliSmoke": "Actual packaged child and original historical inputs with new main-owned output. Parent directly observes CLI/pipes; descendant cleanup inferred only from unchanged source-bound valid transport and supervisor completion. Failed namespace must be reported independently of success."
+  },
+  "acceptanceBoundary": "This PASS is source-review disposition, not execution/certification. Final correction acceptance additionally requires the separate exact-frame, negative, mutation, performance, cleanup, regression and semantic receipts. No Phase3A recertification or3D is performed by this review.",
+  "historicalStatePreserved": [
+    "CERTIFICATION_BLOCKED",
+    "READ_SET_ROOT_CAUSE_ESTABLISHED",
+    "MO1306_TIMEOUT29",
+    "READY_TIMEOUT29",
+    "cleanupConfirmed:false",
+    "three exhausted certification diagnostics"
+  ],
+  "reviewerProductionEdits": false,
+  "nativeCampaignsRunByReviewer": 0
+}

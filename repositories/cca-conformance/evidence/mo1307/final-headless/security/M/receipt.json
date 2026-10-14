@@ -1,0 +1,67 @@
+{
+  "id": "M",
+  "name": "timeout-handling",
+  "kind": "PRODUCTION_TRANSPORT_DOUBLE",
+  "result": "PASS",
+  "startedAt": "2026-09-30T15:40:23.652Z",
+  "lifecycle": {
+    "name": "timeout",
+    "kind": "PRODUCTION_TRANSPORT_WITH_IN_MEMORY_CHILD",
+    "snapshot": {
+      "kind": "cli",
+      "deadline": 30000,
+      "helpers": 1,
+      "workers": 0,
+      "helperUsedMs": 0,
+      "activeRole": "helper",
+      "cleanupConfirmed": false,
+      "publication": null,
+      "terminalCode": "MO1307_TIMEOUT",
+      "terminalAt": 5000,
+      "cleanupDeadline": 7000,
+      "events": [
+        {
+          "type": "start",
+          "at": 0,
+          "role": "helper",
+          "deadline": 5000,
+          "ordinal": 1
+        },
+        {
+          "type": "observation",
+          "at": 0,
+          "role": "helper",
+          "pid": 700000001,
+          "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+        },
+        {
+          "type": "terminal",
+          "at": 5000,
+          "code": "MO1307_TIMEOUT",
+          "stage": "ACQUISITION"
+        },
+        {
+          "type": "cleanup",
+          "at": 5000,
+          "role": "helper",
+          "confirmed": false
+        }
+      ]
+    },
+    "state": {
+      "processClosed": true,
+      "stdinClosed": true,
+      "stdoutClosed": true,
+      "stderrClosed": true,
+      "kills": 1
+    },
+    "events": [
+      "stdin-finish",
+      "stdin-close",
+      "stdout-close",
+      "stderr-close",
+      "process-close",
+      "unref"
+    ]
+  }
+}

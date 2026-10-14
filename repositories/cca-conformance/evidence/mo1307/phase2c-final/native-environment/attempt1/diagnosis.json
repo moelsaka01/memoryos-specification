@@ -1,0 +1,9 @@
+{
+  "disposition": "HARNESS_FIXTURE_OUTSIDE_SUPPORTED_NODE_BOOTSTRAP",
+  "correction": "Retain trusted Windows installation values for actual Node startup. Continue poisoning all required proxy, credential sentinel, PATH, PATHEXT, HOME, USERPROFILE and policy-selector variables. Separate actual helper passed with SystemRoot/WINDIR poisoned after Node entry, proving fixed helper launch ignores them.",
+  "failure": "Combined CLI fixture also poisoned SystemRoot and WINDIR. Node aborted in CSPRNG initialization before JavaScript CLI entry, exit134.",
+  "result": "FAIL retained",
+  "passedCases": 9,
+  "unexecuted": "Eight final-source launch guard execArgv cases",
+  "productChanges": false
+}

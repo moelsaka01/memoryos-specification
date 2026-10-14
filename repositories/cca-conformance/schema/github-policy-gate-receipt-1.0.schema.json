@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cca://schemas/memoryos/github-policy-gate/receipt/1.0",
+  "title": "MemoryOS GitHub Policy Gate Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "version",
+    "distribution",
+    "contractIdentities",
+    "policy",
+    "policyFactContextDigest",
+    "regressionSourceDigest",
+    "decision",
+    "originalCliExitCode",
+    "evaluationIdentityDigest",
+    "outcomeDigest",
+    "publicationValid",
+    "retainedFileRawSha256"
+  ],
+  "properties": {
+    "kind": { "const": "MemoryOSGitHubPolicyGateReceipt" },
+    "version": { "const": "1.0.0" },
+    "distribution": { "$ref": "#/$defs/distribution" },
+    "contractIdentities": { "$ref": "#/$defs/contractIdentities" },
+    "policy": { "$ref": "#/$defs/policy" },
+    "policyFactContextDigest": { "$ref": "#/$defs/digest" },
+    "regressionSourceDigest": {
+      "anyOf": [
+        { "$ref": "#/$defs/digest" },
+        { "type": "null" }
+      ]
+    },
+    "decision": {
+      "enum": ["PASS", "FAIL", "COULD_NOT_EVALUATE"]
+    },
+    "originalCliExitCode": {
+      "enum": [0, 6, 7]
+    },
+    "evaluationIdentityDigest": { "$ref": "#/$defs/digest" },
+    "outcomeDigest": { "$ref": "#/$defs/digest" },
+    "publicationValid": { "const": true },
+    "retainedFileRawSha256": { "$ref": "#/$defs/retainedFiles" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": ["decision"],
+        "properties": { "decision": { "const": "PASS" } }
+      },
+      "then": {
+        "properties": { "originalCliExitCode": { "const": 0 } }
+      }
+    },
+    {
+      "if": {
+        "required": ["decision"],
+        "properties": { "decision": { "const": "FAIL" } }
+      },
+      "then": {
+        "properties": { "originalCliExitCode": { "const": 6 } }
+      }
+    },
+    {
+      "if": {
+        "required": ["decision"],
+        "properties": { "decision": { "const": "COULD_NOT_EVALUATE" } }
+      },
+      "then": {
+        "properties": { "originalCliExitCode": { "const": 7 } }
+      }
+    }
+  ],
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "distribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "revision", "manifestRawSha256"],
+      "properties": {
+        "repository": { "const": "moelsaka01/memoryos-specification" },
+        "revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "manifestRawSha256": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "contractIdentities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "version",
+        "evaluatorVersion",
+        "factModel",
+        "ruleRegistry",
+        "deterministicFactSourceRegistry",
+        "resourceProfile",
+        "outcomeContractVersion"
+      ],
+      "properties": {
+        "kind": { "const": "MemoryOSPolicyContractIdentities" },
+        "version": { "const": "1.0.0" },
+        "evaluatorVersion": { "const": "1.0.0" },
+        "factModel": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["factModelVersion", "factModelDigest"],
+          "properties": {
+            "factModelVersion": { "const": "1.0.0" },
+            "factModelDigest": {
+              "const": "sha256:b36b9488161cb67d8e971e802d15ad76d662d46f96e1304182de343ba69ef7a8"
+            }
+          }
+        },
+        "ruleRegistry": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["ruleRegistryVersion", "ruleRegistryDigest"],
+          "properties": {
+            "ruleRegistryVersion": { "const": "1.0.0" },
+            "ruleRegistryDigest": {
+              "const": "sha256:aaa19116563d209f680b063cdccf49d899069683f9778271c4ca2c4559b94fd7"
+            }
+          }
+        },
+        "deterministicFactSourceRegistry": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["registryVersion", "registryDigest", "sources"],
+          "properties": {
+            "registryVersion": { "const": "1.0.0" },
+            "registryDigest": {
+              "const": "sha256:392d688acb866753c6ff85b7030131b38990b27d8a2a0ef6e8e052c8c4e048de"
+            },
+            "sources": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 1,
+              "prefixItems": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "domain",
+                    "wireVersion",
+                    "sourceModelVersion",
+                    "sourceModelDigest"
+                  ],
+                  "properties": {
+                    "domain": { "const": "cognitiveRegression" },
+                    "wireVersion": { "const": "1.0.0" },
+                    "sourceModelVersion": { "const": "1.0.0" },
+                    "sourceModelDigest": {
+                      "const": "sha256:e7d1fdf24758f2a0ac9ad609df578f95c058bf3cbab9f02a650f9cc12dab1c0d"
+                    }
+                  }
+                }
+              ],
+              "items": false
+            }
+          }
+        },
+        "resourceProfile": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["identifier", "version", "resourceProfileDigest"],
+          "properties": {
+            "identifier": { "const": "memoryos.policy.resource-profile.standard" },
+            "version": { "const": "1.0.0" },
+            "resourceProfileDigest": {
+              "const": "sha256:c091573dfd05481f5759ef077e15af16689382a7432fa546c6630c4caeaa5239"
+            }
+          }
+        },
+        "outcomeContractVersion": { "const": "1.0.0" }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactKind", "semanticDigest"],
+      "properties": {
+        "artifactKind": {
+          "enum": [
+            "MemoryOSInvestigationPolicy",
+            "MemoryOSInvestigationPolicySet"
+          ]
+        },
+        "semanticDigest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "retainedFiles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evaluation-identity.json",
+        "evaluation-identity.sha256",
+        "evaluation-outcome.json",
+        "evaluation-outcome.sha256",
+        "policy-identities.json"
+      ],
+      "properties": {
+        "evaluation-identity.json": { "$ref": "#/$defs/digest" },
+        "evaluation-identity.sha256": { "$ref": "#/$defs/digest" },
+        "evaluation-outcome.json": { "$ref": "#/$defs/digest" },
+        "evaluation-outcome.sha256": { "$ref": "#/$defs/digest" },
+        "policy-identities.json": { "$ref": "#/$defs/digest" }
+      }
+    }
+  }
+}

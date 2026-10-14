@@ -1,0 +1,69 @@
+{
+  "name": "timely-helper",
+  "started": 312.4001,
+  "finished": 9349.3633,
+  "result": "FAIL",
+  "elapsedMs": 9036.9764,
+  "error": {
+    "code": "MO1307_TIMEOUT",
+    "message": "MO1307_TIMEOUT"
+  },
+  "detail": null,
+  "snapshot": {
+    "kind": "cli",
+    "deadline": 30312.6162,
+    "helpers": 1,
+    "workers": 0,
+    "helperUsedMs": 0,
+    "activeRole": "helper",
+    "cleanupConfirmed": false,
+    "publication": null,
+    "terminalCode": "MO1307_TIMEOUT",
+    "terminalAt": 9325.2043,
+    "cleanupDeadline": 11325.2043,
+    "events": [
+      {
+        "type": "start",
+        "at": 317.1342,
+        "role": "helper",
+        "deadline": 9317.097,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 335.7853,
+        "role": "helper",
+        "pid": 28556,
+        "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+      },
+      {
+        "type": "terminal",
+        "at": 9325.2521,
+        "code": "MO1307_TIMEOUT",
+        "stage": "ACQUISITION"
+      },
+      {
+        "type": "cleanup",
+        "at": 9348.7952,
+        "role": "helper",
+        "confirmed": false
+      }
+    ]
+  },
+  "expectedError": null,
+  "engineeringElapsedEnvelope": {
+    "minMs": 8000,
+    "maxMs": 9000,
+    "productDeadlineOverride": false
+  },
+  "invocations": [
+    {
+      "ordinal": "001",
+      "pid": 28556,
+      "protocolSequence": 3,
+      "operation": "READ_SET"
+    }
+  ],
+  "workerObservations": [],
+  "failure": "Error: ReadinessError: MO1307_TIMEOUT\n    at checkpoint (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final/install/node_modules/memoryos-readiness/src/runtime.mjs:72:34)\n    at Timeout.<anonymous> (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final/install/node_modules/memoryos-readiness/src/runtime.mjs:81:13)\n    at listOnTimeout (node:internal/timers:685:17)\n    at process.processTimers (node:internal/timers:618:7)\n    at run (file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final/runtime-controls.mjs:93:20)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final/runtime-controls.mjs:116:2"
+}

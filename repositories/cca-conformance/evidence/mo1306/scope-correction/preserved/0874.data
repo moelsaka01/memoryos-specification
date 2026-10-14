@@ -1,0 +1,26 @@
+"""Run retained offline GitHub native cases once, serialized by coordinator."""
+import hashlib,json,os,pathlib,subprocess,time
+ROOT=pathlib.Path(__file__).resolve().parents[4];OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3cr/provider-results'
+NODE=ROOT/'.cache/mo1305-phase3br/toolchain/node-v24.21.0-win-x64/node.exe';SCRATCH=ROOT/'.cache/pw2'
+assert not SCRATCH.exists(),'exclusive native retry workspace required'
+env={k:os.environ[k]for k in ('SystemRoot','WINDIR')};env['PATHEXT']='.COM;.EXE;.BAT;.CMD'
+argv=[str(NODE),str(ROOT/'repositories/cca-conformance/tools/mo1306-phase2c/github-wrapper.test.mjs'),str(SCRATCH),str(NODE)]
+start=time.monotonic();p=subprocess.run(argv,cwd=ROOT,env=env,capture_output=True,timeout=600,creationflags=subprocess.CREATE_NO_WINDOW)
+receipt={'kind':'MemoryOSPhase3CRNativeWrapperRetry','baseline':'9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44','argv':argv,'exitCode':p.returncode,'stdout':p.stdout.decode('utf-8-sig'),'stderr':p.stderr.decode('utf-8-sig'),'elapsedMs':round((time.monotonic()-start)*1000),'status':'PASS'if p.returncode==0 else 'FAILED_EXECUTION_PRESERVED','reasonForRetry':'First unchanged-helper attempt exceeded frozen2s under competing PowerShell audits; this narrowed retry uses shorter exclusive scratch and serialized process-heavy work. Frozen helper budget and production bytes unchanged.'}
+(OUT/'native-wrapper-retry.json').write_text(json.dumps(receipt,indent=2)+'\n',encoding='utf8')
+if p.returncode==0:
+ report=json.loads(p.stdout)
+ (OUT/'native-wrapper.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf8')
+ bundles=[]
+ for name in ('pass','fail','cne','input-error'):
+  directory=SCRATCH/name/'_memoryos/data/.memoryos-ci/out'
+  for run in directory.iterdir():
+   if not run.is_dir() or len(run.name)!=36:continue
+   rows=[]
+   for file in sorted(run.iterdir()):
+    raw=file.read_bytes();rows.append({'name':file.name,'byteLength':len(raw),'sha256':'sha256:'+hashlib.sha256(raw).hexdigest(),'json':json.loads(raw)})
+   bundles.append({'case':name,'runId':run.name,'files':rows})
+ (OUT/'native-wrapper-bundles.json').write_text(json.dumps(bundles,indent=2)+'\n',encoding='utf8')
+ print(json.dumps({'status':'PASS','cases':report['passed'],'elapsedMs':receipt['elapsedMs']}))
+else:
+ print(json.dumps(receipt));raise SystemExit(p.returncode)

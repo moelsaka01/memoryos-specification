@@ -1,0 +1,137 @@
+{
+  "cases": [
+    {
+      "elapsedMs": 27001,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-C1",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "digest": "sha256:01c4e6016bc051359a139ab08ee9d9b98db8c0fa59c2611ff2faa2ce1babaeb4",
+        "files": 26
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 14936,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-C2",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "exportDigest": "sha256:9d76598e631bcd702d5c84af9eff9447ead7473bf8b2129510b7e9f866169315"
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 1,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-C3",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "entries": 8,
+        "top": [
+          ".pending",
+          "entries",
+          "memoryos-history-ledger.json",
+          "records"
+        ]
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 5939,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-C4",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "scanned": 23
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 2,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-C5",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "kinds": [
+          "CICD_RUN",
+          "HUMAN_DECISION_CLAIM",
+          "INVESTIGATION_CHECKPOINT",
+          "MIP_PACKAGE",
+          "POLICY_EVALUATION",
+          "READINESS_RESULT",
+          "REGRESSION_REPORT"
+        ],
+        "workspace": "workspace-investigation"
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 16387,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-C6",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "filesInitially": 13,
+        "independentReader": "Python ctypes GetFileInformationByHandle",
+        "purgedMembers": 1,
+        "steps": [
+          {
+            "files": 13,
+            "label": "verify"
+          },
+          {
+            "files": 13,
+            "label": "query"
+          },
+          {
+            "files": 15,
+            "label": "append"
+          },
+          {
+            "files": 15,
+            "label": "export"
+          },
+          {
+            "files": 15,
+            "label": "tombstone (the only deletion)"
+          },
+          {
+            "files": 15,
+            "label": "verify after purge"
+          }
+        ]
+      },
+      "outcome": null,
+      "result": "PASS"
+    }
+  ],
+  "elapsedMs": 64268,
+  "failureCode": null,
+  "finishedAt": "2026-10-08T13:47:32.359Z",
+  "generation": "phase3a-rehearsal-r4",
+  "kind": "MO1308Phase3StepReceipt",
+  "result": "PASS",
+  "segment": "main1",
+  "startedAt": "2026-10-08T13:46:28.097Z",
+  "step": "C",
+  "stream": "3A",
+  "version": "1.0.0"
+}

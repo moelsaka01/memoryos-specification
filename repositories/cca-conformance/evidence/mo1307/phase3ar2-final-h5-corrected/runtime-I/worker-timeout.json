@@ -1,0 +1,114 @@
+{
+  "name": "worker-timeout",
+  "started": 222.9882,
+  "finished": 10244.2615,
+  "result": "PASS",
+  "elapsedMs": 10021.2785,
+  "error": {
+    "code": "MO1307_TIMEOUT",
+    "message": "MO1307_TIMEOUT"
+  },
+  "detail": null,
+  "snapshot": {
+    "kind": "cli",
+    "deadline": 30223.5786,
+    "helpers": 0,
+    "workers": 1,
+    "helperUsedMs": 0,
+    "activeRole": null,
+    "cleanupConfirmed": true,
+    "publication": null,
+    "terminalCode": "MO1307_TIMEOUT",
+    "terminalAt": 10234.4769,
+    "cleanupDeadline": 12234.4769,
+    "events": [
+      {
+        "type": "start",
+        "at": 224.637,
+        "role": "worker",
+        "deadline": 10224.542,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 229.3389,
+        "role": "worker",
+        "threadId": 1,
+        "resourceLimits": {
+          "maxYoungGenerationSizeMb": 16,
+          "maxOldGenerationSizeMb": 128,
+          "codeRangeSizeMb": 0,
+          "stackSizeMb": 4
+        }
+      },
+      {
+        "type": "terminal",
+        "at": 10234.5239,
+        "code": "MO1307_TIMEOUT",
+        "stage": "EVALUATION"
+      },
+      {
+        "type": "cleanup",
+        "at": 10244.0948,
+        "role": "worker",
+        "confirmed": true
+      }
+    ]
+  },
+  "expectedError": "MO1307_TIMEOUT",
+  "engineeringElapsedEnvelope": {
+    "minMs": 10000,
+    "maxMs": 12000,
+    "productDeadlineOverride": false
+  },
+  "invocations": [],
+  "workerObservations": [
+    {
+      "type": "start",
+      "caseName": "worker-timeout",
+      "threadId": 1,
+      "at": 228.8187,
+      "env": {},
+      "execArgv": [],
+      "resourceLimits": {
+        "maxOldGenerationSizeMb": 128,
+        "maxYoungGenerationSizeMb": 16
+      }
+    },
+    {
+      "type": "termination-request",
+      "threadId": 1,
+      "at": 10234.8049
+    },
+    {
+      "type": "exit",
+      "threadId": 1,
+      "at": 10243.5211,
+      "code": 1
+    },
+    {
+      "type": "stream-end",
+      "stream": "stdout",
+      "threadId": 1,
+      "at": 10243.7505
+    },
+    {
+      "type": "stream-end",
+      "stream": "stderr",
+      "threadId": 1,
+      "at": 10243.9376
+    },
+    {
+      "type": "stream-close",
+      "stream": "stdout",
+      "threadId": 1,
+      "at": 10244.0467
+    },
+    {
+      "type": "stream-close",
+      "stream": "stderr",
+      "threadId": 1,
+      "at": 10244.0598
+    }
+  ]
+}

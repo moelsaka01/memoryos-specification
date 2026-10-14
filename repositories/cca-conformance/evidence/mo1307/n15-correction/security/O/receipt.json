@@ -1,0 +1,68 @@
+{
+  "id": "O",
+  "name": "late-output-refusal",
+  "kind": "PRODUCTION_TRANSPORT_DOUBLE",
+  "result": "PASS",
+  "startedAt": "2026-09-30T16:38:27.155Z",
+  "lifecycle": {
+    "name": "late-output",
+    "kind": "PRODUCTION_TRANSPORT_WITH_IN_MEMORY_CHILD",
+    "snapshot": {
+      "kind": "cli",
+      "deadline": 30000,
+      "helpers": 1,
+      "workers": 0,
+      "helperUsedMs": 0,
+      "activeRole": null,
+      "cleanupConfirmed": true,
+      "publication": null,
+      "terminalCode": "MO1307_CANCELLED",
+      "terminalAt": 0,
+      "cleanupDeadline": 2000,
+      "events": [
+        {
+          "type": "start",
+          "at": 0,
+          "role": "helper",
+          "deadline": 5000,
+          "ordinal": 1
+        },
+        {
+          "type": "observation",
+          "at": 0,
+          "role": "helper",
+          "pid": 700000001,
+          "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+        },
+        {
+          "type": "terminal",
+          "at": 0,
+          "code": "MO1307_CANCELLED",
+          "stage": "ACQUISITION"
+        },
+        {
+          "type": "cleanup",
+          "at": 0,
+          "role": "helper",
+          "confirmed": true
+        }
+      ]
+    },
+    "state": {
+      "processClosed": true,
+      "stdinClosed": true,
+      "stdoutClosed": true,
+      "stderrClosed": true,
+      "kills": 0
+    },
+    "events": [
+      "stdin-finish",
+      "stdout-end",
+      "stderr-end",
+      "stdin-close",
+      "stdout-close",
+      "stderr-close",
+      "process-close"
+    ]
+  }
+}

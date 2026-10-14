@@ -1,0 +1,51 @@
+$schema: cca://schemas/canonical-specification/1.0
+format_version: 1.0.0
+kind: canonical_specification
+id: fixture.circular-dependency
+version: 1.0.0
+metadata: {name: Circular dependency}
+categories:
+  - {id: architecture, name: Architecture, annotations: {}, extensions: {}}
+objects:
+  - type: component
+    id: architecture.alpha
+    version: 1.0.0
+    category: architecture
+    metadata: {name: Alpha}
+    contracts: []
+    requirements: []
+    properties: {}
+    annotations: {}
+    extensions: {}
+  - type: component
+    id: architecture.beta
+    version: 1.0.0
+    category: architecture
+    metadata: {name: Beta}
+    contracts: []
+    requirements: []
+    properties: {}
+    annotations: {}
+    extensions: {}
+relationships: []
+dependencies:
+  - id: dependency.alpha-beta
+    source: architecture.alpha
+    target: architecture.beta
+    version: ^1.0.0
+    optional: false
+    metadata: {name: Alpha depends on beta}
+    annotations: {}
+    extensions: {}
+  - id: dependency.beta-alpha
+    source: architecture.beta
+    target: architecture.alpha
+    version: ^1.0.0
+    optional: false
+    metadata: {name: Beta depends on alpha}
+    annotations: {}
+    extensions: {}
+validation_rules: []
+artifacts: []
+annotations: {}
+extensions: {}

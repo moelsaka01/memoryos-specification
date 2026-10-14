@@ -1,0 +1,172 @@
+{
+  "cases": [
+    {
+      "elapsedMs": 167,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-B1",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "results": {
+          "descriptor-extra-member": "MO1308_LEDGER_CORRUPT",
+          "descriptor-missing-member": "MO1308_LEDGER_CORRUPT",
+          "descriptor-version-1.0.1": "MO1308_VERSION_UNSUPPORTED",
+          "descriptor-version-2.0.0": "MO1308_VERSION_UNSUPPORTED",
+          "descriptor-wrong-kind": "MO1308_LEDGER_CORRUPT",
+          "entry-both-record-and-tombstone": "MO1308_LEDGER_CORRUPT",
+          "entry-extra-member": "MO1308_LEDGER_CORRUPT",
+          "entry-missing-tombstone-member": "MO1308_LEDGER_CORRUPT",
+          "entry-record-extra-member": "MO1308_LEDGER_CORRUPT",
+          "entry-unknown-admission": "MO1308_LEDGER_CORRUPT",
+          "entry-unknown-association": "MO1308_LEDGER_CORRUPT",
+          "entry-unknown-record-kind": "MO1308_LEDGER_CORRUPT",
+          "entry-unknown-subject-type": "MO1308_LEDGER_CORRUPT",
+          "entry-unsorted-subjects": "MO1308_LEDGER_CORRUPT",
+          "entry-version-1.0.1": "MO1308_VERSION_UNSUPPORTED",
+          "entry-version-2.0.0": "MO1308_VERSION_UNSUPPORTED",
+          "entry-wrong-kind": "MO1308_LEDGER_CORRUPT",
+          "memoryos-history-export-complete.json@1.0.1": "MO1308_VERSION_UNSUPPORTED",
+          "memoryos-history-export-complete.json@2.0.0": "MO1308_VERSION_UNSUPPORTED",
+          "memoryos-history-export.json@1.0.1": "MO1308_EXPORT_CORRUPT",
+          "memoryos-history-export.json@2.0.0": "MO1308_EXPORT_CORRUPT",
+          "tombstone-authenticity-verified": "MO1308_LEDGER_CORRUPT",
+          "tombstone-on-tombstone": "MO1308_LEDGER_CORRUPT",
+          "tombstone-reference-control-character": "MO1308_LEDGER_CORRUPT",
+          "tombstone-reference-too-long": "MO1308_LEDGER_CORRUPT",
+          "tombstone-unknown-reason": "MO1308_LEDGER_CORRUPT"
+        },
+        "variants": 26
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 105,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-B2",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "heads": {
+          "all": "sha256:ab3e07ddf6062d934d3e1b907cd4db32b688bc6ee8bafde6e518d52c44ec6572",
+          "purge": "sha256:e815a3ea2d07348fec3328525d155cae72312daf26d3b11035a4503090cf472d",
+          "small": "sha256:f7d616a0a35535ad6eaf750da3fdca38b7528662ebfcb703812a0dac03ec6296"
+        },
+        "recipes": 3
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 5,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-B3",
+      "mandatory": true,
+      "mode": "record",
+      "observed": {
+        "code": null,
+        "entryCount": 3,
+        "forgedHead": "sha256:447fa44edd84f7470ffc7ee6315bc505597e23d347d3e99df6b85f0f2da7d68e",
+        "forgedVerifies": true,
+        "headChanged": true,
+        "originalHead": "sha256:f7d616a0a35535ad6eaf750da3fdca38b7528662ebfcb703812a0dac03ec6296",
+        "outcome": "CONFIRMED"
+      },
+      "outcome": "CONFIRMED",
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 14,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-B4",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "substitutions": [
+          {
+            "code": "MO1308_RECORD_BYTES_MISMATCH",
+            "fromId": "readiness-ready",
+            "memberName": "memoryos-readiness-result.json",
+            "toId": "readiness-qualified"
+          },
+          {
+            "code": "MO1308_RECORD_BYTES_MISMATCH",
+            "fromId": "policy-0",
+            "memberName": "policy-outcome.json",
+            "toId": "policy-1"
+          },
+          {
+            "code": "MO1308_RECORD_BYTES_MISMATCH",
+            "fromId": "decision-ready-approve",
+            "memberName": "human-decision.json",
+            "toId": "decision-ready-reject"
+          },
+          {
+            "code": "MO1308_RECORD_BYTES_MISMATCH",
+            "fromId": "checkpoint-c00",
+            "memberName": "checkpoint.json",
+            "toId": "checkpoint-c01"
+          }
+        ]
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 4,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-B5",
+      "mandatory": true,
+      "mode": "record",
+      "observed": {
+        "admissionCode": "MO1308_RECORD_INVALID",
+        "outcome": "CONFIRMED",
+        "verifiesWithoutReAdmission": true,
+        "verifyCode": null,
+        "wouldFailAdmission": true
+      },
+      "outcome": "CONFIRMED",
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 37,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-B6",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "results": {
+          "association-flipped": "MO1308_LEDGER_CORRUPT",
+          "foreign-entry-same-index": "MO1308_LEDGER_CORRUPT",
+          "member-added-to-list": "MO1308_LEDGER_CORRUPT",
+          "member-digest-wrong": "MO1308_LEDGER_CORRUPT",
+          "member-length-off-by-one": "MO1308_LEDGER_CORRUPT",
+          "member-list-reordered": "MO1308_LEDGER_CORRUPT",
+          "tombstone-target-digest-wrong": "MO1308_LEDGER_CORRUPT",
+          "tombstone-targets-itself-or-later": "MO1308_LEDGER_CORRUPT",
+          "wrong-record-digest": "MO1308_LEDGER_CORRUPT"
+        },
+        "variants": 9
+      },
+      "outcome": null,
+      "result": "PASS"
+    }
+  ],
+  "elapsedMs": 334,
+  "failureCode": null,
+  "finishedAt": "2026-10-09T13:37:56.895Z",
+  "generation": "phase3c",
+  "kind": "MO1308Phase3StepReceipt",
+  "result": "PASS",
+  "segment": "main",
+  "startedAt": "2026-10-09T13:37:56.561Z",
+  "step": "B",
+  "stream": "3C",
+  "version": "1.0.0"
+}

@@ -1,0 +1,67 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import {pathToFileURL} from 'node:url';
+import http from 'node:http';
+import https from 'node:https';
+import net from 'node:net';
+import tls from 'node:tls';
+import {once} from 'node:events';
+import {createRequire} from 'node:module';
+import assert from 'node:assert/strict';
+// Parent assigns a Windows Job memory limit before releasing this gate.
+process.stdin.resume(); await once(process.stdin, 'data'); process.stdin.pause();
+const [modulePath, mode, work] = process.argv.slice(2);
+for (const [obj, methods] of [[http,['request','get']],[https,['request','get']],[net,['connect','createConnection']],[tls,['connect']]]) {
+  for (const method of methods) obj[method] = () => { throw new Error('NETWORK_FORBIDDEN_IN_LOCAL_WITNESS'); };
+}
+globalThis.fetch = () => { throw new Error('NETWORK_FORBIDDEN_IN_LOCAL_WITNESS'); };
+const sha = s => crypto.createHash('sha256').update(s).digest('hex');
+const dataRoot=path.join(work,'_memoryos/data/.memoryos-ci/out/local-witness');
+const names=['evaluation-identity.json','memoryos-ci-artifacts.json','memoryos-ci-complete.json','memoryos-ci-evidence.json','memoryos-ci-result.json','policy-outcome.json'];
+if(mode.startsWith('entry-')){
+ fs.mkdirSync(dataRoot,{recursive:true});
+ for(const name of names)fs.writeFileSync(path.join(dataRoot,name),JSON.stringify({proof:'LOCAL_ARTIFACT_BYTES_ONLY',xml:'<r>'+ '&#60;'.repeat(1001)+'</r>'}));
+ Object.assign(process.env,{INPUT_NAME:'memoryos-ci-1-1',INPUT_PATH:names.map(n=>path.join(dataRoot,n)).join('\n'),INPUT_ARCHIVE:'true',INPUT_OVERWRITE:'false','INPUT_INCLUDE-HIDDEN-FILES':'true','INPUT_IF-NO-FILES-FOUND':'error','INPUT_RETENTION-DAYS':'7','INPUT_COMPRESSION-LEVEL':'6',GITHUB_WORKSPACE:work,GITHUB_REPOSITORY:'local/witness',GITHUB_RUN_ID:'1',GITHUB_RUN_ATTEMPT:'1',GITHUB_SERVER_URL:'https://github.com'});
+ delete process.env.GITHUB_EVENT_PATH;delete process.env.GITHUB_OUTPUT;
+}
+const bundle = await import(pathToFileURL(modulePath).href);
+const result={mode,node:process.version,execArgv:process.execArgv,externalNetworkAllowed:false};
+const options=bundle.getParserOptions({xmlCharKey:'#'});
+result.azureOptions=options;result.effectiveOptions=new bundle.XMLParser(options).options;
+if(mode==='fixed-boundary'){
+ const {XMLParser}=createRequire(import.meta.url)(path.join(path.dirname(modulePath),'fixed-fxp.cjs')); result.rows=[];
+ for(const count of [998,999,1000,1001,1002]){const xml='<r>'+'&#60;'.repeat(count)+'</r>'; let output,error=null; const start=performance.now();try{output=new XMLParser(options).parse(xml).r;}catch(e){error=e.message;} assert.equal(error===null,count<=1000);result.rows.push({count,accepted:error===null,error,outputLength:output?.length??null,elapsedMs:performance.now()-start});}
+}else if(mode==='boundary'){
+ result.rows=[];
+ const cases=[['numeric-lt','&#60;'],['named-lt','&lt;'],['numeric-hex-lt','&#x3C;'],['numeric-general','&#65;'],['doctype','&a;']];
+ for(const [kind,entity] of cases)for(const count of [998,999,1000,1001,1002]){
+  const xml=(kind==='doctype'?'<!DOCTYPE r [<!ENTITY a "A">]>':'')+'<r>'+entity.repeat(count)+'</r>';
+  global.gc();const before=process.memoryUsage();const start=performance.now();let output,error;
+  try{output=await bundle.parseXML(xml,{xmlCharKey:'#'});}catch(e){error={name:e.name,message:e.message};}
+  const ms=performance.now()-start,after=process.memoryUsage();
+  assert.equal(!error,kind!=='doctype'||count<=1000);if(!error)assert.equal(output.length,kind==='numeric-general'?count*5:count);
+  result.rows.push({kind,count,inputBytes:Buffer.byteLength(xml),inputSha256:sha(xml),limit:1000,accepted:!error,error:error??null,outputLength:typeof output==='string'?output.length:null,observedExpansions:typeof output==='string'?(entity==='&#65;'?0:output.length):null,outputSha256:typeof output==='string'?sha(output):null,outputPrefix:typeof output==='string'?output.slice(0,40):null,elapsedMs:ms,memoryBefore:before,memoryAfter:after,heapDeltaBytes:after.heapUsed-before.heapUsed});
+ }
+}else if(mode.startsWith('entry-')){
+ const requests=[],parses=[],rpc=[];
+ const original=bundle.XMLParser.prototype.parse;
+ bundle.XMLParser.prototype.parse=function(text,...args){const before=process.memoryUsage(),start=performance.now();const output=original.call(this,text,...args);parses.push({inputBytes:Buffer.byteLength(text),inputSha256:sha(text),inputContainsArtifactSentinel:text.includes('LOCAL_ARTIFACT_BYTES_ONLY'),outputMessageLength:output.Error?.Message?.length,elapsedMs:performance.now()-start,memoryBefore:before,memoryAfter:process.memoryUsage(),callStack:new Error('parser trace').stack});return output;};
+ bundle.installTwirpStub({async CreateArtifact(req){rpc.push({method:'CreateArtifact',request:req});return {ok:true,signedUploadUrl:'https://service.invalid/container/blob?sig=LOCAL_ONLY'};},async FinalizeArtifact(req){rpc.push({method:'FinalizeArtifact',request:req});return {ok:true,artifactId:'1'};}});
+ bundle.installBackendStub();
+ bundle.NodeHttpClient.prototype.sendRequest=async function(request){
+  let body=typeof request.body==='function'?request.body():request.body,bytes=Buffer.alloc(0);
+  if(body&&typeof body[Symbol.asyncIterator]==='function'&&typeof body!=='string'&&!Buffer.isBuffer(body)){const arr=[];for await(const chunk of body)arr.push(Buffer.from(chunk));bytes=Buffer.concat(arr);}else if(body)bytes=Buffer.from(body);
+  const operation=new URL(request.url).searchParams.get('comp');
+  requests.push({url:request.url,method:request.method,operation,requestBodyBytes:bytes.length,requestBodySha256:sha(bytes),isXmlRequest:operation==='blocklist',outboundPrefix:operation==='blocklist'?bytes.toString().slice(0,250):bytes.subarray(0,4).toString('hex')});
+  const isFailure=mode==='entry-stage-error'||(mode==='entry-commit-error'&&operation==='blocklist');
+  const text=isFailure?'<Error><Code>InvalidRequest</Code><Message>'+ '&#60;'.repeat(1001) +'</Message></Error>':'';
+  return {request,status:isFailure?400:201,headers:bundle.createHttpHeaders({'content-type':isFailure?'application/xml':'application/octet-stream','x-ms-request-id':'local','etag':'local','last-modified':'Sat, 26 Sep 2026 00:00:00 GMT','x-ms-version':'2025-11-05','x-ms-request-server-encrypted':'true'}),bodyAsText:text};
+ };
+ const start=performance.now();let error=null;
+ try{await bundle.run();}catch(e){error={name:e.name,code:e.code,messagePrefix:String(e.message).slice(0,80),messageLength:String(e.message).length};}
+ assert.equal(parses.length,mode==='entry-success'?0:1);assert.equal(error===null,mode==='entry-success');if(parses.length){assert.equal(parses[0].outputMessageLength,1001);assert.equal(parses[0].inputContainsArtifactSentinel,false);}assert.deepEqual(requests.map(r=>r.operation),mode==='entry-stage-error'?['block']:['block','blocklist']);
+ Object.assign(result,{requests,parses,rpc,error,elapsedMs:performance.now()-start,artifactFixtures:names.map(n=>({name:n,sha256:sha(fs.readFileSync(path.join(dataRoot,n)))}))});
+}
+result.processMemory=process.memoryUsage();result.resourceUsage=process.resourceUsage();
+console.log('XML_WITNESS_JSON='+JSON.stringify(result));

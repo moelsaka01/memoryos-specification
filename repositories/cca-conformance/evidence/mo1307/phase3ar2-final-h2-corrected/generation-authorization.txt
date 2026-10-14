@@ -1,0 +1,1766 @@
+ROLE AND SCOPE
+==============
+You are the coding agent resuming MemoryOS 1.3 / MO-1307 (Release Policies) Phase 3AR2 from an
+existing local, pre-execution H2 checkpoint. You are not redesigning anything. Being a different
+coding agent from the one that prepared this work is not a reason to change approach, tooling,
+naming, or structure. Your job is narrow:
+
+  1. Verify the exact preserved local state.
+  2. Finish only the remaining static H2 correction/gate work.
+  3. If and only if the zero-product H2 gate passes, create ONE new append-only Phase 3AR2
+     generation and execute sections A–O exactly once.
+  4. If all of A–O pass, record acceptance and write the Phase 3D handoff.
+
+Out of scope, absolutely: Phase 3D, git push, git tag, any release action, rerunning 3BR2 or 3CR2,
+changing production code, changing resource authority, weakening any product predicate.
+
+ENVIRONMENT
+===========
+- Work in the existing worktree:  C:\Users\melsa\Documents\Codex\3ar2
+  Start with:  cd C:\Users\melsa\Documents\Codex\3ar2
+- Primary repository (read-only reference unless stated): C:\Users\melsa\Documents\Codex\cca-workspace
+- Run on NATIVE WINDOWS (PowerShell or Git for Windows), with the same Node/Python toolchain recorded
+  by prior Phase 3AR2 generations. Do NOT operate through WSL (/mnt/c/...): the product verifies
+  filesystem identity, and a different filesystem layer can cause spurious boundary failures. If the
+  only available environment differs from the recorded execution environment, STOP and report.
+- GitHub: https://github.com/moelsaka01/cca-workspace now redirects to
+  https://github.com/moelsaka01/memoryos-specification. GitHub is behind local and does not contain
+  MO-1307 Phase 3 work. LOCAL GIT AND LOCAL EVIDENCE ARE AUTHORITATIVE. Never fetch-and-reset, pull,
+  rebase onto remote, or clone over anything. Do not change the remote URL.
+
+FORBIDDEN COMMANDS (no exceptions)
+==================================
+git clean (any form), git stash (any form, especially -u), git reset --hard, git checkout -- <path>,
+git restore on untracked/evidence paths, git worktree remove/prune, git gc --prune, git push,
+git tag, rm/del/Remove-Item on any evidence/, fixtures/, or tools/ path, line-ending normalization
+(git add --renormalize, changing core.autocrlf), and any rewrite of history (rebase, amend of
+existing commits, filter-*). Creating a new worktree is not required and must not happen unless
+Section 1 proves 3ar2 is unusable; if so, STOP and report instead of improvising.
+
+KNOWN AUTHORITIES (verify, never assume)
+========================================
+- Phase 3BR2 ACCEPTED: 4d92f0f21c9c3aad8202f4558d61b9229c7214fc   (preserve; do not rerun)
+- Phase 3CR2 ACCEPTED: 7d2006c6e19bb50bffb6c710672be996e3c3590b   (preserve; do not rerun)
+- Phase 3AR2 candidate C3VB: 17fa84efe46d30e6f4be85fd2427485677a222a3
+- Parent / production C3V:    98b766f9218b209f52251147213839b9775f6da3
+- Production tree:            b9dabf54572e06c96bb5e48c4e20671f2cc24053
+- Resource authority: helper whole lifecycle 9000 ms; aggregate helper-active 28000 ms;
+  CLI 30000 ms; API/worker 10000 ms; cleanup 2000 ms.
+- Historical H: NOT_ESTABLISHED. Do not reinterpret 9000 or 28000 as H.
+- Boundary evidence already established: 8000 PASS, 8999 PASS, 9000 MO1307_TIMEOUT.
+  Do not reopen the deadline design.
+- Consumed generation (immutable): repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h-corrected/
+  Result: A–G PASS, H FAIL, I–O NOT_RUN.
+  H failure 1: aggregate-helper-exhaustion expected MO1307_TIMEOUT, actual MO1307_FILESYSTEM_BOUNDARY,
+    classified H_AGGREGATE_FIXTURE_INPUT_ISOLATION_DEFECT (harness placed the absent-output
+    CHECK_OUTPUT fixture inside the live runtime-H evidence directory; harness writes changed the
+    directory byteLength 16384 -> 24576; product correctly failed closed).
+  H issue 2: PID 2124 terminated_known_identity_rejected / LIFETIME_CONTRADICTION, localized to
+    observer event-ordering/provenance. Do NOT weaken initial identity establishment or PID-reuse
+    protection to resolve it.
+- Existing H2 preparation (untracked or partially committed, NOT executed):
+    repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected/fixture-root.json
+    repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/
+    repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-harness-correction/
+
+If any value above disagrees with what the repository's own authority/receipt documents say,
+the repository documents win for reporting purposes, but you must STOP and report the discrepancy
+before executing anything.
+
+SECTION 1 — READ-ONLY STATE CAPTURE (no writes except a capture file outside the repo)
+=====================================================================================
+Record, verbatim, into a capture log stored OUTSIDE the worktree
+(e.g. C:\Users\melsa\Documents\Codex\3ar2-h2-resume-capture-<UTC timestamp>\):
+  a. git rev-parse HEAD; git rev-parse HEAD^{tree}; git status --porcelain=v2 --untracked-files=all;
+     git worktree list --porcelain; git branch -vv; git log --oneline -n 40;
+     git config --get core.autocrlf; git remote -v (record only).
+  b. Confirm 3BR2 and 3CR2 commits exist locally (git cat-file -t) and are reachable from the
+     refs the repository's Phase 3 records say they should be. Do not check them out.
+  c. Confirm C3VB and C3V exist, that C3VB's parent is C3V, and that C3V's tree equals the
+     production tree. Compute the production-path diff between HEAD and C3V using the production
+     path set defined by the repository's 3AR2 authority; it must be empty (zero product drift).
+  d. SHA-256 inventory (path, size, hash) of every file under:
+       - the consumed generation evidence directory
+       - the three H2 paths listed above
+       - any other untracked file reported by git status
+     Save as JSON in the capture directory. This inventory is the preservation baseline.
+  e. Verify the consumed generation using its own seal: the consumed 26-tool seal, the 405
+     receipt-indexed evidence members, and the receipt/closure/report hashes. Every check must
+     match byte-for-byte.
+  f. Prove H2 has NOT executed: no H2 run marker, no H2 evidence namespace with run output, no H2
+     product/helper process artefacts, no H2 receipt. Search for any run-marker/claim file defined
+     by the H2 tooling and by prior generation conventions.
+  g. Read (do not modify) the MO-1307 roadmap/handoff/authority documents in the repository that
+     define Phase 3A scope, the A–O sections, the member count, and the case count. Record what
+     they say. Expected from the handoff: 89 package members, 80 sealed A–O cases. Any mismatch
+     -> STOP.
+
+HALT CONDITIONS for Section 1: any hash mismatch in the consumed generation; any evidence that H2
+has executed (even partially); product drift; missing accepted commits; inventory paths that
+differ from the handoff in a way you cannot explain from git history. On HALT: write the report
+(Section 7) and stop. Do not attempt repair.
+
+SECTION 2 — DETERMINE WHAT STATIC WORK REMAINS
+===============================================
+Read the existing H2 correction and campaign tooling and any of its own progress/metadata records.
+Produce a short table: each intended H2 static deliverable -> DONE (with path + hash) / PARTIAL /
+NOT STARTED. The previous session reported DONE for: consumed-seal verification, zero product drift,
+no-execution proof, observer provenance analysis, fixture-isolation design. It was partway through
+building the append-only H2 correction/campaign metadata.
+Do not redo DONE items; re-verify their outputs by hash only. Do not edit any file that a
+DONE item's metadata seals. If a partially written file exists, extend or complete it in place only
+if it is not yet sealed; otherwise write a new, separately named append-only file.
+
+SECTION 3 — COMPLETE ONLY THE REMAINING STATIC H2 WORK (harness-only)
+=====================================================================
+Allowed changes are confined to the H2 fixture and H2 tooling paths (and new append-only metadata
+alongside them). Production code, the consumed generation, and 3BR2/3CR2 material are read-only.
+
+Required corrections, matching the design already recorded by the previous session:
+  - Fixture input isolation: every fixture input the product inspects for filesystem identity
+    (including the aggregate CHECK_OUTPUT absent-output fixture) must live in a dedicated,
+    pre-created, quiescent fixture root that is disjoint from every directory the harness writes
+    evidence into during execution, and with no ancestor that the harness writes into either.
+    The expected outcome of aggregate-helper-exhaustion remains MO1307_TIMEOUT. Do not change that
+    expectation.
+  - Observer provenance: correct the topology observer's event ordering/provenance so a process
+    whose identity was established and then terminated is not reported as a contradiction because
+    of observer ordering. Product identity rules, initial identity establishment, and PID-reuse
+    rejection remain unchanged.
+Also confirm no other H case has the same fixture-under-evidence pattern; record the scan result.
+
+SECTION 4 — ZERO-PRODUCT H2 GATE (no product or helper execution)
+=================================================================
+Run only static verification and harness self-tests that do not start the product, CLI, API/worker,
+or helpers. The gate passes only if all of the following are true and recorded:
+  - Production paths byte-identical to C3V / production tree b9dabf54…
+  - Consumed generation byte-identical to the Section 1 baseline.
+  - Every fixture input path is disjoint from every harness evidence write path (prove by computed
+    path-set analysis, not by assertion).
+  - Observer correction verified against the recorded PID 2124 event sequence from the consumed
+    evidence (replayed as data, not by re-executing the product), producing no LIFETIME_CONTRADICTION
+    while still rejecting a constructed genuine PID-reuse case.
+  - All case expectations unchanged from the authority except where an authority document
+    explicitly permits a change; list any changed expectation (there should be none).
+  - Resource authority values unchanged.
+If the gate fails: STOP. Do not create a generation. Write the report and classify the failure
+(harness vs product vs authority) with evidence.
+
+SECTION 5 — ONE APPEND-ONLY GENERATION; EXECUTE A–O EXACTLY ONCE
+=================================================================
+Only after Section 4 passes:
+  a. Commit the completed H2 harness/fixture/metadata work as its own commit (harness-only;
+     message must state zero production change). Record the commit hash.
+  b. Create a NEW evidence namespace (name it per the repository's existing convention for this
+     lineage, e.g. phase3ar2-final-h2-corrected; it must not already exist).
+  c. Write the run marker / claim BEFORE any product execution. From this moment the generation
+     is consumed. If this session is interrupted for ANY reason (usage limit, crash, power, timeout)
+     after the marker is written, the generation is CONSUMED/INDETERMINATE. Do not resume, retry,
+     or re-run it. Report instead.
+  d. Freshly package, install, and verify the candidate: 89 members (or the authority's count),
+     each member hash-verified against C3VB-bound expectations.
+  e. Seal all 80 A–O cases (or the authority's count) before execution, recording the seal hash.
+  f. Execute A–O exactly once, in authority order. Stop at the first mandatory failure. Mark all
+     subsequent cases NOT_RUN. No in-generation fixes, no reruns of individual cases, no
+     expectation edits.
+  g. Do not promote any historical PASS result into this generation unless an authority document
+     explicitly permits that dependency reuse; if it does, cite it.
+
+SECTION 6 — OUTCOME HANDLING
+============================
+If ANY mandatory case fails or is indeterminate:
+  - Preserve all evidence as written. Commit it as a failed generation (evidence-only commit).
+  - Classify the first failure (product / harness / environment / authority) with evidence.
+  - Phase 3AR2 remains NOT ACCEPTED. Do not attempt a fix. Stop and report.
+If ALL of A–O PASS:
+  - Write the receipt, closure, and report in the repository's established format, with hashes.
+  - Create an evidence commit; bind the acceptance to C3VB 17fa84ef… and production tree b9dabf54….
+  - Write the Phase 3D handoff stating: 3AR2 accepted (commit + generation), 3BR2 accepted
+    4d92f0f2…, 3CR2 accepted 7d2006c6…, candidate/dependency state for 3D, and any open items.
+  - Do NOT begin Phase 3D. Do NOT push. Do NOT tag.
+
+SECTION 7 — FINAL REPORT (always produce, including on HALT)
+============================================================
+Report in plain text:
+  1. Section reached and outcome (HALT reason / GATE FAIL / GENERATION FAIL / ACCEPTED).
+  2. HEAD before and after; every commit created, with hashes and one-line purpose.
+  3. Consumed-generation verification result and baseline inventory location.
+  4. Remaining-work table from Section 2 and what you completed.
+  5. Gate results line by line.
+  6. If executed: generation namespace, run-marker time, member count verified, seal hash,
+     per-section A–O results, first failure (if any) with expected vs actual.
+  7. Confirmation statements: production unchanged; 3BR2/3CR2 untouched; no push; no tag;
+     no Phase 3D; no history rewritten; no evidence deleted.
+  8. Any discrepancy between this prompt and repository authority, and how it was handled.
+
+MEMORYOS 1.3
+MO-1307 PHASE 3AR2
+
+CLAUDE CODE TRANSFER
+RESUME FINAL H2 CORRECTION FROM EXISTING LOCAL STATE
+
+You are taking over a partially prepared certification workstream for MemoryOS.
+
+This is an existing production engineering repository with preserved certification history.
+
+You are NOT starting a new project.
+
+Do not restart MO-1307.
+Do not redesign MemoryOS.
+Do not discard prior evidence.
+Do not restart Phase 3.
+Do not rerun already accepted Phase 3 streams.
+
+==================================================
+0. PROJECT / REPOSITORY
+==================================================
+
+Project:
+
+MemoryOS
+
+GitHub repository:
+
+https://github.com/moelsaka01/cca-workspace
+
+Primary local repository:
+
+C:\Users\melsa\Documents\Codex\cca-workspace
+
+Current Phase 3AR2 worktree:
+
+C:\Users\melsa\Documents\Codex\3ar2
+
+Use available GitHub integrations/connectors to inspect repository history and remote state where useful.
+
+However:
+
+LOCAL Git and LOCAL certification evidence are authoritative for unpushed work.
+
+Do not assume GitHub contains the latest certification generations.
+
+Do not clone over the existing repository.
+
+If Claude Code can operate directly in the existing worktree:
+
+use:
+
+C:\Users\melsa\Documents\Codex\3ar2
+
+Begin with:
+
+cd C:\Users\melsa\Documents\Codex\3ar2
+
+If your environment absolutely requires a Claude-specific worktree:
+
+STOP before creating one.
+
+First inventory and hash the existing untracked H2 fixture/tooling/evidence in 3ar2.
+
+A clean Git worktree alone will NOT contain all current H2 preparation.
+
+Do not silently lose those bytes.
+
+Do not overwrite the original worktree.
+
+==================================================
+1. VERIFY LOCAL AUTHORITY
+==================================================
+
+Expected branch:
+
+codex/mo1307-phase3ar2-c3ub
+
+Expected HEAD / C3VB:
+
+17fa84efe46d30e6f4be85fd2427485677a222a3
+
+Expected parent / C3V:
+
+98b766f9218b209f52251147213839b9775f6da3
+
+Expected production tree:
+
+b9dabf54572e06c96bb5e48c4e20671f2cc24053
+
+Before modifying anything verify mechanically:
+
+branch
+
+HEAD
+
+parent
+
+tracked worktree clean
+
+index clean
+
+production diff empty.
+
+Do not run:
+
+git clean
+
+git reset --hard
+
+git restore .
+
+git checkout .
+
+Do not delete untracked files.
+
+Untracked certification material is intentional and must be preserved.
+
+If the expected Git state differs:
+
+STOP.
+
+Report the exact discrepancy.
+
+Do not attempt to repair Git state automatically.
+
+==================================================
+2. MEMORYOS CERTIFICATION METHOD
+==================================================
+
+This repository uses strict evidence-driven certification.
+
+The following rules are mandatory:
+
+1. Accepted workstreams remain preserved.
+
+2. Failed workstreams do not invalidate independent accepted workstreams unless dependency analysis establishes that they must be refreshed.
+
+3. Certification generations are append-only.
+
+4. Failed generations remain historical evidence.
+
+5. Never rewrite a failed generation into PASS.
+
+6. One-shot campaigns must not be silently retried.
+
+7. Historical PASS results must not be promoted into a new generation unless the applicable authority explicitly permits reuse.
+
+8. Product defects and harness defects must be distinguished.
+
+9. Do not weaken product security semantics to make a harness pass.
+
+10. Do not modify production merely to accommodate an incorrect certification harness.
+
+11. Do not infer human release authorization from technical readiness.
+
+12. No push, tag, release, or Phase 3D is authorized by this prompt.
+
+==================================================
+3. PARALLEL PHASE 3 STATE
+==================================================
+
+MO-1307 Phase 3 uses independent parallel certification streams.
+
+Phase 3BR2 is already ACCEPTED.
+
+Accepted Phase 3BR2 commit:
+
+4d92f0f21c9c3aad8202f4558d61b9229c7214fc
+
+Preserve it.
+
+Do not rerun the complete Phase 3BR2 campaign.
+
+Phase 3CR2 is already ACCEPTED.
+
+Accepted Phase 3CR2 commit:
+
+7d2006c6e19bb50bffb6c710672be996e3c3590b
+
+Preserve it.
+
+Do not rerun the complete Phase 3CR2 campaign.
+
+Phase 3AR2 is the only blocking Phase 3 stream.
+
+Phase 3D has NOT started.
+
+Do not perform Phase 3D.
+
+==================================================
+4. CURRENT RESOURCE AUTHORITY
+==================================================
+
+Preserve exactly:
+
+helper whole lifecycle:
+9000 ms
+
+aggregate helper-active:
+28000 ms
+
+CLI:
+30000 ms
+
+API/worker:
+10000 ms
+
+cleanup:
+2000 ms
+
+Historical characterization:
+
+H = NOT_ESTABLISHED
+
+Do not reinterpret:
+
+9000 ms
+
+or:
+
+28000 ms
+
+as H.
+
+No resource-bound modification is authorized.
+
+Do not increase or decrease any of these limits.
+
+==================================================
+5. CURRENT CANDIDATE
+==================================================
+
+Current final candidate:
+
+C3VB
+
+17fa84efe46d30e6f4be85fd2427485677a222a3
+
+Parent / production:
+
+C3V
+
+98b766f9218b209f52251147213839b9775f6da3
+
+Production tree:
+
+b9dabf54572e06c96bb5e48c4e20671f2cc24053
+
+The current product behavior has already demonstrated that normal certification sections A-G can pass.
+
+Do not reopen previous architecture decisions without new authoritative evidence.
+
+==================================================
+6. DEADLINE BOUNDARY ALREADY ESTABLISHED
+==================================================
+
+The helper deadline boundary has already demonstrated:
+
+8000 -> PASS
+
+8999 -> PASS
+
+9000 -> MO1307_TIMEOUT
+
+The corrected timely-helper control also subsequently passed well below the deadline.
+
+Therefore:
+
+do not reopen the 9000-ms helper deadline.
+
+Do not run another deadline characterization campaign.
+
+Do not optimize helper startup.
+
+Do not redesign the helper architecture.
+
+==================================================
+7. IMMUTABLE CONSUMED GENERATION
+==================================================
+
+The following generation has already executed:
+
+repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h-corrected/
+
+It is CONSUMED and IMMUTABLE.
+
+Its result:
+
+A PASS
+
+B PASS
+
+C PASS
+
+D PASS
+
+E PASS
+
+F PASS
+
+G PASS
+
+H FAIL
+
+I-O NOT_RUN
+
+Do not resume it.
+
+Do not rerun it.
+
+Do not modify its evidence.
+
+Do not promote its PASS rows into a new certification generation.
+
+==================================================
+8. EXACT CONSUMED H FAILURE
+==================================================
+
+The first failed H subcase was:
+
+aggregate-helper-exhaustion
+
+Expected:
+
+MO1307_TIMEOUT
+
+Expected engineering envelope:
+
+28000-31000 ms
+
+Actual:
+
+MO1307_FILESYSTEM_BOUNDARY
+
+Observed elapsed:
+
+23579.1962 ms
+
+Artificial EOF delay:
+
+4000 ms per helper
+
+Cumulative charged helper lifecycle:
+
+23257.1216 ms
+
+Five helpers and one worker completed before rejection.
+
+Failed fifth helper lifecycle:
+
+4605.0308 ms
+
+Response received after:
+
+4558.4867 ms
+
+A valid response frame existed.
+
+Helper exit:
+
+0
+
+Signal:
+
+none
+
+Transport closed:
+
+true
+
+Response:
+
+2602 bytes
+
+status:
+
+ABSENT
+
+code:
+
+null
+
+Cleanup confirmed:
+
+true
+
+No aggregate timeout terminal was reached.
+
+terminalCode:
+
+null
+
+terminalAt:
+
+null
+
+==================================================
+9. ROOT CAUSE OF AGGREGATE FAILURE
+==================================================
+
+The certification harness placed:
+
+absent-output
+
+beneath the actively changing:
+
+runtime-H
+
+evidence directory.
+
+During execution, the harness itself wrote evidence into that directory.
+
+Those writes changed the parent directory byteLength:
+
+16384
+
+to:
+
+24576
+
+while the product was verifying stable filesystem identity.
+
+Other identity properties such as path, file ID, and volume remained stable, but byteLength changed.
+
+The product correctly rejected the changed stable-identity proof.
+
+Classification:
+
+H_AGGREGATE_FIXTURE_INPUT_ISOLATION_DEFECT
+
+This is a HARNESS defect.
+
+It is NOT a product defect.
+
+It is NOT authority/expectation failure.
+
+Do not weaken product filesystem identity checking.
+
+==================================================
+10. CONSUMED H SUBCASE RESULTS
+==================================================
+
+The consumed H generation established:
+
+timely-helper
+
+delay:
+0
+
+elapsed:
+1409.7982 ms
+
+result:
+PASS
+
+charged helper:
+1403.7145 ms
+
+cleanup:
+confirmed
+
+cancel-before-helper
+
+elapsed:
+0.6286 ms
+
+result:
+PASS
+
+helper-timeout
+
+delay:
+10000 ms
+
+elapsed:
+9035.6817 ms
+
+result:
+PASS
+
+late-helper-success-rejected
+
+delay:
+9250 ms
+
+elapsed:
+9893.2559 ms
+
+result:
+PASS
+
+cancel-during-helper
+
+delay:
+6000 ms
+
+elapsed:
+1518.2444 ms
+
+result:
+PASS
+
+cancel-between-helper-worker
+
+delay:
+0
+
+elapsed:
+1145.2825 ms
+
+result:
+PASS
+
+aggregate-helper-exhaustion
+
+delay:
+4000 ms each
+
+elapsed:
+23579.1962 ms
+
+result:
+
+FAIL
+MO1307_FILESYSTEM_BOUNDARY
+
+Boundary controls:
+
+8000 -> PASS
+
+8999 -> PASS
+
+9000 -> MO1307_TIMEOUT
+
+Do not rerun or reinterpret these consumed observations.
+
+==================================================
+11. SECOND H HARNESS ISSUE
+==================================================
+
+The same consumed H generation retained an independent external topology-observer problem involving:
+
+PID:
+
+2124
+
+classification:
+
+terminated_known_identity_rejected
+
+reason:
+
+LIFETIME_CONTRADICTION
+
+with one unresolved identity failure.
+
+Subsequent static follow-up localized this to an observer event-ordering/provenance issue.
+
+This must be corrected in the certification observer.
+
+Do not weaken initial identity establishment.
+
+Do not weaken PID-reuse detection.
+
+Do not weaken parent verification.
+
+Do not weaken image verification.
+
+Do not globally suppress LIFETIME_CONTRADICTION.
+
+==================================================
+12. CURRENT H2 STATE
+==================================================
+
+A final append-only H2 correction generation was being prepared when the previous coding environment exhausted its usage allowance.
+
+CRITICAL:
+
+At the last verified checkpoint, the H2 A-O campaign had NOT executed.
+
+Existing H2 fixture:
+
+repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected/fixture-root.json
+
+Existing H2 campaign tooling:
+
+repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/
+
+Existing H2 correction tooling:
+
+repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-harness-correction/
+
+Previous static work had already verified:
+
+the consumed 26-tool seal
+
+all 405 receipt-indexed evidence members
+
+receipt/closure/report hashes
+
+zero production drift
+
+no H2 campaign execution
+
+observer provenance analysis completed
+
+fixture-isolation design completed
+
+append-only H2 tooling partially prepared.
+
+Do not restart these analyses merely because you are a new coding agent.
+
+==================================================
+13. FIRST CRITICAL TASK: VERIFY H2 HAS NOT EXECUTED
+==================================================
+
+Do not trust the transfer statement blindly.
+
+Verify the filesystem mechanically.
+
+Search all relevant H2 namespaces for:
+
+campaign-run-start.json
+
+campaign-run-finished.json
+
+campaign-seal.json
+
+execution-ledger.json
+
+generation-stopped.json
+
+certification-receipt.json
+
+final-validation.json
+
+Also inspect:
+
+existing H2 fixture bytes
+
+existing H2 campaign tooling
+
+existing H2 correction tooling
+
+current untracked inventory
+
+current Git state.
+
+If ANY H2 campaign-run-start marker exists:
+
+STOP.
+
+Do not execute any product code.
+
+Do not create another generation.
+
+Report the exact existing H2 execution state.
+
+If no H2 execution marker exists:
+
+continue from the preserved static/pre-execution checkpoint.
+
+==================================================
+14. PRESERVE CONSUMED EVIDENCE
+==================================================
+
+Before changing H2 tooling, verify the consumed generation remains byte-preserved.
+
+Do not rewrite:
+
+phase3ar2-final-h-corrected
+
+or any historical generation.
+
+If practical, mechanically reverify the already-bound receipt/closure/report hashes and sealed member identities without broad redundant rescanning.
+
+Use targeted verification.
+
+If consumed evidence differs unexpectedly:
+
+STOP.
+
+==================================================
+15. AGGREGATE FIXTURE ISOLATION
+==================================================
+
+Finish the already-designed H2 fixture-isolation correction.
+
+The aggregate CHECK_OUTPUT fixture must be isolated from every live:
+
+evidence path
+
+log path
+
+cache path
+
+temporary path mutated by the campaign.
+
+The fixture must:
+
+exist outside active evidence directories
+
+exist outside mutable logs/caches
+
+be completely prepared before campaign sealing
+
+remain immutable during the aggregate control
+
+receive zero harness writes during execution.
+
+Do NOT weaken product filesystem semantics.
+
+Preserve:
+
+byteLength identity
+
+path identity
+
+file identity
+
+volume identity
+
+final-path validation
+
+checked handles
+
+TOCTOU protections
+
+type rules
+
+path caps
+
+byte caps
+
+fail-closed behavior.
+
+The correction is entirely in harness fixture isolation.
+
+No production special case is allowed.
+
+==================================================
+16. IMPORTANT AGGREGATE DESIGN CONSTRAINT
+==================================================
+
+The previous static H2 design work established an important constraint:
+
+the isolated absent-output fixture must remain immutable.
+
+Therefore the aggregate test must NOT:
+
+mutate absent-output into a later publication state
+
+write evidence beneath the fixture
+
+use the fixture directory as a live evidence root.
+
+The aggregate exhaustion control must reach the:
+
+28000 ms
+
+aggregate helper-active bound during the appropriate CHECK_OUTPUT sequence while the fixture remains immutable.
+
+Preserve the product's expected result:
+
+MO1307_TIMEOUT
+
+Do not change the expected product semantics merely to accommodate the harness.
+
+==================================================
+17. OBSERVER EVENT-ORDERING CORRECTION
+==================================================
+
+Use the already-completed PID 2124 provenance analysis.
+
+Correct only the observer event-ordering/bookkeeping defect established by that analysis.
+
+A previously authenticated terminated process may remain a known identity only when same-session provenance establishes:
+
+same PID
+
+same parent
+
+same role
+
+same image
+
+same lifetime identity where available
+
+consistent signal/termination ordering
+
+no PID reuse
+
+no contradictory evidence.
+
+Initial unknown identity must fail closed.
+
+PID reuse must fail closed.
+
+Contradictory parent must fail closed.
+
+Contradictory image must fail closed.
+
+Contradictory lifetime must fail closed.
+
+Do not globally ignore:
+
+LIFETIME_CONTRADICTION
+
+or any particular Win32 error.
+
+==================================================
+18. ZERO-PRODUCT H2 VALIDATION
+==================================================
+
+Before any product/certification execution, complete ONE H2 zero-product validation.
+
+This gate must launch:
+
+0 helpers
+
+0 workers
+
+0 product CLI processes
+
+0 product API processes
+
+0 certification cases.
+
+Validate fixture isolation:
+
+A.
+
+isolated aggregate fixture outside live evidence tree
+
+Expected:
+
+PASS
+
+B.
+
+evidence writes cannot mutate aggregate fixture identity
+
+Expected:
+
+PASS
+
+C.
+
+synthetic mutation inside fixture root
+
+Expected:
+
+detected / FAIL
+
+D.
+
+byteLength remains an enforced identity component
+
+Expected:
+
+PASS
+
+Validate observer provenance:
+
+E.
+
+known process with consistent termination provenance
+
+Expected:
+
+PASS
+
+F.
+
+known process with contradictory lifetime
+
+Expected:
+
+FAIL
+
+G.
+
+PID reuse
+
+Expected:
+
+FAIL
+
+H.
+
+unknown process
+
+Expected:
+
+FAIL
+
+I.
+
+authorized post-termination unavailable requery with exact provenance
+
+Expected:
+
+PASS where applicable.
+
+Also verify structurally:
+
+timely-helper correction remains intact
+
+8000 PASS boundary remains intact
+
+8999 PASS boundary remains intact
+
+9000 TIMEOUT boundary remains intact
+
+aggregate expected result remains MO1307_TIMEOUT
+
+resource constants remain exactly:
+
+helper:
+9000
+
+aggregate:
+28000
+
+CLI:
+30000
+
+API/worker:
+10000
+
+cleanup:
+2000
+
+production bytes unchanged.
+
+If ANY zero-product validation fails:
+
+STOP.
+
+Do not execute A-O.
+
+Return the exact zero-product blocker.
+
+==================================================
+19. PRE-EXECUTION TOOLCHAIN
+==================================================
+
+Use the repository-authorized/pinned runtime.
+
+Previous work established that an incidental Node:
+
+v24.14.0
+
+was NOT the sealed required runtime.
+
+The intended pinned Node was:
+
+v24.21.0
+
+with the repository-authoritative hash.
+
+Do not rely blindly on PATH.
+
+Mechanically verify the required runtime identity before preparation/execution.
+
+Use the repository-authoritative absolute runtime where required.
+
+Do not download a new runtime.
+
+Do not change global PATH.
+
+==================================================
+20. NEW APPEND-ONLY PHASE 3AR2 GENERATION
+==================================================
+
+Only after the zero-product H2 gate passes:
+
+create ONE new append-only Phase 3AR2 generation.
+
+Use a NEW H2 evidence namespace.
+
+Do not resume:
+
+phase3ar2-final-h-corrected
+
+or any consumed generation.
+
+Perform:
+
+fresh package assembly
+
+fresh offline installation
+
+verification of all 89 installed members
+
+complete recovery of all 80 mandatory A-O cases
+
+campaign method generation
+
+independent harness review
+
+campaign sealing
+
+exact candidate/resource/toolchain binding.
+
+==================================================
+21. PRE-SEAL REQUIREMENTS
+==================================================
+
+Before execution require:
+
+exact C3VB candidate binding
+
+exact C3V production binding
+
+exact production tree
+
+exact helper identity
+
+exact package identity
+
+exact 89-member installation
+
+exact resource authority
+
+exact H2 fixture identity
+
+exact observer-policy identity
+
+exact tooling identities
+
+complete A-O inventory
+
+zero product diff
+
+zero unauthorized production changes.
+
+Any stale-token checker or source-review assertion must distinguish:
+
+historical/boundary values intentionally retained
+
+from:
+
+stale active authority.
+
+Do not blanket-reject legitimate boundary evidence such as:
+
+8000 PASS
+
+when current helper authority is 9000.
+
+==================================================
+22. EXECUTE A-O EXACTLY ONCE
+==================================================
+
+After every pre-execution gate passes:
+
+run the new A-O campaign exactly once.
+
+This is a one-shot certification generation.
+
+No retry.
+
+No case retry.
+
+No replacement execution.
+
+No diagnostic execution.
+
+No warmup substitution.
+
+No adaptive expansion.
+
+No historical PASS promotion.
+
+At the first mandatory failure:
+
+STOP.
+
+Preserve all later cases as NOT_RUN.
+
+Do not diagnose by executing product code inside the consumed generation.
+
+==================================================
+23. COMPLETE A-O INVENTORY
+==================================================
+
+The new generation must contain the complete authoritative A-O inventory.
+
+A.
+
+MO-1306 evaluate / verify / API parity
+
+B.
+
+READY evaluate / verify / API parity
+
+C.
+
+NOT_READY evaluate / verify / API parity
+
+D.
+
+COULD_NOT_EVALUATE evaluate / verify / API parity
+
+E.
+
+REST evaluate / verify / API parity
+
+F.
+
+seven human-decision vectors
+
+G.
+
+complete supplied-tag observation inventory
+
+H.
+
+helper deadline / cancellation / aggregate / boundary controls
+
+I.
+
+worker deadline / cancellation controls
+
+J.
+
+cleanup / process topology
+
+K.
+
+finalization
+
+L.
+
+filesystem / native controls
+
+M.
+
+environment isolation
+
+N.
+
+byte determinism
+
+O.
+
+final MO-1306 confirmation.
+
+Do not omit mandatory cases.
+
+==================================================
+24. H ACCEPTANCE REQUIREMENTS
+==================================================
+
+H must establish all applicable authoritative controls including:
+
+timely-helper success with robust margin
+
+cancel-before-helper
+
+helper timeout
+
+late-helper-success rejection
+
+cancel-during-helper
+
+cancel-between-helper-worker
+
+aggregate-helper exhaustion reaching the actual 28000-ms aggregate timeout
+
+8000 PASS
+
+8999 PASS
+
+9000 TIMEOUT
+
+cleanup/process closure
+
+observer identity/provenance correctness
+
+no forbidden overlap
+
+no retry
+
+no late-success recovery.
+
+The aggregate test must terminate because of the aggregate resource rule.
+
+It must NOT terminate because the harness mutated its own fixture.
+
+==================================================
+25. SUCCESS
+==================================================
+
+If all A-O pass:
+
+return exactly:
+
+PHASE3AR2_ACCEPTED_FINAL_CANDIDATE
+
+Create:
+
+accepted Phase 3A certification receipt
+
+accepted evidence commit
+
+exact C3VB binding
+
+Phase 3D handoff.
+
+Do NOT execute Phase 3D.
+
+Do NOT push.
+
+Do NOT tag.
+
+==================================================
+26. FINAL 3BR2 / 3CR2 DELTAS
+==================================================
+
+If Phase 3AR2 is accepted:
+
+do not rerun complete Phase 3BR2.
+
+do not rerun complete Phase 3CR2.
+
+Instead report the exact candidate/dependency delta required to bind the already accepted streams to the final C3VB state.
+
+Preserved accepted 3BR2:
+
+4d92f0f21c9c3aad8202f4558d61b9229c7214fc
+
+Preserved accepted 3CR2:
+
+7d2006c6e19bb50bffb6c710672be996e3c3590b
+
+Any required delta must be dependency-scoped.
+
+Do not discard accepted evidence unnecessarily.
+
+==================================================
+27. FAILURE
+==================================================
+
+If the new H2 generation encounters a mandatory failure:
+
+STOP at the first mandatory failure.
+
+Do not automatically diagnose.
+
+Do not automatically repair.
+
+Do not automatically create another generation.
+
+Return exactly:
+
+PHASE3AR2_FINAL_H2_BLOCKER
+
+and preserve:
+
+exact failed case
+
+expected result
+
+actual result
+
+timing/resource observations
+
+process/cleanup observations
+
+completed cases
+
+remaining NOT_RUN cases
+
+candidate identity
+
+receipt/closure state
+
+repository state.
+
+==================================================
+28. MODEL / CLAUDE PRO USAGE DISCIPLINE
+==================================================
+
+This work is being performed under a Claude Pro subscription.
+
+Do not waste context or usage.
+
+Use targeted file reads.
+
+Use exact paths supplied in this prompt.
+
+Do not repeatedly reread the entire repository.
+
+Do not repeatedly regenerate summaries of already-established history.
+
+Do not launch broad exploratory subagents unless they are required to establish a specific certification fact.
+
+Do not perform broad repository searches where exact files/paths are already known.
+
+Do not paste huge evidence files into conversational output.
+
+Read them directly and report only relevant facts.
+
+==================================================
+29. PHASE A — OPUS REASONING / PRE-EXECUTION
+==================================================
+
+The initial takeover should be performed using:
+
+Claude Opus
+
+with:
+
+High reasoning/effort
+
+if available.
+
+During this phase:
+
+verify transferred local state
+
+inspect existing H2 preparation
+
+confirm no H2 execution occurred
+
+verify consumed evidence preservation
+
+finish fixture-isolation correction
+
+finish observer-provenance/event-ordering correction
+
+complete zero-product H2 validation
+
+finish required pre-execution tooling
+
+verify final campaign is safe to consume.
+
+DO NOT execute A-O during this reasoning phase.
+
+Do not consume the one-shot certification campaign while still resolving static/pre-execution issues.
+
+==================================================
+30. OPUS STOP POINT
+==================================================
+
+Once ALL static/pre-execution H2 work is complete and the zero-product gate passes:
+
+STOP BEFORE A-O EXECUTION.
+
+Return exactly:
+
+H2_READY_FOR_FINAL_EXECUTION
+
+Then report concisely:
+
+1. exact aggregate fixture correction
+
+2. exact observer correction
+
+3. zero-product validation result
+
+4. exact new H2 evidence namespace that will be used
+
+5. confirmation that no A-O run marker exists
+
+6. exact candidate/toolchain/resource bindings
+
+7. exact command/workflow that will consume the one-shot campaign
+
+8. confirmation that package/install/seal preparation is either complete or the exact remaining mechanical preparation steps.
+
+Then STOP.
+
+Allow the user to switch the SAME Claude Code conversation from Opus to Sonnet.
+
+Do not execute A-O until the user explicitly says to continue Phase B.
+
+==================================================
+31. PHASE B — SONNET EXECUTION
+==================================================
+
+After the user confirms the model has been switched to:
+
+Claude Sonnet
+
+continue in the SAME Claude Code conversation.
+
+Do not repeat Phase A reasoning.
+
+Do not reread the entire repository.
+
+Use the already-established bindings and prepared state.
+
+Proceed directly with any remaining authorized mechanical preparation:
+
+fresh package
+
+offline installation
+
+89-member verification
+
+campaign seal
+
+and then:
+
+one-shot A-O execution.
+
+Use:
+
+High effort
+
+unless the user explicitly requests otherwise.
+
+==================================================
+32. SONNET FAILURE RULE
+==================================================
+
+If the A-O campaign encounters ANY mandatory failure:
+
+STOP immediately.
+
+Do not diagnose.
+
+Do not repair.
+
+Do not retry.
+
+Do not create another generation.
+
+Return:
+
+PHASE3AR2_FINAL_H2_BLOCKER
+
+with exact preserved evidence.
+
+The user may then switch the same conversation back to Opus for analysis.
+
+==================================================
+33. DO NOT USE FABLE AUTOMATICALLY
+==================================================
+
+Do not switch to Claude Fable automatically.
+
+Fable is reserved for explicit user-authorized escalation if Opus cannot resolve a genuinely hard remaining issue.
+
+Do not consume Fable quota for routine:
+
+repository inspection
+
+static validation
+
+package preparation
+
+campaign execution
+
+evidence collection.
+
+==================================================
+34. FINAL REPORT IF ACCEPTED
+==================================================
+
+If A-O passes completely, report:
+
+1. verified worktree / branch / candidate
+
+2. H2 fixture-isolation correction
+
+3. observer event-ordering correction
+
+4. zero-product validation result
+
+5. package/archive identity
+
+6. offline installation result
+
+7. 89-member verification
+
+8. campaign seal identity
+
+9. complete A-O result table
+
+10. complete H subcase results
+
+11. helper/resource maxima
+
+12. cleanup/process result
+
+13. determinism result
+
+14. Phase 3A certification receipt
+
+15. accepted evidence commit
+
+16. exact C3VB binding
+
+17. exact 3BR2 delta requirement
+
+18. exact 3CR2 delta requirement
+
+19. repository status
+
+20. Phase 3D handoff identity.
+
+Final status must be:
+
+PHASE3AR2_ACCEPTED_FINAL_CANDIDATE
+
+Do not perform Phase 3D.
+
+==================================================
+35. ABSOLUTE PROHIBITIONS
+==================================================
+
+No production modification.
+
+No resource-limit modification.
+
+No deadline characterization.
+
+No helper architecture redesign.
+
+No weakening filesystem identity.
+
+No weakening TOCTOU.
+
+No weakening process identity.
+
+No weakening PID-reuse protection.
+
+No historical evidence deletion.
+
+No Git clean/reset/restore.
+
+No complete 3BR2 rerun.
+
+No complete 3CR2 rerun.
+
+No push.
+
+No tag.
+
+No Phase 3D.
+
+==================================================
+36. START
+==================================================
+
+Begin in:
+
+C:\Users\melsa\Documents\Codex\3ar2
+
+First:
+
+verify exact Git state,
+
+verify H2 execution has not already occurred,
+
+inspect and preserve existing H2 local preparation.
+
+Then continue ONLY from the existing local H2 pre-execution state.
+
+Do not start A-O while using Opus.
+
+Your first major milestone is:
+
+H2_READY_FOR_FINAL_EXECUTION
+
+Only after the user switches the same conversation to Sonnet and explicitly authorizes Phase B may the final one-shot A-O campaign be consumed.

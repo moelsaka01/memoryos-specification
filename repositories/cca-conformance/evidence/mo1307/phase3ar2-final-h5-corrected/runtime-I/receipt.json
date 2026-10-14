@@ -1,0 +1,1005 @@
+{
+  "kind": "MO1307Phase3AR2C3VBRuntimeControls",
+  "mode": "I",
+  "timeOrigin": 1791138644122.044,
+  "clockBridge": null,
+  "result": "PASS",
+  "failure": null,
+  "cases": [
+    {
+      "name": "worker-timeout",
+      "started": 222.9882,
+      "finished": 10244.2615,
+      "result": "PASS",
+      "elapsedMs": 10021.2785,
+      "error": {
+        "code": "MO1307_TIMEOUT",
+        "message": "MO1307_TIMEOUT"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 30223.5786,
+        "helpers": 0,
+        "workers": 1,
+        "helperUsedMs": 0,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": "MO1307_TIMEOUT",
+        "terminalAt": 10234.4769,
+        "cleanupDeadline": 12234.4769,
+        "events": [
+          {
+            "type": "start",
+            "at": 224.637,
+            "role": "worker",
+            "deadline": 10224.542,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 229.3389,
+            "role": "worker",
+            "threadId": 1,
+            "resourceLimits": {
+              "maxYoungGenerationSizeMb": 16,
+              "maxOldGenerationSizeMb": 128,
+              "codeRangeSizeMb": 0,
+              "stackSizeMb": 4
+            }
+          },
+          {
+            "type": "terminal",
+            "at": 10234.5239,
+            "code": "MO1307_TIMEOUT",
+            "stage": "EVALUATION"
+          },
+          {
+            "type": "cleanup",
+            "at": 10244.0948,
+            "role": "worker",
+            "confirmed": true
+          }
+        ]
+      },
+      "expectedError": "MO1307_TIMEOUT",
+      "engineeringElapsedEnvelope": {
+        "minMs": 10000,
+        "maxMs": 12000,
+        "productDeadlineOverride": false
+      },
+      "invocations": [],
+      "workerObservations": [
+        {
+          "type": "start",
+          "caseName": "worker-timeout",
+          "threadId": 1,
+          "at": 228.8187,
+          "env": {},
+          "execArgv": [],
+          "resourceLimits": {
+            "maxOldGenerationSizeMb": 128,
+            "maxYoungGenerationSizeMb": 16
+          }
+        },
+        {
+          "type": "termination-request",
+          "threadId": 1,
+          "at": 10234.8049
+        },
+        {
+          "type": "exit",
+          "threadId": 1,
+          "at": 10243.5211,
+          "code": 1
+        },
+        {
+          "type": "stream-end",
+          "stream": "stdout",
+          "threadId": 1,
+          "at": 10243.7505
+        },
+        {
+          "type": "stream-end",
+          "stream": "stderr",
+          "threadId": 1,
+          "at": 10243.9376
+        },
+        {
+          "type": "stream-close",
+          "stream": "stdout",
+          "threadId": 1,
+          "at": 10244.0467
+        },
+        {
+          "type": "stream-close",
+          "stream": "stderr",
+          "threadId": 1,
+          "at": 10244.0598
+        }
+      ]
+    },
+    {
+      "name": "worker-cancellation",
+      "started": 10245.1536,
+      "finished": 10353.5409,
+      "result": "PASS",
+      "elapsedMs": 108.38830000000053,
+      "error": {
+        "code": "MO1307_CANCELLED",
+        "message": "MO1307_CANCELLED"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 40245.1745,
+        "helpers": 0,
+        "workers": 1,
+        "helperUsedMs": 0,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": "MO1307_CANCELLED",
+        "terminalAt": 10351.3572,
+        "cleanupDeadline": 12351.3572,
+        "events": [
+          {
+            "type": "start",
+            "at": 10245.3442,
+            "role": "worker",
+            "deadline": 20245.3234,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 10245.8253,
+            "role": "worker",
+            "threadId": 2,
+            "resourceLimits": {
+              "maxYoungGenerationSizeMb": 16,
+              "maxOldGenerationSizeMb": 128,
+              "codeRangeSizeMb": -1,
+              "stackSizeMb": 4
+            }
+          },
+          {
+            "type": "terminal",
+            "at": 10351.3752,
+            "code": "MO1307_CANCELLED",
+            "stage": "EVALUATION"
+          },
+          {
+            "type": "cleanup",
+            "at": 10353.4898,
+            "role": "worker",
+            "confirmed": true
+          }
+        ]
+      },
+      "expectedError": "MO1307_CANCELLED",
+      "engineeringElapsedEnvelope": {
+        "minMs": 100,
+        "maxMs": 2100,
+        "productDeadlineOverride": false
+      },
+      "invocations": [],
+      "workerObservations": [
+        {
+          "type": "start",
+          "caseName": "worker-cancellation",
+          "threadId": 2,
+          "at": 10245.7156,
+          "env": {},
+          "execArgv": [],
+          "resourceLimits": {
+            "maxOldGenerationSizeMb": 128,
+            "maxYoungGenerationSizeMb": 16
+          }
+        },
+        {
+          "type": "termination-request",
+          "threadId": 2,
+          "at": 10351.4257
+        },
+        {
+          "type": "exit",
+          "threadId": 2,
+          "at": 10353.2854,
+          "code": 1
+        },
+        {
+          "type": "stream-end",
+          "stream": "stdout",
+          "threadId": 2,
+          "at": 10353.3437
+        },
+        {
+          "type": "stream-end",
+          "stream": "stderr",
+          "threadId": 2,
+          "at": 10353.3841
+        },
+        {
+          "type": "stream-close",
+          "stream": "stdout",
+          "threadId": 2,
+          "at": 10353.4641
+        },
+        {
+          "type": "stream-close",
+          "stream": "stderr",
+          "threadId": 2,
+          "at": 10353.4725
+        }
+      ]
+    },
+    {
+      "name": "late-worker-result-rejected",
+      "started": 10354.551,
+      "finished": 20901.1051,
+      "result": "PASS",
+      "elapsedMs": 10546.5553,
+      "error": {
+        "code": "MO1307_TIMEOUT",
+        "message": "MO1307_TIMEOUT"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 40354.7016,
+        "helpers": 0,
+        "workers": 1,
+        "helperUsedMs": 0,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": "MO1307_TIMEOUT",
+        "terminalAt": 20367.2206,
+        "cleanupDeadline": 22367.2206,
+        "events": [
+          {
+            "type": "start",
+            "at": 10355.0906,
+            "role": "worker",
+            "deadline": 20355.0644,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 10355.8219,
+            "role": "worker",
+            "threadId": 3,
+            "resourceLimits": {
+              "maxYoungGenerationSizeMb": 16,
+              "maxOldGenerationSizeMb": 128,
+              "codeRangeSizeMb": -1,
+              "stackSizeMb": 4
+            }
+          },
+          {
+            "type": "terminal",
+            "at": 20367.2707,
+            "code": "MO1307_TIMEOUT",
+            "stage": "EVALUATION"
+          },
+          {
+            "type": "cleanup",
+            "at": 20901.0236,
+            "role": "worker",
+            "confirmed": true
+          }
+        ]
+      },
+      "expectedError": "MO1307_TIMEOUT",
+      "engineeringElapsedEnvelope": {
+        "minMs": 10000,
+        "maxMs": 12000,
+        "productDeadlineOverride": false
+      },
+      "invocations": [],
+      "workerObservations": [
+        {
+          "type": "start",
+          "caseName": "late-worker-result-rejected",
+          "threadId": 3,
+          "at": 10355.7244,
+          "env": {},
+          "execArgv": [],
+          "resourceLimits": {
+            "maxOldGenerationSizeMb": 128,
+            "maxYoungGenerationSizeMb": 16
+          }
+        },
+        {
+          "type": "deferred-termination-request",
+          "threadId": 3,
+          "at": 20367.53
+        },
+        {
+          "type": "message",
+          "threadId": 3,
+          "at": 20899.6175
+        },
+        {
+          "type": "exit",
+          "threadId": 3,
+          "at": 20900.7444,
+          "code": 0
+        },
+        {
+          "type": "stream-end",
+          "stream": "stdout",
+          "threadId": 3,
+          "at": 20900.8153
+        },
+        {
+          "type": "stream-end",
+          "stream": "stderr",
+          "threadId": 3,
+          "at": 20900.8466
+        },
+        {
+          "type": "stream-close",
+          "stream": "stdout",
+          "threadId": 3,
+          "at": 20900.9982
+        },
+        {
+          "type": "stream-close",
+          "stream": "stderr",
+          "threadId": 3,
+          "at": 20901.0049
+        }
+      ]
+    },
+    {
+      "name": "cancel-after-worker-before-publication",
+      "started": 20902.7358,
+      "finished": 20952.2678,
+      "result": "PASS",
+      "elapsedMs": 49.53280000000086,
+      "error": {
+        "code": "MO1307_CANCELLED",
+        "message": "MO1307_CANCELLED"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 50902.809,
+        "helpers": 0,
+        "workers": 1,
+        "helperUsedMs": 0,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": "MO1307_CANCELLED",
+        "terminalAt": 20952.2302,
+        "cleanupDeadline": 22952.2302,
+        "events": [
+          {
+            "type": "start",
+            "at": 20903.1831,
+            "role": "worker",
+            "deadline": 30903.143,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 20903.8035,
+            "role": "worker",
+            "threadId": 4,
+            "resourceLimits": {
+              "maxYoungGenerationSizeMb": 16,
+              "maxOldGenerationSizeMb": 128,
+              "codeRangeSizeMb": -1,
+              "stackSizeMb": 4
+            }
+          },
+          {
+            "type": "quiescent",
+            "at": 20952.0618,
+            "role": "worker",
+            "ordinal": 1
+          },
+          {
+            "type": "terminal",
+            "at": 20952.2368,
+            "code": "MO1307_CANCELLED",
+            "stage": "LAUNCH"
+          }
+        ]
+      },
+      "expectedError": "MO1307_CANCELLED",
+      "engineeringElapsedEnvelope": {
+        "minMs": null,
+        "maxMs": 1500,
+        "productDeadlineOverride": false
+      },
+      "invocations": [],
+      "workerObservations": [
+        {
+          "type": "start",
+          "caseName": "cancel-after-worker-before-publication",
+          "threadId": 4,
+          "at": 20903.6936,
+          "env": {},
+          "execArgv": [],
+          "resourceLimits": {
+            "maxOldGenerationSizeMb": 128,
+            "maxYoungGenerationSizeMb": 16
+          }
+        },
+        {
+          "type": "message",
+          "threadId": 4,
+          "at": 20950.5279
+        },
+        {
+          "type": "exit",
+          "threadId": 4,
+          "at": 20951.9539,
+          "code": 0
+        },
+        {
+          "type": "stream-end",
+          "stream": "stdout",
+          "threadId": 4,
+          "at": 20951.9974
+        },
+        {
+          "type": "stream-end",
+          "stream": "stderr",
+          "threadId": 4,
+          "at": 20952.0199
+        },
+        {
+          "type": "stream-close",
+          "stream": "stdout",
+          "threadId": 4,
+          "at": 20952.0301
+        },
+        {
+          "type": "stream-close",
+          "stream": "stderr",
+          "threadId": 4,
+          "at": 20952.0326
+        }
+      ]
+    }
+  ],
+  "strictBoundaryChecks": [],
+  "invocations": [],
+  "workerObservations": [
+    {
+      "type": "start",
+      "caseName": "worker-timeout",
+      "threadId": 1,
+      "at": 228.8187,
+      "env": {},
+      "execArgv": [],
+      "resourceLimits": {
+        "maxOldGenerationSizeMb": 128,
+        "maxYoungGenerationSizeMb": 16
+      }
+    },
+    {
+      "type": "termination-request",
+      "threadId": 1,
+      "at": 10234.8049
+    },
+    {
+      "type": "exit",
+      "threadId": 1,
+      "at": 10243.5211,
+      "code": 1
+    },
+    {
+      "type": "stream-end",
+      "stream": "stdout",
+      "threadId": 1,
+      "at": 10243.7505
+    },
+    {
+      "type": "stream-end",
+      "stream": "stderr",
+      "threadId": 1,
+      "at": 10243.9376
+    },
+    {
+      "type": "stream-close",
+      "stream": "stdout",
+      "threadId": 1,
+      "at": 10244.0467
+    },
+    {
+      "type": "stream-close",
+      "stream": "stderr",
+      "threadId": 1,
+      "at": 10244.0598
+    },
+    {
+      "type": "start",
+      "caseName": "worker-cancellation",
+      "threadId": 2,
+      "at": 10245.7156,
+      "env": {},
+      "execArgv": [],
+      "resourceLimits": {
+        "maxOldGenerationSizeMb": 128,
+        "maxYoungGenerationSizeMb": 16
+      }
+    },
+    {
+      "type": "termination-request",
+      "threadId": 2,
+      "at": 10351.4257
+    },
+    {
+      "type": "exit",
+      "threadId": 2,
+      "at": 10353.2854,
+      "code": 1
+    },
+    {
+      "type": "stream-end",
+      "stream": "stdout",
+      "threadId": 2,
+      "at": 10353.3437
+    },
+    {
+      "type": "stream-end",
+      "stream": "stderr",
+      "threadId": 2,
+      "at": 10353.3841
+    },
+    {
+      "type": "stream-close",
+      "stream": "stdout",
+      "threadId": 2,
+      "at": 10353.4641
+    },
+    {
+      "type": "stream-close",
+      "stream": "stderr",
+      "threadId": 2,
+      "at": 10353.4725
+    },
+    {
+      "type": "start",
+      "caseName": "late-worker-result-rejected",
+      "threadId": 3,
+      "at": 10355.7244,
+      "env": {},
+      "execArgv": [],
+      "resourceLimits": {
+        "maxOldGenerationSizeMb": 128,
+        "maxYoungGenerationSizeMb": 16
+      }
+    },
+    {
+      "type": "deferred-termination-request",
+      "threadId": 3,
+      "at": 20367.53
+    },
+    {
+      "type": "message",
+      "threadId": 3,
+      "at": 20899.6175
+    },
+    {
+      "type": "exit",
+      "threadId": 3,
+      "at": 20900.7444,
+      "code": 0
+    },
+    {
+      "type": "stream-end",
+      "stream": "stdout",
+      "threadId": 3,
+      "at": 20900.8153
+    },
+    {
+      "type": "stream-end",
+      "stream": "stderr",
+      "threadId": 3,
+      "at": 20900.8466
+    },
+    {
+      "type": "stream-close",
+      "stream": "stdout",
+      "threadId": 3,
+      "at": 20900.9982
+    },
+    {
+      "type": "stream-close",
+      "stream": "stderr",
+      "threadId": 3,
+      "at": 20901.0049
+    },
+    {
+      "type": "start",
+      "caseName": "cancel-after-worker-before-publication",
+      "threadId": 4,
+      "at": 20903.6936,
+      "env": {},
+      "execArgv": [],
+      "resourceLimits": {
+        "maxOldGenerationSizeMb": 128,
+        "maxYoungGenerationSizeMb": 16
+      }
+    },
+    {
+      "type": "message",
+      "threadId": 4,
+      "at": 20950.5279
+    },
+    {
+      "type": "exit",
+      "threadId": 4,
+      "at": 20951.9539,
+      "code": 0
+    },
+    {
+      "type": "stream-end",
+      "stream": "stdout",
+      "threadId": 4,
+      "at": 20951.9974
+    },
+    {
+      "type": "stream-end",
+      "stream": "stderr",
+      "threadId": 4,
+      "at": 20952.0199
+    },
+    {
+      "type": "stream-close",
+      "stream": "stdout",
+      "threadId": 4,
+      "at": 20952.0301
+    },
+    {
+      "type": "stream-close",
+      "stream": "stderr",
+      "threadId": 4,
+      "at": 20952.0326
+    }
+  ],
+  "dependenciesBefore": [
+    {
+      "file": "helpers/windows-inspect.ps1",
+      "sha256": "97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+    },
+    {
+      "file": "src/acquisition.mjs",
+      "sha256": "1ecab53426287a92279153903785bd56a38d4a9840696dbdfb3a446a8e83b066"
+    },
+    {
+      "file": "src/api-input.mjs",
+      "sha256": "57cd2e2309efac7f0c890b82ff4ca3f70f8cb324512611eba9b303e2da32e194"
+    },
+    {
+      "file": "src/canonical.mjs",
+      "sha256": "b0e22be147436b7fd962c00825f9f5c1e581825653baa0af4a68a9832a0b9805"
+    },
+    {
+      "file": "src/cli-args.mjs",
+      "sha256": "107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7"
+    },
+    {
+      "file": "src/cli.mjs",
+      "sha256": "3632c653e86e1315ac3b858137932b9750ed621526ad71d75c7f040935cfa5f2"
+    },
+    {
+      "file": "src/constants.mjs",
+      "sha256": "98e8721dedc01b593aca81d524e076cc0fe3936a03955198ff2a91ca5c163be1"
+    },
+    {
+      "file": "src/errors.mjs",
+      "sha256": "71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac"
+    },
+    {
+      "file": "src/evidence-graph.mjs",
+      "sha256": "cc8a353da76fef3c8610085c6b0237021cdfedb4879d5bfe3ad4ae749166673c"
+    },
+    {
+      "file": "src/evidence-history.mjs",
+      "sha256": "16c5377d07bbc894f8aaa26495e7f215e5a2d2b80b73fdf36254393a7e7769bc"
+    },
+    {
+      "file": "src/evidence-verifier.mjs",
+      "sha256": "684d088b6578f463a7ed1b6e40cde63ec5de2bf039458050b9ebce4494ded3a0"
+    },
+    {
+      "file": "src/foundation.mjs",
+      "sha256": "19008f20e562376cd76161d26f18169bb46eded4e480b71d1832307e1db8280d"
+    },
+    {
+      "file": "src/helper-protocol.mjs",
+      "sha256": "96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "file": "src/helper-transport.mjs",
+      "sha256": "e320a36d203a4635e13930663a7f075a064c2211e753700da4fff8ae81e477a1"
+    },
+    {
+      "file": "src/index.mjs",
+      "sha256": "10aba8aa5b7c23d82b2d365db4366a030e1223f66543605ef56a99886488c5d4"
+    },
+    {
+      "file": "src/integration.mjs",
+      "sha256": "c73e278db2b2cdd5b38e3e9a6046ba529aafe92af5abfee4e0ced8b0ec02c64e"
+    },
+    {
+      "file": "src/output.mjs",
+      "sha256": "eea2e7f6dc23f88b8afdca19b273939a020ccc145ec78d4f701983e0d8449aca"
+    },
+    {
+      "file": "src/projections.mjs",
+      "sha256": "43a8c5a6f59c6ee15f85406ae9da34a0fc9c9516a6e55116be9715a012e73d22"
+    },
+    {
+      "file": "src/publication.mjs",
+      "sha256": "dcba8a23b848ceede6c5a9deb10e46b2ef795ae9573755bc78d44abd5943236b"
+    },
+    {
+      "file": "src/readiness-core.mjs",
+      "sha256": "7891139345e71030709adf2fdb1ff93342a74282980d1b09d1535e44fa0ef1cd"
+    },
+    {
+      "file": "src/readiness-result.mjs",
+      "sha256": "847525fb9be50cc956c5859e8accd271806db61fdf083e9b5165bd8cf91d9fea"
+    },
+    {
+      "file": "src/runtime.mjs",
+      "sha256": "012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+    },
+    {
+      "file": "src/schema-data.mjs",
+      "sha256": "467fa7479b88eff13d90cfb8d8984b26b5cd4b7cd1aadd8f5b3416c6ed3b6f11"
+    },
+    {
+      "file": "src/schema.mjs",
+      "sha256": "9b18aead5802688195a3539ef504395f374a8779580650eec7b03058100b98b7"
+    },
+    {
+      "file": "src/windows-paths.mjs",
+      "sha256": "7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+    },
+    {
+      "file": "src/worker-entry.mjs",
+      "sha256": "958dfaf21e7ed62d6214a09f7624b7c4c799aeddbdcd11daac8625a439ab35a7"
+    },
+    {
+      "file": "src/worker-policy.mjs",
+      "sha256": "29e0ccb0bb366199857753abd11c08f8cdec72bfe43672ef6ba9e8784e5b0831"
+    }
+  ],
+  "dependenciesAfter": [
+    {
+      "file": "helpers/windows-inspect.ps1",
+      "sha256": "97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+    },
+    {
+      "file": "src/acquisition.mjs",
+      "sha256": "1ecab53426287a92279153903785bd56a38d4a9840696dbdfb3a446a8e83b066"
+    },
+    {
+      "file": "src/api-input.mjs",
+      "sha256": "57cd2e2309efac7f0c890b82ff4ca3f70f8cb324512611eba9b303e2da32e194"
+    },
+    {
+      "file": "src/canonical.mjs",
+      "sha256": "b0e22be147436b7fd962c00825f9f5c1e581825653baa0af4a68a9832a0b9805"
+    },
+    {
+      "file": "src/cli-args.mjs",
+      "sha256": "107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7"
+    },
+    {
+      "file": "src/cli.mjs",
+      "sha256": "3632c653e86e1315ac3b858137932b9750ed621526ad71d75c7f040935cfa5f2"
+    },
+    {
+      "file": "src/constants.mjs",
+      "sha256": "98e8721dedc01b593aca81d524e076cc0fe3936a03955198ff2a91ca5c163be1"
+    },
+    {
+      "file": "src/errors.mjs",
+      "sha256": "71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac"
+    },
+    {
+      "file": "src/evidence-graph.mjs",
+      "sha256": "cc8a353da76fef3c8610085c6b0237021cdfedb4879d5bfe3ad4ae749166673c"
+    },
+    {
+      "file": "src/evidence-history.mjs",
+      "sha256": "16c5377d07bbc894f8aaa26495e7f215e5a2d2b80b73fdf36254393a7e7769bc"
+    },
+    {
+      "file": "src/evidence-verifier.mjs",
+      "sha256": "684d088b6578f463a7ed1b6e40cde63ec5de2bf039458050b9ebce4494ded3a0"
+    },
+    {
+      "file": "src/foundation.mjs",
+      "sha256": "19008f20e562376cd76161d26f18169bb46eded4e480b71d1832307e1db8280d"
+    },
+    {
+      "file": "src/helper-protocol.mjs",
+      "sha256": "96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "file": "src/helper-transport.mjs",
+      "sha256": "e320a36d203a4635e13930663a7f075a064c2211e753700da4fff8ae81e477a1"
+    },
+    {
+      "file": "src/index.mjs",
+      "sha256": "10aba8aa5b7c23d82b2d365db4366a030e1223f66543605ef56a99886488c5d4"
+    },
+    {
+      "file": "src/integration.mjs",
+      "sha256": "c73e278db2b2cdd5b38e3e9a6046ba529aafe92af5abfee4e0ced8b0ec02c64e"
+    },
+    {
+      "file": "src/output.mjs",
+      "sha256": "eea2e7f6dc23f88b8afdca19b273939a020ccc145ec78d4f701983e0d8449aca"
+    },
+    {
+      "file": "src/projections.mjs",
+      "sha256": "43a8c5a6f59c6ee15f85406ae9da34a0fc9c9516a6e55116be9715a012e73d22"
+    },
+    {
+      "file": "src/publication.mjs",
+      "sha256": "dcba8a23b848ceede6c5a9deb10e46b2ef795ae9573755bc78d44abd5943236b"
+    },
+    {
+      "file": "src/readiness-core.mjs",
+      "sha256": "7891139345e71030709adf2fdb1ff93342a74282980d1b09d1535e44fa0ef1cd"
+    },
+    {
+      "file": "src/readiness-result.mjs",
+      "sha256": "847525fb9be50cc956c5859e8accd271806db61fdf083e9b5165bd8cf91d9fea"
+    },
+    {
+      "file": "src/runtime.mjs",
+      "sha256": "012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+    },
+    {
+      "file": "src/schema-data.mjs",
+      "sha256": "467fa7479b88eff13d90cfb8d8984b26b5cd4b7cd1aadd8f5b3416c6ed3b6f11"
+    },
+    {
+      "file": "src/schema.mjs",
+      "sha256": "9b18aead5802688195a3539ef504395f374a8779580650eec7b03058100b98b7"
+    },
+    {
+      "file": "src/windows-paths.mjs",
+      "sha256": "7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+    },
+    {
+      "file": "src/worker-entry.mjs",
+      "sha256": "958dfaf21e7ed62d6214a09f7624b7c4c799aeddbdcd11daac8625a439ab35a7"
+    },
+    {
+      "file": "src/worker-policy.mjs",
+      "sha256": "29e0ccb0bb366199857753abd11c08f8cdec72bfe43672ef6ba9e8784e5b0831"
+    }
+  ],
+  "aggregateFixture": {
+    "root": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected",
+    "target": "absent-output",
+    "before": [
+      {
+        "name": "fixture-root.json",
+        "byteLength": 540,
+        "sha256": "sha256:a17d3e4902da0da791701bc1adc489acc4dff58c732c8798f8d759e73706ab9d"
+      }
+    ],
+    "after": [
+      {
+        "name": "fixture-root.json",
+        "byteLength": 540,
+        "sha256": "sha256:a17d3e4902da0da791701bc1adc489acc4dff58c732c8798f8d759e73706ab9d"
+      }
+    ],
+    "targetAbsent": true,
+    "runtimeWrites": 0
+  },
+  "inputFixture": {
+    "root": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input",
+    "before": [
+      {
+        "name": "authority.bin",
+        "byteLength": 3,
+        "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "name": "candidate.bin",
+        "byteLength": 3,
+        "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "name": "config.bin",
+        "byteLength": 3,
+        "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "name": "manifest.bin",
+        "byteLength": 3,
+        "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "name": "small.bin",
+        "byteLength": 3,
+        "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      }
+    ],
+    "after": [
+      {
+        "name": "authority.bin",
+        "byteLength": 3,
+        "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "name": "candidate.bin",
+        "byteLength": 3,
+        "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "name": "config.bin",
+        "byteLength": 3,
+        "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "name": "manifest.bin",
+        "byteLength": 3,
+        "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "name": "small.bin",
+        "byteLength": 3,
+        "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      }
+    ],
+    "runtimeWrites": 0
+  },
+  "noProductChanges": true,
+  "authorities": [
+    "PROSPECTIVE_HELPER_BOUND@2.0.0",
+    "PROSPECTIVE_HELPER_AGGREGATE_BOUND@2.0.0"
+  ],
+  "authorityBindings": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-v2-candidate/authority.json",
+      "byteLength": 2318,
+      "sha256": "sha256:6d5e04401c6d8ead77901b0c0ec8ec3fbf17b353e5fa4cf39e17ad3e8d1a7788"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/authority.json",
+      "byteLength": 1556,
+      "sha256": "sha256:adba80ce3ca2b2d21c2374bd3f98267daa9aa4891e7e27d135664251c71bab73"
+    }
+  ],
+  "historicalCharacterizationH": "NOT_ESTABLISHED",
+  "limits": {
+    "helperMs": 9000,
+    "aggregateMs": 28000,
+    "workerMs": 10000,
+    "cliMs": 30000,
+    "cleanupMs": 2000
+  },
+  "limitRelations": {
+    "helperSuccess": "elapsedMs < 9000",
+    "helperTimeout": "elapsedMs >= 9000",
+    "aggregateSuccess": "helperActiveMs < 28000",
+    "aggregateTimeout": "helperActiveMs >= 28000"
+  },
+  "limitations": [
+    "Delay controls are engineering-only seams; native helper response frames and native file identities are real.",
+    "The aggregate 5700-ms EOF delay is an engineering-only scheduling seam: it changes no product deadline and forces the unchanged 28000-ms aggregate boundary before any publication-state operation or fixture mutation.",
+    "No valid response exists for killed helper: product cleanupConfirmed remains false and is not relabeled. External retained process handles and transport events separately establish actual cleanup.",
+    "Worker control bytes are nonsemantic; worker timeout/cancellation use actual native Node threads.",
+    "Process sampler has blind spots between samples; production role guards enforce transitions.",
+    "Deterministic enforcement of the prospective 9000-ms helper and 28000-ms aggregate limits does not establish historical characterization H."
+  ]
+}

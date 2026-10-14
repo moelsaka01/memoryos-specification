@@ -1,0 +1,194 @@
+[
+  {
+    "label": "T1-entry-tick",
+    "offset": 0,
+    "before": "# Fixed MemoryOS readiness wire 2.0 checked native acquisition; PowerShell 5.1.\n",
+    "after": "# Fixed MemoryOS readiness wire 2.0 checked native acquisition; PowerShell 5.1.\n$script:diagEntryTick = [Diagnostics.Stopwatch]::GetTimestamp()\n"
+  },
+  {
+    "label": "diagnostic-preamble",
+    "offset": 352,
+    "before": "$nativeResult = $null\n",
+    "after": "$nativeResult = $null\n$script:diagStream = $null\n$script:diagFrequency = [Diagnostics.Stopwatch]::Frequency\n$script:diagTicks = [long[]]::new(14)\n$script:diagRootValidations = 0L\n$script:diagRelativeValidations = 0L\n$script:diagSegmentValidations = 0L\n$script:diagOpenChains = 0L\n$script:diagChainComponents = 0L\n$script:diagFilesAttempted = 0L\n$script:diagFilesProcessed = 0L\n$script:diagCreateFileW = 0L\n$script:diagLastErrorReads = 0L\n$script:diagGetFileInformationByHandle = 0L\n$script:diagGetFinalPathNameByHandleW = 0L\n$script:diagGetFileType = 0L\n$script:diagGetStdHandle = 0L\n$script:diagGetConsoleProcessList = 0L\n$script:diagFreeConsole = 0L\n$script:diagStablePasses = 0L\n$script:diagHeldChecks = 0L\n$script:diagFreshReopens = 0L\n$script:diagHandleDisposals = 0L\n$script:diagSuccessfulHandles = 0L\n$script:diagResponseBytes = 0L\nfunction Write-DiagnosticMark([string] $Stage, [long] $Tick = -1) {\n    if ($Tick -lt 0) { $Tick = [Diagnostics.Stopwatch]::GetTimestamp() }\n    $index = [int] $Stage.Substring(1)\n    $script:diagTicks[$index] = $Tick\n    if ($null -eq $script:diagStream) { return }\n    try {\n        $line = 'MO1307D|' + $Stage + '|' + $Tick.ToString([Globalization.CultureInfo]::InvariantCulture) + '|' + $script:diagFrequency.ToString([Globalization.CultureInfo]::InvariantCulture) + [char]10\n        $bytes = [Text.Encoding]::ASCII.GetBytes($line)\n        $script:diagStream.Write($bytes, 0, $bytes.Length)\n        $script:diagStream.Flush()\n    } catch { }\n}\nfunction Get-DiagnosticCountsText {\n        $counts = @(\n            'rootValidations=' + $script:diagRootValidations, 'relativeValidations=' + $script:diagRelativeValidations,\n            'segmentValidations=' + $script:diagSegmentValidations, 'openChains=' + $script:diagOpenChains,\n            'chainComponents=' + $script:diagChainComponents, 'filesAttempted=' + $script:diagFilesAttempted,\n            'filesProcessed=' + $script:diagFilesProcessed, 'createFileW=' + $script:diagCreateFileW,\n            'lastErrorReads=' + $script:diagLastErrorReads, 'getFileInformationByHandle=' + $script:diagGetFileInformationByHandle,\n            'getFinalPathNameByHandleW=' + $script:diagGetFinalPathNameByHandleW, 'getFileType=' + $script:diagGetFileType,\n            'getStdHandle=' + $script:diagGetStdHandle, 'getConsoleProcessList=' + $script:diagGetConsoleProcessList,\n            'freeConsole=' + $script:diagFreeConsole, 'stablePasses=' + $script:diagStablePasses,\n            'heldChecks=' + $script:diagHeldChecks, 'freshReopens=' + $script:diagFreshReopens,\n            'handleDisposals=' + $script:diagHandleDisposals, 'successfulHandles=' + $script:diagSuccessfulHandles,\n            'responseBytes=' + $script:diagResponseBytes\n        )\n        return [string]::Join(',', $counts)\n}\nfunction Write-DiagnosticSnapshot([string] $Stage) {\n    if ($null -eq $script:diagStream) { return }\n    try {\n        $line = 'MO1307D|SNAPSHOT|' + $Stage + '|' + (Get-DiagnosticCountsText) + [char]10\n        $bytes = [Text.Encoding]::ASCII.GetBytes($line)\n        $script:diagStream.Write($bytes, 0, $bytes.Length)\n        $script:diagStream.Flush()\n    } catch { }\n}\n"
+  },
+  {
+    "label": "segment-validation-count",
+    "offset": 962,
+    "before": "function Assert-Segment([string] $Value) {\n",
+    "after": "function Assert-Segment([string] $Value) {\n    $script:diagSegmentValidations++\n"
+  },
+  {
+    "label": "root-validation-count",
+    "offset": 1328,
+    "before": "function Assert-Root($Value) {\n",
+    "after": "function Assert-Root($Value) {\n    $script:diagRootValidations++\n"
+  },
+  {
+    "label": "relative-validation-count",
+    "offset": 1785,
+    "before": "function Assert-Relative($Value) {\n",
+    "after": "function Assert-Relative($Value) {\n    $script:diagRelativeValidations++\n"
+  },
+  {
+    "label": "startup-standard-native-counts",
+    "offset": 8362,
+    "before": "    foreach ($selector in @(-10, -11, -12)) {\n        $standardHandle = $script:native::GetStdHandle($selector)\n        if ($standardHandle -eq [IntPtr]::Zero -or $standardHandle -eq [IntPtr]::new(-1) -or\n            $script:native::GetFileType($standardHandle) -ne 3) { Reject-Protocol 'MO1307_INTERNAL' }",
+    "after": "    foreach ($selector in @(-10, -11, -12)) {\n        $script:diagGetStdHandle++\n        $standardHandle = $script:native::GetStdHandle($selector)\n        $script:diagGetFileType++\n        $standardType = $script:native::GetFileType($standardHandle)\n        if ($standardHandle -eq [IntPtr]::Zero -or $standardHandle -eq [IntPtr]::new(-1) -or\n            $standardType -ne 3) { Reject-Protocol 'MO1307_INTERNAL' }"
+  },
+  {
+    "label": "startup-console-list-count",
+    "offset": 8750,
+    "before": "        $count = $script:native::GetConsoleProcessList($buffer, 1)\n",
+    "after": "        $script:diagGetConsoleProcessList++\n        $count = $script:native::GetConsoleProcessList($buffer, 1)\n"
+  },
+  {
+    "label": "startup-free-console-count",
+    "offset": 9187,
+    "before": "        if (-not $script:native::FreeConsole()) { Reject-Protocol 'MO1307_INTERNAL' }\n",
+    "after": "        $script:diagFreeConsole++\n        if (-not $script:native::FreeConsole()) { Reject-Protocol 'MO1307_INTERNAL' }\n"
+  },
+  {
+    "label": "open-native-call-count",
+    "offset": 9670,
+    "before": "    $handle = $script:native::CreateFileW($Path, $access, $sharing, [IntPtr]::Zero, 3, 0x02200000, [IntPtr]::Zero)\n    $nativeError = [Runtime.InteropServices.Marshal]::GetLastWin32Error()",
+    "after": "    $script:diagCreateFileW++\n    $handle = $script:native::CreateFileW($Path, $access, $sharing, [IntPtr]::Zero, 3, 0x02200000, [IntPtr]::Zero)\n    $nativeError = [Runtime.InteropServices.Marshal]::GetLastWin32Error()\n    $script:diagLastErrorReads++"
+  },
+  {
+    "label": "missing-leaf-decision-and-handle-counts",
+    "offset": 9859,
+    "before": "    if ($handle.IsInvalid) {\n        $handle.Dispose()\n        if ($InputLeaf -and $nativeError -eq 2) { Reject-Protocol 'MO1307_INPUT' }\n        Reject-Protocol 'MO1307_FILESYSTEM_BOUNDARY'\n    }\n    return $handle",
+    "after": "    if ($handle.IsInvalid) {\n        if ($InputLeaf -and $nativeError -eq 2) {\n            Write-DiagnosticMark 'T7'; Write-DiagnosticSnapshot 'T7'\n            $handle.Dispose(); $script:diagHandleDisposals++\n            Reject-Protocol 'MO1307_INPUT'\n        }\n        $handle.Dispose(); $script:diagHandleDisposals++\n        Reject-Protocol 'MO1307_FILESYSTEM_BOUNDARY'\n    }\n    $script:diagSuccessfulHandles++\n    return $handle"
+  },
+  {
+    "label": "identity-information-count",
+    "offset": 10222,
+    "before": "        if (-not $script:native::GetFileInformationByHandle($Handle, $buffer)) { Reject-Protocol 'MO1307_FILESYSTEM_BOUNDARY' }\n",
+    "after": "        $script:diagGetFileInformationByHandle++\n        if (-not $script:native::GetFileInformationByHandle($Handle, $buffer)) { Reject-Protocol 'MO1307_FILESYSTEM_BOUNDARY' }\n"
+  },
+  {
+    "label": "identity-file-type-count",
+    "offset": 10858,
+    "before": "        if (($attributes -band 0x400) -ne 0 -or (($attributes -band 0x10) -ne 0) -ne $Directory -or\n            $links -lt 1 -or (-not $Directory -and $links -ne 1) -or $length -gt 9007199254740991 -or\n            $script:native::GetFileType($Handle) -ne 1) { Reject-Protocol 'MO1307_FILESYSTEM_BOUNDARY' }",
+    "after": "        $script:diagGetFileType++\n        $identityFileType = $script:native::GetFileType($Handle)\n        if (($attributes -band 0x400) -ne 0 -or (($attributes -band 0x10) -ne 0) -ne $Directory -or\n            $links -lt 1 -or (-not $Directory -and $links -ne 1) -or $length -gt 9007199254740991 -or\n            $identityFileType -ne 1) { Reject-Protocol 'MO1307_FILESYSTEM_BOUNDARY' }"
+  },
+  {
+    "label": "identity-final-path-count",
+    "offset": 11213,
+    "before": "        $count = $script:native::GetFinalPathNameByHandleW($Handle, $final, 512, 0)\n",
+    "after": "        $script:diagGetFinalPathNameByHandleW++\n        $count = $script:native::GetFinalPathNameByHandleW($Handle, $final, 512, 0)\n"
+  },
+  {
+    "label": "open-chain-count",
+    "offset": 12813,
+    "before": "function Open-Chain([string] $Path, [bool] $Directory, [bool] $InputLeaf = $false) {\n",
+    "after": "function Open-Chain([string] $Path, [bool] $Directory, [bool] $InputLeaf = $false) {\n    $script:diagOpenChains++\n"
+  },
+  {
+    "label": "chain-component-count",
+    "offset": 13313,
+    "before": "        for ($index = 0; $index -lt $paths.Count; $index++) {\n",
+    "after": "        for ($index = 0; $index -lt $paths.Count; $index++) {\n            $script:diagChainComponents++\n"
+  },
+  {
+    "label": "identity-failure-disposal-count",
+    "offset": 13625,
+    "before": "            catch { $handle.Dispose(); throw }\n",
+    "after": "            catch { $handle.Dispose(); $script:diagHandleDisposals++; throw }\n"
+  },
+  {
+    "label": "open-chain-unwind-disposal-count",
+    "offset": 13989,
+    "before": "    } catch { foreach ($entry in $entries) { $entry.handle.Dispose() }; throw }\n",
+    "after": "    } catch { foreach ($entry in $entries) { $entry.handle.Dispose(); $script:diagHandleDisposals++ }; throw }\n"
+  },
+  {
+    "label": "close-chain-disposal-count",
+    "offset": 14071,
+    "before": "function Close-Chain($Entries) { foreach ($entry in $Entries) { $entry.handle.Dispose() } }\n",
+    "after": "function Close-Chain($Entries) { foreach ($entry in $Entries) { $entry.handle.Dispose(); $script:diagHandleDisposals++ } }\n"
+  },
+  {
+    "label": "stable-pass-count",
+    "offset": 14163,
+    "before": "function Assert-ChainStable($Entries) {\n",
+    "after": "function Assert-ChainStable($Entries) {\n    $script:diagStablePasses++\n"
+  },
+  {
+    "label": "held-and-fresh-counts",
+    "offset": 14203,
+    "before": "    foreach ($entry in $Entries) {\n        Assert-SameIdentity $entry.identity (Read-Identity $entry.handle $entry.path $entry.directory)\n        # A fresh handle proves the path still names the original identity.\n        $fresh = Open-Native $entry.path $entry.directory",
+    "after": "    foreach ($entry in $Entries) {\n        $script:diagHeldChecks++\n        Assert-SameIdentity $entry.identity (Read-Identity $entry.handle $entry.path $entry.directory)\n        # A fresh handle proves the path still names the original identity.\n        $script:diagFreshReopens++\n        $fresh = Open-Native $entry.path $entry.directory"
+  },
+  {
+    "label": "fresh-disposal-count",
+    "offset": 14579,
+    "before": "        finally { $fresh.Dispose() }\n",
+    "after": "        finally { $fresh.Dispose(); $script:diagHandleDisposals++ }\n"
+  },
+  {
+    "label": "T6-file-acquisition",
+    "offset": 15816,
+    "before": "        foreach ($file in $Request.files) {\n            $full =",
+    "after": "        foreach ($file in $Request.files) {\n            $script:diagFilesAttempted++\n            Write-DiagnosticMark 'T6'\n            $full ="
+  },
+  {
+    "label": "files-processed-count",
+    "offset": 18090,
+    "before": "                $responseFiles.Add([pscustomobject] @{ id = $file.id; identity = $leaf.identity; bytes = $chunks.ToArray() })\n",
+    "after": "                $responseFiles.Add([pscustomobject] @{ id = $file.id; identity = $leaf.identity; bytes = $chunks.ToArray() })\n                $script:diagFilesProcessed++\n"
+  },
+  {
+    "label": "T1-stream-and-T2-native",
+    "offset": 20283,
+    "before": "    $savedStderr = [Console]::OpenStandardError()\n    if ([object]::ReferenceEquals($stdin, [IO.Stream]::Null) -or",
+    "after": "    $savedStderr = [Console]::OpenStandardError()\n    $script:diagStream = $savedStderr\n    Write-DiagnosticMark 'T1' $script:diagEntryTick\n    if ([object]::ReferenceEquals($stdin, [IO.Stream]::Null) -or"
+  },
+  {
+    "label": "T2-native-complete",
+    "offset": 20643,
+    "before": "    Initialize-Native\n} catch { exit 22 }\n",
+    "after": "    Initialize-Native\n    Write-DiagnosticMark 'T2'\n} catch { exit 22 }\n"
+  },
+  {
+    "label": "T3-request-read",
+    "offset": 21473,
+    "before": "    if ($stdin.ReadByte() -ne -1) { Reject-Protocol }\n",
+    "after": "    if ($stdin.ReadByte() -ne -1) { Reject-Protocol }\n    Write-DiagnosticMark 'T3'\n"
+  },
+  {
+    "label": "T4-parse-schema",
+    "offset": 25359,
+    "before": "    $ids = @($request.files | ForEach-Object { $_.id }) -join ','\n",
+    "after": "    Write-DiagnosticMark 'T4'\n    $ids = @($request.files | ForEach-Object { $_.id }) -join ','\n"
+  },
+  {
+    "label": "T5-validation-complete",
+    "offset": 27330,
+    "before": "    $nativeMode = $true\n",
+    "after": "    Write-DiagnosticMark 'T5'\n    $nativeMode = $true\n"
+  },
+  {
+    "label": "T8-acquisition-unwound",
+    "offset": 27354,
+    "before": "    if ($operation -ceq 'READ_SET') { $nativeResult = Invoke-ReadSet $request $roots }\n    else { $nativeResult = Invoke-Inspection $request $roots }\n    $code = $null\n} catch {",
+    "after": "    if ($operation -ceq 'READ_SET') { $nativeResult = Invoke-ReadSet $request $roots }\n    else { $nativeResult = Invoke-Inspection $request $roots }\n    Write-DiagnosticMark 'T8'\n    Write-DiagnosticSnapshot 'T8'\n    $code = $null\n} catch {\n    Write-DiagnosticMark 'T8'\n    Write-DiagnosticSnapshot 'T8'"
+  },
+  {
+    "label": "T9-response-object",
+    "offset": 28094,
+    "before": "    if ($null -eq $code -and $null -ne $nativeResult) {\n        $response.files = $nativeResult.files; $response.roots = $nativeResult.roots; $response.status = $nativeResult.status\n    }\n    $replyBytes =",
+    "after": "    if ($null -eq $code -and $null -ne $nativeResult) {\n        $response.files = $nativeResult.files; $response.roots = $nativeResult.roots; $response.status = $nativeResult.status\n    }\n    Write-DiagnosticMark 'T9'\n    $replyBytes ="
+  },
+  {
+    "label": "T10-serialization",
+    "offset": 28741,
+    "before": "    $replyBytes = [Text.UTF8Encoding]::new($false, $true).GetBytes($reply)\n}\n$length = [uint32] $replyBytes.Length",
+    "after": "    $replyBytes = [Text.UTF8Encoding]::new($false, $true).GetBytes($reply)\n}\n$script:diagResponseBytes = [long] $replyBytes.Length + 4\nWrite-DiagnosticMark 'T10'\nWrite-DiagnosticSnapshot 'T10'\n$length = [uint32] $replyBytes.Length"
+  },
+  {
+    "label": "T11-T13-output-exit",
+    "offset": 29046,
+    "before": "$stdout.Write($replyHeader, 0, 4)\n$stdout.Write($replyBytes, 0, $replyBytes.Length)\n$stdout.Flush()\nexit 0",
+    "after": "$stdout.Write($replyHeader, 0, 4)\nWrite-DiagnosticMark 'T11'\n$stdout.Write($replyBytes, 0, $replyBytes.Length)\n$stdout.Flush()\nWrite-DiagnosticMark 'T12'\nWrite-DiagnosticMark 'T13'\nexit 0"
+  }
+]

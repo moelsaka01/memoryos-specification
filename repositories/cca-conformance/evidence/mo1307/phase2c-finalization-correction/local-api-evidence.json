@@ -1,0 +1,46 @@
+{
+  "kind": "MO1307PinnedNodeRenameApiEvidence",
+  "version": "1.0.0",
+  "observedAt": "2026-09-28T20:00:21.260Z",
+  "runtime": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1304-phase3-toolchain\\node-v24.21.0-win-x64\\node.exe",
+    "version": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "byteLength": 93580104,
+    "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+  },
+  "functions": [
+    {
+      "name": "fs.promises.rename",
+      "declaredParameterCount": 2,
+      "source": "async function rename(oldPath, newPath) {\r\n  oldPath = getValidatedPath(oldPath, 'oldPath');\r\n  newPath = getValidatedPath(newPath, 'newPath');\r\n  return await PromisePrototypeThen(\r\n    binding.rename(oldPath, newPath, kUsePromises),\r\n    undefined,\r\n    handleErrorFromBinding,\r\n  );\r\n}",
+      "byteLength": 288,
+      "sha256": "sha256:7996bc20a1c3789506b2549dea3560899bcb3e63280559cd929fee9ceb9fd2b3"
+    },
+    {
+      "name": "fs.rename",
+      "declaredParameterCount": 3,
+      "source": "function rename(oldPath, newPath, callback) {\r\n  callback = makeCallback(callback);\r\n  const req = new FSReqCallback();\r\n  req.oncomplete = callback;\r\n  binding.rename(\r\n    getValidatedPath(oldPath, 'oldPath'),\r\n    getValidatedPath(newPath, 'newPath'),\r\n    req,\r\n  );\r\n}",
+      "byteLength": 273,
+      "sha256": "sha256:428722e59cabd7dbed8405fc808705d61251a834e70b61ca7ee328e7f21414ed"
+    },
+    {
+      "name": "fs.renameSync",
+      "declaredParameterCount": 2,
+      "source": "function renameSync(oldPath, newPath) {\r\n  binding.rename(\r\n    getValidatedPath(oldPath, 'oldPath'),\r\n    getValidatedPath(newPath, 'newPath'),\r\n  );\r\n}",
+      "byteLength": 153,
+      "sha256": "sha256:63ea076848cf90c53bc63230146e67cc2b15a477202587ae321b7144f3365cc6"
+    }
+  ],
+  "findings": [
+    "The pinned fs.promises.rename wrapper has only oldPath/newPath parameters and directly awaits binding.rename; it accepts no AbortSignal option.",
+    "The callback wrapper passes one FSReqCallback to binding.rename; the synchronous wrapper invokes binding.rename directly. Neither wrapper exposes cancellation.",
+    "A synchronous call blocks JavaScript observation and does not create a hard native execution bound.",
+    "Racing a promise or moving a rename to a worker/child has not demonstrated cancellation of an already-submitted native namespace mutation."
+  ],
+  "limitations": [
+    "Local public-wrapper evidence only; no claim that all possible Win32 mechanisms are universally incapable of cancellation.",
+    "No rename, process, worker, native sidecar, network call or unbounded experiment was run by this inspection."
+  ]
+}

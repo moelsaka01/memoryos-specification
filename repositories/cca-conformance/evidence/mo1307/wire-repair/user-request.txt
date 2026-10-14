@@ -1,0 +1,562 @@
+MEMORYOS 1.3
+MO-1307 PHASE 3A
+
+DETACHED-LAUNCH WIRE REPAIR
+THEN FINAL VALIDATION AND CERTIFICATION
+
+Current outcome:
+
+PHASE3A_CONCRETE_IMPLEMENTATION_BLOCKER
+
+The previous correction candidate:
+
+865978ff56229b60cca77bdb797987fc7d49aa4e
+
+is UNACCEPTED.
+
+C3RB remains production authority:
+
+defe93989efc6501b1a730b82e79e705884b269b
+
+Accepted Phase 3B remains:
+
+702c1b6381f6112a50ac844831d195275dac3350
+
+Accepted Phase 3C remains:
+
+b02fc0226a1a2d800185a02071674ca80bdf4a1d
+
+Do not rerun 3B or 3C now.
+
+==================================================
+1. CURRENT FAILURE
+==================================================
+
+The scoped console-ownership correction changed the helper launch to detached mode.
+
+The first native validation then produced:
+
+process exit:
+0
+
+elapsed:
+111.4571 ms
+
+stdout:
+0 bytes
+
+stderr:
+0 bytes
+
+response frame:
+NONE
+
+transport result:
+MO1307_INPUT
+
+cleanup:
+unconfirmed
+
+The campaign correctly stopped immediately.
+
+No Phase 3A certification was started.
+
+==================================================
+2. OBJECTIVE
+==================================================
+
+Repair ONLY the demonstrated loss of framed wire output introduced by the changed launch topology.
+
+Do not reopen console-ownership architecture selection.
+
+Do not introduce another broad design investigation.
+
+The target is:
+
+corrected console ownership/security behavior
++
+unchanged helper wire behavior.
+
+Then validate the correction.
+
+If validation passes, proceed directly to a fresh full Phase 3A A-O certification generation.
+
+==================================================
+3. FIRST ANALYSIS
+==================================================
+
+Compare exact C3RB launch behavior with the unaccepted corrected candidate.
+
+Inspect specifically:
+
+helper-transport.mjs spawn options
+
+detached flag
+
+windowsHide
+
+stdio configuration
+
+stdin/stdout/stderr pipes
+
+PowerShell startup
+
+process-group/console semantics
+
+EOF behavior
+
+child exit handling
+
+transport settlement.
+
+Identify exactly why the corrected process can exit 0 without producing the required response frame.
+
+Do not speculate beyond the code and observed process behavior.
+
+==================================================
+4. LAUNCH REQUIREMENTS
+==================================================
+
+The repaired launch must preserve:
+
+fixed PowerShell executable
+
+fixed helper script
+
+shell:false
+
+binary stdin pipe
+
+binary stdout pipe
+
+stderr pipe
+
+one request
+
+one response
+
+EOF/process settlement
+
+wire 2.0.0
+
+no debug stdout.
+
+A successful helper invocation MUST NOT exit 0 without the required framed response.
+
+==================================================
+5. CONSOLE CORRECTION REQUIREMENTS
+==================================================
+
+Preserve the security intent of the new correction.
+
+Do not restore the known-unsound numeric PPID ownership mechanism merely to recover output.
+
+Do not reintroduce forced termination of an unproven host.
+
+Do not weaken:
+
+console ownership authorization
+
+held-object identity
+
+process topology
+
+quiescence
+
+cleanup
+
+silent startup failure semantics
+
+security boundaries.
+
+==================================================
+6. DETACHED MODE
+==================================================
+
+Determine whether detached:true is actually required for the corrected console model.
+
+If detached:true causes incompatible stdio/process semantics and the same security objective can be achieved without it:
+
+remove it.
+
+If detached:true is required:
+
+repair the launch/pipe lifecycle using documented Node/Windows semantics.
+
+Do not preserve detached mode merely because the failed candidate used it.
+
+The SECURITY INVARIANT is authoritative, not the failed implementation detail.
+
+==================================================
+7. MINIMUM WIRE VALIDATION
+==================================================
+
+After the repair, run a finite predeclared validation.
+
+First validate the smallest successful native helper exchange.
+
+Require:
+
+valid request accepted
+
+valid framed response returned
+
+stdout framing exact
+
+stderr behavior exact
+
+exit/transport settlement correct
+
+cleanup/quiescence correct.
+
+If this first case fails:
+
+STOP.
+
+Do not continue.
+
+==================================================
+8. CONSOLE SECURITY VALIDATION
+==================================================
+
+If the wire smoke passes, run the already designed finite affected console/startup validation.
+
+Cover applicable cases including:
+
+normal successful startup
+
+headless/no-console path if applicable
+
+valid optional host path if applicable
+
+unattributable host refusal
+
+wrong image
+
+ambiguous ownership
+
+extra process/client
+
+access denied
+
+detach failure
+
+host-exit/cleanup behavior
+
+silent exit 22
+
+deadline preservation
+
+wire-output preservation.
+
+No retry-until-pass.
+
+==================================================
+9. REGRESSION VALIDATION
+==================================================
+
+If native console validation passes, run the required affected regressions.
+
+At minimum:
+
+helper protocol
+
+native acquisition
+
+filesystem
+
+TOCTOU
+
+cleanup
+
+deadline/cancellation
+
+package integrity
+
+existing required regression suite.
+
+The previously planned:
+
+107-test regression campaign
+
+and required native filesystem/TOCTOU regressions
+
+must now execute before certification.
+
+If any mandatory regression fails:
+
+STOP.
+
+==================================================
+10. NEW CANDIDATE
+==================================================
+
+If implementation and validation pass:
+
+create a NEW accepted-candidate identity.
+
+Do not reuse:
+
+865978ff56229b60cca77bdb797987fc7d49aa4e
+
+unless the bytes are literally identical, which is not expected after this repair.
+
+Bind exact:
+
+source
+
+helper
+
+transport
+
+README/spec
+
+distribution manifest
+
+SBOM
+
+package members
+
+validation evidence.
+
+==================================================
+11. PHASE 3A CERTIFICATION
+==================================================
+
+Once the corrected candidate passes security and regression validation:
+
+START A FRESH PHASE 3A GENERATION.
+
+Fresh worktree.
+
+Fresh package.
+
+Fresh offline installation.
+
+Verify all installed members.
+
+Seal the complete A-O inventory.
+
+Run once from A through O.
+
+No historical PASS promotion.
+
+No retry.
+
+At first mandatory failure:
+
+STOP.
+
+If all A-O requirements pass:
+
+PHASE 3A ACCEPTED.
+
+==================================================
+12. A-O
+==================================================
+
+A MO-1306 evaluate/verify/API
+
+B READY
+
+C NOT_READY
+
+D COULD_NOT_EVALUATE
+
+E REST
+
+F seven human decisions
+
+G complete tag inventory
+
+H helper deadline/cancellation
+
+I worker deadline/cancellation
+
+J cleanup/process topology
+
+K finalization
+
+L filesystem/native controls
+
+M environment isolation
+
+N byte determinism
+
+O final MO-1306 confirmation
+
+==================================================
+13. RESOURCE LIMITS
+==================================================
+
+Do not change:
+
+helper:
+5000 ms
+
+aggregate helper:
+20000 ms
+
+CLI:
+30000 ms
+
+API/worker:
+10000 ms
+
+cleanup:
+2000 ms
+
+native termination wait:
+1000 ms
+
+H remains:
+
+NOT_ESTABLISHED.
+
+==================================================
+14. AFTER 3A ACCEPTANCE
+==================================================
+
+If Phase 3A is accepted on the new candidate:
+
+do NOT start Phase 3D yet.
+
+Report the exact new candidate.
+
+Then use the already established dependency matrix to perform:
+
+scoped Phase 3B refresh
+
+and
+
+scoped Phase 3C refresh
+
+in parallel.
+
+The existing accepted C3RB results remain historical accepted evidence.
+
+==================================================
+15. 3B REFRESH SCOPE
+==================================================
+
+Expected candidate-bound Phase 3B refresh includes:
+
+archive identity
+
+member inventory
+
+distribution manifest
+
+SBOM checksums
+
+offline installation
+
+installed-member equality
+
+reproducibility
+
+runtime closure
+
+installed smoke
+
+affected tamper controls
+
+provenance/binding.
+
+Reuse unchanged toolchain/licenses/schema authority only where dependencies remain unchanged.
+
+==================================================
+16. 3C REFRESH SCOPE
+==================================================
+
+Previous dependency analysis identified:
+
+88 existing affected controls
+
+comprising:
+
+67 equivalence
+
+12 protocol
+
+2 TOCTOU
+
+6 deadline/cleanup
+
+1 fixed-launch
+
+plus required supporting source review and new console-specific cases.
+
+Reconcile the actual final diff before fixing the exact refresh inventory.
+
+Do not rerun all 551 unless dependency analysis requires it.
+
+==================================================
+17. NO MORE ARCHITECTURE LOOPS
+==================================================
+
+Do not return another broad design task.
+
+Do not restart:
+
+PPID research
+
+parent-lifetime research
+
+GetConsoleProcessList design
+
+ConPTY architecture research
+
+helper deadline characterization
+
+C3S work
+
+Control-E work.
+
+This task is:
+
+FIX WIRE
+→ VALIDATE SECURITY
+→ RUN REGRESSIONS
+→ CERTIFY 3A.
+
+==================================================
+18. FINAL OUTCOMES
+==================================================
+
+Return only one of:
+
+PHASE3A_ACCEPTED_NEW_CANDIDATE
+
+or
+
+PHASE3A_CONCRETE_IMPLEMENTATION_BLOCKER
+
+A blocker must identify the exact failed implementation, validation or certification step.
+
+==================================================
+19. FINAL REPORT
+==================================================
+
+Report:
+
+1. exact cause of zero-output exit,
+2. exact launch repair,
+3. final production diff,
+4. wire validation,
+5. console/security validation,
+6. regression validation,
+7. new candidate identity,
+8. package/install identity,
+9. A-O results,
+10. certification receipt,
+11. Phase 3A status,
+12. commit/binding identities,
+13. exact 3B refresh scope,
+14. exact 3C refresh scope,
+15. repository status,
+16. next action.
+
+No push.
+No tag.
+No Phase 3D.

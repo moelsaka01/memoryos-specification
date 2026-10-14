@@ -1,0 +1,92 @@
+"""Close the sole hosted diagnostic without further product or hosted execution."""
+from pathlib import Path
+from datetime import datetime,timezone
+import hashlib,json,subprocess,zipfile,re
+R=Path(__file__).resolve().parents[4];E=R/'repositories/cca-conformance/evidence/mo1306/phase3a-hosted-diagnostic';T=Path(__file__).parent
+C='701d48ee2012675966360dda775ab13013c09ab9';M='85a0f85c1ebd013c545ccf2b3efe58a760e6cf37';MAIN='5955af062152a84c10de17860ba0bcabe8b3555f';ENDING='MO-1306 PHASE 3A HOSTED DIAGNOSTIC EXHAUSTED'
+CAM=E/'github/campaign-20260928T081542Z';D=CAM/'runs/36396330199'
+def read(p):return json.loads(p.read_text(encoding='utf-8'))
+def row(p):
+ b=p.read_bytes();return {'path':p.relative_to(R).as_posix(),'byteLength':len(b),'sha256':'sha256:'+hashlib.sha256(b).hexdigest()}
+def write(p,v):
+ with p.open('x',encoding='utf-8',newline='\n') as f:f.write(json.dumps(v,sort_keys=True,separators=(',',':'))+'\n')
+def git(root,*a):
+ p=subprocess.run(['git','-c','safe.directory='+root.as_posix(),'-c','core.optionalLocks=false',*a],cwd=root,capture_output=True);assert p.returncode==0,p.stderr.decode();return p.stdout.decode().strip()
+before=read(D/'diagnostic/observation-before.json');after=read(D/'diagnostic/observation-after.json');oracle=read(D/'diagnostic/oracle.json');summary=read(D/'diagnostic/diagnostic-summary.json');campaign=read(CAM/'campaign-summary.json');remote=read(E/'github/final-remote-state.json');causal=read(E/'causal-review.json');scaffold=read(E/'remote-candidate.json');pre=read(E/'preservation-before.json');gate=read(E/'static-gate.json');push=read(E/'push-result.json');run=read(D/'run.json');jobs=read(D/'jobs.json');native=read(R/'repositories/cca-conformance/evidence/mo1306/phase3a-certification/native-final-gate.json')
+assert causal['classification']=='STILL_UNRESOLVED' and causal['actualFirstProductionRejectingSite'] is None
+assert oracle['firstFailure']['site']=='checkPaths.helperDeadline' and summary['bootstrapOutcome']=='failure'
+assert remote['status']=='PASS' and remote['defaultBranch']=='main' and remote['remoteMain']==MAIN
+assert native['genericLabel']=='REAL_EXECUTION_CERTIFIED' and native['nativeCertified']
+for x in pre['files']:assert row(R/x['path'])==x,x['path']
+idx=Path(git(R,'rev-parse','--git-path','index'));idx=idx if idx.is_absolute() else R/idx
+mainRoot=R.parent/'cca-workspace';realIndex='sha256:'+hashlib.sha256(idx.read_bytes()).hexdigest()
+workspace={'kind':'MemoryOSHostedDiagnosticWorkspaceVerification','status':'PASS','head':git(R,'rev-parse','HEAD'),'branch':git(R,'branch','--show-current'),'trackedDiff':git(R,'diff','--name-only'),'stagedDiff':git(R,'diff','--cached','--name-only'),'realIndexSha256':realIndex,'mainCheckoutHead':git(mainRoot,'rev-parse','HEAD'),'mainCheckoutStatus':git(mainRoot,'status','--porcelain'),'historicalFilesPreserved':len(pre['files']),'productionTreeUnchanged':git(R,'rev-parse',C+':repositories/memoryos-ci')==git(R,'rev-parse',scaffold['commit']+':repositories/memoryos-ci'),'diagnosticChangedFiles':scaffold['changedFromPrevious'],'gitDiffCheck':git(R,'diff','--check'),'scaffoldDiffCheck':git(R,'diff','--check',scaffold['previousScaffold'],scaffold['commit']),'nativeExecutions':0,'methodologyReruns':0,'observedUtc':datetime.now(timezone.utc).isoformat()}
+assert workspace['head']==pre['head'] and realIndex==pre['realIndexSha256'] and not workspace['trackedDiff'] and not workspace['stagedDiff'] and workspace['mainCheckoutHead']==M and not workspace['mainCheckoutStatus'] and workspace['productionTreeUnchanged']
+write(E/'workspace-verification.json',workspace)
+source=subprocess.check_output(['git','show',C+':repositories/memoryos-ci/src/filesystem.mjs'],cwd=R);lines=source.decode().splitlines()
+site={'kind':'MemoryOSDiagnosticSourceSite','authority':C,'path':'repositories/memoryos-ci/src/filesystem.mjs','byteLength':len(source),'sha256':'sha256:'+hashlib.sha256(source).hexdigest(),'scope':'Source mapping for observed later oracle helper deadline only; not a proven production rejection site.','lines':[{'number':i,'text':s} for i,s in enumerate(lines,1) if 'helperDeadline' in s or 'effectiveDeadline' in s or 'timer=setTimeout' in s]}
+write(E/'source-site.json',site)
+q=oracle['requests'][0];env=before['environment'];W=env['GITHUB_WORKSPACE'];paths={p['raw']:p for p in oracle['paths']}
+assert len(oracle['requests'])==1 and q['targetCount']==48 and q['byteLength']==8555 and all(p['facts']['predicate']=='PASS' for p in after['helperTargetPredicates'])
+with zipfile.ZipFile(D/'logs.zip') as z:
+ bootstrap=z.read(next(n for n in z.namelist() if '/6_' in n)).decode('utf-8-sig')
+ assert 'MO1306_FILESYSTEM_BOUNDARY' in bootstrap and 'Process completed with exit code 1.' in bootstrap
+ setup=z.read(next(n for n in z.namelist() if '/1_' in n)).decode('utf-8-sig')
+imageVersion=re.search(r'Version: (2026[0-9.]+)',setup)
+ended=datetime.now(timezone.utc);duration=(ended-datetime.fromisoformat(pre['startedUtc'])).total_seconds()/60
+retrieved=campaign['diagnostic']['downloads'][-1]['endedUtc'];restored=campaign['restoration']['verifiedUtc']
+A=[]
+def add(title,value):A.append({'number':len(A)+1,'title':title,'value':value})
+add('Starting remote state',f'Default main; main {MAIN}; certification scaffold {scaffold["previousScaffold"]}; historical branch run count 1.')
+add('C3CB',C)
+add('M3',M)
+add('Native state','Generic = REAL_EXECUTION_CERTIFIED; complete and reused; zero native or methodology reruns.')
+add('Historical failed run','36357568243 remains HOSTED_BOOTSTRAP_UNRESOLVED, preserved unchanged and not reanalyzed for missing telemetry.')
+add('Diagnostic scaffold SHA',scaffold['commit']+'; sole parent C3CB.')
+add('Diagnostic changed files','; '.join(x['destination']+' ('+str(x['byteLength'])+' bytes, '+x['sha256']+')' for x in scaffold['inputs']))
+add('Environment allowlist',', '.join(before['environmentAllowlist'])+'. Exactly these eleven values; before/after snapshots agree; no full environment dump. PROCESSOR_ARCHITECTURE='+env['PROCESSOR_ARCHITECTURE']+'.')
+for key in ['GITHUB_WORKSPACE','RUNNER_TEMP','RUNNER_TOOL_CACHE','RUNNER_WORKSPACE','USERPROFILE']:add(key,env[key])
+add('HOME','Unset/null in both before and after step observations. No in-process environment snapshot at the production rejection.')
+add('TEMP/TMP','Both '+env['TEMP'])
+add('SystemRoot/WINDIR','Both '+env['SystemRoot'])
+add('Node version/arch/execPath',oracle['runtime']['version']+' / '+oracle['runtime']['platform']+' / '+oracle['runtime']['arch']+' / '+oracle['runtime']['execPath']+'; pinned executable identity verified in the later oracle.')
+add('PowerShell version',before['powerShellVersion'])
+for title,key in [('Workspace realpath','workspace'),('Tool-root realpath','trustedTool'),('Runtime-root realpath','runtime'),('Node realpath','node'),('Data-root realpath','candidateData'),('Config realpath','configuration'),('Package realpath','package')]:
+ raw=after['paths'][key]['raw'];add(title,paths[raw].get('realpath','Not captured')+'; equals lexical path in the later Node observation.')
+add('Filesystem/volume observations','Required observed paths are on ready fixed NTFS D:\\; no cross-drive equality requirement was imposed. Runtime and bootstrap ZIP absent before bootstrap, present afterward; product output absent because evaluation did not run. Package entry, bootstrap archive, runner temporary root, and diagnostic output observations are retained. Environment C: paths are values, not blanket volume observations.')
+add('Ancestor reparse results','No reparse attributes on inspected existing ancestors. Ten later Node path observations have matching realpaths and no symbolic-link ancestors. All 48 later helper-target PowerShell audits PASS. Missing product output is expected; these snapshots do not capture state at the production rejection.')
+add('Independent containment predicates','Before production: tool, runtime, data, configuration, package, and exact Ordinal configuration prefix all PASS (six predicates).')
+add('Helper request identity',f'Later oracle only: operation checkPaths; installation batch 1/start 0; 48 targets; {q["byteLength"]} canonical bytes; {q["sha256"]}. Per-target trusted-runtime/trusted-package capability metadata and exact target paths retained. Subsequent batches/configuration helper were not executed.')
+add('First failed production-equivalent predicate','Later oracle: installation-member-root-check / checkPaths.helperDeadline, first batch. Actual production first predicate remains uncaptured; no retroactive attribution. C3CB filesystem.mjs deadline source mapping retained in source-site.json.')
+add('Exact rejected path','No individual path rejection was observed. Oracle timeout has target=null for the 48-path request; the actual production rejected path remains unobserved.')
+add('Exact error/errno/helper result',f'Production: MO1306_FILESYSTEM_BOUNDARY / ACQUISITION at 08:16:32.9776815Z; runner step exit 1, not evidence of Node/helper numeric exit. Oracle deadline {q["effectiveDeadlineMs"]} ms, timer terminal {q["terminal"]["atMs"]} ms, close {q["close"]["atMs"]} ms; helper exit code null, signal SIGTERM, kill true, stdout 0 bytes, stderr 0 bytes, no response or OS errno captured; observer Node exit 0 denotes successful report delivery only.')
+add('Diagnostic run ID/job',f'Run {run["id"]}, attempt 1; workflow {run["workflow_id"]}; job {jobs["jobs"][0]["id"]}; windows-2022; conclusion failure. Bootstrap outcome failure; jobs API bootstrap conclusion success reflects continue-on-error used for evidence retrieval. Final gate propagated failure.')
+add('Root-cause classification','STILL_UNRESOLVED. The later timeout proves an engineering helper timeout, not the production first rejection or historical cause.')
+for title in ['Workflow defect','Scaffold defect','Product defect','Contract conflict','Hosted transient']:add(title,'Not proven. No causal closure or corrective change authorized by the captured evidence.')
+add('Default-branch restoration',f'Artifact retrieval ended {retrieved}; restoration independently verified {restored}. Fresh independent readback {remote["observedUtc"]} also PASS; settings/actions/rules/protection unchanged.')
+add('Final default branch','main')
+add('Final remote main',MAIN+'; unchanged.')
+add('If workflow/scaffold corrected, corrected scaffold','None. Diagnostic scaffold remains '+scaffold['commit']+' for evidence preservation; no fix was proven.')
+for title in ['Hosted PASS','Hosted FAIL','Hosted CNE']:add(title,'Not dispatched. Cause gate remains unsatisfied; zero certification retries.')
+add('Hosted artifacts','One diagnostic artifact 10957954743, 10758-byte ZIP, sha256:4dbd3bec77a344e3bada5508377079f01e035396bcec8f7109bc8974ef546b86. Exact four JSON members retrieved and bound; logs.zip 26332 bytes. These are engineering evidence, not certification result artifacts.')
+add('Native/hosted parity','Not performed: no hosted certification artifacts exist. Certified native normative evidence is preserved; zero native reruns.')
+add('GitHub final label','NOT_CERTIFIED; HOSTED_EXECUTION_CERTIFIED is not earned. Generic retains REAL_EXECUTION_CERTIFIED; GitLab/Jenkins/Azure retain CONTRACT_VALIDATED.')
+add('Final receipt','execution-receipt.json binds the diagnostic, static authorization, source, historical/native preservation, independent causal review and remote restoration. It is an exhausted diagnostic receipt, not a certification receipt.')
+add('Certification commit','None. No final certification commit created or pushed; historical local HEAD remains '+pre['head']+'.')
+add('Production changes','Zero. C3CB product tree, package bytes, M3, pins, contracts, deadlines and provider semantics unchanged. Historical local HEAD differences from C3CB were preserved and never used as hosted production authority.')
+add('Workspace verification','PASS: 1021 historical files unchanged; real index, local HEAD and tracked/staged state unchanged; main checkout clean at M3. New evidence/tool namespaces remain untracked.')
+add('git diff --check','PASS for diagnostic scaffold versus old scaffold and local tracked working tree.')
+add('Pushes','Exactly one: refs/heads/mo1306-certification '+scaffold['previousScaffold']+' -> '+scaffold['commit']+' with exact old-SHA lease. Full remote ref comparison shows no other changes.')
+add('Tags/releases','None created or pushed; tags unchanged.')
+add('Linux/Ubuntu/WSL','None used.')
+add('VM','No local VM, Windows Sandbox, or alternate execution environment used. One authorized GitHub-hosted windows-2022 runner executed the diagnostic.')
+add('Duration',f'{duration:.2f} minutes through report/receipt creation from {pre["startedUtc"]}; diagnostic evidence retrieved and main restored in {(datetime.fromisoformat(restored)-datetime.fromisoformat(pre["startedUtc"])).total_seconds()/60:.2f} minutes. Final offline validation/seal duration is recorded separately.')
+add('Exact Phase 3D recommendation','NOT READY FOR PHASE 3D INTEGRATION. Stop MO-1306 hosted certification work; no further diagnostic retry, observer campaign, or methodology exception.')
+assert len(A)==60
+report='MemoryOS 1.3 MO-1306 final hosted diagnostic report\n\nClassification: STILL_UNRESOLVED. One diagnostic executed; no certification retries or native reruns.\n\nThe later source-equivalent oracle rejected its first helper batch at the frozen two-second deadline. All later helper-target path audits passed. This observation does not establish the production first rejection, so hosted work stops under request section 23.\n\n'
+report+='\n\n'.join(str(x['number'])+'. **'+x['title']+'**: '+x['value'].replace(chr(92),chr(92)*2) for x in A)+'\n\n'+ENDING+'\n'
+(E/'REPORT.md').write_text(report,encoding='utf-8',newline='\n')
+refs=[E/'preservation-before.json',E/'task-request.txt',E/'starting-workspace.json',E/'static-gate.json',E/'static-gate-negatives.json',E/'remote-candidate.json',E/'hosted-authorization.json',E/'push-result.json',E/'github/dispatch-consumed.json',E/'github/remote-preflight.json',CAM/'campaign-summary.json',D/'diagnostic-acquisition.json',D/'artifact-inspection.json',E/'causal-review.json',E/'github/final-remote-state.json',E/'workspace-verification.json',E/'source-site.json',E/'REPORT.md',R/'repositories/cca-conformance/evidence/mo1306/phase3a-certification/native-final-gate.json',R/'repositories/cca-conformance/evidence/mo1306/phase3a-hosted-resolution/resolution-receipt.json']
+receipt={'kind':'MemoryOSHostedDiagnosticExhaustionReceipt','version':'1.0.0','status':'HOSTED_DIAGNOSTIC_EXHAUSTED','classification':'STILL_UNRESOLVED','candidate':C,'methodology':M,'diagnosticScaffold':scaffold['commit'],'historicalRunId':36357568243,'historicalDisposition':'HOSTED_BOOTSTRAP_UNRESOLVED','oldRunReclassified':False,'historicalRunReanalyzed':False,'diagnosticRunId':run['id'],'diagnosticJobId':jobs['jobs'][0]['id'],'diagnosticDispatchCount':1,'diagnosticAttempt':1,'nativeExecutions':0,'methodologyReruns':0,'certificationDispatches':[],'certificationCommit':None,'productionChanges':[],'labels':{'generic':'REAL_EXECUTION_CERTIFIED','github':'NOT_CERTIFIED','gitlab':'CONTRACT_VALIDATED','jenkins':'CONTRACT_VALIDATED','azure':'CONTRACT_VALIDATED'},'actualFirstProductionRejectingSite':None,'oracleFirstFailure':oracle['firstFailure'],'oracleFailureDoesNotProveProductionCause':True,'capturedEnvironment':env,'oracleRequestIdentity':{k:q[k] for k in ['ordinal','operation','targetCount','byteLength','sha256']},'remoteRestoration':campaign['restoration'],'finalRemoteMain':MAIN,'finalDefaultBranch':'main','pushCount':1,'tagsCreated':[],'releasesCreated':[],'nativeHostedParity':None,'phase3DReady':False,'phase3DRecommendation':'NOT READY FOR PHASE 3D INTEGRATION','startedUtc':pre['startedUtc'],'observedUtc':ended.isoformat(),'minutesThroughReceipt':duration,'bindings':[row(p) for p in refs],'finalReportAreas':A,'limitations':['Product actual Node/helper exit, first predicate, rejected path, and errno remain unobserved.','Before/after environment and filesystem snapshots are not an in-process rejection trace.','Oracle timeout is a later observation with ordinary diagnostic overhead; it does not prove a product timing defect or hosted transient.','Diagnostic artifacts are not PASS/FAIL/CNE certification artifacts.'],'ending':ENDING}
+write(E/'execution-receipt.json',receipt)
+print(json.dumps({'classification':receipt['classification'],'report':row(E/'REPORT.md'),'receipt':row(E/'execution-receipt.json'),'reportAreas':len(A),'preservedFiles':len(pre['files']),'durationMinutes':duration,'ending':ENDING}))

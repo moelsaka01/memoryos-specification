@@ -1,0 +1,1042 @@
+TAP version 13
+# Subtest: A01 all sixteen frozen bundles produce only verified claims and exact independent graph/audit identities
+ok 1 - A01 all sixteen frozen bundles produce only verified claims and exact independent graph/audit identities
+  ---
+  duration_ms: 1276.1118
+  type: 'test'
+  ...
+# Subtest: A02 operator authority pin is separate and rejects an independently wrong trust root
+ok 2 - A02 operator authority pin is separate and rejects an independently wrong trust root
+  ---
+  duration_ms: 16.1196
+  type: 'test'
+  ...
+# Subtest: A03 an evidence-controlled authority mutation cannot select its own new pin
+ok 3 - A03 an evidence-controlled authority mutation cannot select its own new pin
+  ---
+  duration_ms: 5.9353
+  type: 'test'
+  ...
+# Subtest: A04 raw source bytes and raw length are verified independently of intact claim identity
+ok 4 - A04 raw source bytes and raw length are verified independently of intact claim identity
+  ---
+  duration_ms: 40.7666
+  type: 'test'
+  ...
+# Subtest: A05 raw manifest identity and envelope hash cannot be repaired by a self-consistent claim hash
+ok 5 - A05 raw manifest identity and envelope hash cannot be repaired by a self-consistent claim hash
+  ---
+  duration_ms: 40.4548
+  type: 'test'
+  ...
+# Subtest: A06 exact canonical claim digest is recomputed under an intact reviewed envelope grant
+ok 6 - A06 exact canonical claim digest is recomputed under an intact reviewed envelope grant
+  ---
+  duration_ms: 33.8244
+  type: 'test'
+  ...
+# Subtest: A07 ungranted external evidence cannot satisfy a gate
+ok 7 - A07 ungranted external evidence cannot satisfy a gate
+  ---
+  duration_ms: 36.6174
+  type: 'test'
+  ...
+# Subtest: A08 unknown evidence type and evidence version fail closed
+ok 8 - A08 unknown evidence type and evidence version fail closed
+  ---
+  duration_ms: 50.0064
+  type: 'test'
+  ...
+# Subtest: A09 granting the wrong existing claim for a compiled gate is rejected
+ok 9 - A09 granting the wrong existing claim for a compiled gate is rejected
+  ---
+  duration_ms: 33.3529
+  type: 'test'
+  ...
+# Subtest: A10 exact grant source IDs cannot substitute or omit the envelope lineage
+ok 10 - A10 exact grant source IDs cannot substitute or omit the envelope lineage
+  ---
+  duration_ms: 35.8275
+  type: 'test'
+  ...
+# Subtest: A11 source bytes cannot appoint themselves as authority provenance
+ok 11 - A11 source bytes cannot appoint themselves as authority provenance
+  ---
+  duration_ms: 38.806
+  type: 'test'
+  ...
+# Subtest: A12 authority source Git fields, classification, length, hash and released target bind exactly
+ok 12 - A12 authority source Git fields, classification, length, hash and released target bind exactly
+  ---
+  duration_ms: 429.8242
+  type: 'test'
+  ...
+# Subtest: A13 candidate, manifest and independently reviewed component/contract closures cannot be substituted
+ok 13 - A13 candidate, manifest and independently reviewed component/contract closures cannot be substituted
+  ---
+  duration_ms: 91.1514
+  type: 'test'
+  ...
+# Subtest: A14 whole-candidate claims cannot use an earlier candidate root
+ok 14 - A14 whole-candidate claims cannot use an earlier candidate root
+  ---
+  duration_ms: 30.5994
+  type: 'test'
+  ...
+# Subtest: A15 a manifest cannot relabel a claim origin or dependency identity
+ok 15 - A15 a manifest cannot relabel a claim origin or dependency identity
+  ---
+  duration_ms: 57.1104
+  type: 'test'
+  ...
+# Subtest: A16 declared dependency role, length and content are checked against the current inventory
+ok 16 - A16 declared dependency role, length and content are checked against the current inventory
+  ---
+  duration_ms: 86.1284
+  type: 'test'
+  ...
+# Subtest: A17 minimum dependency closure cannot omit any relevant current component
+ok 17 - A17 minimum dependency closure cannot omit any relevant current component
+  ---
+  duration_ms: 27.565
+  type: 'test'
+  ...
+# Subtest: A18 changed declared grant closure and dangling dependency IDs reject rather than first-win
+ok 18 - A18 changed declared grant closure and dangling dependency IDs reject rather than first-win
+  ---
+  duration_ms: 58.8951
+  type: 'test'
+  ...
+# Subtest: A19 scope escalation and unapproved/changed assumptions are stale
+ok 19 - A19 scope escalation and unapproved/changed assumptions are stale
+  ---
+  duration_ms: 74.0123
+  type: 'test'
+  ...
+# Subtest: A20 unrelated root assumptions do not stale an approved claim subset
+ok 20 - A20 unrelated root assumptions do not stale an approved claim subset
+  ---
+  duration_ms: 53.156
+  type: 'test'
+  ...
+# Subtest: A21 selective reuse is explicit and unchanged dependencies retain their exact claims
+ok 21 - A21 selective reuse is explicit and unchanged dependencies retain their exact claims
+  ---
+  duration_ms: 75.024
+  type: 'test'
+  ...
+# Subtest: A22 REUSED cannot conceal a whole-candidate claim
+ok 22 - A22 REUSED cannot conceal a whole-candidate claim
+  ---
+  duration_ms: 23.959
+  type: 'test'
+  ...
+# Subtest: A23 old audit snapshots do not invent expiry and bounded disclosure remains mandatory
+ok 23 - A23 old audit snapshots do not invent expiry and bounded disclosure remains mandatory
+  ---
+  duration_ms: 54.4048
+  type: 'test'
+  ...
+# Subtest: A24 permitted fresh raw metadata pins change proof audit but preserve normative projection
+ok 24 - A24 permitted fresh raw metadata pins change proof audit but preserve normative projection
+  ---
+  duration_ms: 103.1307
+  type: 'test'
+  ...
+# Subtest: A25 duplicate IDs, copied normalized grants and unconsumed evidence fail closed
+ok 25 - A25 duplicate IDs, copied normalized grants and unconsumed evidence fail closed
+  ---
+  duration_ms: 57.8588
+  type: 'test'
+  ...
+# Subtest: A26 explicit unavailable slots omit evidence safely and optional provider slots mirror the parent
+ok 26 - A26 explicit unavailable slots omit evidence safely and optional provider slots mirror the parent
+  ---
+  duration_ms: 69.9537
+  type: 'test'
+  ...
+# Subtest: A27 all admitted bytes are snapshots independent of subsequent caller mutations
+ok 27 - A27 all admitted bytes are snapshots independent of subsequent caller mutations
+  ---
+  duration_ms: 62.0593
+  type: 'test'
+  ...
+# Subtest: A28 raw source byte ceiling admits exact boundary and rejects plus one
+ok 28 - A28 raw source byte ceiling admits exact boundary and rejects plus one
+  ---
+  duration_ms: 108.2785
+  type: 'test'
+  ...
+# Subtest: A29 explicit source and authority references cannot dangle
+ok 29 - A29 explicit source and authority references cannot dangle
+  ---
+  duration_ms: 114.1529
+  type: 'test'
+  ...
+# Subtest: A30 canonical set orders remain normative and are never silently sorted by the verifier
+ok 30 - A30 canonical set orders remain normative and are never silently sorted by the verifier
+  ---
+  duration_ms: 86.3099
+  type: 'test'
+  ...
+# Subtest: A31 input map insertion and object member order do not affect verified canonical projection
+ok 31 - A31 input map insertion and object member order do not affect verified canonical projection
+  ---
+  duration_ms: 182.2199
+  type: 'test'
+  ...
+# Subtest: A32 raw integrity failure wins over later root candidate mismatch
+ok 32 - A32 raw integrity failure wins over later root candidate mismatch
+  ---
+  duration_ms: 36.231
+  type: 'test'
+  ...
+# Subtest: A33 an authority failure wins over a later structurally valid provider contradiction
+ok 33 - A33 an authority failure wins over a later structurally valid provider contradiction
+  ---
+  duration_ms: 56.091
+  type: 'test'
+  ...
+# Subtest: A34 manifest file ceiling admits exactly 128 consumed files and rejects 129
+ok 34 - A34 manifest file ceiling admits exactly 128 consumed files and rejects 129
+  ---
+  duration_ms: 170.1499
+  type: 'test'
+  ...
+# Subtest: A35 aggregate raw source admission accepts 8 MiB exactly and rejects one additional byte
+ok 35 - A35 aggregate raw source admission accepts 8 MiB exactly and rejects one additional byte
+  ---
+  duration_ms: 212.6564
+  type: 'test'
+  ...
+# Subtest: A36 authority source ceiling admits 32 explicit provenance records and rejects 33
+ok 36 - A36 authority source ceiling admits 32 explicit provenance records and rejects 33
+  ---
+  duration_ms: 149.8244
+  type: 'test'
+  ...
+# Subtest: F01 MO-1306 preserved configuration receipts have exact granted source lineage
+ok 37 - F01 MO-1306 preserved configuration receipts have exact granted source lineage
+  ---
+  duration_ms: 358.511
+  type: 'test'
+  ...
+# Subtest: F02 correction preserves all normalized identities and every original raw source byte
+ok 38 - F02 correction preserves all normalized identities and every original raw source byte
+  ---
+  duration_ms: 18.2333
+  type: 'test'
+  ...
+# Subtest: F03 reconstructed original fixture still rejects unused configuration sources
+ok 39 - F03 reconstructed original fixture still rejects unused configuration sources
+  ---
+  duration_ms: 140.1837
+  type: 'test'
+  ...
+# Subtest: G01 exact frozen graph, authority and audit bindings: could-not-evaluate
+ok 40 - G01 exact frozen graph, authority and audit bindings: could-not-evaluate
+  ---
+  duration_ms: 67.8471
+  type: 'test'
+  ...
+# Subtest: G01 exact frozen graph, authority and audit bindings: history-blocker-unavailable
+ok 41 - G01 exact frozen graph, authority and audit bindings: history-blocker-unavailable
+  ---
+  duration_ms: 44.2385
+  type: 'test'
+  ...
+# Subtest: G01 exact frozen graph, authority and audit bindings: informational-ready
+ok 42 - G01 exact frozen graph, authority and audit bindings: informational-ready
+  ---
+  duration_ms: 47.5393
+  type: 'test'
+  ...
+# Subtest: G01 exact frozen graph, authority and audit bindings: metadata-only
+ok 43 - G01 exact frozen graph, authority and audit bindings: metadata-only
+  ---
+  duration_ms: 43.5554
+  type: 'test'
+  ...
+# Subtest: G01 exact frozen graph, authority and audit bindings: mixed-precedence
+ok 44 - G01 exact frozen graph, authority and audit bindings: mixed-precedence
+  ---
+  duration_ms: 43.843
+  type: 'test'
+  ...
+# Subtest: G01 exact frozen graph, authority and audit bindings: mo1306-qualified
+ok 45 - G01 exact frozen graph, authority and audit bindings: mo1306-qualified
+  ---
+  duration_ms: 207.8174
+  type: 'test'
+  ...
+# Subtest: G01 exact frozen graph, authority and audit bindings: not-ready
+ok 46 - G01 exact frozen graph, authority and audit bindings: not-ready
+  ---
+  duration_ms: 39.5166
+  type: 'test'
+  ...
+# Subtest: G01 exact frozen graph, authority and audit bindings: post-tag-absent
+ok 47 - G01 exact frozen graph, authority and audit bindings: post-tag-absent
+  ---
+  duration_ms: 37.9342
+  type: 'test'
+  ...
+# Subtest: G01 exact frozen graph, authority and audit bindings: post-tag-lightweight
+ok 48 - G01 exact frozen graph, authority and audit bindings: post-tag-lightweight
+  ---
+  duration_ms: 37.8408
+  type: 'test'
+  ...
+# Subtest: G01 exact frozen graph, authority and audit bindings: post-tag-ready
+ok 49 - G01 exact frozen graph, authority and audit bindings: post-tag-ready
+  ---
+  duration_ms: 37.644
+  type: 'test'
+  ...
+# Subtest: G01 exact frozen graph, authority and audit bindings: post-tag-wrong-target
+ok 50 - G01 exact frozen graph, authority and audit bindings: post-tag-wrong-target
+  ---
+  duration_ms: 38.0117
+  type: 'test'
+  ...
+# Subtest: G01 exact frozen graph, authority and audit bindings: pre-tag-present
+ok 51 - G01 exact frozen graph, authority and audit bindings: pre-tag-present
+  ---
+  duration_ms: 38.4374
+  type: 'test'
+  ...
+# Subtest: G01 exact frozen graph, authority and audit bindings: qualified
+ok 52 - G01 exact frozen graph, authority and audit bindings: qualified
+  ---
+  duration_ms: 37.6111
+  type: 'test'
+  ...
+# Subtest: G01 exact frozen graph, authority and audit bindings: ready
+ok 53 - G01 exact frozen graph, authority and audit bindings: ready
+  ---
+  duration_ms: 35.519
+  type: 'test'
+  ...
+# Subtest: G01 exact frozen graph, authority and audit bindings: rest-qualified
+ok 54 - G01 exact frozen graph, authority and audit bindings: rest-qualified
+  ---
+  duration_ms: 27.8557
+  type: 'test'
+  ...
+# Subtest: G01 exact frozen graph, authority and audit bindings: selective-reuse
+ok 55 - G01 exact frozen graph, authority and audit bindings: selective-reuse
+  ---
+  duration_ms: 37.7808
+  type: 'test'
+  ...
+# Subtest: G02 exactly six node and five edge types, one root, content sharing and origin provenance
+ok 56 - G02 exactly six node and five edge types, one root, content sharing and origin provenance
+  ---
+  duration_ms: 125.7841
+  type: 'test'
+  ...
+# Subtest: G03 metadata and opaque historical cross-links cannot add normative authority or cycles
+ok 57 - G03 metadata and opaque historical cross-links cannot add normative authority or cycles
+  ---
+  duration_ms: 210.2935
+  type: 'test'
+  ...
+# Subtest: G04 missing normative claim, dependency, authority, grant and edge endpoints reject
+ok 58 - G04 missing normative claim, dependency, authority, grant and edge endpoints reject
+  ---
+  duration_ms: 15.3429
+  type: 'test'
+  ...
+# Subtest: G05 duplicate node IDs, duplicate edges, malformed content IDs and unknown types reject
+ok 59 - G05 duplicate node IDs, duplicate edges, malformed content IDs and unknown types reject
+  ---
+  duration_ms: 13.1423
+  type: 'test'
+  ...
+# Subtest: G06 wrong edge direction, endpoint type, root and candidate identity reject
+ok 60 - G06 wrong edge direction, endpoint type, root and candidate identity reject
+  ---
+  duration_ms: 15.5347
+  type: 'test'
+  ...
+# Subtest: G07 every grant and claim must be rooted and every normative node reachable
+ok 61 - G07 every grant and claim must be rooted and every normative node reachable
+  ---
+  duration_ms: 37.5956
+  type: 'test'
+  ...
+# Subtest: G08 internal normative cycles and self references retain exact GRAPH_CYCLE classification
+ok 62 - G08 internal normative cycles and self references retain exact GRAPH_CYCLE classification
+  ---
+  duration_ms: 6.0526
+  type: 'test'
+  ...
+# Subtest: G09 dependency claims cannot mix current candidate and dependency edges
+ok 63 - G09 dependency claims cannot mix current candidate and dependency edges
+  ---
+  duration_ms: 6.4399
+  type: 'test'
+  ...
+# Subtest: G10 graph nodes exactly 2048 pass and 2049 fail before expansion
+ok 64 - G10 graph nodes exactly 2048 pass and 2049 fail before expansion
+  ---
+  duration_ms: 126.5494
+  type: 'test'
+  ...
+# Subtest: G11 graph edges exactly 8192 pass and 8193 fail before expansion
+ok 65 - G11 graph edges exactly 8192 pass and 8193 fail before expansion
+  ---
+  duration_ms: 229.1757
+  type: 'test'
+  ...
+# Subtest: G12 dependencies per claim exactly 1024 pass and 1025 fail
+ok 66 - G12 dependencies per claim exactly 1024 pass and 1025 fail
+  ---
+  duration_ms: 113.7723
+  type: 'test'
+  ...
+# Subtest: G13 derivation cannot silently drop or duplicate claims, grants or authorities
+ok 67 - G13 derivation cannot silently drop or duplicate claims, grants or authorities
+  ---
+  duration_ms: 53.0266
+  type: 'test'
+  ...
+# Subtest: G14 claimed identity, dependency identity and candidate root mismatches reject
+ok 68 - G14 claimed identity, dependency identity and candidate root mismatches reject
+  ---
+  duration_ms: 23.7841
+  type: 'test'
+  ...
+# Subtest: G15 normalized grant identity omits audit bytes, retains classes and scoped assumptions
+ok 69 - G15 normalized grant identity omits audit bytes, retains classes and scoped assumptions
+  ---
+  duration_ms: 2.9395
+  type: 'test'
+  ...
+# Subtest: G16 noncanonical normative array order rejects instead of silently changing identity
+ok 70 - G16 noncanonical normative array order rejects instead of silently changing identity
+  ---
+  duration_ms: 10.3083
+  type: 'test'
+  ...
+# Subtest: G17 derivation enforces the edge ceiling while expanding verified claim dependencies
+ok 71 - G17 derivation enforces the edge ceiling while expanding verified claim dependencies
+  ---
+  duration_ms: 652.4165
+  type: 'test'
+  ...
+# Subtest: G18 arbitrary object property insertion order preserves exact graph and authority bytes
+ok 72 - G18 arbitrary object property insertion order preserves exact graph and authority bytes
+  ---
+  duration_ms: 191.3163
+  type: 'test'
+  ...
+# Subtest: HB01: all sixteen Phase 1 bundles preserve exact history, qualifications and independent provider projections
+ok 73 - HB01: all sixteen Phase 1 bundles preserve exact history, qualifications and independent provider projections
+  ---
+  duration_ms: 245.6401
+  type: 'test'
+  ...
+# Subtest: HB02: MO-1306 binds nineteen immutable raw rows and exact twelve negative history projections
+ok 74 - HB02: MO-1306 binds nineteen immutable raw rows and exact twelve negative history projections
+  ---
+  duration_ms: 62.5029
+  type: 'test'
+  ...
+# Subtest: HB03: MO-1306 preserves all independent provider axes and ten disclosures
+ok 75 - HB03: MO-1306 preserves all independent provider axes and ten disclosures
+  ---
+  duration_ms: 49.506
+  type: 'test'
+  ...
+# Subtest: HB04: known recurrence links only active mandatory gates, including an unavailable current gate
+ok 76 - HB04: known recurrence links only active mandatory gates, including an unavailable current gate
+  ---
+  duration_ms: 11.5943
+  type: 'test'
+  ...
+# Subtest: HB05: observed recurrence preserves historical outcome while excluding optional and inactive links
+ok 77 - HB05: observed recurrence preserves historical outcome while excluding optional and inactive links
+  ---
+  duration_ms: 54.4242
+  type: 'test'
+  ...
+# Subtest: HB06: current-applicable history cannot erase an unavailable gate condition
+ok 78 - HB06: current-applicable history cannot erase an unavailable gate condition
+  ---
+  duration_ms: 10.4032
+  type: 'test'
+  ...
+# Subtest: HB07 immutable granted history rejects FAIL to PASS rewrite
+ok 79 - HB07 immutable granted history rejects FAIL to PASS rewrite
+  ---
+  duration_ms: 28.4384
+  type: 'test'
+  ...
+# Subtest: HB07 immutable granted history rejects BLOCKED removal
+ok 80 - HB07 immutable granted history rejects BLOCKED removal
+  ---
+  duration_ms: 28.7221
+  type: 'test'
+  ...
+# Subtest: HB07 immutable granted history rejects changed historical disposition
+ok 81 - HB07 immutable granted history rejects changed historical disposition
+  ---
+  duration_ms: 27.0144
+  type: 'test'
+  ...
+# Subtest: HB07 immutable granted history rejects wrong historical source
+ok 82 - HB07 immutable granted history rejects wrong historical source
+  ---
+  duration_ms: 35.4861
+  type: 'test'
+  ...
+# Subtest: HB07 immutable granted history rejects wrong candidate provenance
+ok 83 - HB07 immutable granted history rejects wrong candidate provenance
+  ---
+  duration_ms: 30.3298
+  type: 'test'
+  ...
+# Subtest: HB07 immutable granted history rejects omitted required unresolved history
+ok 84 - HB07 immutable granted history rejects omitted required unresolved history
+  ---
+  duration_ms: 25.4835
+  type: 'test'
+  ...
+# Subtest: HB07 immutable granted history rejects fabricated resolution
+ok 85 - HB07 immutable granted history rejects fabricated resolution
+  ---
+  duration_ms: 27.1009
+  type: 'test'
+  ...
+# Subtest: HB07 immutable granted history rejects duplicate conflicting history
+ok 86 - HB07 immutable granted history rejects duplicate conflicting history
+  ---
+  duration_ms: 27.0577
+  type: 'test'
+  ...
+# Subtest: HB08: malformed PASS history and duplicate conflicting rows remain invalid with fixture-owned updated pins
+ok 87 - HB08: malformed PASS history and duplicate conflicting rows remain invalid with fixture-owned updated pins
+  ---
+  duration_ms: 87.9391
+  type: 'test'
+  ...
+# Subtest: HB09: reviewed history must resolve nested source and authority lineage
+ok 88 - HB09: reviewed history must resolve nested source and authority lineage
+  ---
+  duration_ms: 86.3161
+  type: 'test'
+  ...
+# Subtest: HB10: supplied scope and history inventories reject omissions and unknown condition references
+ok 89 - HB10: supplied scope and history inventories reject omissions and unknown condition references
+  ---
+  duration_ms: 144.5698
+  type: 'test'
+  ...
+# Subtest: QB01: qualifications reject omission
+ok 90 - QB01: qualifications reject omission
+  ---
+  duration_ms: 64.7751
+  type: 'test'
+  ...
+# Subtest: QB01: qualifications reject impact downgrade
+ok 91 - QB01: qualifications reject impact downgrade
+  ---
+  duration_ms: 50.3976
+  type: 'test'
+  ...
+# Subtest: QB01: qualifications reject wrong provider
+ok 92 - QB01: qualifications reject wrong provider
+  ---
+  duration_ms: 45.3496
+  type: 'test'
+  ...
+# Subtest: QB01: qualifications reject wrong gate
+ok 93 - QB01: qualifications reject wrong gate
+  ---
+  duration_ms: 45.9291
+  type: 'test'
+  ...
+# Subtest: QB01: qualifications reject unknown code
+ok 94 - QB01: qualifications reject unknown code
+  ---
+  duration_ms: 44.8309
+  type: 'test'
+  ...
+# Subtest: QB01: qualifications reject wrong scope authority
+ok 95 - QB01: qualifications reject wrong scope authority
+  ---
+  duration_ms: 41.3441
+  type: 'test'
+  ...
+# Subtest: QB01: qualifications reject disclosure removal
+ok 96 - QB01: qualifications reject disclosure removal
+  ---
+  duration_ms: 44.872
+  type: 'test'
+  ...
+# Subtest: QB01: qualifications reject fabricated authority member
+ok 97 - QB01: qualifications reject fabricated authority member
+  ---
+  duration_ms: 39.8676
+  type: 'test'
+  ...
+# Subtest: QB02: scope qualification inventory rejects extra, omitted and conflicting records
+ok 98 - QB02: scope qualification inventory rejects extra, omitted and conflicting records
+  ---
+  duration_ms: 132.2176
+  type: 'test'
+  ...
+# Subtest: QB03: an identical qualification shared by granted claims merges exact claim/grant identities
+ok 99 - QB03: an identical qualification shared by granted claims merges exact claim/grant identities
+  ---
+  duration_ms: 81.6086
+  type: 'test'
+  ...
+# Subtest: QB04: historical disclosures require exact preserved condition and gate set
+ok 100 - QB04: historical disclosures require exact preserved condition and gate set
+  ---
+  duration_ms: 130.7876
+  type: 'test'
+  ...
+# Subtest: QB05: bounded advisory and REST scope require their exact disclosures
+ok 101 - QB05: bounded advisory and REST scope require their exact disclosures
+  ---
+  duration_ms: 48.0736
+  type: 'test'
+  ...
+# Subtest: QB06: unavailable scope retains known qualified history without inventing completeness
+ok 102 - QB06: unavailable scope retains known qualified history without inventing completeness
+  ---
+  duration_ms: 40.8368
+  type: 'test'
+  ...
+# Subtest: QB07: unavailable history retains known disclosures but still validates supplied scope condition inventory
+ok 103 - QB07: unavailable history retains known disclosures but still validates supplied scope condition inventory
+  ---
+  duration_ms: 108.8581
+  type: 'test'
+  ...
+# Subtest: QB08: both unavailable inventories retain locally valid known qualifications and defer missing inventory references
+ok 104 - QB08: both unavailable inventories retain locally valid known qualifications and defer missing inventory references
+  ---
+  duration_ms: 68.53
+  type: 'test'
+  ...
+# Subtest: PB01 immutable MO-1306 authority rejects false github execution promotion
+ok 105 - PB01 immutable MO-1306 authority rejects false github execution promotion
+  ---
+  duration_ms: 27.8683
+  type: 'test'
+  ...
+# Subtest: PB01 immutable MO-1306 authority rejects false gitlab execution promotion
+ok 106 - PB01 immutable MO-1306 authority rejects false gitlab execution promotion
+  ---
+  duration_ms: 27.7549
+  type: 'test'
+  ...
+# Subtest: PB01 immutable MO-1306 authority rejects false jenkins execution promotion
+ok 107 - PB01 immutable MO-1306 authority rejects false jenkins execution promotion
+  ---
+  duration_ms: 25.4286
+  type: 'test'
+  ...
+# Subtest: PB01 immutable MO-1306 authority rejects false azure execution promotion
+ok 108 - PB01 immutable MO-1306 authority rejects false azure execution promotion
+  ---
+  duration_ms: 25.6166
+  type: 'test'
+  ...
+# Subtest: PB02: full GitHub hosted certification requires all four exact case facts
+ok 109 - PB02: full GitHub hosted certification requires all four exact case facts
+  ---
+  duration_ms: 34.9346
+  type: 'test'
+  ...
+# Subtest: PB03: provider labels cannot alias, substitute provider identity, or remove Generic certification unnoticed
+ok 110 - PB03: provider labels cannot alias, substitute provider identity, or remove Generic certification unnoticed
+  ---
+  duration_ms: 88.3345
+  type: 'test'
+  ...
+# Subtest: PB04: contract-only providers cannot claim SUPPORTED while not live certified
+ok 111 - PB04: contract-only providers cannot claim SUPPORTED while not live certified
+  ---
+  duration_ms: 129.6487
+  type: 'test'
+  ...
+# Subtest: PB05: known lower-minimum unsupported facts are retained for 2A blockers with no fabricated certification
+ok 112 - PB05: known lower-minimum unsupported facts are retained for 2A blockers with no fabricated certification
+  ---
+  duration_ms: 15.6173
+  type: 'test'
+  ...
+# Subtest: PB06: unavailable provider parents produce no fabricated provider observation
+ok 113 - PB06: unavailable provider parents produce no fabricated provider observation
+  ---
+  duration_ms: 10.419
+  type: 'test'
+  ...
+# Subtest: PB07: independently reviewed validation and execution facts do not imply a universal certification ranking
+ok 114 - PB07: independently reviewed validation and execution facts do not imply a universal certification ranking
+  ---
+  duration_ms: 9.3832
+  type: 'test'
+  ...
+# Subtest: DB01: selection order does not affect projection bytes or mutate input, and outputs are detached
+ok 115 - DB01: selection order does not affect projection bytes or mutate input, and outputs are detached
+  ---
+  duration_ms: 65.5224
+  type: 'test'
+  ...
+# Subtest: DB02: semantic history and qualification set order remains frozen and rejects reordered arrays
+ok 116 - DB02: semantic history and qualification set order remains frozen and rejects reordered arrays
+  ---
+  duration_ms: 83.8077
+  type: 'test'
+  ...
+# Subtest: LB01: history record count accepts 128 and rejects 129 without truncation
+ok 117 - LB01: history record count accepts 128 and rejects 129 without truncation
+  ---
+  duration_ms: 31.1069
+  type: 'test'
+  ...
+# Subtest: LB02: assessment qualification union accepts 128 and rejects 129 across individually bounded claims
+ok 118 - LB02: assessment qualification union accepts 128 and rejects 129 across individually bounded claims
+  ---
+  duration_ms: 34.4602
+  type: 'test'
+  ...
+# Subtest: LB03: exact original disposition length accepts 256 printable characters and rejects 257
+ok 119 - LB03: exact original disposition length accepts 256 printable characters and rejects 257
+  ---
+  duration_ms: 14.0774
+  type: 'test'
+  ...
+# Subtest: IB01: complete independently pinned MO-1306 verifier retains exact history, provider state and qualifications
+ok 120 - IB01: complete independently pinned MO-1306 verifier retains exact history, provider state and qualifications
+  ---
+  duration_ms: 789.8278
+  type: 'test'
+  ...
+# Subtest: IB02: complete verifier rejects schema-valid rewritten or removed history despite fresh raw pins
+ok 121 - IB02: complete verifier rejects schema-valid rewritten or removed history despite fresh raw pins
+  ---
+  duration_ms: 593.9981
+  type: 'test'
+  ...
+# Subtest: IB03: complete verifier rejects all four MO-1306 execution promotions with unchanged reviewed grants
+ok 122 - IB03: complete verifier rejects all four MO-1306 execution promotions with unchanged reviewed grants
+  ---
+  duration_ms: 758.4077
+  type: 'test'
+  ...
+# Subtest: IB04: complete verifier uses dedicated qualification mismatch classification
+ok 123 - IB04: complete verifier uses dedicated qualification mismatch classification
+  ---
+  duration_ms: 302.4979
+  type: 'test'
+  ...
+# Subtest: IB05: complete verifier uses dedicated history mismatch classification for PASS rewriting
+ok 124 - IB05: complete verifier uses dedicated history mismatch classification for PASS rewriting
+  ---
+  duration_ms: 58.5706
+  type: 'test'
+  ...
+# Subtest: IB06: independently pinned source bytes and candidate context bind historical claims
+ok 125 - IB06: independently pinned source bytes and candidate context bind historical claims
+  ---
+  duration_ms: 188.8583
+  type: 'test'
+  ...
+# Subtest: L01 authority byte admission includes the exact ceiling and rejects plus one before parse/copy
+ok 126 - L01 authority byte admission includes the exact ceiling and rejects plus one before parse/copy
+  ---
+  duration_ms: 18.4002
+  type: 'test'
+  ...
+# Subtest: L02 envelope byte ceiling is enforced in acquisition before snapshot copying
+ok 127 - L02 envelope byte ceiling is enforced in acquisition before snapshot copying
+  ---
+  duration_ms: 42.8384
+  type: 'test'
+  ...
+# Subtest: L03 manifest claim admission is 64 envelopes, independent of the finite gate authority limit
+ok 128 - L03 manifest claim admission is 64 envelopes, independent of the finite gate authority limit
+  ---
+  duration_ms: 11.1141
+  type: 'test'
+  ...
+# Subtest: L04 grant representation admits 64 and rejects 65 without claiming all grants fit the closed profile
+ok 129 - L04 grant representation admits 64 and rejects 65 without claiming all grants fit the closed profile
+  ---
+  duration_ms: 13.9227
+  type: 'test'
+  ...
+# Subtest: L05 claim dependencies and every explicit dependency reference list admit 1024 and reject 1025
+ok 130 - L05 claim dependencies and every explicit dependency reference list admit 1024 and reject 1025
+  ---
+  duration_ms: 55.3305
+  type: 'test'
+  ...
+# Subtest: L06 root, grant and claim assumption sets admit 32 and reject 33
+ok 131 - L06 root, grant and claim assumption sets admit 32 and reject 33
+  ---
+  duration_ms: 9.9494
+  type: 'test'
+  ...
+# Subtest: L07 history representation admits 128 immutable rows and rejects 129
+ok 132 - L07 history representation admits 128 immutable rows and rejects 129
+  ---
+  duration_ms: 29.4909
+  type: 'test'
+  ...
+# Subtest: L08 qualification representation admits 128 and rejects 129 without truncation
+ok 133 - L08 qualification representation admits 128 and rejects 129 without truncation
+  ---
+  duration_ms: 11.6696
+  type: 'test'
+  ...
+# Subtest: L09 scope qualification/condition reference sets each enforce their exact 128 cap
+ok 134 - L09 scope qualification/condition reference sets each enforce their exact 128 cap
+  ---
+  duration_ms: 8.8871
+  type: 'test'
+  ...
+# Subtest: L10 source references admit 128 and authority source references admit 32 at their declared schemas
+ok 135 - L10 source references admit 128 and authority source references admit 32 at their declared schemas
+  ---
+  duration_ms: 4.0137
+  type: 'test'
+  ...
+# Subtest: L11 normalized authority and audit digest reference capacities are explicit, not generic INPUT errors
+ok 136 - L11 normalized authority and audit digest reference capacities are explicit, not generic INPUT errors
+  ---
+  duration_ms: 82.1117
+  type: 'test'
+  ...
+# Subtest: L12 independent cap failures never fabricate a partial verified projection
+ok 137 - L12 independent cap failures never fabricate a partial verified projection
+  ---
+  duration_ms: 12.9351
+  type: 'test'
+  ...
+# Subtest: P2B projection and independent result evidence: could-not-evaluate
+ok 138 - P2B projection and independent result evidence: could-not-evaluate
+  ---
+  duration_ms: 176.7454
+  type: 'test'
+  ...
+# Subtest: P2B projection and independent result evidence: history-blocker-unavailable
+ok 139 - P2B projection and independent result evidence: history-blocker-unavailable
+  ---
+  duration_ms: 144.3915
+  type: 'test'
+  ...
+# Subtest: P2B projection and independent result evidence: informational-ready
+ok 140 - P2B projection and independent result evidence: informational-ready
+  ---
+  duration_ms: 132.3278
+  type: 'test'
+  ...
+# Subtest: P2B projection and independent result evidence: metadata-only
+ok 141 - P2B projection and independent result evidence: metadata-only
+  ---
+  duration_ms: 143.689
+  type: 'test'
+  ...
+# Subtest: P2B projection and independent result evidence: mixed-precedence
+ok 142 - P2B projection and independent result evidence: mixed-precedence
+  ---
+  duration_ms: 136.5921
+  type: 'test'
+  ...
+# Subtest: P2B projection and independent result evidence: mo1306-qualified
+ok 143 - P2B projection and independent result evidence: mo1306-qualified
+  ---
+  duration_ms: 656.7502
+  type: 'test'
+  ...
+# Subtest: P2B projection and independent result evidence: not-ready
+ok 144 - P2B projection and independent result evidence: not-ready
+  ---
+  duration_ms: 127.3536
+  type: 'test'
+  ...
+# Subtest: P2B projection and independent result evidence: post-tag-absent
+ok 145 - P2B projection and independent result evidence: post-tag-absent
+  ---
+  duration_ms: 130.4304
+  type: 'test'
+  ...
+# Subtest: P2B projection and independent result evidence: post-tag-lightweight
+ok 146 - P2B projection and independent result evidence: post-tag-lightweight
+  ---
+  duration_ms: 137.1652
+  type: 'test'
+  ...
+# Subtest: P2B projection and independent result evidence: post-tag-ready
+ok 147 - P2B projection and independent result evidence: post-tag-ready
+  ---
+  duration_ms: 147.7756
+  type: 'test'
+  ...
+# Subtest: P2B projection and independent result evidence: post-tag-wrong-target
+ok 148 - P2B projection and independent result evidence: post-tag-wrong-target
+  ---
+  duration_ms: 122.091
+  type: 'test'
+  ...
+# Subtest: P2B projection and independent result evidence: pre-tag-present
+ok 149 - P2B projection and independent result evidence: pre-tag-present
+  ---
+  duration_ms: 117.6807
+  type: 'test'
+  ...
+# Subtest: P2B projection and independent result evidence: qualified
+ok 150 - P2B projection and independent result evidence: qualified
+  ---
+  duration_ms: 126.321
+  type: 'test'
+  ...
+# Subtest: P2B projection and independent result evidence: ready
+ok 151 - P2B projection and independent result evidence: ready
+  ---
+  duration_ms: 120.0107
+  type: 'test'
+  ...
+# Subtest: P2B projection and independent result evidence: rest-qualified
+ok 152 - P2B projection and independent result evidence: rest-qualified
+  ---
+  duration_ms: 90.896
+  type: 'test'
+  ...
+# Subtest: P2B projection and independent result evidence: selective-reuse
+ok 153 - P2B projection and independent result evidence: selective-reuse
+  ---
+  duration_ms: 123.7143
+  type: 'test'
+  ...
+# Subtest: P2B verified snapshots detach and freeze every returned fact
+ok 154 - P2B verified snapshots detach and freeze every returned fact
+  ---
+  duration_ms: 66.8145
+  type: 'test'
+  ...
+# Subtest: P2B metadata changes only raw proof binding and diagnostics
+ok 155 - P2B metadata changes only raw proof binding and diagnostics
+  ---
+  duration_ms: 111.5397
+  type: 'test'
+  ...
+# Subtest: P2B opaque bounded advisory timestamp has no age window or invented syntax
+ok 156 - P2B opaque bounded advisory timestamp has no age window or invented syntax
+  ---
+  duration_ms: 597.8583
+  type: 'test'
+  ...
+# Subtest: P2B deterministic internal projection uses canonical records, not object insertion order
+ok 157 - P2B deterministic internal projection uses canonical records, not object insertion order
+  ---
+  duration_ms: 312.1892
+  type: 'test'
+  ...
+# Subtest: P2B Freeze-mandated set ordering rejects permutations instead of normalizing signed identity
+ok 158 - P2B Freeze-mandated set ordering rejects permutations instead of normalizing signed identity
+  ---
+  duration_ms: 499.9541
+  type: 'test'
+  ...
+# Subtest: P2B explicit reuse dispositions preserve unrelated dependency closure
+ok 159 - P2B explicit reuse dispositions preserve unrelated dependency closure
+  ---
+  duration_ms: 220.8163
+  type: 'test'
+  ...
+# Subtest: P2B independently reverified source mutation cannot hide behind result self-hashes
+ok 160 - P2B independently reverified source mutation cannot hide behind result self-hashes
+  ---
+  duration_ms: 43.624
+  type: 'test'
+  ...
+# Subtest: P2B result evidence tamper: candidate
+ok 161 - P2B result evidence tamper: candidate
+  ---
+  duration_ms: 713.8811
+  type: 'test'
+  ...
+# Subtest: P2B result evidence tamper: authorityIdentityDigest
+ok 162 - P2B result evidence tamper: authorityIdentityDigest
+  ---
+  duration_ms: 876.7078
+  type: 'test'
+  ...
+# Subtest: P2B result evidence tamper: qualification
+ok 163 - P2B result evidence tamper: qualification
+  ---
+  duration_ms: 808.6544
+  type: 'test'
+  ...
+# Subtest: P2B result evidence tamper: history
+ok 164 - P2B result evidence tamper: history
+  ---
+  duration_ms: 1082.1016
+  type: 'test'
+  ...
+# Subtest: P2B result evidence tamper: provider
+ok 165 - P2B result evidence tamper: provider
+  ---
+  duration_ms: 1341.8851
+  type: 'test'
+  ...
+# Subtest: P2B result evidence tamper: graph
+ok 166 - P2B result evidence tamper: graph
+  ---
+  duration_ms: 1187.9687
+  type: 'test'
+  ...
+# Subtest: P2B result evidence tamper: audit
+ok 167 - P2B result evidence tamper: audit
+  ---
+  duration_ms: 957.8095
+  type: 'test'
+  ...
+# Subtest: P2B result evidence tamper: gateBinding
+ok 168 - P2B result evidence tamper: gateBinding
+  ---
+  duration_ms: 1023.3813
+  type: 'test'
+  ...
+# Subtest: P2B proof material is exact frozen audit, independent of final readiness calculation
+ok 169 - P2B proof material is exact frozen audit, independent of final readiness calculation
+  ---
+  duration_ms: 177.4784
+  type: 'test'
+  ...
+# Subtest: R01 raw source integrity precedes an earlier logical envelope coverage contradiction
+ok 170 - R01 raw source integrity precedes an earlier logical envelope coverage contradiction
+  ---
+  duration_ms: 43.5861
+  type: 'test'
+  ...
+# Subtest: R02 earlier validation phase precedes a smaller later-phase error exit
+ok 171 - R02 earlier validation phase precedes a smaller later-phase error exit
+  ---
+  duration_ms: 29.7453
+  type: 'test'
+  ...
+# Subtest: R03 independent source corruption precedes current-candidate authority mismatch
+ok 172 - R03 independent source corruption precedes current-candidate authority mismatch
+  ---
+  duration_ms: 37.3055
+  type: 'test'
+  ...
+1..172
+# tests 172
+# suites 0
+# pass 172
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 26574.2777

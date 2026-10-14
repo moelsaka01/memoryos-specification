@@ -1,0 +1,52 @@
+from pathlib import Path
+import json,hashlib,datetime
+ROOT=Path(__file__).resolve().parents[4]
+S=ROOT/'repositories/cca-conformance/evidence/mo1307/phase2c-final'
+def read(name):return json.loads((S/name).read_text(encoding='utf-8-sig'))
+def sha(b):return hashlib.sha256(b).hexdigest()
+def bytes_at(p):return Path('\\\\?\\'+str(p)).read_bytes()
+def row(path):
+ p=ROOT/path;b=bytes_at(p);return {'path':path,'byteLength':len(b),'sha256':sha(b)}
+def write(name,data):
+ p=S/name;assert not p.exists(),name;p.write_text(json.dumps(data,indent=2)+'\n',encoding='utf-8')
+def verify(rows):
+ for r in rows:
+  b=bytes_at(ROOT/r['path']);assert len(b)==r['byteLength'] and sha(b)==r['sha256'].removeprefix('sha256:'),r['path']
+base=read('baseline.json');delta=read('authority-delta.json');native=read('native-acceptance.json');life=read('native-lifecycle.json');pub=read('publication-final-resolution.json');timer=read('timer-regression.json');phase1=read('phase1-attempt1/receipt.json');surface=read('surfaces-attempt2/receipt.json')
+assert base['preservationCount']==593 and delta['count']==186 and delta['overlaps']==5
+nonoverlap=[r for r in delta['rows'] if not r['overlap']]
+assert len(nonoverlap)==181
+for r in nonoverlap:assert sha(bytes_at(ROOT/r['path']))==r['authority']['sha256'],r['path']
+verify(read('phase1-attempt1/source-binding-before.json'))
+verify(read('timer-attempt3/source-binding-before.json'))
+verify(read('surfaces-attempt2/inputs.json')['sources'])
+verify(pub['finalProductionBindings'])
+for r in native['sourceBindings']:assert sha(bytes_at(ROOT/'repositories/memoryos-readiness'/r['file']))==r['sha256']
+assert pub['result']=='PASS' and pub['finalSourceRegressions']['passedUniqueCases']==124
+assert phase1['result']=='PASS' and phase1['tests']['pass']==105 and phase1['sourcesUnchanged']
+assert timer['result']=='PASS' and timer['counts']['sequentialWitnesses']==7 and timer['counts']['survivingTimers']==0
+assert surface['result']=='PASS' and surface['command']['tests']['pass']==94
+assert native['deadlines']['result']=='PASS' and native['deadlines']['acceptedCases']==11
+assert native['environment']['acceptedCases']==18 and all(r['outcome']=='PASS' for r in native['environment']['cases'])
+assert native['filesystem']['acceptedPrimaryCases']==33 and native['filesystem']['acceptedSupplementCases']==1
+assert life['result']=='PASS' and life['cases']==7 and life['acceptedHelpers']==47
+for f in ['authority-review.json','compatibility.json','historical-preservation.json','stopped-preservation-review.json','near-seal-closure-review.json','accepted-commit-procedure-review.json']:assert read(f)['result']=='PASS',f
+for f in ['package-regeneration/receipt.json','package-integrity/receipt.json','workspace-verification/receipt.json','diff-check/receipt.json']:assert read(f)['result']=='PASS',f
+inventory=read('preservation/inventory.json');assert len(inventory['rows'])==593
+for r in inventory['rows']:
+ b=bytes_at(S/r['snapshot']);assert len(b)==r['byteLength'] and sha(b)==r['sha256'].removeprefix('sha256:')
+pack=json.loads((S/'package-integrity/stdout.txt').read_text());assert pack['members']==84 and pack['contractMembers']==53 and pack['externalProductionDependencies']==0
+resolved=[]
+for r in delta['rows']:
+ if r['overlap']:
+  purpose={'repositories/memoryos-readiness/sbom.spdx.json':'Regenerated only after final production/native tests from the exact 84-member 2C closure; preserve valid dirty additions and C2FB finalization source; no 2A/2B union.', 'repositories/memoryos-readiness/distribution-manifest.json':'Regenerated after final tests and SBOM from the exact 2C closure; binds final SBOM and source without conformance evidence.'}.get(r['path'])
+  resolved.append({'path':r['path'],'base':r['base'],'preservedDirty':r['dirty'],'authority':r['authority'],'final':row(r['path']),'resolution':purpose or {'repositories/memoryos-readiness/src/publication.mjs':'Semantic three-way resolution plus demonstrated N24 local fix; publication-final-resolution.json.', 'repositories/memoryos-readiness/helpers/README.md':'Exact C2FB finalization paragraphs retained with native helper and authorized launch docs; overlap-helper-readme.json.', 'repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs':'Exact corrected N24 authority plus dirty actual native N15/N17 witnesses; overlap-phase1-native.json.'}[r['path']]})
+write('overlap-resolution.json',{'kind':'MO1307FinalAllOverlapResolution','result':'PASS','count':5,'nonoverlapExact':181,'blanketResolution':False,'rows':resolved,'packageCheck':pack})
+paths=sorted(p.relative_to(ROOT).as_posix() for p in (ROOT/'repositories/memoryos-readiness').rglob('*') if p.is_file())
+write('final-production-inventory.json',{'kind':'MO1307FinalProductionInventory','result':'PASS','authority':base['authority'],'members':len(paths),'rows':[row(p) for p in paths],'semanticIntegration':'2A/2B remain guarded for Phase2D; no union package.'})
+now=datetime.datetime.now(datetime.timezone.utc);start=datetime.datetime.fromisoformat(base['startedUtc'].replace('Z','+00:00'));minutes=(now-start).total_seconds()/60
+assert minutes<180
+write('timing.json',{'startedUtc':base['startedUtc'],'acceptanceSealedUtc':now.isoformat(),'elapsedMinutes':minutes,'targetMinutes':90,'checkpoint90':'NOT_REACHED' if minutes<90 else 'REQUIRED','checkpoint120':'NOT_REACHED' if minutes<120 else 'REQUIRED','hardStopUtc':base['hardStopUtc'],'hardStopCompliant':True})
+names=['authority reconciliation','dirty-byte preservation','wire2.0','PowerShell launch','launch security13','native helper','evaluate9','verify4','cross-slot stability','topology/no-overlap','helper deadlines','worker deadlines','cancellation','queued rename','filesystem negatives','environment negatives','publication','R26','R27','N24 lifetime','stdout/stderr/exit','API','CLI','determinism','freshPhase1 105','2A compatibility','2B compatibility','package integrity','workspace verification','git diff --check']
+write('acceptance.json',{'kind':'MO1307Phase2CFinalAcceptance','result':'PASS','authority':base['authority'],'gates':{n:'PASS' for n in names},'uniqueRuntimePublicationCases':124,'surfaceInspectionApiCliCases':94,'freshPhase1Cases':105,'timerLifetimeWitnesses':7,'nativeLifecycleCases':7,'nativeFilesystemCases':34,'nativeDeadlineCases':11,'environmentCases':18,'sourceClosuresVerifiedCurrent':True,'evidenceScope':'Actual fixed Windows native inspection frames for native lifecycle/FS; reviewed fixed semantic worker for 2C transport only. Actual queued rename/worker with synthetic inspection frames is separately labeled. Failed attempts retain their failure states.','availabilityException':'One admitted native rename has no finite settlement bound; disposition resumes at actual settlement plus2000ms.','historicalStopsPreserved':True,'phase2DStarted':False})
+print(json.dumps({'result':'PASS','gates':len(names),'sourceFiles':len(paths),'overlaps':len(resolved),'elapsedMinutes':minutes}))

@@ -1,0 +1,50 @@
+{
+  "kind": "MO1310BaselineKnownFailuresReceipt",
+  "version": "1.0.0",
+  "suite": "mo1308",
+  "command": "node --test --test-concurrency=1 tests/mo1308_*_test.mjs",
+  "cwd": "repositories/cca-conformance",
+  "tree": {
+    "commit": "889f99e72a5d41c242572cc052ab97b07cc10a24",
+    "tag": "v1.3.0",
+    "path": "C:\t131b",
+    "prepared": "npm ci --ignore-scripts"
+  },
+  "host": {
+    "platform": "win32",
+    "arch": "x64",
+    "node": "v24.21.0"
+  },
+  "startedUtc": "2026-10-13T09:39:05Z",
+  "finishedUtc": "2026-10-13T11:02:02Z",
+  "exitCode": 1,
+  "tests": 221,
+  "pass": 214,
+  "fail": 7,
+  "failingTestNames": [
+    "A01 lineage, changed paths and released bytes hold for HEAD",
+    "A02 this branch changes no production path and adds no evidence beyond the A3.x precondition evidence, protocol-defined rehearsal evidence and verifying certifying generations",
+    "B01 released closures, vendored SDK copies, Action manifest and the readiness package hold",
+    "B02 the tags are the pinned ones; two are independently recorded in the Freeze",
+    "D03 a complete accepted state: I3 is built, then the binding-only BF is certified ready to tag, and nothing is tagged",
+    "N07 lineage: a rewritten Freeze, a missing amendment and a path outside the allowed set are findings",
+    "S03 a complete non-certifying rehearsal passes every case, verifies its own evidence, and writes the closure artifacts"
+  ],
+  "log": {
+    "path": "baseline-mo1308/mo1308-at-v1.3.0.log",
+    "sha256": "sha256:15323847609efb326cff1b1916edd9e125d133813c1465547ac6316ee1930548"
+  },
+  "candidateRow": {
+    "rows": "regression/rows.json",
+    "row": 5,
+    "suite": "mo1308",
+    "run": 1,
+    "commit": "bfdd6315cd8beb05340be68b44fc7c25318bf3dc",
+    "tests": 221,
+    "pass": 214,
+    "fail": 7,
+    "log": "regression/logs/005-mo1308-run1.log",
+    "logSha256": "sha256:24e4219afdc3dad417f27a6f8e2f0493c78d9a849f17456dc727f35be6fb0292"
+  },
+  "result": "IDENTICAL: the same seven test names fail at v1.3.0 and at the candidate on this host"
+}

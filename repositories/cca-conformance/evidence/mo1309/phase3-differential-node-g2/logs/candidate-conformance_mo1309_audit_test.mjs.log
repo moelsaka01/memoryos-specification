@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: DB26 DB27 classifyDiff accepts MO-1309 additions and the three documents, and refuses everything else (negative controls)
+ok 1 - DB26 DB27 classifyDiff accepts MO-1309 additions and the three documents, and refuses everything else (negative controls)
+  ---
+  duration_ms: 3.491606
+  type: 'test'
+  ...
+# Subtest: DB27 import scan: relative and node: specifiers pass, a package or URL specifier is an offender (negative control)
+ok 2 - DB27 import scan: relative and node: specifiers pass, a package or URL specifier is an offender (negative control)
+  ---
+  duration_ms: 0.76767
+  type: 'test'
+  ...
+# Subtest: DB26 DB27 the whole milestone against BF bf2fdc87: only MO-1309 additions and three documents; every MO-1308 production blob is unchanged; no new import
+ok 3 - DB26 DB27 the whole milestone against BF bf2fdc87: only MO-1309 additions and three documents; every MO-1308 production blob is unchanged; no new import
+  ---
+  duration_ms: 415.042422
+  type: 'test'
+  ...
+# Subtest: DB27 the studio package manifest is byte-identical to BF and the MO-1309 tests are wired by a separate manifest (no build step, no script change)
+ok 4 - DB27 the studio package manifest is byte-identical to BF and the MO-1309 tests are wired by a separate manifest (no build step, no script change)
+  ---
+  duration_ms: 6.77919
+  type: 'test'
+  ...
+# Subtest: DB31 ARCHITECTURE.md differs from BF by additions only, and they are the two Freeze section 20 clauses
+ok 5 - DB31 ARCHITECTURE.md differs from BF by additions only, and they are the two Freeze section 20 clauses
+  ---
+  duration_ms: 4.773566
+  type: 'test'
+  ...
+# Subtest: DB32 no export-performance work: the MO-1308 exporter and every MO-1308 production path are byte-identical to the released candidate
+ok 6 - DB32 no export-performance work: the MO-1308 exporter and every MO-1308 production path are byte-identical to the released candidate
+  ---
+  duration_ms: 437.157113
+  type: 'test'
+  ...
+# Subtest: differential gate verdict rules (A3.2 style): a regression, a new failing unit, a changed failure set and an unverified workspace are each caught (negative controls)
+ok 7 - differential gate verdict rules (A3.2 style): a regression, a new failing unit, a changed failure set and an unverified workspace are each caught (negative controls)
+  ---
+  duration_ms: 10.711085
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 973.503912

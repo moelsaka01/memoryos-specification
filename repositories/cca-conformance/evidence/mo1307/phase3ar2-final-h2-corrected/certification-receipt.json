@@ -1,0 +1,510 @@
+{
+  "kind": "MO1307Phase3AR2ConcreteBlockerReceipt",
+  "version": "1.0.0",
+  "createdAt": "2026-10-04T11:44:22.415Z",
+  "result": "PHASE3AR2_CONCRETE_BLOCKER",
+  "certificationPassed": false,
+  "allMandatoryPassed": false,
+  "candidate": {
+    "name": "C3VB",
+    "commit": "17fa84efe46d30e6f4be85fd2427485677a222a3",
+    "productionCommit": null,
+    "productionTree": null
+  },
+  "integrationAuthority": null,
+  "helperAuthority": null,
+  "worktree": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\",
+  "branch": "codex/mo1307-phase3ar2-c3ub",
+  "runtime": {},
+  "package": {},
+  "installedMemberVerification": null,
+  "preCertificationBGate": null,
+  "preCertificationBGateResult": {
+    "result": "PASS",
+    "outcome": "PRE_CERTIFICATION_B_GATE_PASS",
+    "semanticInvocations": 1,
+    "noRetry": true,
+    "helperUsedMs": 15054.459499999999,
+    "productLifecycleElapsedMs": 15527.7212,
+    "maxima": {
+      "requestDurationMs": 2084.8515,
+      "requestChargedMs": 2084.1454,
+      "productRoles": 3,
+      "helpers": 1,
+      "helperConsoles": 1,
+      "productWorkingSetBytes": 211570688
+    },
+    "publication": {
+      "phase": "COMMITTED",
+      "admitted": true,
+      "deadlineExpiredAfterAdmission": false,
+      "cancelledAfterAdmission": false,
+      "namespaceVerified": true,
+      "dispositionDeadline": 17795.360800000002
+    },
+    "cleanupConfirmed": true,
+    "topologyIdentity": {
+      "policy": "MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0",
+      "observerSession": "23508:778026634174:134353600768451333",
+      "unresolvedIdentityFailures": 0,
+      "acceptedPostIdentityRequeryUnavailableCount": 2,
+      "acceptedTerminatedKnownIdentityCount": 19,
+      "acceptedIdentityProofsConsistent": true
+    }
+  },
+  "preservedFailedPreCertificationBGate": null,
+  "preservedFailedPreCertificationBGateResult": {
+    "result": "FAIL",
+    "outcome": "PHASE3AR2_CONCRETE_BLOCKER",
+    "semanticInvocations": 1,
+    "failure": {
+      "name": "AssertionError",
+      "code": "ERR_ASSERTION",
+      "message": "Expected values to be strictly equal:\n\n1 !== 0\n",
+      "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n\n    at file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final-b-gate/gate.mjs:104:110\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)"
+    }
+  },
+  "topologyObserverCorrection": null,
+  "observerDefect": {
+    "event": "candidate_identity_unknown",
+    "historicalIdentityOrSnapshotFailures": 1,
+    "operation": "QueryFullProcessImageNameW",
+    "parentPid": 2140,
+    "pid": 2540,
+    "winerror": 31
+  },
+  "syntheticObserverValidation": {
+    "result": "PASS",
+    "policy": "MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0",
+    "cases": {
+      "acceptedExactly": [
+        "B",
+        "F"
+      ],
+      "allRequiredCasesPassed": true,
+      "failedClosedExactly": [
+        "A",
+        "C",
+        "D",
+        "E",
+        "G"
+      ],
+      "passed": 7,
+      "required": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G"
+      ]
+    },
+    "execution": {
+      "engineeringInterpreterInvocations": 1,
+      "helperRuns": 0,
+      "nativeObserverRuns": 0,
+      "productRuns": 0,
+      "retry": false,
+      "semanticProductInvocations": 0
+    },
+    "security": {
+      "initialIdentityFailureStillFailsClosed": true,
+      "pidReuseFailsClosed": true,
+      "requiresExactCreationAndExitIdentity": true,
+      "requiresParentImageRoleAndLifetimeConsistency": true,
+      "requiresPriorPositiveIdentity": true,
+      "requiresSameObserverSession": true,
+      "toolhelpSnapshotClockIsPostCaptureUpperBound": true,
+      "unrelatedErrorsFailClosed": true,
+      "win32Error31GloballyIgnored": false
+    }
+  },
+  "hHarnessCorrection": null,
+  "hFailureClassification": "H_HARNESS_MARGIN_DEFECT",
+  "hHarnessCorrectionResult": {
+    "result": "PASS",
+    "classification": "H_HARNESS_MARGIN_DEFECT",
+    "correctedControl": {
+      "artificialEofDelayMs": 0,
+      "engineeringMaxMs": 5000,
+      "engineeringMinMs": null,
+      "productDeadlineMs": 9000
+    },
+    "zeroProductValidation": "PASS",
+    "execution": {
+      "certificationRuns": 0,
+      "helperRuns": 0,
+      "nativeObserverRuns": 0,
+      "productRuns": 0,
+      "workerRuns": 0
+    }
+  },
+  "h2HarnessCorrection": null,
+  "h2FailureClassifications": [
+    "H_AGGREGATE_FIXTURE_INPUT_ISOLATION_DEFECT",
+    "H_OBSERVER_EVENT_ORDERING_DEFECT"
+  ],
+  "aggregateHelperEngineeringEnvelope": null,
+  "eventOrderingRule": null,
+  "preservedFailedHCorrectedGeneration": null,
+  "preservedFailedFullGeneration": null,
+  "preservedFailedFullResult": {
+    "result": "PHASE3AR2_CONCRETE_BLOCKER",
+    "completed": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G"
+    ],
+    "h": "FAIL",
+    "unexecuted": [
+      "I",
+      "J",
+      "K",
+      "L",
+      "M",
+      "N",
+      "O"
+    ],
+    "resumed": false,
+    "rewritten": false
+  },
+  "prerequisiteChain": null,
+  "inventory": null,
+  "seal": null,
+  "campaignRunStart": null,
+  "campaignRunFinished": {
+    "finishedAt": "2026-10-04T11:44:22.254Z",
+    "result": "FAILED_INCOMPLETE",
+    "failure": "INTERRUPTED_STARTED_CAMPAIGN",
+    "noFurtherProductExecution": true,
+    "binding": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-corrected/campaign-run-finished.json",
+      "byteLength": 162,
+      "sha256": "sha256:85c457be0cc80b775dfcced3d35c97050556672b145f81ec0836970871f30820"
+    }
+  },
+  "acceptanceValidation": null,
+  "limits": null,
+  "historicalCharacterizationH": "NOT_ESTABLISHED",
+  "replacementHelperBoundH": "NOT_ESTABLISHED",
+  "timelyHelperEngineeringEnvelope": null,
+  "steps": [
+    {
+      "step": "A",
+      "result": "NOT_RUN",
+      "reason": "Stopped at first mandatory failure"
+    },
+    {
+      "step": "B",
+      "result": "NOT_RUN",
+      "reason": "Stopped at first mandatory failure"
+    },
+    {
+      "step": "C",
+      "result": "NOT_RUN",
+      "reason": "Stopped at first mandatory failure"
+    },
+    {
+      "step": "D",
+      "result": "NOT_RUN",
+      "reason": "Stopped at first mandatory failure"
+    },
+    {
+      "step": "E",
+      "result": "NOT_RUN",
+      "reason": "Stopped at first mandatory failure"
+    },
+    {
+      "step": "F",
+      "result": "NOT_RUN",
+      "reason": "Stopped at first mandatory failure"
+    },
+    {
+      "step": "G",
+      "result": "NOT_RUN",
+      "reason": "Stopped at first mandatory failure"
+    },
+    {
+      "step": "H",
+      "result": "NOT_RUN",
+      "reason": "Stopped at first mandatory failure"
+    },
+    {
+      "step": "I",
+      "result": "NOT_RUN",
+      "reason": "Stopped at first mandatory failure"
+    },
+    {
+      "step": "J",
+      "result": "NOT_RUN",
+      "reason": "Stopped at first mandatory failure"
+    },
+    {
+      "step": "K",
+      "result": "NOT_RUN",
+      "reason": "Stopped at first mandatory failure"
+    },
+    {
+      "step": "L",
+      "result": "NOT_RUN",
+      "reason": "Stopped at first mandatory failure"
+    },
+    {
+      "step": "M",
+      "result": "NOT_RUN",
+      "reason": "Stopped at first mandatory failure"
+    },
+    {
+      "step": "N",
+      "result": "NOT_RUN",
+      "reason": "Stopped at first mandatory failure"
+    },
+    {
+      "step": "O",
+      "result": "NOT_RUN",
+      "reason": "Stopped at first mandatory failure"
+    }
+  ],
+  "caseCompletion": [
+    {
+      "step": "A",
+      "expected": [],
+      "completed": [],
+      "remaining": [],
+      "result": "NOT_RUN"
+    },
+    {
+      "step": "B",
+      "expected": [],
+      "completed": [],
+      "remaining": [],
+      "result": "NOT_RUN"
+    },
+    {
+      "step": "C",
+      "expected": [],
+      "completed": [],
+      "remaining": [],
+      "result": "NOT_RUN"
+    },
+    {
+      "step": "D",
+      "expected": [],
+      "completed": [],
+      "remaining": [],
+      "result": "NOT_RUN"
+    },
+    {
+      "step": "E",
+      "expected": [],
+      "completed": [],
+      "remaining": [],
+      "result": "NOT_RUN"
+    },
+    {
+      "step": "F",
+      "expected": [],
+      "completed": [],
+      "remaining": [],
+      "result": "NOT_RUN"
+    },
+    {
+      "step": "G",
+      "expected": [],
+      "completed": [],
+      "remaining": [],
+      "result": "NOT_RUN"
+    },
+    {
+      "step": "H",
+      "expected": [],
+      "completed": [],
+      "remaining": [],
+      "result": "NOT_RUN"
+    },
+    {
+      "step": "I",
+      "expected": [],
+      "completed": [],
+      "remaining": [],
+      "result": "NOT_RUN"
+    },
+    {
+      "step": "J",
+      "expected": [],
+      "completed": [],
+      "remaining": [],
+      "result": "NOT_RUN"
+    },
+    {
+      "step": "K",
+      "expected": [],
+      "completed": [],
+      "remaining": [],
+      "result": "NOT_RUN"
+    },
+    {
+      "step": "L",
+      "expected": [],
+      "completed": [],
+      "remaining": [],
+      "result": "NOT_RUN"
+    },
+    {
+      "step": "M",
+      "expected": [],
+      "completed": [],
+      "remaining": [],
+      "result": "NOT_RUN"
+    },
+    {
+      "step": "N",
+      "expected": [],
+      "completed": [],
+      "remaining": [],
+      "result": "NOT_RUN"
+    },
+    {
+      "step": "O",
+      "expected": [],
+      "completed": [],
+      "remaining": [],
+      "result": "NOT_RUN"
+    }
+  ],
+  "completedMandatoryCases": 0,
+  "remainingMandatoryCases": [],
+  "completed": [],
+  "concreteBlocker": "INTERRUPTED_STARTED_CAMPAIGN",
+  "firstMandatoryFailure": "INTERRUPTED_STARTED_CAMPAIGN",
+  "unexecuted": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O"
+  ],
+  "resourceCleanup": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-corrected/resource-and-cleanup-observations.json",
+    "byteLength": 1524,
+    "sha256": "sha256:7bb07db01e5657d6382d69a0a7a9c86866a24aa3fd0a6dc9906cd53845b67feb"
+  },
+  "integrity": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-corrected/integrity-after.json",
+    "byteLength": 12246,
+    "sha256": "sha256:c0b76a0db4fec15d033ea5fa5c23a0aa2e86ab4074595c9d484a580bfd256f53"
+  },
+  "historicalEvidencePreserved": true,
+  "historicalEvidencePromoted": false,
+  "diagnosticsRun": 0,
+  "retries": 0,
+  "replacementExecutions": 0,
+  "preservedPhase3BR2": "4d92f0f21c9c3aad8202f4558d61b9229c7214fc",
+  "phase3BR2Rerun": false,
+  "phase3BR2Delta": null,
+  "historicalPhase3BR2Delta": {
+    "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/phase3br2-binding-delta.json",
+    "byteLength": 806,
+    "sha256": "sha256:eb7ce0fe102442b546adc2249f05145fb74b48f1b0942efae5401d93b8d0e580"
+  },
+  "preservedPhase3CR2": "7d2006c6e19bb50bffb6c710672be996e3c3590b",
+  "phase3CR2Rerun": false,
+  "phase3CR2ExecutedHere": false,
+  "phase3CR2Delta": null,
+  "historicalPhase3CR2Delta": {
+    "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/phase3cr2-aggregate-delta.json",
+    "byteLength": 611,
+    "sha256": "sha256:69fe830eafba31de064dd1805620ce8244609a282e5493622a68134c31f68e35"
+  },
+  "phase3D": false,
+  "push": false,
+  "tag": false,
+  "determinism": "NOT_RUN",
+  "cliApiParity": [
+    {
+      "step": "A",
+      "result": "NOT_RUN",
+      "rows": []
+    },
+    {
+      "step": "B",
+      "result": "NOT_RUN",
+      "rows": []
+    },
+    {
+      "step": "C",
+      "result": "NOT_RUN",
+      "rows": []
+    },
+    {
+      "step": "D",
+      "result": "NOT_RUN",
+      "rows": []
+    },
+    {
+      "step": "E",
+      "result": "NOT_RUN",
+      "rows": []
+    },
+    {
+      "step": "O",
+      "result": "NOT_RUN",
+      "rows": []
+    }
+  ],
+  "startedAt": "2026-10-04T11:43:53.667Z",
+  "finishedAt": "2026-10-04T11:44:22.415Z",
+  "evidenceMembers": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-corrected/campaign-config.json",
+      "byteLength": 5165,
+      "sha256": "sha256:0ed2c9b4bffb2f16033fe271b741364333e7802e123c41f83b697dd360f35ff0"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-corrected/campaign-run-finished.json",
+      "byteLength": 162,
+      "sha256": "sha256:85c457be0cc80b775dfcced3d35c97050556672b145f81ec0836970871f30820"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-corrected/generation-authorization.txt",
+      "byteLength": 41258,
+      "sha256": "sha256:51fa5b436e63a58e141089322f67859c0146e7381128492bb7de08bae745fbb6"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-corrected/generation-stopped.json",
+      "byteLength": 126,
+      "sha256": "sha256:32316e1f1d68cef12e4926b34909ef6fea2a24fa749a64baaf1a97043b1919c1"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-corrected/pre-execution-gate.json",
+      "byteLength": 113333,
+      "sha256": "sha256:734dff09e3282759dce1da010a2d0657da49412374970c4402fb6ba4058ebd07"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-corrected/integrity-after.json",
+      "byteLength": 12246,
+      "sha256": "sha256:c0b76a0db4fec15d033ea5fa5c23a0aa2e86ab4074595c9d484a580bfd256f53"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-corrected/resource-and-cleanup-observations.json",
+      "byteLength": 1524,
+      "sha256": "sha256:7bb07db01e5657d6382d69a0a7a9c86866a24aa3fd0a6dc9906cd53845b67feb"
+    }
+  ],
+  "handoffDisposition": "No Phase 3D handoff exists for this concrete-blocker Phase 3AR2 stream."
+}

@@ -1,0 +1,587 @@
+"""Independent Phase 3A-R evidence closure and mutation controls; no Git writes.
+
+Only complete, bound native and real hosted evidence permits certification.
+Unavailable hosted execution can be validated only as truthful pending evidence.
+"""
+import copy
+import base64
+import hashlib
+import json
+import os
+from pathlib import Path, PurePosixPath
+import re
+import subprocess
+import sys
+import tarfile
+import zipfile
+
+sys.dont_write_bytecode = True
+ROOT = Path(__file__).resolve().parents[4]
+HERE = Path(__file__).resolve().parent
+OUT = ROOT / 'repositories/cca-conformance/evidence/mo1306/phase3ar'
+SOURCE = ROOT / 'repositories/memoryos-ci'
+CACHE = ROOT / '.cache/mo1306-phase3ar'
+NODE = CACHE / 'node-v24.21.0-win-x64/node.exe'
+PACKAGE = CACHE / 'install/node_modules/memoryos-ci'
+B2 = '0e35ffe70919d77b1db530929093826410b805f9'
+C3A = '90b9ac914e477fb90fe317d0de9ba310aae37f60'
+C3AB = '9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44'
+ARCHIVE = 'sha256:2f1e9424ce64e44b7b1587ce206fe5f7ae72579652ca1fc891c489bc1a21925d'
+DIST = 'sha256:311927a980bd397ab70b95da77d546e4b212968d05973ecf998817764431d773'
+NODE_SHA = 'sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32'
+BRANCH = 'mo1306-certification'
+REPO = 'moelsaka01/memoryos-specification'
+CHECKOUT = 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
+UPLOAD = 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a'
+BASIC = {'memoryos-ci-result.json', 'memoryos-ci-evidence.json', 'memoryos-ci-artifacts.json', 'memoryos-ci-complete.json'}
+SEMANTIC = BASIC | {'evaluation-identity.json', 'policy-outcome.json'}
+SEEN = {}
+
+
+def demand(condition, code):
+    if not condition:
+        raise AssertionError(code)
+
+
+def j(value):
+    return (json.dumps(value, sort_keys=True, separators=(',', ':'), ensure_ascii=False) + '\n').encode()
+
+
+def sha(raw):
+    return 'sha256:' + hashlib.sha256(raw).hexdigest()
+
+
+def row(path):
+    raw = path.read_bytes()
+    return {'path': path.relative_to(ROOT).as_posix(), 'byteLength': len(raw), 'sha256': sha(raw)}
+
+
+def path_for(relative):
+    p = PurePosixPath(relative)
+    demand(not p.is_absolute() and '..' not in p.parts and '\\' not in relative and ':' not in relative, 'REFERENCE_PATH')
+    target = ROOT.joinpath(*p.parts)
+    target.resolve().relative_to(ROOT.resolve())
+    demand(target.is_file() and not target.is_symlink(), 'REFERENCE_FILE')
+    return target
+
+
+def checked(reference):
+    target = path_for(reference['path'])
+    actual = row(target)
+    demand(actual == {key: reference[key] for key in ('path', 'byteLength', 'sha256')}, 'REFERENCE_HASH')
+    SEEN[actual['path']] = actual
+    return target
+
+
+def read(name):
+    target = OUT / name
+    SEEN[row(target)['path']] = row(target)
+    return json.loads(target.read_bytes())
+
+
+def refjson(reference):
+    return json.loads(checked(reference).read_bytes())
+
+
+def git(*args):
+    return subprocess.check_output(['git', '--no-optional-locks', *args], cwd=ROOT, env={**os.environ, 'GIT_OPTIONAL_LOCKS': '0'}, stdin=subprocess.DEVNULL, timeout=60)
+
+
+def package_valid(value):
+    demand(value['baseline'] == C3AB, 'PACKAGE_BASELINE')
+    demand(value['archive']['byteLength'] == 197172 and value['archive']['sha256'] == ARCHIVE, 'PACKAGE_ARCHIVE_IDENTITY')
+    archive = checked(value['archive'])
+    demand(value['memberCount'] == 94 and value['sdkClosureFiles'] == 25 and value['productionDependencies'] == 0, 'PACKAGE_COUNTS')
+    demand(len(value['assemblies']) == 2, 'PACKAGE_TWO_ASSEMBLIES')
+    for assembly in value['assemblies']:
+        demand(assembly['sha256'] == ARCHIVE and assembly['byteLength'] == 197172, 'PACKAGE_ASSEMBLY')
+        checked(assembly)
+    demand(value['distribution']['sha256'] == DIST, 'PACKAGE_DISTRIBUTION')
+    manifest = refjson(value['distribution'])
+    entries = {e['path']: e for e in manifest['files']}
+    names = set(entries) | {'distribution-manifest.json'}
+    demand(len(entries) == 93, 'PACKAGE_MANIFEST_COUNT')
+    with tarfile.open(archive) as handle:
+        members = handle.getmembers()
+        demand(len(members) == 94 and {m.name for m in members} == {'package/' + n for n in names}, 'PACKAGE_TAR_MEMBER_SET')
+        for member in members:
+            demand(member.isfile() and member.uid == member.gid == member.mtime == 0, 'PACKAGE_TAR_KIND')
+            demand(handle.extractfile(member).read() == (SOURCE / member.name[8:]).read_bytes(), 'PACKAGE_TAR_SOURCE')
+    demand({p.relative_to(PACKAGE).as_posix() for p in PACKAGE.rglob('*') if p.is_file()} == names, 'INSTALLED_MEMBER_SET')
+    for name in names:
+        raw = (PACKAGE / name).read_bytes()
+        demand(raw == (SOURCE / name).read_bytes(), 'INSTALLED_SOURCE')
+        if name in entries:
+            demand(len(raw) == entries[name]['byteLength'] and sha(raw) == entries[name]['sha256'], 'INSTALLED_MANIFEST')
+    demand(len(value['installedBefore']) == 94, 'INSTALLED_INITIAL_COUNT')
+    for reference in value['installedBefore']:
+        checked(reference)
+    demand(sha(NODE.read_bytes()) == NODE_SHA, 'NODE_IDENTITY')
+    pkg = json.loads((SOURCE / 'package.json').read_bytes())
+    demand(pkg['name'] == 'memoryos-ci' and pkg['version'] == '0.1.0' and not pkg.get('dependencies'), 'PACKAGE_DEPENDENCIES')
+    return {'memberCount': 94, 'sdkClosureFiles': 25, 'productionDependencies': 0, 'archive': value['archive']}
+
+
+def bundle_valid(contents, directory_name, provider, expected_exit, oracle=None, metadata=None):
+    demand(set(contents) in (BASIC, SEMANTIC), 'BUNDLE_EXTRA_OR_MISSING_FILE')
+    parsed = {name: json.loads(raw) for name, raw in contents.items()}
+    for name in BASIC:
+        demand(j(parsed[name]) == contents[name], 'BUNDLE_CANONICAL_BYTES')
+    result = parsed['memoryos-ci-result.json']; evidence = parsed['memoryos-ci-evidence.json']
+    manifest = parsed['memoryos-ci-artifacts.json']; complete = parsed['memoryos-ci-complete.json']
+    run_id = result['runId']
+    demand(re.fullmatch(r'[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}', run_id) is not None, 'BUNDLE_UUID')
+    demand(directory_name == run_id and all(v['runId'] == run_id for v in (evidence, manifest, complete)), 'BUNDLE_RUN_ID')
+    demand(complete['manifestSha256'] == sha(contents['memoryos-ci-artifacts.json']), 'BUNDLE_COMPLETION_HASH')
+    expected_members = sorted(set(contents) - {'memoryos-ci-artifacts.json', 'memoryos-ci-complete.json'})
+    demand([r['path'] for r in manifest['files']] == expected_members, 'BUNDLE_MANIFEST_MEMBERS')
+    for entry in manifest['files']:
+        raw = contents[entry['path']]
+        demand(len(raw) == entry['byteLength'] and sha(raw) == entry['sha256'], 'BUNDLE_MEMBER_HASH')
+    demand(result['provider'] == evidence['metadata']['provider'] == provider, 'BUNDLE_PROVIDER')
+    demand(result['process']['exitCode'] == expected_exit, 'BUNDLE_EXIT')
+    demand(evidence['distributionSha256'] == DIST and evidence['runtime']['nodeSha256'] == NODE_SHA, 'BUNDLE_CANDIDATE')
+    demand(evidence['resultSha256'] == sha(contents['memoryos-ci-result.json']), 'BUNDLE_RESULT_HASH')
+    demand(evidence['projectionSha256'] == sha(j(result['projection'])), 'BUNDLE_PROJECTION_HASH')
+    demand(evidence['configurationSha256'] == result['configurationDigest'], 'BUNDLE_CONFIG')
+    for source_name, result_key, evidence_key in [('contracts/contract.json', 'contractDigest', 'sha256'), ('contracts/limits.json', 'limitsDigest', 'limitsSha256')]:
+        pin = sha((SOURCE / source_name).read_bytes())
+        demand(result[result_key] == evidence['contract'][evidence_key] == pin, 'BUNDLE_CONTRACT')
+    demand(evidence['runtimeClosureSha256'] == sha((SOURCE / 'runtime/runtime-closure-manifest.json').read_bytes()), 'BUNDLE_RUNTIME_CLOSURE')
+    demand(evidence['semanticContractSha256'] == sha((SOURCE / 'contracts/policy-contract-identities-1.0.0.json').read_bytes()), 'BUNDLE_SEMANTIC_CONTRACT')
+    demand(result['adapterDigest'] == evidence['adapter']['sha256'], 'BUNDLE_ADAPTER')
+    if result['inputDigest'] is not None:
+        demand(result['inputDigest'] == sha(j(evidence['inputs'])), 'BUNDLE_INPUT_HASH')
+    if expected_exit in (0, 6, 7):
+        demand(set(contents) == SEMANTIC, 'BUNDLE_SEMANTIC_SET')
+        decision = {0: 'PASS', 6: 'FAIL', 7: 'COULD_NOT_EVALUATE'}[expected_exit]
+        demand(result['classification'] == result['semantic']['decision'] == decision, 'BUNDLE_DECISION')
+        demand(oracle is not None, 'BUNDLE_ORACLE_REQUIRED')
+        for name in ('evaluation-identity.json', 'policy-outcome.json'):
+            demand(contents[name] == oracle[name], 'BUNDLE_NORMATIVE_BYTES')
+    else:
+        demand(set(contents) == BASIC and result['semantic'] is None, 'BUNDLE_NONSEMANTIC_SET')
+    if metadata is not None:
+        for key, value in metadata.items():
+            demand(evidence['metadata'][key] == value, 'HOSTED_METADATA_' + key)
+    return {'runId': run_id, 'classification': result['classification'], 'fileCount': len(contents), 'normativeDigests': {n: sha(contents[n]) for n in ('evaluation-identity.json', 'policy-outcome.json') if n in contents}}
+
+
+def contents_for(directory):
+    demand(directory.is_dir() and not directory.is_symlink(), 'BUNDLE_DIRECTORY')
+    demand(all(p.is_file() and not p.is_symlink() for p in directory.iterdir()), 'BUNDLE_FILE_KIND')
+    return {p.name: p.read_bytes() for p in directory.iterdir()}
+
+
+def validate_complete_native():
+    summaries = [(p, json.loads(p.read_bytes())) for p in sorted((OUT / 'native').glob('*/summary.json'))]
+    passed = [(p, v) for p, v in summaries if v.get('status') == 'PASS']
+    demand(len(passed) == 1, 'NATIVE_ONE_COMPLETE_CAMPAIGN')
+    summary_path, value = passed[0]; SEEN[row(summary_path)['path']] = row(summary_path)
+    demand(value['failure'] is None and value['caseCount'] == len(value['cases']) == 16, 'NATIVE_CASE_COUNT')
+    demand(value['bindings']['baseline'] == C3AB and value['bindings']['correction'] == C3A and value['bindings']['archiveSha256'] == ARCHIVE and value['bindings']['distributionDigest'] == DIST, 'NATIVE_CANDIDATE')
+    for binding in value['bindings'].values():
+        if isinstance(binding, dict) and {'path', 'sha256', 'byteLength'} <= set(binding): checked(binding)
+    sys.path.insert(0, str(HERE.parent / 'mo1306-phase2d'))
+    from trace_phase2d import validate_trace
+    ids = {'node': str(NODE), 'powershell': str(Path(os.environ['SystemRoot']) / 'System32/WindowsPowerShell/v1.0/powershell.exe'), 'conhost': str(Path(os.environ['SystemRoot']) / 'System32/conhost.exe')}
+    traces = {}
+    for command in value['commands']:
+        trace = refjson(command['trace'])
+        demand(trace['status'] == 'PASS' and trace['exitCode'] == trace['expectedExitCode'], 'TRACE_EXIT')
+        for ref in trace['rawLogs']: checked(ref)
+        validate_trace(trace, ids, PACKAGE)
+        demand(trace['cleanup']['elapsedMs'] <= 2100 and trace['elapsedMs'] <= 75000, 'TRACE_TIME')
+        traces[command['id']] = trace
+    cases = {case['id']: case for case in value['cases']}
+    required = {kind + '-' + suffix for kind in ('policy', 'policySet', 'regression') for suffix in ('pass', 'fail', 'cne')}
+    demand(set(cases) == required | {'error-input', 'corrected-cli-dispatch', 'valid-generate', 'lifecycle-semantic-failure', 'lifecycle-helper-cancel', 'representative-terminal-publication', 'corrected-artifact-negatives'}, 'NATIVE_REQUIRED_CASES')
+    bundles = {}; normative = {}
+    for case_id in sorted(required | {'error-input'}):
+        case = cases[case_id]
+        demand(case['status'] == 'PASS', 'NATIVE_CASE_FAILED')
+        for reference in case['bundleFiles']: checked(reference)
+        directory = ROOT / case['bundle']; directory.resolve().relative_to(OUT.resolve())
+        contents = contents_for(directory)
+        expected_exit = case['expectedExitCode']
+        oracle = None
+        if case_id in required:
+            oracle_record = json.loads((summary_path.parent / 'oracles' / (case_id + '.json')).read_bytes())
+            oracle = {}
+            for name, reference in zip(('evaluation-identity.json', 'policy-outcome.json'), oracle_record['normativeOracleFiles']): oracle[name] = checked(reference).read_bytes()
+            oracle_stdout = next(ref for ref in oracle_record['rawLogs'] if ref['path'].endswith('.stdout.txt'))
+            sdk = json.loads(checked(oracle_stdout).read_bytes())
+            result = json.loads(contents['memoryos-ci-result.json'])
+            for key in ('decision', 'documentDigest', 'semanticDigest', 'evaluationIdentityDigest', 'outcomeDigest'):
+                demand(result['semantic'][key] == sdk[key], 'NATIVE_SDK_DIGEST')
+            normative[case_id] = oracle
+        verified = bundle_valid(contents, directory.name, 'generic', expected_exit, oracle)
+        demand(verified['runId'] == case['runId'], 'NATIVE_CASE_RUN_ID')
+        demand(json.loads(contents['memoryos-ci-evidence.json'])['metadata'] == {'provider': 'generic', 'runId': None, 'attempt': None, 'jobId': None, 'repository': None, 'revision': None, 'event': None, 'changeRequest': None}, 'NATIVE_METADATA')
+        bundles[case_id] = verified
+    dispatch = cases['corrected-cli-dispatch']; commands = dispatch['actualInstalledCommands']
+    demand({'constructor', 'toString', '__proto__', 'invalid-command'} <= {item['command'] for item in commands}, 'CLI_PROTOTYPE_COVERAGE')
+    parser = refjson(dispatch['parserWitness'])
+    demand(parser['counts']['fail'] == 0 and dispatch['handlerBypassPrevented'] is True, 'CLI_HANDLER_BYPASS')
+    for item in commands:
+        trace = refjson(item['trace'])
+        demand(trace['exitCode'] == 10 and trace['stdout'] == '' and json.loads(trace['stderr'])['code'] == 'MO1306_USAGE', 'CLI_USAGE_EXIT')
+        demand(all(p['pid'] == trace['rootPid'] for p in trace['lifetimes']), 'CLI_DESCENDANT_BYPASS')
+    for case_id, code in [('lifecycle-semantic-failure', 'MO1306_SEMANTIC_VALIDATION'), ('lifecycle-helper-cancel', 'MO1306_CANCELLED')]:
+        trace = refjson(cases[case_id]['trace'])
+        demand(json.loads(trace['stdout'])['result'] == code and cases[case_id]['faultInjection'] is None, 'LIFECYCLE_RESULT')
+    publication = refjson(cases['representative-terminal-publication']['report'])
+    demand(publication['failure'] is None and publication['baseline'] == C3AB and publication['distributionDigest'] == DIST and publication['caseCount'] == 2, 'PUBLICATION_BINDING')
+    a, b = publication['cases']
+    demand(a['rejectionCode'] == 'MO1306_CANCELLED' and a['observation']['stagedFiles'] and a['observation']['markerAbsentAtAbort'] is True and a['stagedFilesCleaned'] is True and a['completionMarkerAbsent'] is True, 'PUBLICATION_CANCELLATION')
+    demand(b['completeBundleUnchanged'] is True and b['settleMs'] == 300 and b['runId'] == cases['policy-pass']['runId'], 'PUBLICATION_STABILITY')
+    demand({r['mutation'] for r in cases['corrected-artifact-negatives']['results']} == {'extra-file', 'run-id-binding', 'missing-complete'}, 'NATIVE_ARTIFACT_NEGATIVES')
+    for record in cases['corrected-artifact-negatives']['results']:
+        trace = refjson(record['trace']); demand(trace['exitCode'] == 15 and json.loads(trace['stderr'])['code'] == 'MO1306_BUNDLE_INTEGRITY', 'NATIVE_ARTIFACT_REJECTION')
+    return {'summary': row(summary_path), 'caseCount': 16, 'semanticCases': 9, 'observedCommands': len(traces), 'failedAttemptsPreserved': [row(p) for p, v in summaries if v.get('status') != 'PASS'], 'bundles': bundles, 'peakAttributableRoles': max(t['observation']['peakProcessCount'] for t in traces.values()), 'peakAggregateRssBytes': max(t['observation']['peakAggregateRssBytes'] for t in traces.values())}, normative
+
+
+def trace_checked(reference, require_pass=True):
+    trace = refjson(reference)
+    for raw_log in trace['rawLogs']: checked(raw_log)
+    sys.path.insert(0, str(HERE.parent / 'mo1306-phase2d'))
+    from trace_phase2d import validate_trace
+    identities = {'node': str(NODE), 'powershell': str(Path(os.environ['SystemRoot']) / 'System32/WindowsPowerShell/v1.0/powershell.exe'), 'conhost': str(Path(os.environ['SystemRoot']) / 'System32/conhost.exe')}
+    validate_trace(trace, identities, PACKAGE)
+    if require_pass: demand(trace['status'] == 'PASS' and trace['exitCode'] == trace['expectedExitCode'], 'TRACE_REQUIRED_PASS')
+    demand(not trace['cleanup']['remainingPids'], 'TRACE_REMAINING_PROCESS')
+    return trace
+
+
+def validate_partial_native(value):
+    demand(value['status'] in ('BLOCKED', 'CERTIFICATION_BLOCKED', 'ENVIRONMENT_BLOCKED') and value['requiredGateCompletion'] is False, 'NATIVE_INCOMPLETE_PROMOTED')
+    demand(value['unexecutedGates'] and value['failureEvidence'], 'NATIVE_INCOMPLETE_EVIDENCE')
+    for reference in value['failureEvidence']: checked(reference)
+    timing = read('github/raw-helper-timing.json')
+    demand(timing['exitCode'] == 0 and json.loads(timing['stdout'])['safe'] is True and timing['elapsedMs'] > timing['frozenProductDeadlineMs'] == 2000 and timing['productDeadlineUnchanged'] is True, 'NATIVE_FROZEN_HELPER_TIMING')
+    checked(timing['helper'])
+    failed_generation = read('github/generation-failure.json')
+    demand(failed_generation['command']['exitCode'] == 11 and json.loads(failed_generation['stderr'])['code'] == 'MO1306_FILESYSTEM_BOUNDARY' and failed_generation['stdout'] == '', 'NATIVE_GENERATION_FAILURE')
+    demand(sha(failed_generation['stderr'].encode()) == failed_generation['command']['stderrSha256'], 'NATIVE_GENERATION_LOG_HASH')
+    attempts = [(p, json.loads(p.read_bytes())) for p in sorted((OUT / 'native').glob('*/summary.json'))]
+    demand(attempts and not any(v.get('status') == 'PASS' for _, v in attempts), 'NATIVE_BLOCKED_COMPLETE_CONFLICT')
+    failed_traces = []
+    partial = {}; normative = {}; partial_source = None
+    for path, attempt in attempts:
+        SEEN[row(path)['path']] = row(path)
+        demand(attempt['bindings']['baseline'] == C3AB and attempt['bindings']['distributionDigest'] == DIST, 'NATIVE_ATTEMPT_IDENTITY')
+        snapshot = path.parent / 'attempted-native.py'
+        demand(snapshot.is_file() and sha(snapshot.read_bytes()) == attempt['bindings']['harness']['sha256'], 'NATIVE_ATTEMPT_HARNESS_SNAPSHOT')
+        SEEN[row(snapshot)['path']] = row(snapshot)
+        for command in attempt['commands']:
+            trace = trace_checked(command['trace'], require_pass=command['status'] == 'PASS')
+            if trace['exitCode'] == 11 and 'MO1306_FILESYSTEM_BOUNDARY' in trace['stdout'] + trace['stderr']:
+                failed_traces.append(command['trace'])
+        for case in attempt['cases']:
+            if case.get('status') != 'PASS' or 'bundle' not in case: continue
+            directory = ROOT / case['bundle']; contents = contents_for(directory)
+            for reference in case['bundleFiles']: checked(reference)
+            oracle = {}
+            for actual, expected in [('evaluation-identity.json', 'evaluation-identity.json'), ('policy-outcome.json', 'policy-outcome.json')]:
+                oracle[actual] = (ROOT / 'repositories/cca-conformance/fixtures/mo1306' / case['sourceFixture'] / expected).read_bytes()
+            verified = bundle_valid(contents, directory.name, 'generic', case['expectedExitCode'], oracle)
+            demand(case['runId'] == verified['runId'], 'PARTIAL_NATIVE_RUN_BINDING')
+            partial[case['id']] = verified; normative[case['id']] = oracle; partial_source = {'summary': row(path), 'case': case}
+    demand(failed_traces and 'policy-pass' in partial, 'NATIVE_ACTUAL_PARTIAL_EVIDENCE')
+    dispatch = refjson(value['dispatch'])
+    demand(dispatch['status'] == 'PASS' and dispatch['failure'] is None and len(dispatch['cases']) == 1, 'PARTIAL_DISPATCH')
+    case = dispatch['cases'][0]; parser = refjson(case['parserWitness'])
+    demand(parser['counts']['fail'] == 0 and case['handlerBypassPrevented'] is True, 'PARTIAL_DISPATCH_AST')
+    demand({'constructor', 'toString', '__proto__', 'invalid-command'} <= {r['command'] for r in case['actualInstalledCommands']}, 'PARTIAL_DISPATCH_NAMES')
+    for record in case['actualInstalledCommands']:
+        trace = trace_checked(record['trace'])
+        demand(trace['exitCode'] == 10 and trace['stdout'] == '' and json.loads(trace['stderr'])['code'] == 'MO1306_USAGE' and all(p['pid'] == trace['rootPid'] for p in trace['lifetimes']), 'PARTIAL_DISPATCH_BYPASS')
+    semantic = refjson(value['semanticParity'])
+    demand(semantic['status'] == 'PASS', 'PARTIAL_SEMANTIC_STATUS')
+    # The semantic report's own retained response/oracle files are checked below
+    # by the worker response validator; they cannot satisfy native CLI execution.
+    semantic_result, worker_normative = validate_worker_semantics(semantic)
+    normative.update(worker_normative)
+    lifecycle_result = None
+    if value.get('lifecycle'):
+        lifecycle = refjson(value['lifecycle'])
+        demand(lifecycle['status'] == 'PASS' and lifecycle['failure'] is None and len(lifecycle['cases']) == 2, 'PARTIAL_LIFECYCLE')
+        for lc in lifecycle['cases']:
+            trace = trace_checked(lc['trace'])
+            expected = 'MO1306_CANCELLED' if lc['id'] == 'lifecycle-helper-cancel' else 'MO1306_SEMANTIC_VALIDATION'
+            demand(json.loads(trace['stdout'])['result'] == expected and lc['faultInjection'] is None, 'PARTIAL_LIFECYCLE_RESULT')
+        lifecycle_result = {'caseCount': 2, 'source': value['lifecycle'], 'scope': 'Representative direct API lifecycle; not successful full CLI helper completion.'}
+    publication_result = None
+    if value.get('publicationNegatives'):
+        publication = refjson(value['publicationNegatives']); report = refjson(publication['report'])
+        demand(publication['failure'] is None and report['failure'] is None and report['caseCount'] == len(report['cases']) == 5, 'PARTIAL_PUBLICATION_NEGATIVES')
+        for command in publication['commands']: trace_checked(command['trace'])
+        expected = {'pre-aborted-publication': 'MO1306_CANCELLED', 'expired-deadline-publication': 'MO1306_OVERALL_TIMEOUT', 'extra-file-bundle': 'MO1306_BUNDLE_INTEGRITY', 'missing-outcome-bundle': 'MO1306_BUNDLE_INTEGRITY', 'missing-marker-bundle': 'MO1306_BUNDLE_INTEGRITY'}
+        demand({c['id']: c['code'] for c in report['cases']} == expected, 'PARTIAL_PUBLICATION_EXPECTATIONS')
+        for c in report['cases'][:2]: demand(c['noPublishedFiles'] is True and c['noCompleteMarker'] is True and c['settleMs'] == 300, 'PARTIAL_TERMINAL_GUARD')
+        publication_result = {'caseCount': 5, 'source': value['publicationNegatives'], 'scope': 'Negative terminal/member-set guards only; not completed publication lifecycle.'}
+    correction_traces = [trace_checked(r) for r in value['correctionA']['traces']]
+    correction = {'peakAttributableRoles': max(t['observation']['peakProcessCount'] for t in correction_traces), 'traceCount': len(correction_traces), 'sampled': True}
+    demand(correction['peakAttributableRoles'] <= 3 and value['correctionA']['remainingPids'] == [], 'PARTIAL_CORRECTION_A')
+    integrity = refjson(value['installedIntegrity'])
+    demand(integrity.get('count', integrity.get('memberCount')) == 94, 'PARTIAL_INTEGRITY_COUNT')
+    for entry in integrity['members']:
+        raw = (PACKAGE / entry['path']).read_bytes()
+        demand(len(raw) == entry['byteLength'] and sha(raw) == entry['sha256'], 'PARTIAL_INSTALLED_AFTER')
+    return {'status': 'CERTIFICATION_BLOCKED', 'certified': False, 'requiredGateCompletion': False, 'summary': row(OUT / 'native-summary.json'), 'partialCaseSource': partial_source, 'partialBundles': partial, 'failedAttemptsPreserved': [row(p) for p, _ in attempts], 'failureTraces': failed_traces, 'dispatchCommands': len(case['actualInstalledCommands']), 'workerSemanticParity': semantic_result, 'representativeLifecycle': lifecycle_result, 'publicationNegatives': publication_result, 'correctionA': correction, 'unexecutedGates': value['unexecutedGates'], 'helperTimingMs': timing['elapsedMs'], 'frozenHelperDeadlineMs': 2000}, normative
+
+
+def validate_worker_semantics(value):
+    demand(value['kind'] == 'MemoryOSPhase3ARInstalledWorkerSemanticParity' and value['failure'] is None and value['caseCount'] == len(value['cases']) == 9, 'WORKER_SEMANTIC_CASES')
+    demand(value['bindings']['baseline'] == C3AB and value['bindings']['distributionDigest'] == DIST and value['bindings']['archiveSha256'] == ARCHIVE, 'WORKER_SEMANTIC_BINDING')
+    folder = OUT / 'native' / value['run']
+    required = {kind + '-' + suffix for kind in ('policy', 'policySet', 'regression') for suffix in ('pass', 'fail', 'cne')}
+    demand({c['id'] for c in value['cases']} == required, 'WORKER_SEMANTIC_COVERAGE')
+    normative = {}; cases = []
+    for case in value['cases']:
+        demand(case['status'] == 'PASS', 'WORKER_SEMANTIC_CASE')
+        for reference in case['inputFiles']: checked(reference)
+        record_path = folder / case['workerRecord']; record = json.loads(record_path.read_bytes()); SEEN[row(record_path)['path']] = row(record_path)
+        expected_command = [str(NODE), '--permission', '--allow-fs-read=' + str(PACKAGE), '--max-old-space-size=256', '--max-semi-space-size=16', str(PACKAGE / 'src/worker.mjs')]
+        demand(record['command'] == expected_command and record['exitCode'] == 0, 'WORKER_FIXED_AUTHORITY')
+        logs = {Path(r['path']).suffixes[-2]: checked(r).read_bytes() for r in record['rawLogs']}
+        demand(logs['.stderr'] == b'', 'WORKER_STDERR')
+        response = json.loads(logs['.stdout']); demand(j(response) == logs['.stdout'] and response['error'] is None and response['runId'] == '12345678-1234-4123-8123-123456789abc', 'WORKER_RESPONSE')
+        semantic = response['semantic']
+        oracle = refjson(case['sourceOracle'])
+        demand(oracle['exitCode'] == 0 and oracle['command'][:3] == [str(NODE), '--max-old-space-size=128', str(HERE.parent / 'mo1306/oracle.mjs')], 'WORKER_INDEPENDENT_SDK')
+        sdk = json.loads(checked(next(r for r in oracle['rawLogs'] if r['path'].endswith('.stdout.txt'))).read_bytes())
+        for key in ('decision', 'documentDigest', 'semanticDigest', 'evaluationIdentityDigest', 'outcomeDigest'):
+            demand(semantic[key] == sdk[key], 'WORKER_SDK_DIGEST')
+        demand(case['decision'] == semantic['decision'] and case['digests'] == {key: semantic[key] for key in ('documentDigest', 'semanticDigest', 'evaluationIdentityDigest', 'outcomeDigest')}, 'WORKER_CASE_DIGEST')
+        normative[case['id']] = {}
+        refs = {Path(r['path']).name: r for r in case['normativeBytes']}
+        for field, name, oracle_suffix in [('evaluationIdentityBase64', 'evaluation-identity.json', '-oracle-identity.json'), ('outcomeBase64', 'policy-outcome.json', '-oracle-outcome.json')]:
+            raw = base64.b64decode(semantic[field], validate=True)
+            oracle_ref = next(r for r in oracle['normativeOracleFiles'] if r['path'].endswith(oracle_suffix))
+            demand(raw == checked(refs[name]).read_bytes() == checked(oracle_ref).read_bytes(), 'WORKER_NORMATIVE_BYTES')
+            normative[case['id']][name] = raw
+        cases.append({'id': case['id'], 'decision': semantic['decision'], 'normativeDigests': {n: sha(raw) for n, raw in normative[case['id']].items()}})
+    return {'caseCount': 9, 'cases': cases, 'scope': 'Installed permission worker only; does not satisfy full CLI acquisition/publication gates.'}, normative
+
+
+def validate_native():
+    if (OUT / 'native-summary.json').exists():
+        partial = read('native-summary.json')
+        if partial.get('requiredGateCompletion') is False:
+            return validate_partial_native(partial)
+    result, normative = validate_complete_native()
+    result['certified'] = True
+    return result, normative
+
+
+def workflow_valid(review, audit):
+    demand(review['candidateRevision'] == C3AB and review['distributionDigest'] == DIST, 'WORKFLOW_CANDIDATE')
+    sys.path[:0] = [str(HERE.parent / 'mo1306-phase2c'), str(ROOT / '.cache/mo1306/validators')]
+    from safe_yaml import parse_yaml
+    workflows = review['workflows']
+    demand(len(workflows) == 3 and {Path(r['path']).name for r in workflows} == {'mo1306-certification-' + c + '.yml' for c in ('pass', 'fail', 'cne')}, 'WORKFLOW_SET')
+    for reference in workflows:
+        raw = checked(reference).read_bytes(); text = raw.decode()
+        doc = parse_yaml(raw)
+        demand(doc['name'] == 'MemoryOS Provider-Neutral CI' and doc['permissions'] == {'contents': 'read'}, 'WORKFLOW_IDENTITY_PERMISSION')
+        demand(doc['on'] == {'workflow_dispatch': {}} and set(doc['jobs']) == {'memoryos_ci'}, 'WORKFLOW_TRIGGER_JOB')
+        job = doc['jobs']['memoryos_ci']
+        demand(job['runs-on'] == 'windows-2022' and job['timeout-minutes'] == 10, 'WORKFLOW_RUNNER_BOUNDS')
+        actions = [step['uses'] for step in job['steps'] if 'uses' in step]
+        demand(actions == [CHECKOUT, CHECKOUT, UPLOAD], 'WORKFLOW_ACTION_PINS')
+        checkouts = [step for step in job['steps'] if step.get('uses') == CHECKOUT]
+        demand(all(step['with']['persist-credentials'] is False for step in checkouts), 'WORKFLOW_CREDENTIAL_PERSISTENCE')
+        demand(checkouts[0]['with']['ref'] == C3AB and checkouts[1]['with']['ref'] == '${{ github.sha }}', 'WORKFLOW_SOURCE_DATA_SEPARATION')
+        demand(DIST in text and B2 not in text and '6541e2a935f7bd0d5580b32fc9f17a07d471bc16486fd2a044ecef7628d2458b' not in text, 'WORKFLOW_OLD_PIN')
+        demand('pull_request_target' not in text and '${{ secrets.' not in text, 'WORKFLOW_TRUST')
+    for reference in audit['sourceBindings']:
+        p = checked(reference); demand(p.read_bytes() == git('show', C3AB + ':' + reference['path']) == git('show', B2 + ':' + reference['path']), 'WORKFLOW_FROZEN_SOURCE')
+    demand(audit['caseCount'] == 3 and audit['candidateRevision'] == C3AB and audit['distributionDigest'] == DIST, 'WORKFLOW_AUDIT')
+    demand({a['pin'] for a in audit['actions']} == {CHECKOUT, UPLOAD}, 'WORKFLOW_AUDIT_ACTIONS')
+    return {'workflowCount': 3, 'workflows': workflows, 'runner': 'windows-2022', 'permissions': {'contents': 'read'}, 'candidateRevision': C3AB}
+
+
+def refs_map(raw):
+    rows = dict((line.split('\t')[1], line.split('\t')[0]) for line in raw.splitlines())
+    demand(len(rows) == len(raw.splitlines()), 'REMOTE_DUPLICATE_REFS')
+    return rows
+
+
+def validate_remote(workflows):
+    before = read('remote-before.json'); candidate = read('remote-certification-candidate.json')
+    push = read('remote-push.json'); published = read('remote-published.json'); final = read('remote-final.json')
+    commit = candidate['commit']
+    demand(candidate['parent'] == C3AB and candidate['certificationOnly'] is True and candidate['productAuthority'] is False and candidate['remoteBranch'] == BRANCH, 'REMOTE_CERTIFICATION_RELATION')
+    demand(git('rev-parse', commit + '^').decode().strip() == C3AB and git('rev-parse', commit + '^{tree}').decode().strip() == candidate['tree'], 'REMOTE_COMMIT_GRAPH')
+    paths = sorted(r['path'] for r in workflows)
+    demand(sorted(candidate['paths']) == paths == sorted(git('diff-tree', '--no-commit-id', '--name-only', '-r', commit).decode().splitlines()), 'REMOTE_COMMIT_SCOPE')
+    for reference in workflows:
+        demand(git('show', commit + ':' + reference['path']) == checked(reference).read_bytes(), 'REMOTE_WORKFLOW_BYTES')
+    demand(push['exitCode'] == 0 and push['argv'] == ['git', '-c', 'push.followTags=false', 'push', '--porcelain', 'origin', commit + ':refs/heads/' + BRANCH], 'REMOTE_PUSH_SCOPE')
+    original = refs_map(before['refs'])
+    demand('refs/heads/' + BRANCH not in original, 'REMOTE_PREEXISTING_BRANCH')
+    expected = {**original, 'refs/heads/' + BRANCH: commit}
+    demand(refs_map(published['refs']) == refs_map(final['refs']) == expected, 'REMOTE_MAIN_TAGS_SCOPE')
+    demand(published['commit'] == final['commit'] == commit and published['parent'] == C3AB and published['tree'] == candidate['tree'], 'REMOTE_PUBLISHED_IDENTITY')
+    demand(published['remoteUrl'] == before['configuredOrigin'] and final['remoteBranchDeleted'] is False, 'REMOTE_RETAINED_BRANCH')
+    demand(before['repository']['status'] == 200 and before['repository']['body']['full_name'] == REPO, 'REMOTE_REPOSITORY')
+    return {'commit': commit, 'parent': C3AB, 'tree': candidate['tree'], 'branch': BRANCH, 'mainAndTagsUnchanged': True, 'pushScope': ['refs/heads/' + BRANCH]}
+
+
+def api_body(document):
+    if 'body' in document:
+        demand(document['status'] == 200, 'HOSTED_API_STATUS')
+        return document['body']
+    return document
+
+
+def hosted_valid(summary, remote, normative):
+    disposition = summary['disposition']
+    demand(disposition in ('HOSTED_EXECUTION_CERTIFIED', 'ENVIRONMENT_BLOCKED'), 'HOSTED_INCOMPLETE')
+    if disposition == 'ENVIRONMENT_BLOCKED':
+        demand(summary.get('remoteCommit') == remote['commit'] and summary.get('remoteBranch') == BRANCH and summary.get('candidate') == C3AB, 'BLOCKED_CANDIDATE_BINDING')
+        demand(summary.get('certificationLabels', {}).get('github') != 'HOSTED_EXECUTION_CERTIFIED' and summary.get('certificationLabels', {}).get('generic') != 'REAL_EXECUTION_CERTIFIED', 'FALSE_HOSTED_CERTIFIED')
+        demand(summary.get('artifactsDownloaded') is False and summary.get('evidence') and summary.get('reason'), 'BLOCKED_EVIDENCE_REQUIRED')
+        responses = [refjson(reference) for reference in summary['evidence']]
+        remote_files = [r for r in responses if r.get('method') == 'GET' and '/contents/.github/workflows/' in r.get('path', '') and ('?ref=' + remote['commit']) in r.get('path', '')]
+        demand(len(remote_files) == 3 and all(r['status'] == 200 for r in remote_files), 'BLOCKED_REMOTE_WORKFLOWS')
+        for response in remote_files:
+            content = response['body']; demand(base64.b64decode(content['content'], validate=False) == path_for(content['path']).read_bytes(), 'BLOCKED_REMOTE_WORKFLOW_BYTES')
+        absence = [r for r in responses if r.get('method') == 'GET' and '/contents/.github/workflows/' in r.get('path', '') and r.get('path', '').endswith('?ref=main')]
+        demand(absence and all(r['status'] == 404 for r in absence), 'BLOCKED_DEFAULT_WORKFLOW_ABSENCE')
+        registry = [r for r in responses if r.get('path') == 'repos/' + REPO + '/actions/workflows']
+        demand(len(registry) == 1 and registry[0]['status'] == 200, 'BLOCKED_REGISTRY')
+        demand(not {'.github/workflows/mo1306-certification-' + c + '.yml' for c in ('pass', 'fail', 'cne')} & {r['path'] for r in registry[0]['body']['workflows']}, 'BLOCKED_REGISTRATION_ABSENCE')
+        dispatches = [r for r in responses if r.get('method') == 'POST' and '/actions/workflows/' in r.get('path', '') and r.get('path', '').endswith('/dispatches')]
+        listings = [r for r in responses if r.get('method') == 'GET' and '/actions/runs?' in r.get('path', '') and r.get('status') == 200]
+        demand(dispatches and all(r['status'] in (403, 404, 422, 503) for r in dispatches), 'BLOCKED_DISPATCH_INFRASTRUCTURE')
+        demand(listings and all(not r['body'].get('workflow_runs') and r['body']['total_count'] == 0 and ('branch=' + BRANCH) in r['path'] and 'event=workflow_dispatch' in r['path'] for r in listings), 'BLOCKED_NO_RUN_EVIDENCE')
+        demand(not summary.get('hostedRunIds'), 'BLOCKED_RUNS_REQUIRE_DIAGNOSIS')
+        for response in dispatches:
+            message = json.dumps(response.get('body', {})).lower()
+            demand(response['status'] in (403, 404, 503) or ('default branch' in message or 'not found' in message), 'BLOCKED_PRODUCT_FAILURE')
+        return {'disposition': disposition, 'hostedExecuted': False, 'certified': False, 'reason': summary['reason'], 'evidence': summary['evidence']}
+    demand({case['id'] for case in summary.get('cases', [])} == {'pass', 'fail', 'cne'} and len(summary['cases']) == 3, 'HOSTED_ACTUAL_CASES_REQUIRED')
+    verified = []
+    for case in summary['cases']:
+        case_id = case['id']; expected_exit = {'pass': 0, 'fail': 6, 'cne': 7}[case_id]
+        run = api_body(refjson(case['run'])); job = api_body(refjson(case['job']))
+        demand(run['status'] == job['status'] == 'completed', 'HOSTED_ACTIVE_RUN')
+        demand(run['head_sha'] == remote['commit'] and run['head_branch'] == BRANCH and run['event'] == 'workflow_dispatch', 'HOSTED_RUN_COMMIT')
+        demand(run['name'] == 'MemoryOS Provider-Neutral CI' and run['run_attempt'] >= 1, 'HOSTED_RUN_IDENTITY')
+        expected_conclusion = 'success' if case_id == 'pass' else 'failure'
+        demand(run['conclusion'] == job['conclusion'] == expected_conclusion, 'HOSTED_CONCLUSION')
+        demand(isinstance(run['id'], int) and isinstance(job['id'], int) and job['run_id'] == run['id'], 'HOSTED_NUMERIC_IDS')
+        demand(job['started_at'] and job['completed_at'] and 'windows-2022' in job['labels'] and job['runner_name'], 'HOSTED_RUNNER_METADATA')
+        archive = checked(case['artifactZip']); checked(case['logs'])
+        directory = ROOT / case['bundle']; directory.resolve().relative_to(OUT.resolve())
+        contents = contents_for(directory)
+        with zipfile.ZipFile(archive) as handle:
+            names = handle.namelist(); demand(len(names) == 6 and set(names) == SEMANTIC, 'HOSTED_ZIP_EXACT_SET')
+            demand(all(handle.read(name) == contents[name] for name in names), 'HOSTED_DOWNLOAD_BYTES')
+        result = bundle_valid(contents, directory.name, 'github', expected_exit, normative['policy-' + case_id], {'runId': str(run['id']), 'attempt': str(run['run_attempt']), 'jobId': 'memoryos_ci', 'repository': REPO, 'revision': remote['commit'], 'event': 'workflow_dispatch'})
+        verified.append({'id': case_id, 'runId': run['id'], 'attempt': run['run_attempt'], 'jobId': job['id'], 'bundle': result, 'nativeNormativeBytesIdentical': True})
+    return {'disposition': disposition, 'hostedExecuted': True, 'certified': True, 'cases': verified}
+
+
+def mutation_tests(package, review, audit, remote, normative, native):
+    results = []
+    def reject(name, action):
+        try: action()
+        except (AssertionError, KeyError, ValueError, OSError) as error:
+            results.append({'id': name, 'status': 'PASS', 'rejection': str(error)[:160]})
+        else: raise AssertionError('NEGATIVE_CONTROL_ACCEPTED: ' + name)
+    altered = copy.deepcopy(package); altered['archive']['sha256'] = 'sha256:' + '0' * 64
+    reject('changed-corrected-archive', lambda: package_valid(altered))
+    altered_review = copy.deepcopy(review); altered_review['candidateRevision'] = B2
+    reject('swapped-B2-source-pin', lambda: workflow_valid(altered_review, audit))
+    altered_dist = copy.deepcopy(review); altered_dist['distributionDigest'] = 'sha256:bd154a7a972395b801b3cb0189a728b7e9870eb05f90558346eb7fee7055fe77'
+    reject('swapped-B2-distribution-pin', lambda: workflow_valid(altered_dist, audit))
+    if native.get('partialCaseSource'):
+        case = native['partialCaseSource']['case']
+    else:
+        summary_path = ROOT / native['summary']['path']; cases = json.loads(summary_path.read_bytes())['cases']
+        case = next(c for c in cases if c['id'] == 'policy-pass')
+    directory = ROOT / case['bundle']; contents = contents_for(directory)
+    extra = {**contents, 'unexpected.txt': b'unexpected'}
+    reject('extra-artifact-basename', lambda: bundle_valid(extra, directory.name, 'generic', 0, normative['policy-pass']))
+    tampered = dict(contents); tampered['policy-outcome.json'] += b' '
+    reject('tampered-bundle-member', lambda: bundle_valid(tampered, directory.name, 'generic', 0, normative['policy-pass']))
+    marker = json.loads(contents['memoryos-ci-complete.json']); marker['runId'] = '00000000-0000-4000-8000-000000000000'
+    wrong_run = {**contents, 'memoryos-ci-complete.json': j(marker)}
+    reject('tampered-completion-run-id', lambda: bundle_valid(wrong_run, directory.name, 'generic', 0, normative['policy-pass']))
+    reject('false-hosted-certified-without-runs', lambda: hosted_valid({'disposition': 'HOSTED_EXECUTION_CERTIFIED', 'cases': []}, remote, normative))
+    reject('blocked-without-service-evidence', lambda: hosted_valid({'disposition': 'ENVIRONMENT_BLOCKED', 'artifactsDownloaded': False}, remote, normative))
+    reject('active-run-not-complete', lambda: hosted_valid({'disposition': 'IN_PROGRESS'}, remote, normative))
+    reject('incomplete-native-promoted', lambda: validate_partial_native({'status': 'PASS', 'requiredGateCompletion': True}))
+    return results
+
+
+def write_immutable(name, value):
+    target = OUT / name; raw = j(value)
+    if target.exists(): demand(target.read_bytes() == raw, 'VALIDATION_OUTPUT_CHANGED')
+    else: target.write_bytes(raw)
+
+
+def validate_index():
+    target = OUT / 'evidence-index.json'; index = json.loads(target.read_bytes())
+    entries = index.get('files', index.get('artifacts'))
+    demand(isinstance(entries, list) and entries, 'FINAL_INDEX_ROWS')
+    index_path = target.relative_to(ROOT).as_posix()
+    demand(index.get('excluded', [index_path]) == [index_path], 'FINAL_INDEX_EXCLUSIONS')
+    expected = {p.relative_to(ROOT).as_posix() for directory in (HERE, OUT) for p in directory.rglob('*') if p.is_file()} - {index_path}
+    expected |= {'.github/workflows/mo1306-certification-' + c + '.yml' for c in ('pass', 'fail', 'cne')}
+    demand(len(entries) == len({e['path'] for e in entries}) and {e['path'] for e in entries} == expected, 'FINAL_INDEX_EXACT_SET')
+    for entry in entries: checked(entry)
+    validation = json.loads((OUT / 'validation.json').read_bytes())
+    receipt_path = OUT / 'execution-receipt.json'
+    demand(receipt_path.exists(), 'FINAL_RECEIPT_REQUIRED')
+    receipt = json.loads(receipt_path.read_bytes())
+    demand(receipt['baseline'] == C3AB and receipt['correction'] == C3A, 'FINAL_RECEIPT_BASELINE')
+    demand(refjson(receipt['validation']) == validation, 'FINAL_RECEIPT_VALIDATION')
+    if not validation['allCertificationGatesPassed']:
+        demand(receipt['status'] == 'CERTIFICATION_BLOCKED', 'FINAL_FALSE_CERTIFICATION')
+        labels = json.dumps(receipt['labels'])
+        demand('REAL_EXECUTION_CERTIFIED' not in labels and 'HOSTED_EXECUTION_CERTIFIED' not in labels, 'FINAL_FALSE_LABEL')
+    def walk(value):
+        if isinstance(value, dict):
+            if {'path', 'byteLength', 'sha256'} <= set(value): checked(value)
+            else:
+                for member in value.values(): walk(member)
+        elif isinstance(value, list):
+            for member in value: walk(member)
+    walk(receipt)
+    print(json.dumps({'status': 'PASS', 'exactIndexedFiles': len(entries), 'receiptStatus': receipt['status'], 'readOnly': True}))
+
+
+def main():
+    from preservation import snapshot_original, protected_refs
+    before = read('preservation-before.json')
+    demand(snapshot_original() == before['original3A'] and protected_refs() == before['protectedGitRefs'], 'PRESERVATION_DRIFT')
+    package = read('package.json'); package_result = package_valid(package)
+    environment = read('environment.json')
+    demand(environment['node']['version'] == 'v24.21.0' and environment['node']['architecture'] == 'x64' and environment['node']['execPath'].lower() == str(NODE).lower(), 'ENVIRONMENT_NODE')
+    checked(environment['nodeIdentity'])
+    mo1302 = read('check-mo1302.json')
+    demand(mo1302['exitCode'] == 0 and mo1302['counts'] == {'tests': 4, 'pass': 4, 'fail': 0, 'cancelled': 0, 'skipped': 0, 'todo': 0} and mo1302['actionChangesSinceC3AB'] == '', 'MO1302_REGRESSION')
+    demand(git('diff', '--name-only', C3AB, '--', '.github/actions/memoryos-policy-gate') == b'', 'MO1302_SOURCE_CHANGED')
+    native, normative = validate_native()
+    review = read('github/workflow-review.json'); audit = read('github/static-audit.json')
+    workflow = workflow_valid(review, audit)
+    remote = validate_remote(workflow['workflows'])
+    hosted = hosted_valid(read('github/hosted-summary.json'), remote, normative)
+    negatives = mutation_tests(package, review, audit, remote, normative, native)
+    negative_report = {'kind': 'MemoryOSPhase3ARValidationNegativeControls', 'status': 'PASS', 'count': len(negatives), 'cases': negatives}
+    write_immutable('validation-negatives.json', negative_report)
+    report = {'kind': 'MemoryOSPhase3ARIndependentEvidenceValidation', 'version': '1.0.0', 'status': 'PASS', 'allCertificationGatesPassed': hosted['certified'] and native['certified'], 'disposition': 'CERTIFIED' if hosted['certified'] and native['certified'] else 'TRUTHFUL_CERTIFICATION_BLOCKED', 'baseline': C3AB, 'correction': C3A, 'package': package_result, 'original3APreserved': True, 'mainOriginMainTagsPreserved': True, 'native': native, 'workflow': workflow, 'remote': remote, 'hosted': hosted, 'mo1302Tests': 4, 'negativeControls': row(OUT / 'validation-negatives.json'), 'validatedFileBindings': sorted(SEEN.values(), key=lambda r: r['path']), 'validator': row(Path(__file__)), 'limitations': ['API responses and downloaded artifacts are retained observations; immutable digest validation is not an independent GitHub signature.', 'Sampled native topology cannot claim arbitrarily short unobserved process lifetimes.', 'A truthful blocked disposition is never execution certification.']}
+    write_immutable('validation.json', report)
+    print(json.dumps({'status': 'PASS', 'disposition': report['disposition'], 'allCertificationGatesPassed': hosted['certified'] and native['certified'], 'negativeControls': len(negatives), 'bindings': len(SEEN)}))
+
+
+if __name__ == '__main__':
+    if sys.argv[1:] == ['--check-index']:
+        validate_index()
+    else:
+        demand(not sys.argv[1:], 'UNKNOWN_VALIDATION_ARGUMENT')
+        main()

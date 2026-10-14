@@ -1,0 +1,1485 @@
+#!/usr/bin/env python3
+"""Validate the deterministic engineering-workspace contract."""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import re
+import stat
+import sys
+from pathlib import Path
+
+
+REQUIRED_PATHS = (
+    ".github/dependabot.yml",
+    ".github/actions/memoryos-policy-gate/action.yml",
+    ".github/actions/memoryos-policy-gate/distribution-manifest.json",
+    ".github/actions/memoryos-policy-gate/dist/action-runtime.mjs",
+    ".github/actions/memoryos-policy-gate/dist/cli-driver.mjs",
+    ".github/actions/memoryos-policy-gate/dist/contracts/policy-contract-identities-1.0.0.json",
+    ".github/actions/memoryos-policy-gate/dist/index.js",
+    ".github/workflows/ci.yml",
+    ".github/workflows/memoryos-vscode-certification.yml",
+    ".clang-format",
+    ".clang-tidy",
+    ".editorconfig",
+    ".gitattributes",
+    ".gitignore",
+    "ARCHITECTURE.md",
+    "CMakeLists.txt",
+    "CMakePresets.json",
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md",
+    "LICENSE",
+    "README.md",
+    "ROADMAP.md",
+    "cmake/CCAProjectOptions.cmake",
+    "cmake/CCATesting.cmake",
+    "cmake/CCAVersion.cmake",
+    "docs/ambiguity-register.md",
+    "docs/build-instructions.md",
+    "docs/cli.md",
+    "docs/coding-standards.md",
+    "docs/compiler-modules.md",
+    "docs/developer-setup.md",
+    "docs/generators.md",
+    "docs/internal-model.md",
+    "docs/investigation-policies.md",
+    "docs/limitations.md",
+    "docs/pipeline.md",
+    "docs/repository-overview.md",
+    "docs/validation.md",
+    "examples/specifications/reference-architecture.yaml",
+    "repositories/cca-core/CMakeLists.txt",
+    "repositories/cca-core/docs/semantic-memory.md",
+    "repositories/cca-core/examples/process_runtime_usage.cpp",
+    "repositories/cca-core/examples/process_usage.cpp",
+    "repositories/cca-core/examples/semantic_memory_usage.cpp",
+    "repositories/cca-core/include/cca/memory/semantic_memory.hpp",
+    "repositories/cca-core/src/memory/long_term_memory_persistence.cpp",
+    "repositories/cca-core/src/memory/long_term_memory_persistence.hpp",
+    "repositories/cca-core/src/memory/procedural_memory_persistence.cpp",
+    "repositories/cca-core/src/memory/procedural_memory_persistence.hpp",
+    "repositories/cca-core/src/memory/semantic_memory.cpp",
+    "repositories/cca-core/src/memory/semantic_memory_persistence.cpp",
+    "repositories/cca-core/src/memory/semantic_memory_persistence.hpp",
+    "repositories/cca-core/tests/episodic_memory_allocation_failure_test.cpp",
+    "repositories/cca-core/tests/knowledge_retrieval_allocation_failure_test.cpp",
+    "repositories/cca-core/tests/long_term_memory_allocation_failure_test.cpp",
+    "repositories/cca-core/tests/long_term_memory_architecture_test.cmake",
+    "repositories/cca-core/tests/memory_allocation_failure_test.cpp",
+    "repositories/cca-core/tests/memory_architecture_test.cmake",
+    "repositories/cca-core/tests/memory_consolidation_allocation_failure_test.cpp",
+    "repositories/cca-core/tests/memory_reflection_allocation_failure_test.cpp",
+    "repositories/cca-core/tests/procedural_memory_allocation_failure_test.cpp",
+    "repositories/cca-core/tests/procedural_memory_architecture_test.cmake",
+    "repositories/cca-core/tests/semantic_memory_allocation_failure_test.cpp",
+    "repositories/cca-core/tests/semantic_memory_architecture_test.cmake",
+    "repositories/cca-core/tests/semantic_memory_test.cpp",
+    "repositories/cca-core/tests/working_memory_allocation_failure_test.cpp",
+    "repositories/cca-core/tests/working_memory_architecture_test.cmake",
+    "repositories/cca-compiler/CMakeLists.txt",
+    "repositories/cca-compiler/cmake/ccaCompilerConfig.cmake.in",
+    "repositories/cca-studio/CMakeLists.txt",
+    "repositories/cca-studio/benchmarks/memoryos-scalability-fixture.mjs",
+    "repositories/cca-studio/benchmarks/memoryos-scalability.mjs",
+    "repositories/cca-studio/include/cca/memory/memory_studio.hpp",
+    "repositories/cca-studio/src/memory_studio.cpp",
+    "repositories/cca-studio/tests/memory_studio_test.cpp",
+    "repositories/cca-studio/tests/memory_studio_allocation_failure_test.cpp",
+    "repositories/cca-studio/tests/memory_studio_architecture_test.cmake",
+    "repositories/cca-studio/tests/memory_studio_web_test.mjs",
+    "repositories/cca-studio/tests/memory_studio_scalability_test.mjs",
+    "repositories/cca-studio/examples/memory_studio_usage.cpp",
+    "repositories/cca-studio/docs/memory-studio.md",
+    "repositories/cca-studio/docs/memory-studio-conformance-evidence.md",
+    "repositories/cca-studio/package.json",
+    "repositories/cca-studio/docs/memory-investigation-packages.md",
+    "repositories/cca-studio/docs/mip-conformance-matrix.md",
+    "repositories/cca-studio/docs/ai-runtime-adapters.md",
+    "repositories/cca-studio/web/js/mip-canonical.js",
+    "repositories/cca-studio/web/js/memory-investigation-package.js",
+    "repositories/cca-studio/web/js/ai-runtime-adapter.js",
+    "repositories/cca-studio/web/js/adapters/openai-agents-sdk-adapter.js",
+    "repositories/cca-studio/web/js/adapters/anthropic-sdk-adapter.js",
+    "repositories/cca-studio/web/js/adapters/langgraph-adapter.js",
+    "repositories/cca-studio/tests/mip_canonical_test.mjs",
+    "repositories/cca-studio/tests/memory_investigation_package_test.mjs",
+    "repositories/cca-studio/tests/mip_schema_conformance_test.mjs",
+    "repositories/cca-studio/tests/mip_adversarial_conformance_test.mjs",
+    "repositories/cca-studio/tests/mip_ordering_conformance_test.mjs",
+    "repositories/cca-studio/tests/mip_derived_edge_conformance_test.mjs",
+    "repositories/cca-studio/tests/mip_pipeline_conformance_test.mjs",
+    "repositories/cca-studio/tests/fixtures/mip/complete-investigation.mip.b64",
+    "repositories/cca-studio/tests/fixtures/mip/memory-investigation-package-1.0.schema.json.b64",
+    "repositories/cca-studio/tests/fixtures/mip/minimal-observation.mip.b64",
+    "repositories/cca-studio/tests/fixtures/mip/noncritical-extension.mip.b64",
+    "repositories/cca-studio/tests/ai_runtime_adapter_test.mjs",
+    "repositories/cca-studio/examples/ai_runtime_adapter_usage.mjs",
+    "repositories/cca-studio/web/js/investigation-core.js",
+    "repositories/cca-studio/web/js/memoryos-sdk.js",
+    "repositories/cca-studio/web/js/cognitive-regression.js",
+    "repositories/cca-studio/web/js/cognitive-investigation-explorer.js",
+    "repositories/cca-studio/web/js/investigation-policy-integration.js",
+    "repositories/cca-studio/tests/investigation_core_test.mjs",
+    "repositories/cca-studio/tests/memoryos_sdk_test.mjs",
+    "repositories/cca-studio/tests/cognitive_regression_test.mjs",
+    "repositories/cca-studio/tests/cognitive_investigation_explorer_test.mjs",
+    "repositories/cca-studio/tests/memoryos_policy_sdk_test.mjs",
+    "repositories/cca-studio/examples/investigation_core_usage.mjs",
+    "repositories/cca-studio/examples/cognitive_investigation_explorer_usage.mjs",
+    "repositories/cca-studio/examples/investigation_policy_usage.mjs",
+    "repositories/cca-studio/docs/investigation-core.md",
+    "repositories/cca-studio/docs/investigation-core-conformance-evidence.md",
+    "repositories/cca-studio/docs/cognitive-regression.md",
+    "repositories/cca-studio/docs/cognitive-regression-engineering-guide.md",
+    "repositories/cca-studio/docs/cognitive-regression-conformance-report.md",
+    "repositories/cca-studio/docs/schemas/cognitive-regression-report-1.0.schema.json",
+    "repositories/cca-studio/docs/cognitive-investigation-explorer.md",
+    "repositories/cca-studio/docs/cognitive-investigation-explorer-engineering-guide.md",
+    "repositories/cca-studio/docs/cognitive-investigation-explorer-architecture-review.md",
+    "repositories/cca-studio/docs/cognitive-investigation-explorer-conformance-report.md",
+    "repositories/cca-studio/docs/investigation-policies.md",
+    "repositories/cca-studio/docs/schemas/cognitive-investigation-result-1.0.schema.json",
+    "repositories/cca-studio/scripts/generate-ai-runtime-adapter-fixtures.mjs",
+    "repositories/cca-studio/tests/fixtures/adapters/README.md",
+    "repositories/cca-studio/tests/fixtures/adapters/reference-sources.mjs",
+    "repositories/cca-studio/tests/fixtures/adapters/openai-agents.events.json",
+    "repositories/cca-studio/tests/fixtures/adapters/openai-agents.output.json",
+    "repositories/cca-studio/tests/fixtures/adapters/anthropic.events.json",
+    "repositories/cca-studio/tests/fixtures/adapters/langgraph.events.json",
+    "repositories/cca-studio/tests/fixtures/adapters/langgraph.output.json",
+    "repositories/cca-studio/examples/ai-runtime-adapters/reference-packages/openai-agents-reference.mip",
+    "repositories/cca-studio/examples/ai-runtime-adapters/reference-packages/anthropic-reference.mip",
+    "repositories/cca-studio/examples/ai-runtime-adapters/reference-packages/langgraph-reference.mip",
+    "repositories/cca-studio/web/index.html",
+    "repositories/cca-studio/web/styles.css",
+    "repositories/cca-studio/web/js/app.js",
+    "repositories/cca-studio/web/js/browser-render-benchmark.js",
+    "repositories/cca-studio/web/js/cognitive-trace.js",
+    "repositories/cca-studio/web/js/deterministic-sequence-alignment.js",
+    "repositories/cca-studio/web/js/graph-view-state.js",
+    "repositories/cca-studio/web/js/observation-timeline.js",
+    "repositories/cca-studio/web/js/semantic-world.js",
+    "repositories/cca-sdk/CMakeLists.txt",
+    "repositories/cca-sdk/README.md",
+    "repositories/cca-sdk/bridge/investigation-core-host.mjs",
+    "repositories/cca-sdk/bridge/README.md",
+    "repositories/cca-sdk/include/memoryos/memoryos.hpp",
+    "repositories/cca-sdk/src/client.cpp",
+    "repositories/cca-sdk/src/client.hpp",
+    "repositories/cca-sdk/src/core_process.cpp",
+    "repositories/cca-sdk/src/core_process.hpp",
+    "repositories/cca-sdk/src/json.hpp",
+    "repositories/cca-sdk/src/memoryos.cpp",
+    "repositories/cca-sdk/src/policy.cpp",
+    "repositories/cca-sdk/tests/memoryos_sdk_test.cpp",
+    "repositories/cca-sdk/examples/cpp_quickstart.cpp",
+    "repositories/cca-sdk/examples/cpp_regression.cpp",
+    "repositories/cca-sdk/examples/cpp_investigate.cpp",
+    "repositories/cca-sdk/examples/cpp_policy.cpp",
+    "repositories/cca-sdk/python/pyproject.toml",
+    "repositories/cca-sdk/python/README.md",
+    "repositories/cca-sdk/python/src/memoryos/__init__.py",
+    "repositories/cca-sdk/python/src/memoryos/_sdk.py",
+    "repositories/cca-sdk/python/src/memoryos/_policy_models.py",
+    "repositories/cca-sdk/python/tests/test_memoryos_sdk.py",
+    "repositories/cca-sdk/python/tests/test_investigation_policy_sdk.py",
+    "repositories/cca-sdk/python/tests/test_examples.py",
+    "repositories/cca-sdk/examples/python/observe.py",
+    "repositories/cca-sdk/examples/python/regression.py",
+    "repositories/cca-sdk/examples/python/investigate.py",
+    "repositories/cca-sdk/examples/python/policy.py",
+    "repositories/cca-sdk/docs/api-reference.md",
+    "repositories/cca-sdk/docs/developer-guide.md",
+    "repositories/cca-sdk/docs/conformance-report.md",
+    "repositories/cca-sdk/docs/regression-guide.md",
+    "repositories/cca-sdk/docs/explorer-guide.md",
+    "repositories/cca-sdk/docs/explorer-conformance-report.md",
+    "repositories/memoryos-cli/CMakeLists.txt",
+    "repositories/memoryos-cli/package.json",
+    "repositories/memoryos-cli/README.md",
+    "repositories/memoryos-cli/bin/memoryos.js",
+    "repositories/memoryos-cli/src/arguments.js",
+    "repositories/memoryos-cli/src/commands.js",
+    "repositories/memoryos-cli/src/errors.js",
+    "repositories/memoryos-cli/src/help.js",
+    "repositories/memoryos-cli/src/main.js",
+    "repositories/memoryos-cli/src/output.js",
+    "repositories/memoryos-cli/src/policy-arguments.js",
+    "repositories/memoryos-cli/src/policy-commands.js",
+    "repositories/memoryos-cli/src/policy-publication.js",
+    "repositories/memoryos-cli/src/session.js",
+    "repositories/memoryos-cli/src/version.js",
+    "repositories/memoryos-cli/docs/quick-start.md",
+    "repositories/memoryos-cli/docs/command-reference.md",
+    "repositories/memoryos-cli/docs/examples.md",
+    "repositories/memoryos-cli/docs/exit-code-reference.md",
+    "repositories/memoryos-cli/docs/json-output-specification.md",
+    "repositories/memoryos-cli/docs/automation-guide.md",
+    "repositories/memoryos-cli/docs/conformance-report.md",
+    "repositories/memoryos-cli/docs/regression-conformance-report.md",
+    "repositories/memoryos-cli/docs/investigation-guide.md",
+    "repositories/memoryos-cli/docs/investigation-conformance-report.md",
+    "repositories/memoryos-cli/docs/policy-guide.md",
+    "repositories/memoryos-cli/docs/policy-conformance-report.md",
+    "repositories/memoryos-cli/examples/run-cli-examples.mjs",
+    "repositories/memoryos-cli/tests/architecture.test.mjs",
+    "repositories/memoryos-cli/tests/cli-contract.test.mjs",
+    "repositories/memoryos-cli/tests/package-workflow.test.mjs",
+    "repositories/memoryos-cli/tests/policy-cli.test.mjs",
+    "repositories/memoryos-cli/tests/investigate.test.mjs",
+    "repositories/memoryos-cli/tests/session.test.mjs",
+    "repositories/memoryos-cli/tests/test-helpers.mjs",
+    "repositories/memoryos-vscode/CMakeLists.txt",
+    "repositories/memoryos-vscode/package.json",
+    "repositories/memoryos-vscode/package-lock.json",
+    "repositories/memoryos-vscode/README.md",
+    "repositories/memoryos-vscode/CHANGELOG.md",
+    "repositories/memoryos-vscode/esbuild.mjs",
+    "repositories/memoryos-vscode/tsconfig.json",
+    "repositories/memoryos-vscode/.vscodeignore",
+    "repositories/memoryos-vscode/contracts/policy-contract-identities-1.0.0.json",
+    "repositories/memoryos-vscode/measurements/runtime-closure-identity-receipt-1.0.0.json",
+    "repositories/memoryos-vscode/measurements/transport-corpus-inventory-1.0.0.json",
+    "repositories/memoryos-vscode/measurements/transport-host-observation-1.0.0.json",
+    "repositories/memoryos-vscode/measurements/transport-limit-selection-receipt-1.0.0.json",
+    "repositories/memoryos-vscode/measurements/transport-measurement-results-1.0.0.json",
+    "repositories/memoryos-vscode/runtime/runtime-closure-manifest.json",
+    "repositories/memoryos-vscode/scripts/build-runtime-distribution.mjs",
+    "repositories/memoryos-vscode/scripts/esbuild-closed-source.mjs",
+    "repositories/memoryos-vscode/scripts/measure-transport-limits.mjs",
+    "repositories/memoryos-vscode/scripts/package-vsix.mjs",
+    "repositories/memoryos-vscode/scripts/verify-vsix.mjs",
+    "repositories/memoryos-vscode/src/commands.ts",
+    "repositories/memoryos-vscode/src/errors.ts",
+    "repositories/memoryos-vscode/src/extension.ts",
+    "repositories/memoryos-vscode/src/runtime/canonical-json.ts",
+    "repositories/memoryos-vscode/src/runtime/cli-adapter.ts",
+    "repositories/memoryos-vscode/src/runtime/cli-worker.ts",
+    "repositories/memoryos-vscode/src/runtime/input-snapshot.ts",
+    "repositories/memoryos-vscode/src/runtime/runtime-contract.ts",
+    "repositories/memoryos-vscode/src/runtime/runtime-distribution.ts",
+    "repositories/memoryos-vscode/tests/extension_shell_contract.test.mjs",
+    "repositories/memoryos-vscode/tests/host_cleanup.test.mjs",
+    "repositories/memoryos-vscode/tests/runtime_foundation.test.mjs",
+    "repositories/memoryos-vscode/tests/support/runtime-test-api.ts",
+    "repositories/memoryos-vscode/tests/vsix_package_validation.test.mjs",
+    "repositories/memoryos-vscode/test-host/README.md",
+    "repositories/memoryos-vscode/test-host/acquire.mjs",
+    "repositories/memoryos-vscode/test-host/build.mjs",
+    "repositories/memoryos-vscode/test-host/cleanup.mjs",
+    "repositories/memoryos-vscode/test-host/driver.mjs",
+    "repositories/memoryos-vscode/test-host/runner.ts",
+    "repositories/memoryos-vscode/test-host/runner-extension/extension.cjs",
+    "repositories/memoryos-vscode/test-host/runner-extension/package.json",
+    "repositories/cca-conformance/CMakeLists.txt",
+    "repositories/cca-conformance/package.json",
+    "repositories/cca-conformance/README.md",
+    "repositories/cca-conformance/requirements-manifest.json",
+    "repositories/cca-conformance/docs/certification-guide.md",
+    "repositories/cca-conformance/docs/compatibility-guide.md",
+    "repositories/cca-conformance/docs/conformance-report.md",
+    "repositories/cca-conformance/docs/mo1301-conformance.md",
+    "repositories/cca-conformance/docs/mo1302-handoff.md",
+    "repositories/cca-conformance/docs/reference-implementation-guide.md",
+    "repositories/cca-conformance/docs/versioning-guide.md",
+    "repositories/cca-conformance/evidence/reference-implementation-1.2.1.json",
+    "repositories/cca-conformance/evidence/reference-implementation-review-1.2.1.json",
+    "repositories/cca-conformance/evidence/mo1303-final-conformance-binding-run-35474897159.json",
+    "repositories/cca-conformance/evidence/mo1303-hosted-evidence-run-35474897159-ubuntu-24.04-x64.json",
+    "repositories/cca-conformance/evidence/mo1303-hosted-evidence-run-35474897159-windows-2022-x64.json",
+    "repositories/cca-conformance/evidence/mo1303-vsix-package-identity-0.1.0.json",
+    "repositories/cca-conformance/reports/reference-implementation-1.2.1.json",
+    "repositories/cca-conformance/reports/reference-implementation-1.2.1.md",
+    "repositories/cca-conformance/mo1301-conformance-inventory.json",
+    "repositories/cca-conformance/mo1303-conformance-inventory.json",
+    "repositories/cca-conformance/schema/conformance-report-1.0.schema.json",
+    "repositories/cca-conformance/schema/github-policy-gate-automation-failure-1.0.schema.json",
+    "repositories/cca-conformance/schema/github-policy-gate-distribution-manifest-1.0.schema.json",
+    "repositories/cca-conformance/schema/github-policy-gate-receipt-1.0.schema.json",
+    "repositories/cca-conformance/schema/github-policy-gate-test-vector-1.0.schema.json",
+    "repositories/cca-conformance/schema/mo1303-final-conformance-binding-1.0.schema.json",
+    "repositories/cca-conformance/schema/requirements-manifest-1.0.schema.json",
+    "repositories/cca-conformance/schema/mo1303-hosted-evidence-1.0.schema.json",
+    "repositories/cca-conformance/tests/compatibility_conformance_test.mjs",
+    "repositories/cca-conformance/tests/component_evidence_conformance_test.mjs",
+    "repositories/cca-conformance/tests/reference_implementation_conformance_test.mjs",
+    "repositories/cca-conformance/tests/mo1301_integration_conformance_test.mjs",
+    "repositories/cca-conformance/tests/mo1302_action_foundation_conformance_test.mjs",
+    "repositories/cca-conformance/tests/mo1303_phase1_conformance_test.mjs",
+    "repositories/cca-conformance/tests/mo1303_phase2_conformance_test.mjs",
+    "repositories/cca-conformance/tests/mo1303_phase3_conformance_test.mjs",
+    "repositories/cca-conformance/tests/report_conformance_test.mjs",
+    "repositories/cca-conformance/tests/specification_conformance_test.mjs",
+    "repositories/cca-conformance/tests/support/conformance-support.mjs",
+    "repositories/cca-conformance/tests/support/mo1301-conformance-support.mjs",
+    "repositories/cca-conformance/tests/support/mo1302-action-foundation-support.mjs",
+    "repositories/cca-conformance/tests/support/mo1303-conformance-support.mjs",
+    "repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/mo1302-action-foundation-vectors.json",
+    "repositories/cca-conformance/tests/fixtures/investigation-policy/1.0.0/mo1302-handoff-vectors.json",
+    "repositories/cca-conformance/tools/build-mo1302-action-distribution.mjs",
+    "repositories/cca-conformance/tools/build-pinned-manifest.mjs",
+    "repositories/cca-conformance/tools/conformance-report.mjs",
+    "repositories/cca-conformance/tools/mo1303-hosted-evidence.mjs",
+    "repositories/cca-conformance/tools/mo1303-hosted-suite.mjs",
+    "scripts/bootstrap.ps1",
+    "scripts/bootstrap.sh",
+    "scripts/build.ps1",
+    "scripts/build.sh",
+    "scripts/coverage.ps1",
+    "scripts/coverage.sh",
+    "scripts/format.ps1",
+    "scripts/format.sh",
+    "specification/canonical-format.md",
+    "specification/README.md",
+    "specification/schema/canonical-specification-1.0.schema.json",
+    "tests/CMakeLists.txt",
+    "tools/run_clang_format.py",
+    "tools/vcpkg-commit.txt",
+    "tools/vcpkg-version.txt",
+    "vcpkg-configuration.json",
+    "vcpkg.json",
+)
+
+EXPECTED_IMPLEMENTATION_REVISION = (
+    "sha256:308a03ae4f4e334e6ecfede0d28feaf36180b55402fa3ba8c0365482ec08ed64"
+)
+EXPECTED_STANDARD_PUBLICATION_DIGEST = (
+    "sha256:f77246da755e67c5e7e73706504c6d63641eeb711fbbe9c381b10d197a3dc716"
+)
+EXPECTED_MIP_PUBLICATION_DIGEST = (
+    "sha256:997fd40928ce52581dc932c1c3d888fd4d6a73208613ba1ab0a9f17b79c020ca"
+)
+EXPECTED_NORMATIVE_REGISTRY_DIGEST = (
+    "sha256:68ef4fa3e5727acab071de6d84759ff2b15a2bbf3865d38a55475c399c690e7f"
+)
+HISTORICAL_MANIFEST = (
+    "requirements-manifest-sha256-"
+    "ccb957e57043d6c34542461bc7d50d034aac268da3d295c3387459db848f823a.json"
+)
+EXPECTED_HISTORICAL_MANIFEST_BYTES = (
+    "9d22cec389778ed756184ceaf996f110d7172aa8f987cbf6caf7805954f7968e"
+)
+
+DEFERRED_REPOSITORIES = (
+    "memoryos",
+    "cca-atlas",
+)
+
+REQUIRED_PRESETS = {
+    "default",
+    "minimal",
+    "release",
+    "analysis",
+    "coverage",
+    "sanitizer",
+    "ci",
+}
+
+COMPILER_MODULES = (
+    ("analyzer", "analyzer"),
+    ("artifact_generator", "artifact-generator"),
+    ("canonical_value", "canonical-value"),
+    ("cli", "cli"),
+    ("compiler_pipeline", "compiler-pipeline"),
+    ("compiler_service", "compiler-service"),
+    ("configuration", "configuration"),
+    ("conformance_generator", "conformance-generator"),
+    ("dependency_resolver", "dependency-resolver"),
+    ("diagnostics", "diagnostics"),
+    ("documentation_generator", "documentation-generator"),
+    ("internal_model", "internal-model"),
+    ("logging", "logging"),
+    ("model_builder", "model-builder"),
+    ("package_generator", "package-generator"),
+    ("parser", "parser"),
+    ("serialization", "serialization"),
+    ("source_loader", "source-loader"),
+    ("validator", "validator"),
+)
+
+INVALID_SPECIFICATION_FIXTURES = (
+    "circular-dependency.yaml",
+    "duplicate-identifiers.yaml",
+    "duplicate-relationship.yaml",
+    "incompatible-version.yaml",
+    "schema-violation.yaml",
+    "unresolved-reference.yaml",
+)
+
+MO1302_ACTION_ROOT = Path(".github/actions/memoryos-policy-gate")
+MO1302_ACTION_INPUTS = (
+    "policy-kind",
+    "policy-path",
+    "expected-policy-semantic-digest",
+    "candidate-mip-path",
+    "regression-baseline-mip-path",
+)
+MO1302_ACTION_OUTPUTS = (
+    "gate-class",
+    "decision",
+    "cli-exit-code",
+    "publication-valid",
+    "policy-semantic-digest",
+    "evaluation-identity-digest",
+    "outcome-digest",
+    "policy-fact-context-digest",
+    "regression-source-digest",
+    "evaluation-identity-path",
+    "outcome-path",
+    "artifact-directory",
+    "stable-code",
+    "failure-class",
+    "phase",
+    "artifact-kind",
+    "limit-identifier",
+    "distribution-repository",
+    "distribution-revision",
+)
+MO1302_SCHEMA_IDENTIFIERS = {
+    "github-policy-gate-automation-failure-1.0.schema.json": (
+        "cca://schemas/memoryos/github-policy-gate/automation-failure/1.0"
+    ),
+    "github-policy-gate-distribution-manifest-1.0.schema.json": (
+        "cca://schemas/memoryos/github-policy-gate/distribution-manifest/1.0"
+    ),
+    "github-policy-gate-receipt-1.0.schema.json": (
+        "cca://schemas/memoryos/github-policy-gate/receipt/1.0"
+    ),
+    "github-policy-gate-test-vector-1.0.schema.json": (
+        "cca://schemas/memoryos/github-policy-gate/test-vector/1.0"
+    ),
+}
+MO1302_VENDOR_SOURCES = (
+    "repositories/cca-studio/package.json",
+    "repositories/cca-studio/web/data/studio-snapshot.js",
+    "repositories/cca-studio/web/js/cognitive-comparative-reconstruction.js",
+    "repositories/cca-studio/web/js/cognitive-comparative-replay.js",
+    "repositories/cca-studio/web/js/cognitive-evolution-controller.js",
+    "repositories/cca-studio/web/js/cognitive-evolution.js",
+    "repositories/cca-studio/web/js/cognitive-investigation-explorer.js",
+    "repositories/cca-studio/web/js/cognitive-regression.js",
+    "repositories/cca-studio/web/js/cognitive-replay.js",
+    "repositories/cca-studio/web/js/cognitive-trace.js",
+    "repositories/cca-studio/web/js/deterministic-sequence-alignment.js",
+    "repositories/cca-studio/web/js/investigation-core.js",
+    "repositories/cca-studio/web/js/investigation-policy-contracts.js",
+    "repositories/cca-studio/web/js/investigation-policy-engine.js",
+    "repositories/cca-studio/web/js/investigation-policy-integration.js",
+    "repositories/cca-studio/web/js/investigation-policy.js",
+    "repositories/cca-studio/web/js/memory-investigation-package.js",
+    "repositories/cca-studio/web/js/memoryos-sdk.js",
+    "repositories/cca-studio/web/js/mip-canonical.js",
+    "repositories/cca-studio/web/js/observation-timeline.js",
+    "repositories/cca-studio/web/js/policy-canonical.js",
+    "repositories/cca-studio/web/js/policy-fact-context.js",
+    "repositories/cca-studio/web/js/regression-policy-fact-source.js",
+    "repositories/cca-studio/web/js/semantic-world.js",
+    "repositories/cca-studio/web/js/studio-model.js",
+    "repositories/memoryos-cli/package.json",
+    "repositories/memoryos-cli/src/arguments.js",
+    "repositories/memoryos-cli/src/commands.js",
+    "repositories/memoryos-cli/src/errors.js",
+    "repositories/memoryos-cli/src/help.js",
+    "repositories/memoryos-cli/src/main.js",
+    "repositories/memoryos-cli/src/output.js",
+    "repositories/memoryos-cli/src/policy-arguments.js",
+    "repositories/memoryos-cli/src/policy-commands.js",
+    "repositories/memoryos-cli/src/policy-publication.js",
+    "repositories/memoryos-cli/src/session.js",
+    "repositories/memoryos-cli/src/version.js",
+)
+# WORKSPACE_CHECK_CORRECTION (docs/mo1302-vendored-runtime-check-correction.md):
+# the released MO-1302 Action is pinned to its release, not to moving source.
+# Every value below is the exact blob at tag memoryos-1.3-mo1302
+# (tag object 773dd03829dd6b3632bf43a45578925b1498515d, commit
+# 7e07bd0db9ab10146f2e0e0bbd67a4c5850cf41d).
+MO1302_RELEASED_MANIFEST = (8342, "sha256:2e116b6518934c797e9c562670f2292462be11ee982c778b43f1aaf45a8986f9")
+MO1302_RELEASED_VENDOR_SOURCES = {
+    "repositories/cca-studio/package.json": (1922, "sha256:d2f3cb58f4b854c658b63512aa7ef11a0cbc82fd0b889b0d152fdeba707258f4", "7e7a391400d69595a526a050f6aea2d34f1fd0a5"),
+    "repositories/cca-studio/web/data/studio-snapshot.js": (10180, "sha256:0c1e3219e6ea16e0ba913ba089e9fff21813977e9f20d7f15396a7259c01a6b4", "395b86006160ad8bd54ef4da27a9cafec522e446"),
+    "repositories/cca-studio/web/js/cognitive-comparative-reconstruction.js": (11681, "sha256:9f41c7161673b1536c6748e95c062e8be650ada3a3d0c7cc2eb930e41e53a1c7", "053b6f14821b2cb7b880f3927211b5361d29a0aa"),
+    "repositories/cca-studio/web/js/cognitive-comparative-replay.js": (8004, "sha256:d50e3952a70ee3849b69929531313a7540e5c3b34f56c3d8ee3a712ac1fbf596", "e30a2156670848451d33b605f3424ce817dac2ad"),
+    "repositories/cca-studio/web/js/cognitive-evolution-controller.js": (2730, "sha256:880df2ac0dab286655052b7e8057682b8d57db1c47c3be2e77ca01c245a8752d", "65d3c482d4b96c75a847888a2aec1302ac9f8f25"),
+    "repositories/cca-studio/web/js/cognitive-evolution.js": (14080, "sha256:a417d84122642814efbb4862ac872a4ea58b1aebd8c73faed7c003a90b78b539", "2b8cb13ae72fe27a0de68fe86716e3811c2a6fda"),
+    "repositories/cca-studio/web/js/cognitive-investigation-explorer.js": (11511, "sha256:cdb0dac0fe6d4e9c29f270ff8d97021713ee28b9a245bc6a12978f85da63995a", "c22239d62c2cf3bb5ba7ec96ef9f4e10cc8fd22a"),
+    "repositories/cca-studio/web/js/cognitive-regression.js": (23419, "sha256:730c0740f54d75a1e007fee21bb5fe4ffb0f30de9b34e5c25a3651eb9500c3c4", "9ed206b706ffebe91118cdc56ba7b90b3e509d9b"),
+    "repositories/cca-studio/web/js/cognitive-replay.js": (6194, "sha256:2b02b5d7a5ad854c25e3f9bc676c8efd8de07a86e58242cdf1b95f79795d656a", "362c258c8885e40486ef02c3a70133ba74c8ad1a"),
+    "repositories/cca-studio/web/js/cognitive-trace.js": (25155, "sha256:c427986595c7a507cbc8863abc5eac3357baa905536f1fc22193ccbca13a2c9c", "4a982993defc8f723679e210de197d07b40f652a"),
+    "repositories/cca-studio/web/js/deterministic-sequence-alignment.js": (5239, "sha256:b1b6fa20bb56612deebded48ebf30104d6b083d61ed33fa26651648a9effdcfc", "323293ac32c5c0bd351fe1a9cd6fc752f3c92e1b"),
+    "repositories/cca-studio/web/js/investigation-core.js": (57631, "sha256:f6d960591daf0411d44ebc18ad5a3afad7fc87b1598421ae32011a902dfa8806", "5ecf8c9eb2e5998f1482f3046f0a762dd1715b81"),
+    "repositories/cca-studio/web/js/investigation-policy-contracts.js": (25861, "sha256:2448146319d18c2c7bc8113ece048cba25d5a793d450540767ff70d379522b10", "fae497dc9403f8a51c8d0228d02f480429dce113"),
+    "repositories/cca-studio/web/js/investigation-policy-engine.js": (62321, "sha256:97a62eaa58797f1d2d278ed450a9142c12b9e38d33c0a41acd36e926ac8094e3", "ce85d0cdf121b6f2b55f4e3cf07b41224d8423c7"),
+    "repositories/cca-studio/web/js/investigation-policy-integration.js": (28320, "sha256:65c6f6f1c32a6556a1993faecfd2e2735dc625e4e89bc293ad94615d842308dc", "390a017a9e750c5bf43544704a71877a93182b6e"),
+    "repositories/cca-studio/web/js/investigation-policy.js": (25396, "sha256:951e7d481888eeebd3ce66ed1ef3c16bd592d975952100a22852d13080a2a3b0", "29338acd2807543500329b4e0ed8a9d703e7b68c"),
+    "repositories/cca-studio/web/js/memory-investigation-package.js": (80144, "sha256:532830e1ec67cb8b069753f4d53e6a70cfc8786fca5a03b7146e4fcaee780f0c", "b5e919ea77e6928922e401a6380100e3face93f5"),
+    "repositories/cca-studio/web/js/memoryos-sdk.js": (25111, "sha256:3d476156394045abc0eca5bf57309a743b1d8a7f332cf0788c22ed57e41c9d94", "bb18774da14e0a806528b3e0067192fd7c968da0"),
+    "repositories/cca-studio/web/js/mip-canonical.js": (25607, "sha256:0dd9dbaed8c3fdf92600dec4d998fe290dd9b2b83344198711ec88f0ec95fa68", "a86aff4b14f206b5521433130843604fc28366b9"),
+    "repositories/cca-studio/web/js/observation-timeline.js": (4350, "sha256:ba3c99d78c8170794cca6d53ebeaa5802922ae145759f262d8843fac6440b060", "bd021277df4fcd63407794a4211c277d5b898836"),
+    "repositories/cca-studio/web/js/policy-canonical.js": (27453, "sha256:be5a633d421f4d3885df7d438ad633a515675e1d49cfae889fe8452bd40f02f0", "eeed32a8d7f434d030b3f411900ab1204473ec9f"),
+    "repositories/cca-studio/web/js/policy-fact-context.js": (57247, "sha256:1d1110d8ceb0c5bf9d90369c8cf6f8cc114effa58325f6471ea41e93f64000a8", "03c9f8c5e8a6061b2a744c92a28d908e02c12701"),
+    "repositories/cca-studio/web/js/regression-policy-fact-source.js": (34954, "sha256:05dd75bf4aeabd2da617add1c8e42922ca8f819d20c0032b0f03bf0db5aa30af", "82eb3749c9f1c0a5fff56bb9edead6f40113073f"),
+    "repositories/cca-studio/web/js/semantic-world.js": (11244, "sha256:1d49a1efc103f1b987a8efc239720736d7c6c2db08ceb8e0f9ee94f539665031", "dad024a746069b62ff7e679af0e6aadc1984003f"),
+    "repositories/cca-studio/web/js/studio-model.js": (41908, "sha256:c04f82c15a2eb8727e3c00c7365ab3403f569ea08eced7f5b75ee3b8a488a84a", "870d6ec3ca2bbae3aad349385a87aa07101a6a59"),
+    "repositories/memoryos-cli/package.json": (413, "sha256:d25a0e21883e916659f04ef1074c3ca069f6cc994641241eb350574a62406a02", "f1bcc07bf57389cb49c1a6d7ed95553a7a49ba16"),
+    "repositories/memoryos-cli/src/arguments.js": (4388, "sha256:de3d46d463d8ccff325aaa1e6163162917d48b950dcdaea6f736db39be2ba66b", "b2594dd84d043c8ebe373afafaa0a6fe2fc66ac2"),
+    "repositories/memoryos-cli/src/commands.js": (8439, "sha256:71d5ebe024d36a8f3fd16f973ddf01d4f217d6fc8b2635427b1a57e78e8cfa92", "3b8928eab4ba1c0676e870a05200270fe22f1139"),
+    "repositories/memoryos-cli/src/errors.js": (6005, "sha256:1af18cd3d261805b01d6600df013de895f257cfa88075e03c9faf9e7632e3359", "b3d048ee332740af2454a71e7c1becfd0b9371d1"),
+    "repositories/memoryos-cli/src/help.js": (3310, "sha256:2420f2318060b3789f34da13e60d1dd2b9021a6dff298a7004a1d4039444de1a", "92ad6c4837f59a74eebdee6ae8d4c734665a183f"),
+    "repositories/memoryos-cli/src/main.js": (2937, "sha256:cddef37e262da839fcd0ebf5b7efece7ed17b93533a433af08e788e7935091b9", "d3da1834c485ea0ca485f7b310a22bef7e60a2ce"),
+    "repositories/memoryos-cli/src/output.js": (4190, "sha256:7427907d2d7fcfcb0dfadc7b1e58150f3d4fe9009b272d62d718af61958bba86", "a1888786df4c2ba982d3df2eb35929c7b7ffbc8a"),
+    "repositories/memoryos-cli/src/policy-arguments.js": (9285, "sha256:1fa54a028ccc549b262a09ab4ed7165806b83b114d256e93794498102e745d99", "e2c8855f3612d8310c90155b73c700b563061242"),
+    "repositories/memoryos-cli/src/policy-commands.js": (10582, "sha256:2d6f1cfa4b676613064f5f80681f9f6c1828018808c78881d7a74e5387f97670", "38e488a7fc928b420ae7db10132e25ecf9bff3c0"),
+    "repositories/memoryos-cli/src/policy-publication.js": (3063, "sha256:b0172e84283a5c84e35ce3c6fd017bda8b9164a1b9c1f3300982c4eca3a3ac23", "5e3a7fe89edf6b35ab38841d6d0b4d910fe216c7"),
+    "repositories/memoryos-cli/src/session.js": (7086, "sha256:a3d92b5c963b86eac9b70fe360d86409565743a1cd580a1b9541316ce0ac6b1b", "30cae72c49725b049b37cb903b33999a7144de02"),
+    "repositories/memoryos-cli/src/version.js": (45, "sha256:11c277d8fdf8d63733afe9c90cfa0f40e42a94f6a3062e297b6366bc5adc48c6", "f63d7584add6553d0e0e25c8eafaff9f238e9cc3"),
+}
+MO1302_CONTRACT_IDENTITIES = {
+    "deterministicFactSourceRegistry": {
+        "registryDigest": (
+            "sha256:392d688acb866753c6ff85b7030131b38990b27d8a2a0ef6e8e052c8c4e048de"
+        ),
+        "registryVersion": "1.0.0",
+        "sources": [
+            {
+                "domain": "cognitiveRegression",
+                "sourceModelDigest": (
+                    "sha256:e7d1fdf24758f2a0ac9ad609df578f95c058bf3cbab9f02a650f9cc12dab1c0d"
+                ),
+                "sourceModelVersion": "1.0.0",
+                "wireVersion": "1.0.0",
+            }
+        ],
+    },
+    "evaluatorVersion": "1.0.0",
+    "factModel": {
+        "factModelDigest": (
+            "sha256:b36b9488161cb67d8e971e802d15ad76d662d46f96e1304182de343ba69ef7a8"
+        ),
+        "factModelVersion": "1.0.0",
+    },
+    "kind": "MemoryOSPolicyContractIdentities",
+    "outcomeContractVersion": "1.0.0",
+    "resourceProfile": {
+        "identifier": "memoryos.policy.resource-profile.standard",
+        "resourceProfileDigest": (
+            "sha256:c091573dfd05481f5759ef077e15af16689382a7432fa546c6630c4caeaa5239"
+        ),
+        "version": "1.0.0",
+    },
+    "ruleRegistry": {
+        "ruleRegistryDigest": (
+            "sha256:aaa19116563d209f680b063cdccf49d899069683f9778271c4ca2c4559b94fd7"
+        ),
+        "ruleRegistryVersion": "1.0.0",
+    },
+    "version": "1.0.0",
+}
+MO1302_MANIFEST_ROLES = {
+    "actionMetadata",
+    "contractData",
+    "entrypoint",
+    "runtimeModule",
+}
+MO1302_PORTABLE_MANIFEST_PATH = re.compile(r"^[a-z0-9][a-z0-9._/-]*$")
+SHA256_IDENTITY = re.compile(r"^sha256:[0-9a-f]{64}$")
+
+
+def parse_arguments() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--root", type=Path, required=True, help="CCA workspace root")
+    return parser.parse_args()
+
+
+def load_json(path: Path) -> dict[str, object]:
+    with path.open(encoding="utf-8") as stream:
+        value = json.load(stream)
+    if not isinstance(value, dict):
+        raise ValueError(f"{path} must contain a JSON object")
+    return value
+
+
+def sha256(value: bytes) -> str:
+    return hashlib.sha256(value).hexdigest()
+
+
+def canonical_json_bytes(value: object) -> bytes:
+    return json.dumps(
+        value,
+        allow_nan=False,
+        ensure_ascii=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    ).encode("utf-8")
+
+
+def load_simple_action_metadata(path: Path) -> dict[str, object]:
+    """Parse the deliberately simple mapping-only Action metadata subset."""
+    text = path.read_text(encoding="utf-8")
+    if text.startswith("\ufeff"):
+        raise ValueError("Action metadata must not contain a UTF-8 BOM")
+    if "\t" in text:
+        raise ValueError("Action metadata must not contain tabs")
+    if not text.endswith("\n") or text.endswith("\n\n"):
+        raise ValueError("Action metadata must end with exactly one LF")
+
+    root: dict[str, object] = {}
+    stack: list[tuple[int, dict[str, object]]] = [(-2, root)]
+    for line_number, line in enumerate(text.splitlines(), start=1):
+        if not line:
+            raise ValueError(f"blank line at {line_number} is not permitted")
+        indentation = len(line) - len(line.lstrip(" "))
+        if indentation % 2 != 0:
+            raise ValueError(f"indentation at line {line_number} is not two-space aligned")
+        body = line[indentation:]
+        if body.startswith("#") or ":" not in body:
+            raise ValueError(f"line {line_number} is not a simple mapping member")
+        key, separator, raw_value = body.partition(":")
+        if separator != ":" or not re.fullmatch(r"[a-z][a-z0-9-]*", key):
+            raise ValueError(f"line {line_number} has an invalid mapping key")
+
+        while stack[-1][0] >= indentation:
+            stack.pop()
+        parent_indentation, parent = stack[-1]
+        if indentation != parent_indentation + 2:
+            raise ValueError(f"line {line_number} skips a mapping level")
+        if key in parent:
+            raise ValueError(f"line {line_number} duplicates mapping key '{key}'")
+
+        value = raw_value.strip()
+        if value == "":
+            child: dict[str, object] = {}
+            parent[key] = child
+            stack.append((indentation, child))
+        else:
+            parent[key] = value
+    return root
+
+
+def validate_mo1302_action_metadata(root: Path, errors: list[str]) -> None:
+    metadata_path = root / MO1302_ACTION_ROOT / "action.yml"
+    try:
+        metadata = load_simple_action_metadata(metadata_path)
+    except (OSError, UnicodeError, ValueError) as exception:
+        errors.append(f"invalid MO-1302 Action metadata: {exception}")
+        return
+
+    if set(metadata) != {"name", "description", "inputs", "outputs", "runs"}:
+        errors.append("MO-1302 Action metadata root does not contain exactly the frozen members")
+    if metadata.get("name") != "MemoryOS Deterministic Policy Gate":
+        errors.append("MO-1302 Action name differs from the frozen name")
+    if metadata.get("description") != (
+        "Evaluate and verify a pinned MemoryOS Investigation Policy or Policy Set "
+        "against authoritative Memory Investigation Package input."
+    ):
+        errors.append("MO-1302 Action description differs from the frozen description")
+
+    inputs = metadata.get("inputs")
+    if not isinstance(inputs, dict) or set(inputs) != set(MO1302_ACTION_INPUTS):
+        errors.append("MO-1302 Action inputs differ from the frozen five-input contract")
+    else:
+        for input_name in MO1302_ACTION_INPUTS:
+            input_contract = inputs.get(input_name)
+            expected_members = {"description", "required"}
+            expected_required = "true"
+            if input_name == "regression-baseline-mip-path":
+                expected_members.add("default")
+                expected_required = "false"
+            if not isinstance(input_contract, dict) or set(input_contract) != expected_members:
+                errors.append(f"MO-1302 Action input '{input_name}' has invalid members")
+                continue
+            if not isinstance(input_contract.get("description"), str):
+                errors.append(f"MO-1302 Action input '{input_name}' lacks a description")
+            if input_contract.get("required") != expected_required:
+                errors.append(f"MO-1302 Action input '{input_name}' has invalid required behavior")
+            if input_name == "regression-baseline-mip-path" and input_contract.get(
+                "default"
+            ) != '""':
+                errors.append("MO-1302 optional baseline input must default to the empty string")
+
+    outputs = metadata.get("outputs")
+    if not isinstance(outputs, dict) or set(outputs) != set(MO1302_ACTION_OUTPUTS):
+        errors.append("MO-1302 Action outputs differ from the frozen nineteen-output contract")
+    else:
+        for output_name in MO1302_ACTION_OUTPUTS:
+            output_contract = outputs.get(output_name)
+            if not isinstance(output_contract, dict) or set(output_contract) != {"description"}:
+                errors.append(f"MO-1302 Action output '{output_name}' has invalid members")
+            elif not isinstance(output_contract.get("description"), str):
+                errors.append(f"MO-1302 Action output '{output_name}' lacks a description")
+
+    runs = metadata.get("runs")
+    if runs != {"using": "node24", "main": "dist/index.js"}:
+        errors.append("MO-1302 Action runs contract must be exactly node24/dist/index.js")
+
+
+def is_reparse_or_symlink(path: Path) -> bool:
+    status = path.lstat()
+    reparse_flag = getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)
+    return path.is_symlink() or bool(getattr(status, "st_file_attributes", 0) & reparse_flag)
+
+
+def enumerate_action_tree(action_root: Path, errors: list[str]) -> set[str]:
+    members: set[str] = set()
+    try:
+        if is_reparse_or_symlink(action_root) or not action_root.is_dir():
+            errors.append("MO-1302 Action root must be a non-reparse directory")
+            return members
+    except OSError as exception:
+        errors.append(f"invalid MO-1302 Action root: {exception}")
+        return members
+
+    for directory, directory_names, file_names in os.walk(action_root, followlinks=False):
+        directory_path = Path(directory)
+        for name in list(directory_names):
+            child = directory_path / name
+            try:
+                if is_reparse_or_symlink(child) or not child.is_dir():
+                    errors.append(
+                        "MO-1302 Action tree contains a reparse or non-directory member: "
+                        + child.relative_to(action_root).as_posix()
+                    )
+                    directory_names.remove(name)
+            except OSError as exception:
+                errors.append(f"invalid MO-1302 Action tree member {child}: {exception}")
+                directory_names.remove(name)
+        for name in file_names:
+            child = directory_path / name
+            relative_path = child.relative_to(action_root).as_posix()
+            try:
+                status = child.lstat()
+                if is_reparse_or_symlink(child) or not stat.S_ISREG(status.st_mode):
+                    errors.append(
+                        "MO-1302 Action tree contains a reparse or non-regular file: "
+                        + relative_path
+                    )
+                    continue
+            except OSError as exception:
+                errors.append(f"invalid MO-1302 Action tree member {relative_path}: {exception}")
+                continue
+            members.add(relative_path)
+    return members
+
+
+def validate_mo1302_distribution(root: Path, errors: list[str]) -> None:
+    action_root = root / MO1302_ACTION_ROOT
+    manifest_path = action_root / "distribution-manifest.json"
+    try:
+        manifest_bytes = manifest_path.read_bytes()
+        if manifest_bytes.startswith(b"\xef\xbb\xbf"):
+            raise ValueError("distribution manifest must not contain a UTF-8 BOM")
+        manifest = json.loads(manifest_bytes.decode("utf-8"))
+        if not isinstance(manifest, dict):
+            raise ValueError("distribution manifest root must be an object")
+        if canonical_json_bytes(manifest) != manifest_bytes:
+            raise ValueError("distribution manifest bytes are not canonical JSON without framing")
+    except (OSError, UnicodeError, ValueError, json.JSONDecodeError) as exception:
+        errors.append(f"invalid MO-1302 distribution manifest: {exception}")
+        return
+
+    if set(manifest) != {"files", "kind", "version"}:
+        errors.append("MO-1302 distribution manifest root is not closed")
+    if manifest.get("kind") != "MemoryOSGitHubPolicyGateDistributionManifest":
+        errors.append("MO-1302 distribution manifest kind is incorrect")
+    if manifest.get("version") != "1.0.0":
+        errors.append("MO-1302 distribution manifest version is incorrect")
+
+    direct_roles = {
+        "action.yml": "actionMetadata",
+        "dist/action-runtime.mjs": "runtimeModule",
+        "dist/cli-driver.mjs": "runtimeModule",
+        "dist/contracts/policy-contract-identities-1.0.0.json": "contractData",
+        "dist/index.js": "entrypoint",
+    }
+    expected_roles = dict(direct_roles)
+    expected_roles.update(
+        {f"dist/vendor/{source}": "runtimeModule" for source in MO1302_VENDOR_SOURCES}
+    )
+
+    entries = manifest.get("files")
+    actual_paths: list[str] = []
+    actual_roles: dict[str, str] = {}
+    if not isinstance(entries, list):
+        errors.append("MO-1302 distribution manifest files must be an array")
+        entries = []
+    for index, entry in enumerate(entries):
+        if not isinstance(entry, dict) or set(entry) != {
+            "byteCount",
+            "path",
+            "rawSha256",
+            "role",
+        }:
+            errors.append(f"MO-1302 distribution entry {index} is not closed")
+            continue
+        relative_path = entry.get("path")
+        byte_count = entry.get("byteCount")
+        raw_digest = entry.get("rawSha256")
+        role = entry.get("role")
+        if (
+            not isinstance(relative_path, str)
+            or not MO1302_PORTABLE_MANIFEST_PATH.fullmatch(relative_path)
+            or "//" in relative_path
+            or any(part in {".", ".."} for part in relative_path.split("/"))
+        ):
+            errors.append(f"MO-1302 distribution entry {index} has an invalid path")
+            continue
+        actual_paths.append(relative_path)
+        if type(byte_count) is not int or not 1 <= byte_count <= 9_007_199_254_740_991:
+            errors.append(f"MO-1302 distribution entry '{relative_path}' has invalid byteCount")
+        if not isinstance(raw_digest, str) or not SHA256_IDENTITY.fullmatch(raw_digest):
+            errors.append(f"MO-1302 distribution entry '{relative_path}' has invalid rawSha256")
+        if not isinstance(role, str) or role not in MO1302_MANIFEST_ROLES:
+            errors.append(f"MO-1302 distribution entry '{relative_path}' has invalid role")
+        else:
+            actual_roles[relative_path] = role
+
+        member = action_root.joinpath(*relative_path.split("/"))
+        try:
+            member_bytes = member.read_bytes()
+            if len(member_bytes) != byte_count:
+                errors.append(f"MO-1302 distribution member '{relative_path}' byte count changed")
+            if f"sha256:{sha256(member_bytes)}" != raw_digest:
+                errors.append(f"MO-1302 distribution member '{relative_path}' digest changed")
+        except OSError as exception:
+            errors.append(f"missing MO-1302 distribution member '{relative_path}': {exception}")
+
+    if actual_paths != sorted(actual_paths):
+        errors.append("MO-1302 distribution entries are not ASCII path ordered")
+    if len(actual_paths) != len(set(actual_paths)):
+        errors.append("MO-1302 distribution entries contain duplicate paths")
+    if set(actual_paths) != set(expected_roles):
+        missing = sorted(set(expected_roles) - set(actual_paths))
+        unexpected = sorted(set(actual_paths) - set(expected_roles))
+        if missing:
+            errors.append("MO-1302 distribution manifest lacks reviewed members: " + ", ".join(missing))
+        if unexpected:
+            errors.append(
+                "MO-1302 distribution manifest has unreviewed members: "
+                + ", ".join(unexpected)
+            )
+    for relative_path, expected_role in expected_roles.items():
+        if actual_roles.get(relative_path) != expected_role:
+            errors.append(
+                f"MO-1302 distribution member '{relative_path}' must use role '{expected_role}'"
+            )
+    if list(actual_roles.values()).count("actionMetadata") != 1:
+        errors.append("MO-1302 distribution must have exactly one actionMetadata member")
+    if list(actual_roles.values()).count("entrypoint") != 1:
+        errors.append("MO-1302 distribution must have exactly one entrypoint member")
+
+    tree_members = enumerate_action_tree(action_root, errors)
+    expected_tree_members = set(actual_paths) | {"distribution-manifest.json"}
+    if tree_members != expected_tree_members:
+        unlisted = sorted(tree_members - expected_tree_members)
+        absent = sorted(expected_tree_members - tree_members)
+        if unlisted:
+            errors.append("MO-1302 Action root contains unlisted production files: " + ", ".join(unlisted))
+        if absent:
+            errors.append("MO-1302 Action root lacks listed production files: " + ", ".join(absent))
+
+    released_manifest_length, released_manifest_digest = MO1302_RELEASED_MANIFEST
+    if (
+        len(manifest_bytes) != released_manifest_length
+        or f"sha256:{sha256(manifest_bytes)}" != released_manifest_digest
+    ):
+        errors.append("MO-1302 distribution manifest differs from the released manifest")
+    if set(MO1302_RELEASED_VENDOR_SOURCES) != set(MO1302_VENDOR_SOURCES):
+        errors.append("MO-1302 released vendored runtime pins do not cover the vendored sources")
+    for source in MO1302_VENDOR_SOURCES:
+        vendored = action_root.joinpath("dist", "vendor", *source.split("/"))
+        try:
+            vendored_bytes = vendored.read_bytes()
+            released_length, released_digest, _released_blob = MO1302_RELEASED_VENDOR_SOURCES[source]
+            if (
+                len(vendored_bytes) != released_length
+                or f"sha256:{sha256(vendored_bytes)}" != released_digest
+            ):
+                errors.append(f"MO-1302 vendored runtime source differs from released '{source}'")
+        except (OSError, KeyError) as exception:
+            errors.append(f"invalid MO-1302 vendored runtime source '{source}': {exception}")
+
+
+def validate_mo1302_contracts_and_registration(root: Path, errors: list[str]) -> None:
+    schema_root = root / "repositories" / "cca-conformance" / "schema"
+    for filename, expected_identifier in MO1302_SCHEMA_IDENTIFIERS.items():
+        try:
+            schema = load_json(schema_root / filename)
+            if schema.get("$schema") != "https://json-schema.org/draft/2020-12/schema":
+                errors.append(f"MO-1302 schema '{filename}' must use JSON Schema Draft 2020-12")
+            if schema.get("$id") != expected_identifier:
+                errors.append(f"MO-1302 schema '{filename}' has an incorrect identifier")
+            if schema.get("type") != "object" or schema.get("additionalProperties") is not False:
+                errors.append(f"MO-1302 schema '{filename}' must define a closed object root")
+        except (OSError, ValueError, json.JSONDecodeError) as exception:
+            errors.append(f"invalid MO-1302 schema '{filename}': {exception}")
+
+    identities_path = (
+        root
+        / MO1302_ACTION_ROOT
+        / "dist"
+        / "contracts"
+        / "policy-contract-identities-1.0.0.json"
+    )
+    try:
+        identity_bytes = identities_path.read_bytes()
+        identities = json.loads(identity_bytes.decode("utf-8"))
+        if identities != MO1302_CONTRACT_IDENTITIES:
+            errors.append("MO-1302 bundled Policy contract identities changed")
+        if canonical_json_bytes(identities) != identity_bytes:
+            errors.append("MO-1302 bundled Policy contract identities are not canonical JSON")
+    except (OSError, UnicodeError, ValueError, json.JSONDecodeError) as exception:
+        errors.append(f"invalid MO-1302 bundled Policy contract identities: {exception}")
+
+    conformance_root = root / "repositories" / "cca-conformance"
+    try:
+        package = load_json(conformance_root / "package.json")
+        scripts = package.get("scripts")
+        if not isinstance(scripts, dict) or scripts.get("test:mo1302-phase1") != (
+            "node --test tests/mo1302_action_foundation_conformance_test.mjs"
+        ):
+            errors.append("MO-1302 Phase-1 npm conformance registration is missing or changed")
+    except (OSError, ValueError, json.JSONDecodeError) as exception:
+        errors.append(f"invalid MO-1302 npm conformance registration: {exception}")
+
+    registration_anchors = {
+        conformance_root / "CMakeLists.txt": (
+            ("tests/mo1302_action_foundation_conformance_test.mjs", 2),
+            ("tests/support/mo1302-action-foundation-support.mjs", 1),
+            (
+                "tests/fixtures/github-policy-gate/1.0.0/"
+                "mo1302-action-foundation-vectors.json",
+                1,
+            ),
+            ("tools/build-mo1302-action-distribution.mjs", 1),
+            ('conformance_area STREQUAL "mo1302-phase1"', 2),
+        ),
+        conformance_root / "tools" / "run-js-conformance.mjs": (
+            ('"mo1302_action_foundation_conformance_test.mjs"', 1),
+        ),
+        root / ".gitattributes": (
+            (".github/actions/memoryos-policy-gate/**/*.json -text", 1),
+            (
+                "repositories/cca-conformance/tests/fixtures/"
+                "github-policy-gate/**/*.json -text",
+                1,
+            ),
+            (
+                "repositories/cca-conformance/tests/fixtures/"
+                "github-policy-gate/**/*.sha256 -text",
+                1,
+            ),
+        ),
+    }
+    for path, anchors in registration_anchors.items():
+        try:
+            text = path.read_text(encoding="utf-8")
+            for anchor, expected_count in anchors:
+                if text.count(anchor) != expected_count:
+                    errors.append(
+                        f"MO-1302 Phase-1 registration anchor '{anchor}' must occur "
+                        f"{expected_count} time(s) in {path.relative_to(root).as_posix()}"
+                    )
+        except (OSError, UnicodeError) as exception:
+            errors.append(f"invalid MO-1302 Phase-1 registration file {path}: {exception}")
+
+
+def validate_mo1303_registration(root: Path, errors: list[str]) -> None:
+    conformance_root = root / "repositories" / "cca-conformance"
+    extension_root = root / "repositories" / "memoryos-vscode"
+    try:
+        package = load_json(conformance_root / "package.json")
+        scripts = package.get("scripts")
+        if not isinstance(scripts, dict) or scripts.get("test:mo1303-phase1") != (
+            "node --test tests/mo1303_phase1_conformance_test.mjs"
+        ):
+            errors.append("MO-1303 Phase-1 npm conformance registration is missing or changed")
+        if not isinstance(scripts, dict) or scripts.get("test:mo1303-phase2") != (
+            "node --test tests/mo1303_phase2_conformance_test.mjs"
+        ):
+            errors.append("MO-1303 Phase-2 npm conformance registration is missing or changed")
+        if not isinstance(scripts, dict) or scripts.get("test:mo1303-phase3") != (
+            "node --test tests/mo1303_phase3_conformance_test.mjs"
+        ):
+            errors.append("MO-1303 Phase-3 npm conformance registration is missing or changed")
+    except (OSError, ValueError, json.JSONDecodeError) as exception:
+        errors.append(f"invalid MO-1303 npm conformance registration: {exception}")
+
+    try:
+        inventory = load_json(conformance_root / "mo1303-conformance-inventory.json")
+        if inventory.get("kind") != "MemoryOSMO1303ConformanceInventory":
+            errors.append("MO-1303 conformance inventory kind is missing or changed")
+        if inventory.get("version") != "1.0.0":
+            errors.append("MO-1303 conformance inventory version is missing or changed")
+        if inventory.get("phase") != (
+            "finalConformanceClosureWithExternalInfrastructureException"
+        ):
+            errors.append("MO-1303 conformance inventory phase is missing or changed")
+        if inventory.get("phase1CommitBinding") != {
+            "strategy": "postCommitConformanceCommit",
+            "status": "bound",
+            "revision": "6f99038fd5669ece2af4b1671a8e5f267822d2dd",
+        }:
+            errors.append("MO-1303 Phase-1 implementation binding is missing or changed")
+        if inventory.get("phase2CommitBinding") != {
+            "strategy": "postCommitConformanceCommit",
+            "status": "bound",
+            "revision": "2919dd9056bc595bddde3d18f09f8efaaafb010b",
+        }:
+            errors.append("MO-1303 Phase-2 implementation binding is missing or changed")
+        if inventory.get("phase3CommitBinding") != {
+            "strategy": "laterConformanceBindingCommit",
+            "status": "bound",
+            "revision": "92ab1e7b8fe64715b01e430a9c9079d41cc2f679",
+        }:
+            errors.append("MO-1303 Phase-3 implementation binding is missing or changed")
+        if inventory.get("finalConformanceBinding") != {
+            "strategy": "postHostedConformanceBindingCommit",
+            "status": "bound",
+            "revision": "f856455e900c549bb2ec8e1d72f03fefec3be2e1",
+        }:
+            errors.append("MO-1303 final hosted binding state is missing or changed")
+        if inventory.get("releaseClosure") != {
+            "releaseStatus": "releasedWithExternalInfrastructureException",
+            "hostedCertificationStatus": "partial",
+            "macosStatus": "notExecutedExternalInfrastructure",
+            "crossPlatformParityStatus": "notExecuted",
+            "bindingSchema": {
+                "path": (
+                    "repositories/cca-conformance/schema/"
+                    "mo1303-final-conformance-binding-1.0.schema.json"
+                ),
+                "byteLength": 13506,
+                "rawSha256": (
+                    "sha256:6cb376eca1eb93d672e061c1f89f5fec"
+                    "b2ac84112484601ed890cf186307d5e5"
+                ),
+            },
+            "bindingArtifact": {
+                "path": (
+                    "repositories/cca-conformance/evidence/"
+                    "mo1303-final-conformance-binding-run-35474897159.json"
+                ),
+                "byteLength": 5156,
+                "rawSha256": (
+                    "sha256:db739f32c55fa8ce1089c83c680f43cd"
+                    "0e4b5fa1a80d5973f7b474ae2790f8fb"
+                ),
+            },
+        }:
+            errors.append("MO-1303 external-infrastructure release closure is missing or changed")
+        hosted = inventory.get("hostedCertification")
+        if not isinstance(hosted, dict) or hosted.get("status") != "partial":
+            errors.append("MO-1303 hosted certification must remain partial")
+        elif hosted.get("run") != {
+            "number": 5,
+            "id": 35474897159,
+            "revision": "f856455e900c549bb2ec8e1d72f03fefec3be2e1",
+        }:
+            errors.append("MO-1303 hosted run binding is missing or changed")
+        elif hosted.get("platforms") != {
+            "macos-14": "notExecutedExternalInfrastructure",
+            "ubuntu-24.04": "PASS",
+            "windows-2022": "PASS",
+        }:
+            errors.append("MO-1303 hosted platform states are missing or changed")
+        elif hosted.get("crossPlatformParity") != "notExecuted":
+            errors.append("MO-1303 cross-platform parity must remain unexecuted")
+        if inventory.get("futureMilestoneTag") != {
+            "name": "memoryos-1.3-mo1303",
+            "status": "pendingManualReleaseTagReview",
+        }:
+            errors.append("MO-1303 future tag must remain pending manual review")
+    except (OSError, ValueError, json.JSONDecodeError) as exception:
+        errors.append(f"invalid MO-1303 conformance inventory: {exception}")
+
+    registration_anchors = {
+        root / "CMakeLists.txt": (
+            ("cca_add_workspace_repository(memoryos-vscode)", 1),
+        ),
+        conformance_root / "CMakeLists.txt": (
+            ("mo1303-conformance-inventory.json", 2),
+            ("tests/mo1303_phase1_conformance_test.mjs", 2),
+            ("tests/mo1303_phase2_conformance_test.mjs", 2),
+            ("tests/mo1303_phase3_conformance_test.mjs", 2),
+            ("tests/support/mo1303-conformance-support.mjs", 1),
+            ("evidence/mo1303-final-conformance-binding-run-35474897159.json", 1),
+            ("evidence/mo1303-hosted-evidence-run-35474897159-ubuntu-24.04-x64.json", 1),
+            ("evidence/mo1303-hosted-evidence-run-35474897159-windows-2022-x64.json", 1),
+            ("schema/mo1303-final-conformance-binding-1.0.schema.json", 1),
+            ('conformance_area STREQUAL "mo1303-phase1"', 2),
+            ('conformance_area STREQUAL "mo1303-phase2"', 2),
+            ('conformance_area STREQUAL "mo1303-phase3"', 2),
+        ),
+        conformance_root / "tools" / "run-js-conformance.mjs": (
+            ('"mo1303_phase1_conformance_test.mjs"', 1),
+            ('"mo1303_phase2_conformance_test.mjs"', 1),
+            ('"mo1303_phase3_conformance_test.mjs"', 1),
+        ),
+        extension_root / "package.json": (
+            ('"memoryos.showContractIdentities"', 1),
+            ('"memoryos.preparePolicyArtifact"', 1),
+            ('"memoryos.evaluatePolicyArtifact"', 1),
+            ('"memoryos.verifyEvaluationIdentity"', 1),
+            ('"memoryos.verifyPolicyOutcome"', 1),
+        ),
+        extension_root / "CMakeLists.txt": (
+            ('"${MEMORYOS_VSCODE_NPM_EXECUTABLE}" test -- --test-concurrency=1', 1),
+            ("tests/extension_shell_contract.test.mjs", 1),
+            ("tests/runtime_foundation.test.mjs", 1),
+            ("tests/phase2_product_ux.test.mjs", 1),
+            ("NAME memoryos.vscode.runtime", 1),
+            ("NAME memoryos.vscode.product", 1),
+            ("NAME memoryos.vscode.package.validation", 1),
+            ("NAME memoryos.vscode.extension-host", 2),
+        ),
+        root / ".github" / "workflows" / "memoryos-vscode-certification.yml": (
+            ("fail-fast: false", 1),
+            ("runner: ubuntu-24.04", 1),
+            ("runner: windows-2022", 1),
+            ("runner: macos-14-large", 1),
+            ("permissions:", 1),
+            ("contents: read", 1),
+            ("persist-credentials: false", 2),
+        ),
+    }
+    for path, anchors in registration_anchors.items():
+        try:
+            text = path.read_text(encoding="utf-8")
+            for anchor, expected_count in anchors:
+                if text.count(anchor) != expected_count:
+                    errors.append(
+                        f"MO-1303 registration anchor '{anchor}' must occur "
+                        f"{expected_count} time(s) in {path.relative_to(root).as_posix()}"
+                    )
+        except (OSError, UnicodeError) as exception:
+            errors.append(f"invalid MO-1303 registration file {path}: {exception}")
+
+
+def validate_mo1304_registration(root: Path, errors: list[str]) -> None:
+    conformance = root / "repositories" / "cca-conformance"
+    mcp = root / "repositories" / "memoryos-mcp"
+    try:
+        package = load_json(mcp / "package.json")
+        if package.get("name") != "memoryos-mcp" or package.get("private") is not True:
+            errors.append("MO-1304 must remain a private memoryos-mcp package")
+        if package.get("engines") != {"node": "24.21.0"}:
+            errors.append("MO-1304 Node runtime pin changed")
+        if package.get("dependencies") != {
+            "@modelcontextprotocol/core": "2.0.0",
+            "@modelcontextprotocol/server": "2.0.0", "zod": "4.6.5",
+        }:
+            errors.append("MO-1304 reviewed production dependency pins changed")
+        if any(key in package.get("scripts", {}) for key in ("preinstall", "install", "postinstall")):
+            errors.append("MO-1304 must not introduce install lifecycle hooks")
+        registration = load_json(conformance / "package.json")
+        if registration.get("scripts", {}).get("test:mo1304-phase1") != (
+            "node --test tests/mo1304_phase1_conformance_test.mjs"
+        ):
+            errors.append("MO-1304 Phase-1 conformance registration changed")
+        if registration.get("scripts", {}).get("test:mo1304-phase2") != (
+            "node --test tests/mo1304_phase2_conformance_test.mjs"
+        ):
+            errors.append("MO-1304 Phase-2 conformance registration missing")
+        inventory = load_json(conformance / "mo1304-conformance-inventory.json")
+        # Preserve Phase 2 identity while validating genuine later-stage evidence.
+        import subprocess
+        phase3 = inventory.get("phase3", {})
+        binding = inventory.get("releaseBinding", {})
+        windows = phase3.get("windows11_x64")
+        parity = phase3.get("platformParity")
+        bound = binding.get("status") == "BOUND"
+        expected_phase = ("finalConformanceClosure" if bound else
+                          "phase3Certification" if windows else "phase2Integration")
+        if (inventory.get("kind") != "MemoryOSMO1304ConformanceInventory"
+                or inventory.get("version") != "1.0.0"
+                or inventory.get("phase") != expected_phase):
+            errors.append("MO-1304 conformance inventory identity changed")
+        if inventory.get("phase2", {}).get("status") != "IMPLEMENTED":
+            errors.append("MO-1304 Phase 2 implementation inventory missing")
+        if (phase3.get("status") != ("PASS" if bound else "PENDING")
+                or phase3.get("node") != "24.21.0" or phase3.get("macos") != "UNSUPPORTED"):
+            errors.append("MO-1304 Phase 3 state or support policy invalid")
+        if inventory.get("tagState") != {"status": "PENDING", "name": "memoryos-1.3-mo1304", "object": None}:
+            errors.append("MO-1304 release tag must remain pending manual review")
+
+        def evidence(entry: dict, expected_path: str) -> Path:
+            if entry.get("status") != "PASS":
+                raise ValueError("MO-1304 platform/parity evidence is not PASS")
+            value = entry.get("receipt", {})
+            if value.get("path") != expected_path:
+                raise ValueError("MO-1304 evidence path changed")
+            path = root / expected_path
+            data = path.read_bytes()
+            if (len(data) > 4 * 1024 * 1024 or len(data) != value.get("byteLength")
+                    or hashlib.sha256(data).hexdigest() != value.get("sha256")):
+                raise ValueError("MO-1304 evidence identity mismatch")
+            return path
+
+        if windows is not None or parity is not None:
+            if not windows or not parity or not phase3.get("ubuntu24_04_x64"):
+                raise ValueError("MO-1304 requires both platforms and parity")
+            win = evidence(windows, "repositories/cca-conformance/evidence/mo1304-phase3-windows/windows-receipt.json")
+            ubuntu = evidence(phase3["ubuntu24_04_x64"], "repositories/cca-conformance/evidence/mo1304-phase3-ubuntu/ubuntu-receipt.json")
+            pair = evidence(parity, "repositories/cca-conformance/evidence/mo1304-phase3-parity.json")
+            # This offline command independently validates both receipts before
+            # checking every canonical parity byte; no VM or runtime execution.
+            # The three receipt identities above are always enforced. Re-running the
+            # Windows-toolchain parity validation needs the reference host, so a
+            # hosted runner may name this one sub-check as not run: the validator is
+            # then not executed and the line below is printed, never a pass.
+            if os.environ.get("CCA_VERIFY_WORKSPACE_NOT_RUN") == "MO1304_WINDOWS_TOOLCHAIN_PARITY":
+                print("NOT_RUN_ON_HOSTED_RUNNER: MO-1304 independent platform/parity validation "
+                      "(Windows-toolchain parity; enforced on the reference host)")
+
+                def not_run(*_arguments: object, **_options: object) -> argparse.Namespace:
+                    return argparse.Namespace(returncode=0)
+
+                subprocess = argparse.Namespace(run=not_run)
+            result = subprocess.run(
+                [sys.executable, "-B", str(conformance / "tools/mo1304-platforms/validate_parity.py"),
+                 "validate", str(win), str(ubuntu), str(pair)],
+                capture_output=True, timeout=60, check=False,
+            )
+            if result.returncode != 0:
+                errors.append("MO-1304 independent platform/parity validation failed")
+        if bound:
+            if not windows or not parity or binding.get("strategy") != "postEvidenceConformanceCommit":
+                raise ValueError("MO-1304 final binding requires genuine two-platform evidence")
+            revision = binding.get("revision", "")
+            if (re.fullmatch(r"[0-9a-f]{40}", revision) is None
+                    or windows.get("harnessBinding", {}).get("revision") != revision
+                    or windows.get("harnessBinding", {}).get("status") != "BOUND"):
+                raise ValueError("MO-1304 evidence revision binding invalid")
+            proof_path = evidence({"status": "PASS", "receipt": binding.get("validationReceipt", {})},
+                                  "repositories/cca-conformance/evidence/mo1304-final-binding-validation.json")
+            proof = load_json(proof_path)
+            if (proof.get("status") != "PASS" or proof.get("evidenceRevision") != revision
+                    or not proof.get("runs") or any(r.get("exitCode") != 0 for r in proof["runs"])):
+                errors.append("MO-1304 final validation proof invalid")
+        elif binding != {"status": "PENDING", "revision": None}:
+            errors.append("MO-1304 unbound release state must remain pending")
+        limits = load_json(mcp / "contracts" / "limits.json")
+        if limits.get("status") != "measured" or not all(
+                isinstance(value, int) and value > 0 for value in limits.get("values", {}).values()):
+            errors.append("MO-1304 finite measured limits missing")
+        for relative in ("CMakeLists.txt", "README.md", "NOTICE.md", "package-lock.json",
+                         "scripts/verify.mjs", "scripts/inventory.mjs", "src/server.mjs",
+                         "runtime/runtime-closure-manifest.json", "distribution/foundation-inventory.json",
+                         "measurements/resource-review.json", "measurements/advisory-disposition.json",
+                         "LICENSE", "THIRD_PARTY_NOTICES.txt", "scripts/distribution.mjs",
+                         "scripts/phase2-validation.mjs", "scripts/phase2-inventory.mjs",
+                         "measurements/phase2-package-receipt.json", "measurements/phase2-advisory-review.json",
+                         "measurements/phase2-integration.json", "measurements/phase2-offline.json"):
+            if not (mcp / relative).is_file():
+                errors.append(f"MO-1304 required foundation artifact missing: {relative}")
+        anchors = {
+            root / "CMakeLists.txt": {"cca_add_workspace_repository(memoryos-mcp)": 1},
+            conformance / "CMakeLists.txt": {"mo1304-conformance-inventory.json": 2,
+                "tests/mo1304_phase1_conformance_test.mjs": 2,
+                'conformance_area STREQUAL "mo1304-phase1"': 2,
+                "tests/mo1304_phase2_conformance_test.mjs": 2,
+                'conformance_area STREQUAL "mo1304-phase2"': 2},
+            conformance / "tools" / "run-js-conformance.mjs": {'"mo1304_phase1_conformance_test.mjs"': 1,
+                '"mo1304_phase2_conformance_test.mjs"': 1},
+        }
+        for path, expected in anchors.items():
+            content = path.read_text(encoding="utf-8")
+            for anchor, count in expected.items():
+                if content.count(anchor) != count:
+                    errors.append(f"MO-1304 registration anchor changed: {anchor}")
+    except (OSError, ValueError, json.JSONDecodeError) as exception:
+        errors.append(f"invalid MO-1304 foundation registration: {exception}")
+
+
+def validate_conformance_artifacts(root: Path, errors: list[str]) -> None:
+    conformance_root = root / "repositories" / "cca-conformance"
+    manifest_path = conformance_root / "requirements-manifest.json"
+    try:
+        manifest_bytes = manifest_path.read_bytes()
+        if not manifest_bytes.endswith(b"\n") or manifest_bytes.endswith(b"\n\n"):
+            errors.append("current conformance manifest must end with exactly one LF")
+            return
+        manifest = load_json(manifest_path)
+        implementation = manifest.get("implementation")
+        if not isinstance(implementation, dict):
+            errors.append("current conformance manifest lacks implementation identity")
+        else:
+            if implementation.get("version") != "1.2.1":
+                errors.append("current conformance manifest is not the v1.2.1 assessment")
+            if implementation.get("revision") != EXPECTED_IMPLEMENTATION_REVISION:
+                errors.append("current conformance implementation revision is not approved")
+        standard = manifest.get("standard")
+        if not isinstance(standard, dict) or standard.get(
+            "publicationDigest"
+        ) != EXPECTED_STANDARD_PUBLICATION_DIGEST:
+            errors.append("current conformance Standard publication digest changed")
+        incorporated = manifest.get("incorporatedStandards")
+        mip = None
+        if isinstance(incorporated, list):
+            mip = next(
+                (
+                    value
+                    for value in incorporated
+                    if isinstance(value, dict)
+                    and value.get("identifier") == "CCA-MIP-1.0"
+                ),
+                None,
+            )
+        if not isinstance(mip, dict) or mip.get(
+            "publicationDigest"
+        ) != EXPECTED_MIP_PUBLICATION_DIGEST:
+            errors.append("current conformance MIP publication digest changed")
+        if manifest.get("normativeRegistryDigest") != EXPECTED_NORMATIVE_REGISTRY_DIGEST:
+            errors.append("current conformance normative registry digest changed")
+        manifest_digest = sha256(manifest_bytes[:-1])
+        retained_manifest = (
+            conformance_root
+            / "manifests"
+            / f"requirements-manifest-sha256-{manifest_digest}.json"
+        )
+        if not retained_manifest.is_file():
+            errors.append("missing current content-addressed conformance manifest")
+        elif retained_manifest.read_bytes() != manifest_bytes:
+            errors.append("current manifest alias differs from its content-addressed copy")
+    except (OSError, ValueError, json.JSONDecodeError) as exception:
+        errors.append(f"invalid current conformance manifest: {exception}")
+
+    historical_path = conformance_root / "manifests" / HISTORICAL_MANIFEST
+    try:
+        if sha256(historical_path.read_bytes()) != EXPECTED_HISTORICAL_MANIFEST_BYTES:
+            errors.append("immutable v1.2.0 content-addressed manifest bytes changed")
+    except OSError as exception:
+        errors.append(f"missing immutable v1.2.0 content-addressed manifest: {exception}")
+
+    evidence_path = conformance_root / "evidence" / "reference-implementation-1.2.1.json"
+    try:
+        evidence_bytes = evidence_path.read_bytes()
+        evidence_digest = sha256(evidence_bytes)
+        retained_evidence = (
+            evidence_path.parent
+            / f"reference-implementation-1.2.1-sha256-{evidence_digest}.json"
+        )
+        if not retained_evidence.is_file():
+            errors.append("missing v1.2.1 content-addressed conformance evidence")
+        elif retained_evidence.read_bytes() != evidence_bytes:
+            errors.append("v1.2.1 evidence alias differs from its content-addressed copy")
+    except OSError as exception:
+        errors.append(f"invalid v1.2.1 conformance evidence: {exception}")
+
+
+def validate(root: Path) -> list[str]:
+    errors: list[str] = []
+
+    for relative_path in REQUIRED_PATHS:
+        if not (root / relative_path).is_file():
+            errors.append(f"missing required file: {relative_path}")
+
+    validate_mo1302_action_metadata(root, errors)
+    validate_mo1302_distribution(root, errors)
+    validate_mo1302_contracts_and_registration(root, errors)
+    validate_mo1303_registration(root, errors)
+    validate_mo1304_registration(root, errors)
+    validate_conformance_artifacts(root, errors)
+
+    for repository in DEFERRED_REPOSITORIES:
+        directory = root / "repositories" / repository
+        if not directory.is_dir():
+            errors.append(f"missing deferred repository: repositories/{repository}")
+            continue
+        actual_files = {
+            path.relative_to(directory).as_posix()
+            for path in directory.rglob("*")
+            if path.is_file()
+        }
+        unexpected_files = actual_files - {"CMakeLists.txt", "README.md"}
+        if unexpected_files:
+            errors.append(
+                f"deferred repository {repository} contains implementation files: "
+                + ", ".join(sorted(unexpected_files))
+            )
+
+    compiler_root = root / "repositories" / "cca-compiler"
+    for module_name, documentation_name in COMPILER_MODULES:
+        module_paths = (
+            compiler_root / "include" / "cca" / "compiler" / f"{module_name}.hpp",
+            compiler_root / "src" / f"{module_name}.cpp",
+            compiler_root / "tests" / f"{module_name}_test.cpp",
+            compiler_root / "docs" / "modules" / f"{documentation_name}.md",
+        )
+        for module_path in module_paths:
+            if not module_path.is_file():
+                errors.append(
+                    "compiler module is incomplete: "
+                    + module_path.relative_to(root).as_posix()
+                )
+
+    fixture_root = root / "examples" / "specifications" / "invalid"
+    for fixture in INVALID_SPECIFICATION_FIXTURES:
+        if not (fixture_root / fixture).is_file():
+            errors.append(f"missing invalid specification fixture: {fixture}")
+
+    try:
+        presets = load_json(root / "CMakePresets.json")
+        configure_presets = presets.get("configurePresets", [])
+        preset_names = {
+            item.get("name")
+            for item in configure_presets
+            if isinstance(item, dict) and isinstance(item.get("name"), str)
+        }
+        missing_presets = REQUIRED_PRESETS - preset_names
+        if missing_presets:
+            errors.append("missing configure presets: " + ", ".join(sorted(missing_presets)))
+    except (OSError, ValueError, json.JSONDecodeError) as exception:
+        errors.append(f"invalid CMakePresets.json: {exception}")
+
+    try:
+        manifest = load_json(root / "vcpkg.json")
+        pinned_commit = (root / "tools" / "vcpkg-commit.txt").read_text(
+            encoding="utf-8"
+        ).strip()
+        if manifest.get("builtin-baseline") != pinned_commit:
+            errors.append("vcpkg manifest baseline differs from tools/vcpkg-commit.txt")
+        dependencies = manifest.get("dependencies", [])
+        if "gtest" not in dependencies:
+            errors.append("vcpkg manifest must provide gtest")
+        if "yaml-cpp" not in dependencies:
+            errors.append("vcpkg manifest must provide yaml-cpp")
+    except (OSError, ValueError, json.JSONDecodeError) as exception:
+        errors.append(f"invalid vcpkg configuration: {exception}")
+
+    try:
+        schema = load_json(
+            root
+            / "specification"
+            / "schema"
+            / "canonical-specification-1.0.schema.json"
+        )
+        if schema.get("$schema") != "https://json-schema.org/draft/2020-12/schema":
+            errors.append("canonical schema must use JSON Schema Draft 2020-12")
+        if schema.get("$id") != "cca://schemas/canonical-specification/1.0":
+            errors.append("canonical schema identifier is incorrect")
+    except (OSError, ValueError, json.JSONDecodeError) as exception:
+        errors.append(f"invalid canonical specification schema: {exception}")
+
+    return errors
+
+
+def main() -> int:
+    arguments = parse_arguments()
+    root = arguments.root.resolve(strict=True)
+    errors = validate(root)
+    if errors:
+        for error in errors:
+            print(f"error: {error}", file=sys.stderr)
+        return 1
+
+    print(f"CCA workspace verification passed: {root}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

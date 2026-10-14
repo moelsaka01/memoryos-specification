@@ -1,0 +1,18 @@
+// Certification engineering bridge: pure installed generator, not CLI execution.
+import { pathToFileURL } from 'node:url';
+import path from 'node:path';
+const [root, configPath, deploymentPath] = process.argv.slice(2);
+if (process.argv.length !== 5) throw new Error('engineering bridge arguments');
+const base = pathToFileURL(path.resolve(root) + path.sep);
+const { verifyNode, verifyDistribution } = await import(new URL('src/integrity.mjs', base));
+const { readChecked } = await import(new URL('src/filesystem.mjs', base));
+const { configuration, deployment } = await import(new URL('src/contracts.mjs', base));
+const { generate } = await import(new URL('src/generator.mjs', base));
+const { installNetworkBoundary } = await import(new URL('src/worker-boundary.mjs', base));
+installNetworkBoundary();
+verifyNode();
+const installed = verifyDistribution(root, 'github');
+if (installed.identities.distributionDigest !== 'sha256:311927a980bd397ab70b95da77d546e4b212968d05973ecf998817764431d773') throw new Error('corrected distribution');
+const files = generate(configuration(readChecked(configPath, 16384)), deployment(readChecked(deploymentPath, 16384)), installed.generatorDigest);
+process.stdout.write(JSON.stringify({mode:'INSTALLED_PURE_GENERATOR_API',distributionDigest:installed.identities.distributionDigest,generatorDigest:installed.generatorDigest,files:files.map(f=>({path:f.path,base64:f.bytes.toString('base64')}))})+'\n');
+

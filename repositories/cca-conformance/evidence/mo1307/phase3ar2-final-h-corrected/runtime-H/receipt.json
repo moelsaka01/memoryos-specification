@@ -1,0 +1,1784 @@
+{
+  "kind": "MO1307Phase3AR2C3VBRuntimeControls",
+  "mode": "H",
+  "timeOrigin": 1790952056156.297,
+  "clockBridge": {
+    "readyQpc": 1433820775566,
+    "qpcFrequency": 10000000,
+    "performanceSeenAt": 190.7657,
+    "performanceBeforeWriteAt": 190.7809,
+    "qpcAcknowledged": 1433822008397,
+    "offsetLowerMs": -143382010.0588,
+    "offsetUpperMs": -143381886.79089996,
+    "offsetBracketWidthMs": 123.26790004968643,
+    "method": "QPC-to-Node-performance offset bounded by ready/read and write/ack ordering; no wall-clock conversion or deadline grace."
+  },
+  "result": "FAIL",
+  "failure": {
+    "message": "Error: ReadinessError: MO1307_FILESYSTEM_BOUNDARY\n    at fail (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/errors.mjs:21:61)\n    at boundary (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/windows-paths.mjs:16:39)\n    at assertStableIdentity (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/windows-paths.mjs:90:62)\n    at file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/helper-protocol.mjs:225:40\n    at Array.forEach (<anonymous>)\n    at file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/helper-protocol.mjs:225:15\n    at terminal (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/helper-protocol.mjs:187:69)\n    at Object.complete (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/helper-protocol.mjs:216:30)\n    at file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final-h-corrected/runtime-controls.mjs:128:377\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at run (file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final-h-corrected/runtime-controls.mjs:93:20)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final-h-corrected/runtime-controls.mjs:122:2",
+    "stack": "Error: Error: ReadinessError: MO1307_FILESYSTEM_BOUNDARY\n    at fail (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/errors.mjs:21:61)\n    at boundary (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/windows-paths.mjs:16:39)\n    at assertStableIdentity (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/windows-paths.mjs:90:62)\n    at file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/helper-protocol.mjs:225:40\n    at Array.forEach (<anonymous>)\n    at file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/helper-protocol.mjs:225:15\n    at terminal (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/helper-protocol.mjs:187:69)\n    at Object.complete (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/helper-protocol.mjs:216:30)\n    at file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final-h-corrected/runtime-controls.mjs:128:377\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at run (file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final-h-corrected/runtime-controls.mjs:93:20)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final-h-corrected/runtime-controls.mjs:122:2\n    at run (file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final-h-corrected/runtime-controls.mjs:101:19)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final-h-corrected/runtime-controls.mjs:122:2",
+    "code": null
+  },
+  "cases": [
+    {
+      "name": "timely-helper",
+      "started": 230.2897,
+      "finished": 1640.0814,
+      "result": "PASS",
+      "elapsedMs": 1409.7982,
+      "error": null,
+      "detail": {
+        "status": "OK",
+        "exitConfirmed": true
+      },
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 30230.4912,
+        "helpers": 1,
+        "workers": 0,
+        "helperUsedMs": 1403.7144999999998,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": null,
+        "terminalAt": null,
+        "cleanupDeadline": null,
+        "events": [
+          {
+            "type": "start",
+            "at": 235.9286,
+            "role": "helper",
+            "deadline": 9235.8901,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 257.7353,
+            "role": "helper",
+            "pid": 2128,
+            "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+          },
+          {
+            "type": "quiescent",
+            "at": 1639.6254,
+            "role": "helper",
+            "ordinal": 1
+          }
+        ]
+      },
+      "expectedError": null,
+      "engineeringElapsedEnvelope": {
+        "minMs": null,
+        "maxMs": 5000,
+        "productDeadlineOverride": false
+      },
+      "invocations": [
+        {
+          "ordinal": "001",
+          "pid": 2128,
+          "protocolSequence": 3,
+          "operation": "READ_SET"
+        }
+      ],
+      "workerObservations": []
+    },
+    {
+      "name": "cancel-before-helper",
+      "started": 1640.7775,
+      "finished": 1641.4051,
+      "result": "PASS",
+      "elapsedMs": 0.6286000000000058,
+      "error": {
+        "code": "MO1307_CANCELLED",
+        "message": "MO1307_CANCELLED"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 31640.8008,
+        "helpers": 0,
+        "workers": 0,
+        "helperUsedMs": 0,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": "MO1307_CANCELLED",
+        "terminalAt": 1641.164,
+        "cleanupDeadline": 3641.1639999999998,
+        "events": [
+          {
+            "type": "terminal",
+            "at": 1641.1766,
+            "code": "MO1307_CANCELLED",
+            "stage": "LAUNCH"
+          }
+        ]
+      },
+      "expectedError": "MO1307_CANCELLED",
+      "engineeringElapsedEnvelope": {
+        "minMs": null,
+        "maxMs": 1000,
+        "productDeadlineOverride": false
+      },
+      "invocations": [],
+      "workerObservations": []
+    },
+    {
+      "name": "helper-timeout",
+      "started": 1642.0365,
+      "finished": 10677.7174,
+      "result": "PASS",
+      "elapsedMs": 9035.6817,
+      "error": {
+        "code": "MO1307_TIMEOUT",
+        "message": "MO1307_TIMEOUT"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 31642.0509,
+        "helpers": 1,
+        "workers": 0,
+        "helperUsedMs": 0,
+        "activeRole": "helper",
+        "cleanupConfirmed": false,
+        "publication": null,
+        "terminalCode": "MO1307_TIMEOUT",
+        "terminalAt": 10659.455,
+        "cleanupDeadline": 12659.455,
+        "events": [
+          {
+            "type": "start",
+            "at": 1642.7464,
+            "role": "helper",
+            "deadline": 10642.7299,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 1654.3527,
+            "role": "helper",
+            "pid": 21904,
+            "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+          },
+          {
+            "type": "terminal",
+            "at": 10659.4938,
+            "code": "MO1307_TIMEOUT",
+            "stage": "ACQUISITION"
+          },
+          {
+            "type": "cleanup",
+            "at": 10677.6423,
+            "role": "helper",
+            "confirmed": false
+          }
+        ]
+      },
+      "expectedError": "MO1307_TIMEOUT",
+      "engineeringElapsedEnvelope": {
+        "minMs": 9000,
+        "maxMs": 12000,
+        "productDeadlineOverride": false
+      },
+      "invocations": [
+        {
+          "ordinal": "002",
+          "pid": 21904,
+          "protocolSequence": 3,
+          "operation": "READ_SET"
+        }
+      ],
+      "workerObservations": []
+    },
+    {
+      "name": "late-helper-success-rejected",
+      "started": 10678.6737,
+      "finished": 20571.9288,
+      "result": "PASS",
+      "elapsedMs": 9893.2559,
+      "error": {
+        "code": "MO1307_TIMEOUT",
+        "message": "MO1307_TIMEOUT"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 40678.7004,
+        "helpers": 1,
+        "workers": 0,
+        "helperUsedMs": 0,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": "MO1307_TIMEOUT",
+        "terminalAt": 19691.9293,
+        "cleanupDeadline": 21691.9293,
+        "events": [
+          {
+            "type": "start",
+            "at": 10679.3622,
+            "role": "helper",
+            "deadline": 19679.3357,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 10688.8219,
+            "role": "helper",
+            "pid": 21108,
+            "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+          },
+          {
+            "type": "terminal",
+            "at": 19691.9451,
+            "code": "MO1307_TIMEOUT",
+            "stage": "ACQUISITION"
+          },
+          {
+            "type": "cleanup",
+            "at": 20571.8695,
+            "role": "helper",
+            "confirmed": true
+          }
+        ]
+      },
+      "expectedError": "MO1307_TIMEOUT",
+      "engineeringElapsedEnvelope": {
+        "minMs": 9000,
+        "maxMs": 12000,
+        "productDeadlineOverride": false
+      },
+      "invocations": [
+        {
+          "ordinal": "003",
+          "pid": 21108,
+          "protocolSequence": 3,
+          "operation": "READ_SET"
+        }
+      ],
+      "workerObservations": []
+    },
+    {
+      "name": "cancel-during-helper",
+      "started": 20573.3081,
+      "finished": 22091.5506,
+      "result": "PASS",
+      "elapsedMs": 1518.2444000000032,
+      "error": {
+        "code": "MO1307_CANCELLED",
+        "message": "MO1307_CANCELLED"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 50573.3306,
+        "helpers": 1,
+        "workers": 0,
+        "helperUsedMs": 0,
+        "activeRole": "helper",
+        "cleanupConfirmed": false,
+        "publication": null,
+        "terminalCode": "MO1307_CANCELLED",
+        "terminalAt": 22075.4276,
+        "cleanupDeadline": 24075.4276,
+        "events": [
+          {
+            "type": "start",
+            "at": 20573.8105,
+            "role": "helper",
+            "deadline": 29573.798,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 20583.4453,
+            "role": "helper",
+            "pid": 26696,
+            "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+          },
+          {
+            "type": "terminal",
+            "at": 22075.4376,
+            "code": "MO1307_CANCELLED",
+            "stage": "ACQUISITION"
+          },
+          {
+            "type": "cleanup",
+            "at": 22091.4379,
+            "role": "helper",
+            "confirmed": false
+          }
+        ]
+      },
+      "expectedError": "MO1307_CANCELLED",
+      "engineeringElapsedEnvelope": {
+        "minMs": 1400,
+        "maxMs": 3500,
+        "productDeadlineOverride": false
+      },
+      "invocations": [
+        {
+          "ordinal": "004",
+          "pid": 26696,
+          "protocolSequence": 3,
+          "operation": "READ_SET"
+        }
+      ],
+      "workerObservations": []
+    },
+    {
+      "name": "cancel-between-helper-worker",
+      "started": 22092.5637,
+      "finished": 23237.8453,
+      "result": "PASS",
+      "elapsedMs": 1145.2825000000012,
+      "error": {
+        "code": "MO1307_CANCELLED",
+        "message": "MO1307_CANCELLED"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 52092.606199999995,
+        "helpers": 1,
+        "workers": 0,
+        "helperUsedMs": 1144.3090999999986,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": "MO1307_CANCELLED",
+        "terminalAt": 23237.5821,
+        "cleanupDeadline": 25237.5821,
+        "events": [
+          {
+            "type": "start",
+            "at": 22093.1638,
+            "role": "helper",
+            "deadline": 31093.1431,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 22103.1789,
+            "role": "helper",
+            "pid": 27240,
+            "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+          },
+          {
+            "type": "quiescent",
+            "at": 23237.4583,
+            "role": "helper",
+            "ordinal": 1
+          },
+          {
+            "type": "terminal",
+            "at": 23237.5929,
+            "code": "MO1307_CANCELLED",
+            "stage": "LAUNCH"
+          }
+        ]
+      },
+      "expectedError": "MO1307_CANCELLED",
+      "engineeringElapsedEnvelope": {
+        "minMs": null,
+        "maxMs": 9000,
+        "productDeadlineOverride": false
+      },
+      "invocations": [
+        {
+          "ordinal": "005",
+          "pid": 27240,
+          "protocolSequence": 3,
+          "operation": "READ_SET"
+        }
+      ],
+      "workerObservations": []
+    },
+    {
+      "name": "aggregate-helper-exhaustion",
+      "started": 23238.7572,
+      "finished": 46817.952,
+      "result": "FAIL",
+      "elapsedMs": 23579.1962,
+      "error": {
+        "code": "MO1307_FILESYSTEM_BOUNDARY",
+        "message": "MO1307_FILESYSTEM_BOUNDARY"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 53238.8048,
+        "helpers": 5,
+        "workers": 1,
+        "helperUsedMs": 23257.121600000013,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": null,
+        "terminalAt": null,
+        "cleanupDeadline": null,
+        "events": [
+          {
+            "type": "start",
+            "at": 23239.8814,
+            "role": "helper",
+            "deadline": 32239.8521,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 23248.7665,
+            "role": "helper",
+            "pid": 7668,
+            "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+          },
+          {
+            "type": "quiescent",
+            "at": 27877.2312,
+            "role": "helper",
+            "ordinal": 1
+          },
+          {
+            "type": "start",
+            "at": 27878.8078,
+            "role": "helper",
+            "deadline": 36878.793399999995,
+            "ordinal": 2
+          },
+          {
+            "type": "observation",
+            "at": 27888.9425,
+            "role": "helper",
+            "pid": 18636,
+            "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+          },
+          {
+            "type": "quiescent",
+            "at": 32614.6511,
+            "role": "helper",
+            "ordinal": 2
+          },
+          {
+            "type": "start",
+            "at": 32615.7171,
+            "role": "helper",
+            "deadline": 41615.7105,
+            "ordinal": 3
+          },
+          {
+            "type": "observation",
+            "at": 32629.122,
+            "role": "helper",
+            "pid": 2124,
+            "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+          },
+          {
+            "type": "quiescent",
+            "at": 37235.9358,
+            "role": "helper",
+            "ordinal": 3
+          },
+          {
+            "type": "start",
+            "at": 37236.345,
+            "role": "helper",
+            "deadline": 46236.3417,
+            "ordinal": 4
+          },
+          {
+            "type": "observation",
+            "at": 37246.1081,
+            "role": "helper",
+            "pid": 11136,
+            "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+          },
+          {
+            "type": "quiescent",
+            "at": 41894.9799,
+            "role": "helper",
+            "ordinal": 4
+          },
+          {
+            "type": "start",
+            "at": 41896.1996,
+            "role": "worker",
+            "deadline": 51896.1892,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 41898.9842,
+            "role": "worker",
+            "threadId": 1,
+            "resourceLimits": {
+              "maxYoungGenerationSizeMb": 16,
+              "maxOldGenerationSizeMb": 128,
+              "codeRangeSizeMb": -1,
+              "stackSizeMb": 4
+            }
+          },
+          {
+            "type": "quiescent",
+            "at": 42211.3357,
+            "role": "worker",
+            "ordinal": 1
+          },
+          {
+            "type": "start",
+            "at": 42211.8672,
+            "role": "helper",
+            "deadline": 51211.8609,
+            "ordinal": 5
+          },
+          {
+            "type": "observation",
+            "at": 42222.5894,
+            "role": "helper",
+            "pid": 18920,
+            "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+          },
+          {
+            "type": "quiescent",
+            "at": 46816.898,
+            "role": "helper",
+            "ordinal": 5
+          }
+        ]
+      },
+      "expectedError": "MO1307_TIMEOUT",
+      "engineeringElapsedEnvelope": {
+        "minMs": 28000,
+        "maxMs": 31000,
+        "productDeadlineOverride": false
+      },
+      "invocations": [
+        {
+          "ordinal": "006",
+          "pid": 7668,
+          "protocolSequence": 1,
+          "operation": "READ_SET"
+        },
+        {
+          "ordinal": "007",
+          "pid": 18636,
+          "protocolSequence": 2,
+          "operation": "READ_SET"
+        },
+        {
+          "ordinal": "008",
+          "pid": 2124,
+          "protocolSequence": 3,
+          "operation": "READ_SET"
+        },
+        {
+          "ordinal": "009",
+          "pid": 11136,
+          "protocolSequence": 4,
+          "operation": "CHECK_OUTPUT"
+        },
+        {
+          "ordinal": "010",
+          "pid": 18920,
+          "protocolSequence": 5,
+          "operation": "CHECK_OUTPUT"
+        }
+      ],
+      "workerObservations": [
+        {
+          "type": "start",
+          "caseName": "aggregate-helper-exhaustion",
+          "threadId": 1,
+          "at": 41898.7827,
+          "env": {},
+          "execArgv": [],
+          "resourceLimits": {
+            "maxOldGenerationSizeMb": 128,
+            "maxYoungGenerationSizeMb": 16
+          }
+        },
+        {
+          "type": "message",
+          "threadId": 1,
+          "at": 42208.8041
+        },
+        {
+          "type": "exit",
+          "threadId": 1,
+          "at": 42211.0209,
+          "code": 0
+        },
+        {
+          "type": "stream-end",
+          "stream": "stdout",
+          "threadId": 1,
+          "at": 42211.2055
+        },
+        {
+          "type": "stream-end",
+          "stream": "stderr",
+          "threadId": 1,
+          "at": 42211.2742
+        },
+        {
+          "type": "stream-close",
+          "stream": "stdout",
+          "threadId": 1,
+          "at": 42211.3121
+        },
+        {
+          "type": "stream-close",
+          "stream": "stderr",
+          "threadId": 1,
+          "at": 42211.3191
+        }
+      ],
+      "failure": "Error: ReadinessError: MO1307_FILESYSTEM_BOUNDARY\n    at fail (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/errors.mjs:21:61)\n    at boundary (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/windows-paths.mjs:16:39)\n    at assertStableIdentity (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/windows-paths.mjs:90:62)\n    at file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/helper-protocol.mjs:225:40\n    at Array.forEach (<anonymous>)\n    at file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/helper-protocol.mjs:225:15\n    at terminal (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/helper-protocol.mjs:187:69)\n    at Object.complete (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/helper-protocol.mjs:216:30)\n    at file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final-h-corrected/runtime-controls.mjs:128:377\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at run (file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final-h-corrected/runtime-controls.mjs:93:20)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final-h-corrected/runtime-controls.mjs:122:2"
+    }
+  ],
+  "strictBoundaryChecks": [
+    {
+      "name": "former-equality-8000-now-success",
+      "elapsedMs": 8000,
+      "expected": "PASS",
+      "actual": "PASS",
+      "result": "PASS",
+      "installedRuntime": true
+    },
+    {
+      "name": "strict-before-9000",
+      "elapsedMs": 8999,
+      "expected": "PASS",
+      "actual": "PASS",
+      "result": "PASS",
+      "installedRuntime": true
+    },
+    {
+      "name": "equality-9000-timeout",
+      "elapsedMs": 9000,
+      "expected": "MO1307_TIMEOUT",
+      "actual": "MO1307_TIMEOUT",
+      "result": "PASS",
+      "installedRuntime": true
+    }
+  ],
+  "invocations": [
+    {
+      "name": "timely-helper",
+      "ordinal": "001",
+      "helperInvocationOrdinal": 1,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final-h-corrected\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final-h-corrected\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 2128,
+      "startedAt": 257.0969,
+      "eofDelayMs": 0,
+      "lateCleanup": false,
+      "stdoutBytes": 850,
+      "stderrBytes": 0,
+      "killRequestedAt": null,
+      "responseAt": 1608.4333,
+      "closedAt": 1637.0773,
+      "exitAt": 1636.9736,
+      "exitCode": 0,
+      "streamEvents": [
+        {
+          "id": "stdin",
+          "event": "finish",
+          "at": 954.7006
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 955.3919
+        },
+        {
+          "id": "stdout",
+          "event": "end",
+          "at": 1623.3231
+        },
+        {
+          "id": "stderr",
+          "event": "end",
+          "at": 1623.5368
+        },
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 1623.7791
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 1623.8281
+        }
+      ],
+      "protocolSequence": 3,
+      "operation": "READ_SET",
+      "fileCount": 1,
+      "rootCount": 1,
+      "requestSha256": "sha256:d518156ca7cf56eef488f109b87345bab960a458732cc493f7a6925c6e8f568e",
+      "requestBytes": 426,
+      "exitSignal": null,
+      "transportClosed": true,
+      "responseSha256": "sha256:9918345e1a68dbd4956bef379debd56ce27140cc2784b21cff844c2c97ebdaa0"
+    },
+    {
+      "name": "helper-timeout",
+      "ordinal": "002",
+      "helperInvocationOrdinal": 2,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final-h-corrected\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final-h-corrected\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 21904,
+      "startedAt": 1654.2827,
+      "eofDelayMs": 10000,
+      "lateCleanup": false,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "killRequestedAt": 10659.9805,
+      "responseAt": null,
+      "closedAt": 10675.2543,
+      "exitAt": 10675.1836,
+      "exitCode": null,
+      "streamEvents": [
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 10661.2705
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 10661.3109
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 10661.3443
+        }
+      ],
+      "protocolSequence": 3,
+      "operation": "READ_SET",
+      "fileCount": 1,
+      "rootCount": 1,
+      "requestSha256": "sha256:291b308b2bc1c4616902ad1b40d831cfebb94d6a5813c9a7319cc05ab9d7796c",
+      "requestBytes": 426,
+      "exitSignal": "SIGTERM",
+      "transportClosed": true,
+      "responseSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "late-helper-success-rejected",
+      "ordinal": "003",
+      "helperInvocationOrdinal": 3,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final-h-corrected\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final-h-corrected\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 21108,
+      "startedAt": 10688.6903,
+      "eofDelayMs": 9250,
+      "lateCleanup": true,
+      "stdoutBytes": 850,
+      "stderrBytes": 0,
+      "killRequestedAt": 19692.0919,
+      "responseAt": 20542.8214,
+      "closedAt": 20570.1131,
+      "exitAt": 20570.0493,
+      "exitCode": 0,
+      "streamEvents": [
+        {
+          "id": "stdin",
+          "event": "finish",
+          "at": 19942.426
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 19942.5171
+        },
+        {
+          "id": "stdout",
+          "event": "end",
+          "at": 20557.597
+        },
+        {
+          "id": "stderr",
+          "event": "end",
+          "at": 20557.6816
+        },
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 20557.8736
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 20557.8846
+        }
+      ],
+      "protocolSequence": 3,
+      "operation": "READ_SET",
+      "fileCount": 1,
+      "rootCount": 1,
+      "requestSha256": "sha256:47a842f80a784ab07660f7a98253906df382446b179009f79ba14d249bd92fb7",
+      "requestBytes": 426,
+      "exitSignal": null,
+      "transportClosed": true,
+      "responseSha256": "sha256:f4cbaf2c6697e7b0f0d9a6d2068160f7516b4fd672acbfcb21f3b6e06eddd1c6"
+    },
+    {
+      "name": "cancel-during-helper",
+      "ordinal": "004",
+      "helperInvocationOrdinal": 4,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final-h-corrected\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final-h-corrected\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 26696,
+      "startedAt": 20583.3796,
+      "eofDelayMs": 6000,
+      "lateCleanup": false,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "killRequestedAt": 22075.613,
+      "responseAt": null,
+      "closedAt": 22089.6438,
+      "exitAt": 22089.5871,
+      "exitCode": null,
+      "streamEvents": [
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 22076.4064
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 22076.4405
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 22076.4646
+        }
+      ],
+      "protocolSequence": 3,
+      "operation": "READ_SET",
+      "fileCount": 1,
+      "rootCount": 1,
+      "requestSha256": "sha256:87e12bbbcf6f4042800d5c60751c6bf67dcca7a1e1ca6b6bbc9f03de608be14b",
+      "requestBytes": 426,
+      "exitSignal": "SIGTERM",
+      "transportClosed": true,
+      "responseSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "cancel-between-helper-worker",
+      "ordinal": "005",
+      "helperInvocationOrdinal": 5,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final-h-corrected\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final-h-corrected\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 27240,
+      "startedAt": 22103.1145,
+      "eofDelayMs": 0,
+      "lateCleanup": false,
+      "stdoutBytes": 850,
+      "stderrBytes": 0,
+      "killRequestedAt": null,
+      "responseAt": 23213.1944,
+      "closedAt": 23235.6879,
+      "exitAt": 23235.6455,
+      "exitCode": 0,
+      "streamEvents": [
+        {
+          "id": "stdin",
+          "event": "finish",
+          "at": 22706.675
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 22706.7396
+        },
+        {
+          "id": "stdout",
+          "event": "end",
+          "at": 23225.4399
+        },
+        {
+          "id": "stderr",
+          "event": "end",
+          "at": 23225.5385
+        },
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 23225.6671
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 23225.6778
+        }
+      ],
+      "protocolSequence": 3,
+      "operation": "READ_SET",
+      "fileCount": 1,
+      "rootCount": 1,
+      "requestSha256": "sha256:11afb8ac6ee90b8c06e7b5da85b392db1f8cbc1ea528f67ec3c3338ee347432d",
+      "requestBytes": 426,
+      "exitSignal": null,
+      "transportClosed": true,
+      "responseSha256": "sha256:73112894696770e9c0829843e300649e824d6be751ae5caa40f824c88583ec5b"
+    },
+    {
+      "name": "aggregate-helper-exhaustion",
+      "ordinal": "006",
+      "helperInvocationOrdinal": 6,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final-h-corrected\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final-h-corrected\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 7668,
+      "startedAt": 23248.649,
+      "eofDelayMs": 4000,
+      "lateCleanup": false,
+      "stdoutBytes": 1186,
+      "stderrBytes": 0,
+      "killRequestedAt": null,
+      "responseAt": 27849.5225,
+      "closedAt": 27874.7325,
+      "exitAt": 27874.706,
+      "exitCode": 0,
+      "streamEvents": [
+        {
+          "id": "stdin",
+          "event": "finish",
+          "at": 27259.8355
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 27259.949
+        },
+        {
+          "id": "stdout",
+          "event": "end",
+          "at": 27863.6809
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 27864.0076
+        },
+        {
+          "id": "stderr",
+          "event": "end",
+          "at": 27864.0625
+        },
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 27864.1732
+        }
+      ],
+      "protocolSequence": 1,
+      "operation": "READ_SET",
+      "fileCount": 2,
+      "rootCount": 1,
+      "requestSha256": "sha256:e8dae91879ee9ef978fbd723fdad4828c9118aab4b8bbff84dcef16a07661376",
+      "requestBytes": 502,
+      "exitSignal": null,
+      "transportClosed": true,
+      "responseSha256": "sha256:27ed9e72cc9ffce9b39fdedaf8418a2707a346bb5ff49d30254587ab054efe59"
+    },
+    {
+      "name": "aggregate-helper-exhaustion",
+      "ordinal": "007",
+      "helperInvocationOrdinal": 7,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final-h-corrected\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final-h-corrected\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 18636,
+      "startedAt": 27888.8897,
+      "eofDelayMs": 4000,
+      "lateCleanup": false,
+      "stdoutBytes": 1190,
+      "stderrBytes": 0,
+      "killRequestedAt": null,
+      "responseAt": 32586.1087,
+      "closedAt": 32612.2297,
+      "exitAt": 32612.1844,
+      "exitCode": 0,
+      "streamEvents": [
+        {
+          "id": "stdin",
+          "event": "finish",
+          "at": 31892.0999
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 31892.1877
+        },
+        {
+          "id": "stdout",
+          "event": "end",
+          "at": 32599.4633
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 32599.5697
+        },
+        {
+          "id": "stderr",
+          "event": "end",
+          "at": 32599.6185
+        },
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 32599.6668
+        }
+      ],
+      "protocolSequence": 2,
+      "operation": "READ_SET",
+      "fileCount": 2,
+      "rootCount": 1,
+      "requestSha256": "sha256:334123d195229b028a604ba76e877a3bcee761363c3d3332212858f4e119d179",
+      "requestBytes": 506,
+      "exitSignal": null,
+      "transportClosed": true,
+      "responseSha256": "sha256:3e788ad57271e765be0c92ff4e9cc00d2e7bb74548100dfe28adae5a9ce14b0f"
+    },
+    {
+      "name": "aggregate-helper-exhaustion",
+      "ordinal": "008",
+      "helperInvocationOrdinal": 8,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final-h-corrected\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final-h-corrected\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 2124,
+      "startedAt": 32628.937,
+      "eofDelayMs": 4000,
+      "lateCleanup": false,
+      "stdoutBytes": 850,
+      "stderrBytes": 0,
+      "killRequestedAt": null,
+      "responseAt": 37207.9472,
+      "closedAt": 37234.3127,
+      "exitAt": 37234.2387,
+      "exitCode": 0,
+      "streamEvents": [
+        {
+          "id": "stdin",
+          "event": "finish",
+          "at": 36641.9361
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 36642.0237
+        },
+        {
+          "id": "stdout",
+          "event": "end",
+          "at": 37221.3234
+        },
+        {
+          "id": "stderr",
+          "event": "end",
+          "at": 37221.49
+        },
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 37221.5928
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 37221.6036
+        }
+      ],
+      "protocolSequence": 3,
+      "operation": "READ_SET",
+      "fileCount": 1,
+      "rootCount": 1,
+      "requestSha256": "sha256:ad1de12b3b62f2c3d1d29857a9c8d3943d9b490f3d047e74bd7e8a92931cb88d",
+      "requestBytes": 426,
+      "exitSignal": null,
+      "transportClosed": true,
+      "responseSha256": "sha256:6df148d392aecb9873a0b7636436df4c0b82b6166ca1850a9cd560d8cf42c993"
+    },
+    {
+      "name": "aggregate-helper-exhaustion",
+      "ordinal": "009",
+      "helperInvocationOrdinal": 9,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final-h-corrected\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final-h-corrected\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 11136,
+      "startedAt": 37246.0443,
+      "eofDelayMs": 4000,
+      "lateCleanup": false,
+      "stdoutBytes": 2602,
+      "stderrBytes": 0,
+      "killRequestedAt": null,
+      "responseAt": 41854.0042,
+      "closedAt": 41888.6492,
+      "exitAt": 41888.6131,
+      "exitCode": 0,
+      "streamEvents": [
+        {
+          "id": "stdin",
+          "event": "finish",
+          "at": 41258.0902
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 41258.1713
+        },
+        {
+          "id": "stderr",
+          "event": "end",
+          "at": 41873.8101
+        },
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 41873.9261
+        },
+        {
+          "id": "stdout",
+          "event": "end",
+          "at": 41873.9587
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 41874.0316
+        }
+      ],
+      "protocolSequence": 4,
+      "operation": "CHECK_OUTPUT",
+      "fileCount": 0,
+      "rootCount": 1,
+      "requestSha256": "sha256:6562839aa4881a4d8531ff00da410b9463d8661f2d44971679c71a2e652dbed8",
+      "requestBytes": 372,
+      "exitSignal": null,
+      "transportClosed": true,
+      "responseSha256": "sha256:2f96d6ebb124ab292d31ced62b91a5347d4c40d36fe7136ee39861f6a74d82c4"
+    },
+    {
+      "name": "aggregate-helper-exhaustion",
+      "ordinal": "010",
+      "helperInvocationOrdinal": 10,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final-h-corrected\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final-h-corrected\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 18920,
+      "startedAt": 42222.5236,
+      "eofDelayMs": 4000,
+      "lateCleanup": false,
+      "stdoutBytes": 2602,
+      "stderrBytes": 0,
+      "killRequestedAt": null,
+      "responseAt": 46781.0103,
+      "closedAt": 46814.9376,
+      "exitAt": 46814.9008,
+      "exitCode": 0,
+      "streamEvents": [
+        {
+          "id": "stdin",
+          "event": "finish",
+          "at": 46224.8246
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 46224.9381
+        },
+        {
+          "id": "stdout",
+          "event": "end",
+          "at": 46800.6042
+        },
+        {
+          "id": "stderr",
+          "event": "end",
+          "at": 46800.702
+        },
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 46800.8231
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 46800.8368
+        }
+      ],
+      "protocolSequence": 5,
+      "operation": "CHECK_OUTPUT",
+      "fileCount": 0,
+      "rootCount": 1,
+      "requestSha256": "sha256:d93cd6286df6bb3d06b8193437112ff25bdf19eaffaaa83637ae120cb50cd5bc",
+      "requestBytes": 372,
+      "exitSignal": null,
+      "transportClosed": true,
+      "responseSha256": "sha256:0fadf1ea12b4ad899ac050c5495b47f624c4a26ad75efc45583de61c33861b71"
+    }
+  ],
+  "workerObservations": [
+    {
+      "type": "start",
+      "caseName": "aggregate-helper-exhaustion",
+      "threadId": 1,
+      "at": 41898.7827,
+      "env": {},
+      "execArgv": [],
+      "resourceLimits": {
+        "maxOldGenerationSizeMb": 128,
+        "maxYoungGenerationSizeMb": 16
+      }
+    },
+    {
+      "type": "message",
+      "threadId": 1,
+      "at": 42208.8041
+    },
+    {
+      "type": "exit",
+      "threadId": 1,
+      "at": 42211.0209,
+      "code": 0
+    },
+    {
+      "type": "stream-end",
+      "stream": "stdout",
+      "threadId": 1,
+      "at": 42211.2055
+    },
+    {
+      "type": "stream-end",
+      "stream": "stderr",
+      "threadId": 1,
+      "at": 42211.2742
+    },
+    {
+      "type": "stream-close",
+      "stream": "stdout",
+      "threadId": 1,
+      "at": 42211.3121
+    },
+    {
+      "type": "stream-close",
+      "stream": "stderr",
+      "threadId": 1,
+      "at": 42211.3191
+    }
+  ],
+  "dependenciesBefore": [
+    {
+      "file": "helpers/windows-inspect.ps1",
+      "sha256": "97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+    },
+    {
+      "file": "src/acquisition.mjs",
+      "sha256": "1ecab53426287a92279153903785bd56a38d4a9840696dbdfb3a446a8e83b066"
+    },
+    {
+      "file": "src/api-input.mjs",
+      "sha256": "57cd2e2309efac7f0c890b82ff4ca3f70f8cb324512611eba9b303e2da32e194"
+    },
+    {
+      "file": "src/canonical.mjs",
+      "sha256": "b0e22be147436b7fd962c00825f9f5c1e581825653baa0af4a68a9832a0b9805"
+    },
+    {
+      "file": "src/cli-args.mjs",
+      "sha256": "107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7"
+    },
+    {
+      "file": "src/cli.mjs",
+      "sha256": "3632c653e86e1315ac3b858137932b9750ed621526ad71d75c7f040935cfa5f2"
+    },
+    {
+      "file": "src/constants.mjs",
+      "sha256": "98e8721dedc01b593aca81d524e076cc0fe3936a03955198ff2a91ca5c163be1"
+    },
+    {
+      "file": "src/errors.mjs",
+      "sha256": "71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac"
+    },
+    {
+      "file": "src/evidence-graph.mjs",
+      "sha256": "cc8a353da76fef3c8610085c6b0237021cdfedb4879d5bfe3ad4ae749166673c"
+    },
+    {
+      "file": "src/evidence-history.mjs",
+      "sha256": "16c5377d07bbc894f8aaa26495e7f215e5a2d2b80b73fdf36254393a7e7769bc"
+    },
+    {
+      "file": "src/evidence-verifier.mjs",
+      "sha256": "684d088b6578f463a7ed1b6e40cde63ec5de2bf039458050b9ebce4494ded3a0"
+    },
+    {
+      "file": "src/foundation.mjs",
+      "sha256": "19008f20e562376cd76161d26f18169bb46eded4e480b71d1832307e1db8280d"
+    },
+    {
+      "file": "src/helper-protocol.mjs",
+      "sha256": "96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "file": "src/helper-transport.mjs",
+      "sha256": "e320a36d203a4635e13930663a7f075a064c2211e753700da4fff8ae81e477a1"
+    },
+    {
+      "file": "src/index.mjs",
+      "sha256": "10aba8aa5b7c23d82b2d365db4366a030e1223f66543605ef56a99886488c5d4"
+    },
+    {
+      "file": "src/integration.mjs",
+      "sha256": "c73e278db2b2cdd5b38e3e9a6046ba529aafe92af5abfee4e0ced8b0ec02c64e"
+    },
+    {
+      "file": "src/output.mjs",
+      "sha256": "eea2e7f6dc23f88b8afdca19b273939a020ccc145ec78d4f701983e0d8449aca"
+    },
+    {
+      "file": "src/projections.mjs",
+      "sha256": "43a8c5a6f59c6ee15f85406ae9da34a0fc9c9516a6e55116be9715a012e73d22"
+    },
+    {
+      "file": "src/publication.mjs",
+      "sha256": "dcba8a23b848ceede6c5a9deb10e46b2ef795ae9573755bc78d44abd5943236b"
+    },
+    {
+      "file": "src/readiness-core.mjs",
+      "sha256": "7891139345e71030709adf2fdb1ff93342a74282980d1b09d1535e44fa0ef1cd"
+    },
+    {
+      "file": "src/readiness-result.mjs",
+      "sha256": "847525fb9be50cc956c5859e8accd271806db61fdf083e9b5165bd8cf91d9fea"
+    },
+    {
+      "file": "src/runtime.mjs",
+      "sha256": "012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+    },
+    {
+      "file": "src/schema-data.mjs",
+      "sha256": "467fa7479b88eff13d90cfb8d8984b26b5cd4b7cd1aadd8f5b3416c6ed3b6f11"
+    },
+    {
+      "file": "src/schema.mjs",
+      "sha256": "9b18aead5802688195a3539ef504395f374a8779580650eec7b03058100b98b7"
+    },
+    {
+      "file": "src/windows-paths.mjs",
+      "sha256": "7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+    },
+    {
+      "file": "src/worker-entry.mjs",
+      "sha256": "958dfaf21e7ed62d6214a09f7624b7c4c799aeddbdcd11daac8625a439ab35a7"
+    },
+    {
+      "file": "src/worker-policy.mjs",
+      "sha256": "29e0ccb0bb366199857753abd11c08f8cdec72bfe43672ef6ba9e8784e5b0831"
+    }
+  ],
+  "dependenciesAfter": [
+    {
+      "file": "helpers/windows-inspect.ps1",
+      "sha256": "97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+    },
+    {
+      "file": "src/acquisition.mjs",
+      "sha256": "1ecab53426287a92279153903785bd56a38d4a9840696dbdfb3a446a8e83b066"
+    },
+    {
+      "file": "src/api-input.mjs",
+      "sha256": "57cd2e2309efac7f0c890b82ff4ca3f70f8cb324512611eba9b303e2da32e194"
+    },
+    {
+      "file": "src/canonical.mjs",
+      "sha256": "b0e22be147436b7fd962c00825f9f5c1e581825653baa0af4a68a9832a0b9805"
+    },
+    {
+      "file": "src/cli-args.mjs",
+      "sha256": "107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7"
+    },
+    {
+      "file": "src/cli.mjs",
+      "sha256": "3632c653e86e1315ac3b858137932b9750ed621526ad71d75c7f040935cfa5f2"
+    },
+    {
+      "file": "src/constants.mjs",
+      "sha256": "98e8721dedc01b593aca81d524e076cc0fe3936a03955198ff2a91ca5c163be1"
+    },
+    {
+      "file": "src/errors.mjs",
+      "sha256": "71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac"
+    },
+    {
+      "file": "src/evidence-graph.mjs",
+      "sha256": "cc8a353da76fef3c8610085c6b0237021cdfedb4879d5bfe3ad4ae749166673c"
+    },
+    {
+      "file": "src/evidence-history.mjs",
+      "sha256": "16c5377d07bbc894f8aaa26495e7f215e5a2d2b80b73fdf36254393a7e7769bc"
+    },
+    {
+      "file": "src/evidence-verifier.mjs",
+      "sha256": "684d088b6578f463a7ed1b6e40cde63ec5de2bf039458050b9ebce4494ded3a0"
+    },
+    {
+      "file": "src/foundation.mjs",
+      "sha256": "19008f20e562376cd76161d26f18169bb46eded4e480b71d1832307e1db8280d"
+    },
+    {
+      "file": "src/helper-protocol.mjs",
+      "sha256": "96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "file": "src/helper-transport.mjs",
+      "sha256": "e320a36d203a4635e13930663a7f075a064c2211e753700da4fff8ae81e477a1"
+    },
+    {
+      "file": "src/index.mjs",
+      "sha256": "10aba8aa5b7c23d82b2d365db4366a030e1223f66543605ef56a99886488c5d4"
+    },
+    {
+      "file": "src/integration.mjs",
+      "sha256": "c73e278db2b2cdd5b38e3e9a6046ba529aafe92af5abfee4e0ced8b0ec02c64e"
+    },
+    {
+      "file": "src/output.mjs",
+      "sha256": "eea2e7f6dc23f88b8afdca19b273939a020ccc145ec78d4f701983e0d8449aca"
+    },
+    {
+      "file": "src/projections.mjs",
+      "sha256": "43a8c5a6f59c6ee15f85406ae9da34a0fc9c9516a6e55116be9715a012e73d22"
+    },
+    {
+      "file": "src/publication.mjs",
+      "sha256": "dcba8a23b848ceede6c5a9deb10e46b2ef795ae9573755bc78d44abd5943236b"
+    },
+    {
+      "file": "src/readiness-core.mjs",
+      "sha256": "7891139345e71030709adf2fdb1ff93342a74282980d1b09d1535e44fa0ef1cd"
+    },
+    {
+      "file": "src/readiness-result.mjs",
+      "sha256": "847525fb9be50cc956c5859e8accd271806db61fdf083e9b5165bd8cf91d9fea"
+    },
+    {
+      "file": "src/runtime.mjs",
+      "sha256": "012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+    },
+    {
+      "file": "src/schema-data.mjs",
+      "sha256": "467fa7479b88eff13d90cfb8d8984b26b5cd4b7cd1aadd8f5b3416c6ed3b6f11"
+    },
+    {
+      "file": "src/schema.mjs",
+      "sha256": "9b18aead5802688195a3539ef504395f374a8779580650eec7b03058100b98b7"
+    },
+    {
+      "file": "src/windows-paths.mjs",
+      "sha256": "7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+    },
+    {
+      "file": "src/worker-entry.mjs",
+      "sha256": "958dfaf21e7ed62d6214a09f7624b7c4c799aeddbdcd11daac8625a439ab35a7"
+    },
+    {
+      "file": "src/worker-policy.mjs",
+      "sha256": "29e0ccb0bb366199857753abd11c08f8cdec72bfe43672ef6ba9e8784e5b0831"
+    }
+  ],
+  "noProductChanges": true,
+  "authorities": [
+    "PROSPECTIVE_HELPER_BOUND@2.0.0",
+    "PROSPECTIVE_HELPER_AGGREGATE_BOUND@2.0.0"
+  ],
+  "authorityBindings": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-v2-candidate/authority.json",
+      "byteLength": 2318,
+      "sha256": "sha256:6d5e04401c6d8ead77901b0c0ec8ec3fbf17b353e5fa4cf39e17ad3e8d1a7788"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/authority.json",
+      "byteLength": 1556,
+      "sha256": "sha256:adba80ce3ca2b2d21c2374bd3f98267daa9aa4891e7e27d135664251c71bab73"
+    }
+  ],
+  "historicalCharacterizationH": "NOT_ESTABLISHED",
+  "limits": {
+    "helperMs": 9000,
+    "aggregateMs": 28000,
+    "workerMs": 10000,
+    "cliMs": 30000,
+    "cleanupMs": 2000
+  },
+  "limitRelations": {
+    "helperSuccess": "elapsedMs < 9000",
+    "helperTimeout": "elapsedMs >= 9000",
+    "aggregateSuccess": "helperActiveMs < 28000",
+    "aggregateTimeout": "helperActiveMs >= 28000"
+  },
+  "limitations": [
+    "Delay controls are engineering-only seams; native helper response frames and native file identities are real.",
+    "No valid response exists for killed helper: product cleanupConfirmed remains false and is not relabeled. External retained process handles and transport events separately establish actual cleanup.",
+    "Worker control bytes are nonsemantic; worker timeout/cancellation use actual native Node threads.",
+    "Process sampler has blind spots between samples; production role guards enforce transitions.",
+    "Deterministic enforcement of the prospective 9000-ms helper and 28000-ms aggregate limits does not establish historical characterization H."
+  ]
+}

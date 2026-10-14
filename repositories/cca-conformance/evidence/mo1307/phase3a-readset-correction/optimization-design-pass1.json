@@ -1,0 +1,31 @@
+{
+  "kind": "MO1307ReadSetOptimizationDesign",
+  "pass": 1,
+  "baseline": "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+  "before": {
+    "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+    "byteLength": 29771,
+    "sha256": "sha256:ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b"
+  },
+  "after": {
+    "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+    "byteLength": 30210,
+    "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+  },
+  "change": "Remove only repeated pure Assert-Root parsing of freshly obtained final path, whose exact OrdinalIgnoreCase equality to the already validated expected component path proves its lexical boundary.",
+  "expectedPathAuthority": "Every Read-Identity call receives a component path constructed inside Open-Chain after Assert-Root validates the entire path. Assert-ChainStable retains those same immutable string values in request-local entries.",
+  "nativeObservations": "UNCHANGED: GetFileInformationByHandle, GetFileType, GetFinalPathNameByHandleW, prefix/count checks, complete opens/reopens, held-handle checks, all seven identity comparisons, volume/link/type/reparse/size checks, ordering.",
+  "pureMetadataReuse": "Existing request-local immutable expected path strings only; no new dictionary, memoization, observation cache, global cache or persistent state.",
+  "nativeStateCached": false,
+  "additionalRequestLocalStorageBytes": 0,
+  "serializationChanged": false,
+  "wireChanged": false,
+  "limitsChanged": false,
+  "proofObligations": [
+    "Lexical validity is invariant under the fixed OrdinalIgnoreCase comparison for admitted path characters and reserved names.",
+    "Every fresh native final path still must equal the validated expected component path.",
+    "Every required native observation/open/reopen remains executed.",
+    "Exact response frames and rejection codes must match the B2 oracle."
+  ],
+  "executableDiffVerified": "Removing comments, only one Assert-Root invocation is deleted."
+}

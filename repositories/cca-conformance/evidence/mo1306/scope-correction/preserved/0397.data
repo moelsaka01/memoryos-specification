@@ -1,0 +1,138 @@
+"""Offline blocked hosted closure from retained GETs; never imports or executes campaign mutation code."""
+import base64, concurrent.futures, json, os, subprocess, zipfile
+from pathlib import Path
+from remote_state import ROOT, OUT, REPO, BRANCH, MAIN, SETTINGS, credential, get, put, row, sha, now
+
+CANDIDATE='701d48ee2012675966360dda775ab13013c09ab9'
+METHODOLOGY='85a0f85c1ebd013c545ccf2b3efe58a760e6cf37'
+SCAFFOLD='451599e7b95a537ebc2daac627b061fd88791dea'
+RUN=36357568243
+CAMPAIGN=OUT/'campaign-20260927T230612Z'
+RUNROOT=CAMPAIGN/'runs'/str(RUN)
+def read(p):return json.loads(p.read_text(encoding='utf-8-sig'))
+def loadbody(p):
+    data=read(p)
+    return data.get('body',data)
+def git(args):
+    result=subprocess.run(['git',*args],cwd=ROOT,capture_output=True,timeout=60,creationflags=subprocess.CREATE_NO_WINDOW,env={**os.environ,'GIT_TERMINAL_PROMPT':'0','GCM_INTERACTIVE':'Never','GIT_OPTIONAL_LOCKS':'0'})
+    assert result.returncode==0,'Read-only Git command failed'
+    return result
+
+def main():
+    assert not (OUT/'final-state-blocked.json').exists(),'Append-only closure already exists'
+    campaign=read(CAMPAIGN/'campaign-summary.json');initial=read(OUT/'initial-state.json');push=read(OUT/'push-result.json');review=read(OUT/'workflow-review.json')
+    assert campaign['status']=='BLOCKED' and campaign['restoration']['status']=='PASS'
+    requests={
+      'repository':f'repos/{REPO}',
+      'main-ref':f'repos/{REPO}/git/ref/heads/main',
+      'certification-ref':f'repos/{REPO}/git/ref/heads/{BRANCH}',
+      'actions-permissions':f'repos/{REPO}/actions/permissions',
+      'rulesets':f'repos/{REPO}/rulesets?includes_parents=true',
+      'main-branch':f'repos/{REPO}/branches/main',
+      'certification-branch':f'repos/{REPO}/branches/{BRANCH}',
+      'workflow-registry':f'repos/{REPO}/actions/workflows?per_page=100',
+      'certification-runs':f'repos/{REPO}/actions/runs?branch={BRANCH}&per_page=100',
+      'run-artifacts':f'repos/{REPO}/actions/runs/{RUN}/artifacts?per_page=100',
+    }
+    for item in review['workflows']:
+        requests['workflow-'+item['case']]=f'repos/{REPO}/contents/{item["workflowPath"]}?ref={SCAFFOLD}'
+    responses={};bodies={};rawdir=OUT/'final-remote-blocked'
+    for name in requests:
+        response=read(rawdir/(name+'.json'));responses[name]=row(rawdir/(name+'.json'))
+        assert response['status']==200 and response['path']==requests[name]
+        bodies[name]=response['body']
+    repo=bodies['repository'];settings={key:repo[key] for key in SETTINGS if key in repo}
+    assert repo['full_name']==REPO and repo['id']==initial['repositoryId'] and repo['default_branch']=='main'
+    assert settings==initial['repositorySettings'],'Repository settings differ'
+    assert bodies['main-ref']['object']['sha']==MAIN
+    assert bodies['certification-ref']['object']['sha']==SCAFFOLD
+    for name in ['actions-permissions','rulesets']:
+        assert bodies[name]==loadbody(ROOT/initial['responses'][name]['path']),name
+    protected={}
+    for name in ['main-branch','certification-branch']:
+        before=loadbody(ROOT/initial['responses'][name]['path']);after=bodies[name]
+        keys=[key for key in ['protected','protection','protection_url'] if key in before or key in after]
+        assert {key:before.get(key) for key in keys}=={key:after.get(key) for key in keys},name
+        protected[name]={key:after.get(key) for key in keys}
+    workflows=[]
+    for item in review['workflows']:
+        body=bodies['workflow-'+item['case']];data=base64.b64decode(body['content'])
+        assert body['path']==item['workflowPath'] and len(data)==item['byteLength'] and sha(data)==item['sha256']
+        assert data==(ROOT/item['path']).read_bytes()
+        workflows.append({'case':item['case'],'workflowPath':item['workflowPath'],'byteLength':len(data),'sha256':sha(data),'response':responses['workflow-'+item['case']]})
+    runs=bodies['certification-runs'];artifacts=bodies['run-artifacts']
+    assert runs['total_count']==1 and len(runs['workflow_runs'])==1 and runs['workflow_runs'][0]['id']==RUN
+    run=runs['workflow_runs'][0]
+    assert run['head_sha']==SCAFFOLD and run['head_branch']==BRANCH and run['run_attempt']==1 and run['conclusion']=='failure' and run['status']=='completed'
+    assert artifacts['total_count']==0 and artifacts['artifacts']==[]
+    refsRecord=read(rawdir/'git-remote-refs.json');refs=refsRecord['refs'];delta=refsRecord['changesSinceAuthorizedPush']
+    assert refs['refs/heads/main']==MAIN and refs['refs/heads/mo1306-certification']==SCAFFOLD
+    assert all(ref.startswith('refs/heads/dependabot/') for ref in delta),'Unanticipated ref delta requires separate review'
+    tags={ref:value for ref,value in refs.items() if ref.startswith('refs/tags/')}
+    assert tags=={ref:value for ref,value in push['remoteRefsBefore'].items() if ref.startswith('refs/tags/')}
+    refsrow=row(rawdir/'git-remote-refs.json')
+    journal=[(p,read(p)) for p in sorted((CAMPAIGN/'journal').glob('*-request-start.json'))]
+    mutations=[{'request':row(p),**v} for p,v in journal if v['method']!='GET']
+    posts=[item for item in mutations if item['method']=='POST']
+    patches=[item for item in mutations if item['method']=='PATCH']
+    assert len(posts)==1 and len(patches)==2 and len(mutations)==3
+    final={
+      'kind':'MemoryOSPhase3ACertificationBlockedFinalRemoteState','version':'1.0.0','status':'PASS',
+      'scope':'Read-only state validation after failed hosted certification; not certification PASS.',
+      'observedUtc':now(),'repository':REPO,'defaultBranch':'main','remoteMain':MAIN,'certificationCommit':SCAFFOLD,
+      'defaultBranchRestored':True,'defaultBranchChangedDuringCampaign':True,'settingsUnchanged':True,
+      'repositorySettings':settings,'settingsScope':list(settings),'actionsPermissionsUnchanged':True,'rulesetsUnchanged':True,
+      'branchProtectionUnchanged':True,'branchProtection':protected,'workflowBytesUnchanged':True,'workflows':workflows,
+      'certificationRunCount':1,'runIds':[RUN],'artifactCount':0,'artifactScope':'The sole certification-branch run; no artifact exists for this run.',
+      'remoteRefsUnchangedSinceAuthorizedPush':not bool(delta),'remoteRefChangesSinceAuthorizedPush':delta,'unrelatedRefChangeAttribution':'Actor/cause not established. Task journal and authorized push did not write these refs. No restoration of unrelated refs attempted.','tagsUnchanged':True,'remoteHeadCount':sum(r.startswith('refs/heads/') for r in refs),'remoteTagRefCount':len(tags),
+      'responses':responses,'gitRefs':{'authorizedPush':row(OUT/'push-result.json'),'current':refsrow},
+      'initial':row(OUT/'initial-state.json'),'restoration':campaign['restoration'],'campaign':row(CAMPAIGN/'campaign-summary.json'),
+      'remoteMutationsDuringThisReadback':[],'dispatchesDuringThisReadback':[],
+      'campaignApiMutations':mutations,'unqueriedSettingsBoundary':'No claims of independently reading secrets, variables, environments, webhooks, collaborators, or billing; closed campaign mutation allowlist and complete request journal contain only default_branch PATCH and the one workflow dispatch POST.'}
+    finalrow=put(OUT/'final-state-blocked.json',final)
+    jobs=loadbody(RUNROOT/'jobs.json')['jobs'];assert len(jobs)==1
+    job=jobs[0];case=read(RUNROOT/'case-receipt.json');steps={step['number']:step for step in job['steps']}
+    assert case['runId']==RUN and job['id']==108728221298 and steps[5]['conclusion']=='failure' and steps[6]['conclusion']=='skipped' and steps[7]['conclusion']=='skipped'
+    sourcepaths=['scripts/Initialize-GitHubCI.ps1','scripts/github-transport.mjs','src/github-transport.mjs','src/integrity.mjs','src/filesystem.mjs','scripts/check-paths.ps1']
+    sourceBindings=[]
+    for path in sourcepaths:
+        installed=ROOT/'.cache/mo1306-phase3a-final/install/node_modules/memoryos-ci'/path
+        data=git(['show',CANDIDATE+':repositories/memoryos-ci/'+path]).stdout
+        assert data==installed.read_bytes()
+        sourceBindings.append({'candidate':CANDIDATE,'path':'repositories/memoryos-ci/'+path,'installed':row(installed),'byteLength':len(data),'sha256':sha(data)})
+    with zipfile.ZipFile(RUNROOT/'logs.zip') as archive:
+        selected={name:archive.read(name).decode('utf-8-sig','replace') for name in archive.namelist() if name in ["MemoryOS CI/1_Set up job.txt","MemoryOS CI/5_Run $ErrorActionPreference = 'Stop'.txt","MemoryOS CI/8_Run $ErrorActionPreference = 'Stop'.txt"]}
+    bootstrap=selected["MemoryOS CI/5_Run $ErrorActionPreference = 'Stop'.txt"]
+    assert 'MO1306_FILESYSTEM_BOUNDARY' in bootstrap and 'ACQUISITION' in bootstrap and 'Process completed with exit code 1.' in bootstrap
+    logrow=put(OUT/'blocked-log-excerpts.json',{'kind':'MemoryOSHostedBlockedExactLogMembers','source':row(RUNROOT/'logs.zip'),'members':selected})
+    diagnosis={
+      'kind':'MemoryOSPhase3ACertificationHostedFailureDiagnosis','status':'BOUNDED_DIAGNOSIS_COMPLETE_CAUSE_UNRESOLVED',
+      'directFacts':['Actual PASS workflow failed bootstrap step 5 with MO1306_FILESYSTEM_BOUNDARY at ACQUISITION and step process exit 1.','Evaluation step 6 and upload step 7 were skipped. Gate step 8 failed with exit 1 and empty COMPLETE/EXIT_CODE/RUN_ID inputs.','No hosted bundle/artifact or semantic result exists; FAIL and CNE were not dispatched.'],
+      'sourceSupportedInference':['The canonical diagnostic is emitted by the Node github-transport bootstrap error handler. Initialize-GitHubCI reaches that invocation only after pinned ZIP length/SHA, node.exe length/SHA, and version v24.21.0 checks. This indirectly supports successful runtime identity checks; those measurements were not directly printed or separately captured.','The bootstrap transport performs verifyInstallation and configuration path checks. Filesystem boundary has multiple rejection sites, including node path validation and checkPaths; the generic diagnostic does not isolate the failing site.'],
+      'unknowns':['Exact rejected path or helper chunk, underlying Windows errno, helper response/exit/timer state, whether helper deadline fired, and why the acquisition boundary rejected.','No evidence proves transient GitHub infrastructure, a timeout, reparse-point/NTFS issue, anti-virus interference, or a deterministic product defect. No retries were performed.'],
+      'sources':sourceBindings,'logs':logrow,'historicalFailureDisposition':'Unchanged FAIL / UNRESOLVED; this hosted failure is a separate event.'}
+    diagnosisrow=put(OUT/'blocked-diagnosis.json',diagnosis)
+    attempted={
+      'case':'pass','runId':RUN,'workflowId':case['workflowId'],'jobId':job['id'],'attempt':1,
+      'ref':BRANCH,'headSha':SCAFFOLD,'runUrl':run['html_url'],'jobUrl':job['html_url'],
+      'createdAt':case['createdAt'],'startedAt':job['started_at'],'completedAt':job['completed_at'],
+      'expectedConclusion':'success','actualConclusion':'failure','bootstrapExitCode':1,
+      'diagnostic':{'code':'MO1306_FILESYSTEM_BOUNDARY','stage':'ACQUISITION','kind':'MemoryOSCICDDiagnostic','version':'1.0.0'},
+      'run':row(RUNROOT/'run.json'),'jobs':row(RUNROOT/'jobs.json'),'artifacts':row(RUNROOT/'artifacts.json'),'logs':row(RUNROOT/'logs.zip'),'caseReceipt':row(RUNROOT/'case-receipt.json'),
+      'runner':{key:job[key] for key in ['runner_id','runner_name','runner_group_id','runner_group_name','labels']},
+      'runnerLogMetadata':{'runnerVersion':'2.337.0','operatingSystem':'Microsoft Windows Server 2022','osVersion':'10.0.20348','edition':'Datacenter','image':'windows-2022','imageVersion':'20260920.314.1'},
+      'stepResults':job['steps'],'artifactCount':0,'semanticDecision':None,'completion':None}
+    summary={
+      'kind':'MemoryOSPhase3ACertificationHostedBlockedSummary','version':'1.0.0','status':'BLOCKED','classification':'HOSTED_CERTIFICATION_BLOCKED',
+      'candidate':CANDIDATE,'methodology':METHODOLOGY,'certificationCommit':SCAFFOLD,'attemptedCases':[attempted],
+      'notExecutedCases':['fail','cne'],'actualDispatchCount':1,'retries':0,'artifactCount':0,'parityStatus':'NOT_PERFORMED',
+      'hostedCertification':'NOT_CERTIFIED','finalRemote':finalrow,'campaign':row(CAMPAIGN/'campaign-summary.json'),
+      'authorizedPush':row(OUT/'push-result.json'),'nativeAuthorization':row(OUT/'hosted-authorization.json'),
+      'workflowReview':row(OUT/'workflow-review.json'),'diagnosis':diagnosisrow,'causeConfidence':{key:diagnosis[key] for key in ['directFacts','sourceSupportedInference','unknowns']},
+      'hostedRuntimeEvidence':'Indirect source/control-flow support for Node 24.21.0 win-x64 pinned bootstrap identity checks; no directly logged runtime hash/version output or preserved runtime artifact. Bootstrap did not complete.',
+      'restoration':campaign['restoration'],'observedUtc':now(),
+      'campaignFieldInterpretation':'Campaign cases is empty because first run failed before acceptance append. One actual dispatch/run is accounted here from raw journal/run/job/log evidence. Its static semanticParity and pending case-receipt text do not assert artifact validation or parity; both were not performed.',
+      'stopRule':'No additional product executions, remote mutations, hosted dispatches or retries. Only this read-only closure followed the restored failed campaign.'}
+    summaryrow=put(OUT/'hosted-blocked-summary.json',summary)
+    print(json.dumps({'status':'BLOCKED','remoteState':finalrow,'hostedSummary':summaryrow,'diagnosis':diagnosisrow,'actualDispatchCount':1,'defaultBranch':'main','runId':RUN},sort_keys=True))
+if __name__=='__main__':main()

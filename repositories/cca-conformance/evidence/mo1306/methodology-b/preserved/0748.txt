@@ -1,0 +1,18 @@
+"""Retain actual branch/dispatch evidence for the observed GitHub registration blocker."""
+from github_remote import *
+import base64
+pub=json.loads((OUT/'remote-published.json').read_bytes());review=json.loads((OUT/'github/workflow-review.json').read_bytes());dispatch=json.loads((OUT/'github/dispatch-pass.json').read_bytes());assert dispatch['status']==404
+references=[]
+def retain(name,value):
+ put('github/'+name+'.json',value);p=OUT/'github'/(name+'.json');b=p.read_bytes();references.append(dict(path=p.relative_to(ROOT).as_posix(),byteLength=len(b),sha256='sha256:'+hashlib.sha256(b).hexdigest()))
+for entry in review['workflows']:
+ r=api('repos/'+REPO+'/contents/'+entry['path']+'?ref='+pub['commit'],auth=True);retain('remote-workflow-'+Path(entry['path']).stem,r);assert r['status']==200
+ raw=base64.b64decode(r['body']['content']);assert raw==(ROOT/entry['path']).read_bytes();assert len(raw)==entry['byteLength'] and 'sha256:'+hashlib.sha256(raw).hexdigest()==entry['sha256']
+default=api('repos/'+REPO+'/contents/.github/workflows/mo1306-certification-pass.yml?ref=main',auth=True);retain('default-workflow-absence',default);assert default['status']==404
+registered=api('repos/'+REPO+'/actions/workflows',auth=True);retain('registered-workflows',registered);assert registered['status']==200
+assert not {r['path'] for r in review['workflows']} & {r['path'] for r in registered['body']['workflows']}
+runs=api('repos/'+REPO+'/actions/runs?branch='+BRANCH+'&event=workflow_dispatch&per_page=20',auth=True);retain('runs-initial',runs);assert runs['status']==200 and runs['body']['total_count']==0
+for name in ['dispatch-pass.json','dispatch-summary.json']:
+ p=OUT/'github'/name;b=p.read_bytes();references.append(dict(path=p.relative_to(ROOT).as_posix(),byteLength=len(b),sha256='sha256:'+hashlib.sha256(b).hexdigest()))
+put('github/hosted-summary.json',dict(kind='MemoryOSPhase3ARHostedDisposition',disposition='ENVIRONMENT_BLOCKED',status='ENVIRONMENT_BLOCKED',reason='The dedicated certification branch was successfully published and all three remote workflow bytes match reviewed hashes. Authenticated workflow_dispatch for PASS returned HTTP 404. The new manual-only workflow is absent from default main and from the registered Actions workflows; branch manual-run query contains zero runs. Main/workflow registration changes are prohibited by this task. No run was retried, no alternate trigger used, and no hosted success claimed.',candidate=C3AB,remoteCommit=pub['commit'],remoteBranch=BRANCH,evidence=references,hostedRunIds=[],artifactsDownloaded=False,artifactValidation='NOT_APPLICABLE_NO_HOSTED_RUN',actualRunnerOS=None,cases=[dict(id=c,status='NOT_EXECUTED',dispatch='HTTP_404' if c=='pass' else 'NOT_ATTEMPTED_AFTER_SHARED_REGISTRATION_BLOCKER',runId=None,attempt=None,jobId=None,conclusion=None) for c in ['pass','fail','cne']],completionRunIdVerification='NOT_EXECUTED',nativeHostedParity='NOT_EXECUTED',certificationLabels={'github':'HOSTED_EXECUTION_CERTIFICATION_PENDING'},documentation={'url':'https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow','support':'GitHub documents that manually triggered workflows must exist on the default branch.'},retries=0,remoteMainModified=False))
+print('Hosted ENVIRONMENT_BLOCKED verified: published workflow bytes exact; dispatch404; not registered on main; zero runs/artifacts.')

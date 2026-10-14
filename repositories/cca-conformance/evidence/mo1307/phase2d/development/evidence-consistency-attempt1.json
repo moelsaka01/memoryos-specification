@@ -1,0 +1,131 @@
+{
+  "kind": "MO1307EvidenceConsistencyFailure",
+  "version": "1.0.0",
+  "result": "FAIL",
+  "executedChecker": {
+    "path": "repositories/cca-conformance/tools/mo1307-phase2d/check-evidence.mjs",
+    "byteLength": 31671,
+    "sha256": "sha256:43570b9b95b8d192d015dabc37367abb1099454ce0e8e754717b1ee5db840600"
+  },
+  "runtime": {
+    "path": ".cache/mo1304-phase3-toolchain/node-v24.21.0-win-x64/node.exe",
+    "byteLength": 93580104,
+    "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+  },
+  "invocation": "Imported checkEvidence() with default options, output projected as result/mo1306PublicApi/checks/receiptBindings.length/failure",
+  "execSessionId": 76133,
+  "exitCode": 1,
+  "observedResult": {
+    "result": "FAIL",
+    "checks": [
+      {
+        "id": "source-gates-correction-graph",
+        "result": "PASS",
+        "sourceCommits": 3,
+        "correctionMembers": 184
+      },
+      {
+        "id": "historical-preservation",
+        "result": "PASS",
+        "baseline": 466,
+        "imported": 1841,
+        "originalBlocked": 5
+      },
+      {
+        "id": "package-overlap-and-integration-review",
+        "result": "PASS",
+        "package": {
+          "kind": "MO1307Phase1PackageCheck",
+          "version": "1.0.0",
+          "members": 89,
+          "contractMembers": 53,
+          "externalProductionDependencies": 0,
+          "archiveCertification": false
+        },
+        "sourcePinSets": 5,
+        "overlaps": 4
+      },
+      {
+        "id": "current-source-regressions",
+        "result": "PASS",
+        "phase1": 105,
+        "phase2a": 84,
+        "phase2b": 172,
+        "phase2c": 219,
+        "phase2aVectors": 16,
+        "phase2bVectors": 16,
+        "timerWitnesses": 7,
+        "queuedRenameWitnesses": 2
+      },
+      {
+        "id": "integrated-semantics",
+        "result": "PASS",
+        "tests": 58,
+        "vectors": 16,
+        "matrices": 6,
+        "decisions": 8,
+        "semanticSecurityControls": 26
+      },
+      {
+        "id": "native-integration",
+        "result": "PASS",
+        "cases": 5,
+        "acceptance": "FIVE_EXPLICIT_PASS_CASES_WITH_MO1306_NATIVE_NOT_ESTABLISHED",
+        "parentCampaignFailuresRelabeled": false,
+        "mo1306Native": "NOT_ESTABLISHED",
+        "mo1306SemanticAndApi": "PASS"
+      },
+      {
+        "id": "native-lifecycle",
+        "result": "PASS",
+        "cases": 3,
+        "receipt": "repositories/cca-conformance/evidence/mo1307/phase2d/native/lifecycle-attempt1/receipt.json"
+      },
+      {
+        "id": "native-security",
+        "result": "PASS",
+        "cases": 7,
+        "receipt": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/receipt.json"
+      },
+      {
+        "id": "mo1306-native-diagnostic-retention",
+        "result": "PASS",
+        "nativeReadiness": "NOT_ESTABLISHED",
+        "observedFailure": "MO1307_TIMEOUT",
+        "slot": 3,
+        "files": 65,
+        "workerStarted": false,
+        "publication": false,
+        "quiescence": "NOT_CONFIRMED_BY_THIS_RECEIPT",
+        "laterProcessLiveness": "NOT_INFERRED"
+      },
+      {
+        "id": "retained-native-failures",
+        "result": "PASS",
+        "failures": 5,
+        "reclassifiedAsSuccess": false
+      },
+      {
+        "id": "mo1306-actual-public-api",
+        "result": "PASS",
+        "evaluate": true,
+        "verify": true,
+        "fixedWorker": true,
+        "readiness": "READY_WITH_QUALIFICATIONS",
+        "exitProjection": 2,
+        "gates": 22,
+        "qualifications": 10,
+        "resultBytes": 303620,
+        "decision": "REJECT",
+        "nativeAcquisitionClaim": false
+      }
+    ],
+    "failure": {
+      "code": "ERR_ASSERTION",
+      "message": "repositories/cca-conformance/evidence/mo1307/phase2d/diagnostic-analysis.json\n\n8322 !== 7772\n",
+      "stack": "AssertionError [ERR_ASSERTION]: repositories/cca-conformance/evidence/mo1307/phase2d/diagnostic-analysis.json\n\n8322 !== 7772\n\n    at check (file:///C:/Users/melsa/Documents/Codex/cca-workspace/repositories/cca-conformance/tools/mo1307-phase2d/common.mjs:20:48)\n    at checked (file:///C:/Users/melsa/Documents/Codex/cca-workspace/repositories/cca-conformance/tools/mo1307-phase2d/check-evidence.mjs:14:32)\n    at securityLedgerCheck (file:///C:/Users/melsa/Documents/Codex/cca-workspace/repositories/cca-conformance/tools/mo1307-phase2d/check-evidence.mjs:180:383)\n    at checkEvidence (file:///C:/Users/melsa/Documents/Codex/cca-workspace/repositories/cca-conformance/tools/mo1307-phase2d/check-evidence.mjs:186:112)\n    at file:///C:/Users/melsa/Documents/Codex/cca-workspace/[eval1]:1:111\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:223:26\n    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)"
+    }
+  },
+  "source": "Exact JSON result copied from captured execution output; no rerun or reconstructed passing result.",
+  "disposition": "Metadata consistency failure: diagnostic-analysis.json changed after integrated-security.json bound its prior bytes. Restore the exact bound analysis; do not change tests, production, prior outcomes, or ledger bindings."
+}

@@ -1,0 +1,299 @@
+TAP version 13
+# Subtest: N01 pinned native runtime and fixed PowerShell installation
+not ok 1 - N01 pinned native runtime and fixed PowerShell installation
+  ---
+  duration_ms: 3.49811
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:95:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    'linux' !== 'win32'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'win32'
+  actual: 'linux'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:96:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: N02 closed CLI commands and defaults
+ok 2 - N02 closed CLI commands and defaults
+  ---
+  duration_ms: 3.075698
+  type: 'test'
+  ...
+# Subtest: N03 prototype-sensitive and invented commands reject as usage
+ok 3 - N03 prototype-sensitive and invented commands reject as usage
+  ---
+  duration_ms: 0.665252
+  type: 'test'
+  ...
+# Subtest: N04 duplicate unknown missing extra flags reject
+ok 4 - N04 duplicate unknown missing extra flags reject
+  ---
+  duration_ms: 0.647894
+  type: 'test'
+  ...
+# Subtest: N05 forbidden runtime environment and Node options reject before I/O
+ok 5 - N05 forbidden runtime environment and Node options reject before I/O
+  ---
+  duration_ms: 0.355521
+  type: 'test'
+  ...
+# Subtest: N04b inspectable configuration path failures select lowest logical ID
+ok 6 - N04b inspectable configuration path failures select lowest logical ID
+  ---
+  duration_ms: 0.542761
+  type: 'test'
+  ...
+# Subtest: N06 relative lexical boundaries and hostile spellings
+ok 7 - N06 relative lexical boundaries and hostile spellings
+  ---
+  duration_ms: 0.533671
+  type: 'test'
+  ...
+# Subtest: N07 absolute roots full paths overlap and case aliases
+ok 8 - N07 absolute roots full paths overlap and case aliases
+  ---
+  duration_ms: 0.485972
+  type: 'test'
+  ...
+# Subtest: N08 identity policy rejects any reparse flag hardlink wrong type and changes
+ok 9 - N08 identity policy rejects any reparse flag hardlink wrong type and changes
+  ---
+  duration_ms: 2.026855
+  type: 'test'
+  ...
+# Subtest: N09 helper canonical round-trip and closed operation fields
+ok 10 - N09 helper canonical round-trip and closed operation fields
+  ---
+  duration_ms: 5.182542
+  type: 'test'
+  ...
+# Subtest: N10 helper frame prefix truncation trailing data and caps
+ok 11 - N10 helper frame prefix truncation trailing data and caps
+  ---
+  duration_ms: 0.481122
+  type: 'test'
+  ...
+# Subtest: N11 helper sorted explicit allowlist path and per-file boundaries
+ok 12 - N11 helper sorted explicit allowlist path and per-file boundaries
+  ---
+  duration_ms: 0.926341
+  type: 'test'
+  ...
+# Subtest: N12 acquisition needs four serial exits and invalid overlap or retry is terminal
+ok 13 - N12 acquisition needs four serial exits and invalid overlap or retry is terminal
+  ---
+  duration_ms: 6.64438
+  type: 'test'
+  ...
+# Subtest: N13 helper response exact snapshot identity and base64 validation
+ok 14 - N13 helper response exact snapshot identity and base64 validation
+  ---
+  duration_ms: 1.292333
+  type: 'test'
+  ...
+# Subtest: N14 helper decoded aggregate boundary and +1
+ok 15 - N14 helper decoded aggregate boundary and +1
+  ---
+  duration_ms: 497.373236
+  type: 'test'
+  ...
+# Subtest: N15 native fixed PowerShell snapshots and checked inspection sanitization
+not ok 16 - N15 native fixed PowerShell snapshots and checked inspection sanitization
+  ---
+  duration_ms: 12.546589
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:205:1'
+  failureType: 'testCodeFailure'
+  error: 'MO1307_FILESYSTEM_BOUNDARY'
+  code: 'MO1307_FILESYSTEM_BOUNDARY'
+  name: 'ReadinessError'
+  stack: |-
+    fail (file:///tmp/mo1309-gate-DZDIp7/base/repositories/memoryos-readiness/src/errors.mjs:21:61)
+    boundary (file:///tmp/mo1309-gate-DZDIp7/base/repositories/memoryos-readiness/src/windows-paths.mjs:16:39)
+    validateAbsoluteRoot (file:///tmp/mo1309-gate-DZDIp7/base/repositories/memoryos-readiness/src/windows-paths.mjs:34:95)
+    validateHelperRequest (file:///tmp/mo1309-gate-DZDIp7/base/repositories/memoryos-readiness/src/helper-protocol.mjs:44:24)
+    encodeHelperRequest (file:///tmp/mo1309-gate-DZDIp7/base/repositories/memoryos-readiness/src/helper-protocol.mjs:107:61)
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:212:53)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: N16 native helper rejects hostile operation extra fields and oversized frame
+not ok 17 - N16 native helper rejects hostile operation extra fields and oversized frame
+  ---
+  duration_ms: 0.911803
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:234:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe'
+    - 'C:\\Windows/System32/WindowsPowerShell/v1.0/powershell.exe'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'C:\\Windows/System32/WindowsPowerShell/v1.0/powershell.exe'
+  actual: 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe'
+  operator: 'strictEqual'
+  stack: |-
+    runHelper (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:75:10)
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:237:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: N17 native CLI evaluates and publishes exact integrated result
+not ok 18 - N17 native CLI evaluates and publishes exact integrated result
+  ---
+  duration_ms: 66.940506
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:243:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"code":"MO1307_USAGE","kind":"MemoryOSReadinessError","reference":null,"stage":"LAUNCH","version":"1.0.0"}
+    
+    
+    10 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 10
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:251:39)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: N18 publication exclusive create exact pending and single-file commit
+not ok 19 - N18 publication exclusive create exact pending and single-file commit
+  ---
+  duration_ms: 2.563339
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:263:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase1\\native-foundation-12581'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:265:22)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: N19 existing final destination never replaced and pending retained
+not ok 20 - N19 existing final destination never replaced and pending retained
+  ---
+  duration_ms: 2.866705
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:276:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase1\\native-foundation-12581'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:277:105)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: N20 pending collision and mutation fail closed without cleanup
+not ok 21 - N20 pending collision and mutation fail closed without cleanup
+  ---
+  duration_ms: 3.722391
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:285:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase1\\native-foundation-12581'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:286:113)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: N21 publication byte ceiling boundary and +1 before write
+not ok 22 - N21 publication byte ceiling boundary and +1 before write
+  ---
+  duration_ms: 1.538842
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:294:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase1\\native-foundation-12581'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:295:103)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: N22 branded framed inspection required and identity change rejects
+not ok 23 - N22 branded framed inspection required and identity change rejects
+  ---
+  duration_ms: 3.464517
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:302:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase1\\native-foundation-12581'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async inspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:306:19)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:308:61)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: N23 primitive late checkpoint prevents rename and retains pending
+not ok 24 - N23 primitive late checkpoint prevents rename and retains pending
+  ---
+  duration_ms: 3.062501
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:311:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase1\\native-foundation-12581'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:313:22)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: N24 foundation retains no-network and fixed orchestration boundaries
+ok 25 - N24 foundation retains no-network and fixed orchestration boundaries
+  ---
+  duration_ms: 9.862495
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 15
+# fail 10
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 779.40251

@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: strict UTF-8 round-trips Unicode and rejects BOM, malformed bytes, and lone surrogates
+ok 1 - strict UTF-8 round-trips Unicode and rejects BOM, malformed bytes, and lone surrogates
+  ---
+  duration_ms: 2.891613
+  type: 'test'
+  ...
+# Subtest: strict JSON parsing preserves exact members and reports duplicate names with paths
+ok 2 - strict JSON parsing preserves exact members and reports duplicate names with paths
+  ---
+  duration_ms: 0.825196
+  type: 'test'
+  ...
+# Subtest: strict JSON rejects syntax extensions, invalid Unicode, and invalid MIP numbers
+ok 3 - strict JSON rejects syntax extensions, invalid Unicode, and invalid MIP numbers
+  ---
+  duration_ms: 0.697539
+  type: 'test'
+  ...
+# Subtest: canonical serialization follows RFC 8785 ordering and the MIP numeric subset
+ok 4 - canonical serialization follows RFC 8785 ordering and the MIP numeric subset
+  ---
+  duration_ms: 0.452277
+  type: 'test'
+  ...
+# Subtest: canonical serialization rejects non-JSON and non-interoperable values
+ok 5 - canonical serialization rejects non-JSON and non-interoperable values
+  ---
+  duration_ms: 0.737319
+  type: 'test'
+  ...
+# Subtest: pure JavaScript SHA-256 and MIP domain separation match known vectors
+ok 6 - pure JavaScript SHA-256 and MIP domain separation match known vectors
+  ---
+  duration_ms: 1.2657
+  type: 'test'
+  ...
+# Subtest: canonical clone and deep freeze produce detached immutable JSON values
+ok 7 - canonical clone and deep freeze produce detached immutable JSON values
+  ---
+  duration_ms: 1.85416
+  type: 'test'
+  ...
+# Subtest: published MIP vector minimal-observation.mip.b64 has canonical bytes and exact commitments
+ok 8 - published MIP vector minimal-observation.mip.b64 has canonical bytes and exact commitments
+  ---
+  duration_ms: 19.06691
+  type: 'test'
+  ...
+# Subtest: published MIP vector complete-investigation.mip.b64 has canonical bytes and exact commitments
+ok 9 - published MIP vector complete-investigation.mip.b64 has canonical bytes and exact commitments
+  ---
+  duration_ms: 23.993583
+  type: 'test'
+  ...
+# Subtest: published MIP vector noncritical-extension.mip.b64 has canonical bytes and exact commitments
+ok 10 - published MIP vector noncritical-extension.mip.b64 has canonical bytes and exact commitments
+  ---
+  duration_ms: 3.37611
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 141.831144

@@ -1,0 +1,130 @@
+{
+  "kind": "MO1307N24BoundedTimerDisposition",
+  "version": "1.0.0",
+  "reviewedAtUtc": "2026-09-28T20:12:49.675369+00:00",
+  "baseline": "0d68ac211b3b204635e7af252cd693dce5bd70b1",
+  "reviewMode": "READ_ONLY_SOURCE_AUTHORITY_AND_RETAINED_FINAL_ATTEMPT_REVIEW",
+  "sourceBindings": [
+    {
+      "path": "repositories/memoryos-readiness/src/publication.mjs",
+      "byteLength": 11913,
+      "sha256": "sha256:a2f41d0a2aadd5a84a8a9e9ccce3465d71c911194adeec3d0f71ebd2ec6a7096"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+      "byteLength": 17308,
+      "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/windows-paths.mjs",
+      "byteLength": 5990,
+      "sha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+    },
+    {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "byteLength": 12378,
+      "sha256": "sha256:d5a684bf72819b9f729fd70e1c2013a0b53455553646106e2bc364d2ac42481d"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/errors.mjs",
+      "byteLength": 1823,
+      "sha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac"
+    },
+    {
+      "path": "repositories/memoryos-readiness/contracts/definitions.json",
+      "byteLength": 16555,
+      "sha256": "sha256:b621c0d17f2018ff8e73675878278f2fda10c2ad1f987a89747ebfb54b66e13e"
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs",
+      "byteLength": 17108,
+      "sha256": "sha256:63bebd85b33ce9d23442c347b6e322ec0f8b47733152d2da680fd2d8de8ad420"
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs",
+      "byteLength": 21757,
+      "sha256": "sha256:3bedc7a70e3902118c5f5b2b9a5afb1a27c7c12a4f913e090076eecbc920c6f0"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase2c-finalization-correction/queued-rename.mjs",
+      "byteLength": 6521,
+      "sha256": "sha256:f99ce68f68d2de5569a15a8404ac6be1854b55af92dc793d75d9a5d618b60267"
+    },
+    {
+      "path": "docs/mo1307-phase2c-finalization-boundary-correction.md",
+      "byteLength": 20727,
+      "sha256": "sha256:e5a7ef021cf217a7239a8568aa3172b4b58661d53ec82ff827b56530ee581b10"
+    },
+    {
+      "path": "docs/mo1307-contract-freeze-1.md",
+      "byteLength": 110295,
+      "sha256": "sha256:831899163c36595ee38291eb6dd3fcff0ea0c6cc041a99f16933a11a6cdc17f8"
+    },
+    {
+      "path": "docs/mo1307-phase2c-publication-inspection-correction.md",
+      "byteLength": 28935,
+      "sha256": "sha256:cf6d7be0892e0a376213c134ba368d522bf57d8e19baa85232163ee2edde5a3f"
+    },
+    {
+      "path": "repositories/memoryos-readiness/helpers/README.md",
+      "byteLength": 7728,
+      "sha256": "sha256:1709b8f9ff2d2dcf8d4f3fecdb9640b0ebe27014435784ffcb7ed5185538d99e"
+    }
+  ],
+  "acceptanceBindings": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2c-finalization-correction/campaigns/attempt-2/focused/runner-receipt.json",
+      "byteLength": 732,
+      "sha256": "sha256:d01dfc99f286dbe88ccc1faedab1a19b4a29c95703cb4d018a5e3019b7d04cc3"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2c-finalization-correction/campaigns/attempt-2/queued/receipt.json",
+      "byteLength": 2530,
+      "sha256": "sha256:a4b38b1fe15c246fd4eac2d80c404aa96e9195a9407868f12677a2f5353bdd5a"
+    }
+  ],
+  "scope": "Targeted shared finalization foundation; not full Phase 2C CLI/native acquisition certification.",
+  "classification": "TEST_OVERCONSTRAINT_CORRECTED_WITH_LIFETIME_REGRESSION",
+  "result": "PASS_TARGETED_FOUNDATION",
+  "priorDispositionPreserved": "Original stopped continuation timer-disposition remains DOCUMENTARY_REVIEW_COMPLETE_REGRESSION_NOT_RUN; current results are new, not relabeled history.",
+  "allowed": [
+    "Invocation-scoped supervisor and operation timers with finite operational purpose and deadline.",
+    "One bounded post-settlement readonly confirmation timer, cleared on resolution/rejection/expiry.",
+    "One-shot deadline observation may record admitted-rename overrun and cease."
+  ],
+  "prohibited": [
+    "Persistent server or watcher.",
+    "Cross-run interval/timer/background scheduler.",
+    "Unbounded polling during admitted rename settlement.",
+    "Callbacks or rearming that survive completed invocation."
+  ],
+  "staticPolicy": "N24 retains network/process/server/watcher checks; removes only unconditional setInterval token ban.",
+  "lifetimeTests": [
+    {
+      "id": "F17",
+      "claim": "Bounded operation timer allowed and destroyed."
+    },
+    {
+      "id": "F18",
+      "claim": "Persistent cross-run interval detected; engineering fixture itself then cleared."
+    },
+    {
+      "id": "F19",
+      "claim": "Actual foundation finalization leaves no live timers across sequential calls."
+    },
+    {
+      "id": "F20",
+      "claim": "Cancelled and timed-out preadmission foundation calls leave no timers."
+    },
+    {
+      "id": "F21",
+      "claim": "Failed readonly verification preserves committed output and clears timer."
+    },
+    {
+      "id": "F22",
+      "claim": "Readonly timeout is bounded; late handle only closes and no timer leaks."
+    }
+  ],
+  "observationMechanism": "AsyncLocalStorage-scoped async_hooks Timeout init/before/destroy observations, two subsequent turns for destroy delivery; engineering test instrumentation only.",
+  "remainingNativeObligation": "Dirty resumed writePending polling and complete supervisor timer lifecycle require fresh current-source resumed acceptance; this foundation does not certify them."
+}

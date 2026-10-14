@@ -1,0 +1,24 @@
+{
+  "kind": "MO1307MissingLeafLifecycleDiagnosticPreflightFailure",
+  "result": "PREFLIGHT_FAILED_ZERO_INVOCATIONS",
+  "helperInvocations": 0,
+  "spawnReached": false,
+  "executionDirectoryCreated": false,
+  "authorizedInstrumentedExecutionConsumed": false,
+  "preparation": {
+    "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/diagnostic-preparation/preparation.json",
+    "byteLength": 42469,
+    "sha256": "sha256:040a660337c0636166aa8c93e35f1a00056edd2803558a00169f1a925c7d404e"
+  },
+  "observer": {
+    "path": "repositories/cca-conformance/tools/mo1307-missing-leaf-lifecycle/observe.mjs",
+    "byteLength": 25577,
+    "sha256": "sha256:6dde72f82401ceda09dbebf0a40f13b9afb61ae53ac994458cb9c0ac126ca65e"
+  },
+  "failure": {
+    "name": "AssertionError",
+    "line": 81,
+    "message": "Decoded request.files[0] has the protocol's intentional null prototype; deepStrictEqual against a plain object rejected before output-directory creation."
+  },
+  "correctionScope": "Replace the prototype-sensitive whole-object assertion with exact key and scalar assertions, then create a new append-only preparation binding the corrected observer. No helper, PowerShell script, alternate input, or product validation executed."
+}

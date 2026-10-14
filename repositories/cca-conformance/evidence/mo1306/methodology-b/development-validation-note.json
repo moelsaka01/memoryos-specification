@@ -1,0 +1,21 @@
+{
+  "firstTests": {
+    "negative": 84,
+    "positive": 5,
+    "status": "PASS"
+  },
+  "firstValidator": {
+    "assertion": "AUTHORITY_EVIDENCE_CLASSES",
+    "cause": "Validator compared dictionary iteration order after sorted-key JSON serialization to ordered class list. Class identity is a closed set, not an ordered array.",
+    "correction": "Require six unique classes and exact set equality; no policy/evidence expectation relaxed.",
+    "status": "FAIL"
+  },
+  "productExecutions": 0,
+  "scope": "New M3 offline validator development only; no product execution.",
+  "secondValidator": {
+    "assertion": "TEST_RECEIPT_STALE",
+    "cause": "Unordered Python set iteration changed the order of otherwise identical negative-control result rows across processes.",
+    "correction": "Sort the four bundle filenames before testing; preserve all 84 rejection controls and five positives.",
+    "status": "FAIL"
+  }
+}

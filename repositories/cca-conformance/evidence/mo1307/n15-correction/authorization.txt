@@ -1,0 +1,527 @@
+MEMORYOS 1.3
+MO-1307 PHASE 3A
+
+N15 CHECK_OUTPUT REGRESSION REPAIR
+THEN COMPLETE VALIDATION AND CERTIFICATION
+
+Current Phase 3A status:
+
+FAILED / INCOMPLETE
+
+The headless startup correction has now established:
+
+minimum wire smoke:
+PASS
+
+startup/security matrix:
+19/19 categories PASS
+
+regression campaign:
+97 PASS
+1 FAIL
+9 NOT_RUN
+
+The sole current failure is:
+
+N15
+
+operation:
+CHECK_OUTPUT
+
+expected:
+ABSENT
+
+actual:
+ERROR / MO1307_FILESYSTEM_BOUNDARY
+
+Accepted Phase 3B remains:
+
+702c1b6381f6112a50ac844831d195275dac3350
+
+Accepted Phase 3C remains:
+
+b02fc0226a1a2d800185a02071674ca80bdf4a1d
+
+Do not rerun either accepted stream now.
+
+==================================================
+1. OBJECTIVE
+==================================================
+
+Repair ONLY the N15 CHECK_OUTPUT regression.
+
+Do not reopen:
+
+console architecture
+parent PID attribution
+GetConsoleWindow
+post-detach governance
+startup tracing
+deadline characterization
+H
+C3S
+Control-E.
+
+The headless startup correction has passed its dedicated security matrix.
+
+The current task is now a product/regression correction.
+
+==================================================
+2. PRESERVE CURRENT SUCCESSFUL EVIDENCE
+==================================================
+
+Preserve as historical/current correction evidence:
+
+wire smoke PASS
+
+19/19 startup/security categories PASS
+
+97 regression PASS results
+
+the exact N15 failure
+
+all previous failed Phase 3A generations
+
+all headless correction authority/evidence.
+
+Do not relabel the failed candidate as accepted.
+
+Do not promote the 97 regression PASS observations into Phase 3A certification.
+
+==================================================
+3. N15 FAILURE
+==================================================
+
+Exact observed condition:
+
+CHECK_OUTPUT
+
+expected:
+ABSENT
+
+actual:
+ERROR
+MO1307_FILESYSTEM_BOUNDARY
+
+The correction must determine why an expected absent-output observation is being rejected at the filesystem boundary.
+
+Do not assume:
+
+the expected result is wrong
+
+the filesystem boundary is too strict
+
+the headless correction caused it
+
+the test is wrong.
+
+Establish the exact cause from source, fixture and retained failure evidence.
+
+==================================================
+4. NARROW ANALYSIS
+==================================================
+
+Inspect ONLY the dependency path relevant to N15:
+
+N15 fixture/case definition
+
+CHECK_OUTPUT request construction
+
+configured root/output path
+
+path canonicalization
+
+root admission
+
+final-path validation where applicable
+
+absence detection
+
+filesystem-boundary mapping
+
+CHECK_OUTPUT result construction
+
+expected ABSENT semantics.
+
+Compare N15 against:
+
+a passing CHECK_OUTPUT/ABSENT case, if one exists
+
+and
+
+the exact historical authority defining N15.
+
+Identify the first semantic divergence.
+
+==================================================
+5. CLASSIFY THE DEFECT
+==================================================
+
+Classify exactly one:
+
+N15_FIXTURE_DEFECT
+
+N15_HARNESS_DEFECT
+
+N15_PRODUCT_PATH_CLASSIFICATION_DEFECT
+
+N15_FILESYSTEM_BOUNDARY_DEFECT
+
+N15_EXPECTATION_DEFECT
+
+N15_OTHER_CONCRETE_DEFECT
+
+Do not return UNRESOLVED unless the retained evidence literally cannot identify the divergence.
+
+If one bounded local reproduction is strictly necessary, you may run exactly ONE N15 reproduction after sealing its inputs.
+
+No broad diagnostic campaign.
+
+==================================================
+6. SECURITY REQUIREMENT
+==================================================
+
+Do NOT weaken filesystem security merely to obtain ABSENT.
+
+The correction must preserve:
+
+root confinement
+
+validated-path dominance
+
+final-path rules
+
+reparse protections
+
+TOCTOU behavior
+
+type rules
+
+hardlink rules
+
+device/ADS/path-escape refusal
+
+native identity requirements
+
+filesystem boundary errors where genuinely applicable.
+
+The valid fix must distinguish:
+
+"output is legitimately absent inside an authorized output location"
+
+from:
+
+"path is outside or violates the authorized filesystem boundary."
+
+==================================================
+7. CHECK_OUTPUT SEMANTICS
+==================================================
+
+Recover the exact frozen semantics for CHECK_OUTPUT.
+
+Establish when the correct result is:
+
+ABSENT
+
+versus:
+
+ERROR / MO1307_FILESYSTEM_BOUNDARY
+
+Do not infer this from the test name alone.
+
+Use the controlling contract/schema/implementation authority.
+
+The fix must make implementation, fixture and expected semantics agree with that authority.
+
+==================================================
+8. IMPLEMENTATION
+==================================================
+
+If the defect is in production:
+
+make the smallest production correction.
+
+If the defect is in harness/fixture:
+
+correct only that artifact.
+
+Do not combine unrelated changes.
+
+Do not change:
+
+wire 2.0.0
+readiness semantics
+tag semantics
+decision semantics
+deadlines
+cleanup limits
+headless correction semantics
+human authority separation.
+
+==================================================
+9. N15 VALIDATION
+==================================================
+
+After the correction:
+
+run N15 exactly once.
+
+Expected:
+
+the authoritative frozen outcome.
+
+If the authoritative outcome remains ABSENT:
+
+require exact ABSENT behavior.
+
+If source authority proves the expectation itself was wrong:
+
+document the exact authority before changing the expected result.
+
+Do not change expected output merely because the implementation currently returns ERROR.
+
+If N15 still fails:
+
+STOP.
+
+Return PHASE3A_CONCRETE_IMPLEMENTATION_BLOCKER.
+
+==================================================
+10. FILESYSTEM NEGATIVE PRESERVATION
+==================================================
+
+If N15 passes, immediately run a finite filesystem-boundary preservation set proving the correction did NOT weaken security.
+
+At minimum include:
+
+legitimate absent output
+
+path outside root
+
+path traversal
+
+reparse/symlink/junction violation
+
+invalid device/ADS form where covered
+
+wrong type
+
+boundary mismatch
+
+existing known filesystem-boundary negative controls.
+
+All genuine boundary violations must continue producing the required refusal/error.
+
+==================================================
+11. COMPLETE REMAINING REGRESSIONS
+==================================================
+
+If N15 and filesystem preservation pass:
+
+continue the regression campaign from a NEW sealed validation generation.
+
+Do not mutate the failed regression receipt.
+
+Execute the complete required regression inventory, including the previously NOT_RUN cases.
+
+Also execute:
+
+native filesystem regressions
+
+two TOCTOU controls
+
+protocol controls
+
+deadline/cancellation controls
+
+cleanup/topology controls
+
+package integrity.
+
+Do not simply count the historical 97 PASS rows as the new generation.
+
+They may guide scope, but the final accepted candidate requires coherent candidate-bound validation.
+
+At first mandatory failure:
+
+STOP.
+
+==================================================
+12. CREATE NEW CANDIDATE
+==================================================
+
+If all correction validation and regressions pass:
+
+create a NEW production candidate identity.
+
+Do not reuse any prior unaccepted candidate hash.
+
+Bind exact:
+
+production tree
+
+helper
+
+transport if changed
+
+README/spec
+
+manifest
+
+SBOM
+
+89 package members
+
+headless correction authority
+
+N15 correction authority
+
+security validation
+
+regression validation.
+
+==================================================
+13. PHASE 3A CERTIFICATION
+==================================================
+
+Immediately run a fresh complete Phase 3A generation.
+
+Fresh worktree.
+
+Fresh package.
+
+Fresh offline install.
+
+Verify exact installed members.
+
+Seal A-O.
+
+Execute once.
+
+No historical PASS promotion.
+
+No retry.
+
+==================================================
+14. A-O INVENTORY
+==================================================
+
+A
+MO-1306 evaluate / verify / API
+
+B
+READY
+
+C
+NOT_READY
+
+D
+COULD_NOT_EVALUATE
+
+E
+REST
+
+F
+seven human decisions
+
+G
+complete supplied-tag inventory
+
+H
+helper deadline/cancellation
+
+I
+worker deadline/cancellation
+
+J
+cleanup/process topology
+
+K
+finalization
+
+L
+filesystem/native controls
+
+M
+environment isolation
+
+N
+byte determinism
+
+O
+final MO-1306 confirmation
+
+==================================================
+15. SUCCESS
+==================================================
+
+If A-O all pass:
+
+PHASE3A_ACCEPTED_NEW_CANDIDATE
+
+Create:
+
+accepted Phase 3A receipt
+
+accepted evidence commit
+
+candidate binding
+
+Phase 3D handoff input.
+
+Do not run Phase 3D yet.
+
+==================================================
+16. AFTER 3A ACCEPTANCE
+==================================================
+
+Report the exact final candidate.
+
+Then we will run in PARALLEL:
+
+Phase 3B scoped refresh
+
+Phase 3C scoped refresh.
+
+Existing accepted C3RB 3B/3C receipts remain preserved historical acceptance.
+
+==================================================
+17. FINAL OUTCOME
+==================================================
+
+Return only:
+
+PHASE3A_ACCEPTED_NEW_CANDIDATE
+
+or
+
+PHASE3A_CONCRETE_IMPLEMENTATION_BLOCKER
+
+No architecture research response.
+
+==================================================
+18. FINAL REPORT
+==================================================
+
+Report:
+
+1. exact N15 cause,
+2. defect classification,
+3. exact correction,
+4. N15 rerun result,
+5. filesystem-boundary preservation results,
+6. complete regression result,
+7. new candidate identity,
+8. package/install identity,
+9. A-O results,
+10. Phase 3A receipt,
+11. Phase 3A status,
+12. commits/bindings,
+13. exact 3B refresh scope,
+14. exact 3C refresh scope,
+15. repository status,
+16. next action.
+
+No push.
+No tag.
+No Phase 3D.

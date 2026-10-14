@@ -1,0 +1,134 @@
+{
+  "kind": "MO1307FinalizationImpossibilityAnalysis",
+  "version": "1.0.0",
+  "reviewedAtUtc": "2026-09-28T20:12:49.675369+00:00",
+  "baseline": "0d68ac211b3b204635e7af252cd693dce5bd70b1",
+  "reviewMode": "READ_ONLY_SOURCE_AUTHORITY_AND_RETAINED_FINAL_ATTEMPT_REVIEW",
+  "sourceBindings": [
+    {
+      "path": "repositories/memoryos-readiness/src/publication.mjs",
+      "byteLength": 11913,
+      "sha256": "sha256:a2f41d0a2aadd5a84a8a9e9ccce3465d71c911194adeec3d0f71ebd2ec6a7096"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+      "byteLength": 17308,
+      "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/windows-paths.mjs",
+      "byteLength": 5990,
+      "sha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+    },
+    {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "byteLength": 12378,
+      "sha256": "sha256:d5a684bf72819b9f729fd70e1c2013a0b53455553646106e2bc364d2ac42481d"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/errors.mjs",
+      "byteLength": 1823,
+      "sha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac"
+    },
+    {
+      "path": "repositories/memoryos-readiness/contracts/definitions.json",
+      "byteLength": 16555,
+      "sha256": "sha256:b621c0d17f2018ff8e73675878278f2fda10c2ad1f987a89747ebfb54b66e13e"
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs",
+      "byteLength": 17108,
+      "sha256": "sha256:63bebd85b33ce9d23442c347b6e322ec0f8b47733152d2da680fd2d8de8ad420"
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs",
+      "byteLength": 21757,
+      "sha256": "sha256:3bedc7a70e3902118c5f5b2b9a5afb1a27c7c12a4f913e090076eecbc920c6f0"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase2c-finalization-correction/queued-rename.mjs",
+      "byteLength": 6521,
+      "sha256": "sha256:f99ce68f68d2de5569a15a8404ac6be1854b55af92dc793d75d9a5d618b60267"
+    },
+    {
+      "path": "docs/mo1307-phase2c-finalization-boundary-correction.md",
+      "byteLength": 20727,
+      "sha256": "sha256:e5a7ef021cf217a7239a8568aa3172b4b58661d53ec82ff827b56530ee581b10"
+    },
+    {
+      "path": "docs/mo1307-contract-freeze-1.md",
+      "byteLength": 110295,
+      "sha256": "sha256:831899163c36595ee38291eb6dd3fcff0ea0c6cc041a99f16933a11a6cdc17f8"
+    },
+    {
+      "path": "docs/mo1307-phase2c-publication-inspection-correction.md",
+      "byteLength": 28935,
+      "sha256": "sha256:cf6d7be0892e0a376213c134ba368d522bf57d8e19baa85232163ee2edde5a3f"
+    },
+    {
+      "path": "repositories/memoryos-readiness/helpers/README.md",
+      "byteLength": 7728,
+      "sha256": "sha256:1709b8f9ff2d2dcf8d4f3fecdb9640b0ebe27014435784ffcb7ed5185538d99e"
+    }
+  ],
+  "acceptanceBindings": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2c-finalization-correction/campaigns/attempt-2/focused/runner-receipt.json",
+      "byteLength": 732,
+      "sha256": "sha256:d01dfc99f286dbe88ccc1faedab1a19b4a29c95703cb4d018a5e3019b7d04cc3"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2c-finalization-correction/campaigns/attempt-2/queued/receipt.json",
+      "byteLength": 2530,
+      "sha256": "sha256:a4b38b1fe15c246fd4eac2d80c404aa96e9195a9407868f12677a2f5353bdd5a"
+    }
+  ],
+  "scope": "Targeted shared finalization foundation; not full Phase 2C CLI/native acquisition certification.",
+  "result": "CLOSED_CONDITIONAL_CONTRACT_CONFLICT",
+  "requirements": [
+    {
+      "id": "A",
+      "claim": "Actual successful rename is the sole commit point.",
+      "disposition": "PRESERVED"
+    },
+    {
+      "id": "B",
+      "claim": "Deadline/cancellation can be terminal after submission but before settlement.",
+      "disposition": "SUPERSEDED_FOR_ADMITTED_RENAME"
+    },
+    {
+      "id": "C",
+      "claim": "Every failed invocation returns within fixed cleanup bound.",
+      "disposition": "PRE_SUBMISSION_ONLY_WITH_POST_SETTLEMENT_BOUNDED_DISPOSITION"
+    },
+    {
+      "id": "D",
+      "claim": "No filesystem mutation after reported terminal timeout/cancellation.",
+      "disposition": "PRESERVED_BY_AWAITING_SETTLEMENT"
+    },
+    {
+      "id": "E",
+      "claim": "Submitted rename is not cancellable through the fixed Node interface.",
+      "disposition": "DEMONSTRATED_INTERFACE_LIMITATION"
+    }
+  ],
+  "argument": [
+    "For a non-cancellable submitted operation without established finite completion bound, terminal bounded return before settlement leaves a possible later successful mutation.",
+    "B+C+E therefore allow violation of D. A disallows declaring submission committed while final remains absent or native failure remains possible.",
+    "Retain A,D,E; replace B with observation-only interruption during COMMIT_IN_PROGRESS and qualify C only for that unresolved operation.",
+    "After settlement apply fixed existing 2,000ms read-only/failed-finalization disposition allowance. Actual success commits; failure OUTPUT. Late success yields committed publication plus OUTPUT21 transport disposition."
+  ],
+  "originalDiagnostic": {
+    "receiptSha256": "sha256:91a6362dc7878e2d4fa618fd121b79215843a10cf462c955df89f0c99c0039d3",
+    "submittedAtMs": 2.8909,
+    "terminalTimeoutAtMs": 62.8369,
+    "nativeSettlementAtMs": 805.8029,
+    "finalAtTimeout": false,
+    "pendingAtTimeout": true,
+    "finalAfter": true,
+    "pendingAfter": false,
+    "observations": "Retained script uses synchronous existsSync immediately after terminal error, establishing actual namespace change after terminal observation rather than only callback delay."
+  },
+  "availability": "Admitted rename can keep the call pending indefinitely. No success-grace, hidden worker or finite settlement bound is invented.",
+  "scopeLimit": "Conditional fixed-platform/operation argument; not universal impossibility of every possible Win32 architecture."
+}

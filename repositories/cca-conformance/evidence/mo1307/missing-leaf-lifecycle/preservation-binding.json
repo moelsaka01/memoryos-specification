@@ -1,0 +1,118 @@
+{
+  "schema": "memoryos.mo1307.missing-leaf-lifecycle-preservation-binding.v1",
+  "recordedAt": "2026-10-01T12:57:59.2128430+04:00",
+  "outcome": "PHASE3A_5000MS_LIFECYCLE_BLOCKER",
+  "evidenceCommit": "14725fd6feda33c196c9da23089a56bedd850a62",
+  "evidenceCommitTree": "1eb59a97ba2580ca07f5c78eb7cb12bb9100316b",
+  "parent": "0599476f53815a4ccd05e0ba3cac600396ca201c",
+  "branch": "codex/mo1307-missing-leaf-lifecycle",
+  "production": {
+    "tree": "6a0bf13aaf40e20b68e469989b5a34ef74cf2903",
+    "sourceIdentity": "sha256:8ade4e1b48b1cb4ab990462a2d40a97507a9800dda6c3cab3aded161573d440f",
+    "changedByThisTask": false,
+    "blobs": {
+      "helper": {
+        "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "gitBlob": "7ca55b8713108465099ecfce9796e06e3db67bd2",
+        "byteLength": 29153,
+        "sha256": "sha256:97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+      },
+      "helperReadme": {
+        "path": "repositories/memoryos-readiness/helpers/README.md",
+        "gitBlob": "9dc17a8dceb28846c656399cab7568cd2fce6b5a"
+      },
+      "distributionManifest": {
+        "path": "repositories/memoryos-readiness/distribution-manifest.json",
+        "gitBlob": "d8e229c317a9e87974667b33026aef0a12afd2cf"
+      },
+      "sbom": {
+        "path": "repositories/memoryos-readiness/sbom.spdx.json",
+        "gitBlob": "7c6f08fe9947bd4fe44744860cfa1abb520f063c"
+      }
+    }
+  },
+  "preservedEvidence": {
+    "toolTree": "b4b44b727dde4d18b97c1fa8a325e8008f130b64",
+    "evidenceTree": "38a7a4527dd3c22d2fff45efe0e4a01eeb276f33",
+    "finalDisposition": {
+      "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/final-disposition.json",
+      "gitBlob": "c77b8e5a106f1bce001c1a476caf477861b18467",
+      "byteLength": 9369,
+      "sha256": "sha256:901ba8e4afb63cba355a7567303f88e32f24ac76e36b771d8a3f6161f09bd9ba"
+    },
+    "offlineAnalysis": {
+      "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/diagnostic-analysis-correction/analysis.json",
+      "gitBlob": "ae1f5b195f1b78cf708b85c02749b9337762946e",
+      "byteLength": 11186,
+      "sha256": "sha256:be67dbf6ea2911c2468a23fcc76863f02a6e0c2c437f43637a92d811b83993b8"
+    },
+    "originalReceipt": {
+      "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/diagnostic-observation/receipt.json",
+      "gitBlob": "164cb252e2fecec6ee097ef1445132efe358b25a",
+      "byteLength": 8910,
+      "sha256": "sha256:e8340e6930d45c5f98cdc724142d6d6c4f00fb35013deecf0da43156fbfee158"
+    },
+    "authorization": {
+      "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/authorization.txt",
+      "gitBlob": "971821da917511ff75cdecc5aab08223ba683173",
+      "byteLength": 9787,
+      "sha256": "sha256:71338a908f76fddeae0618e75e39ccb64d61eb94650db91da88da3f6b4136eac"
+    },
+    "report": {
+      "path": "docs/mo1307-missing-leaf-lifecycle.md",
+      "gitBlob": "a583c4d19e76960322a2f4ccc90c1a3501280952",
+      "byteLength": 4699,
+      "sha256": "sha256:30fae4a568b3bc81904601bf2ded98f5e831cdb172506ecf77b9123f7c635185"
+    }
+  },
+  "result": {
+    "helperExecutions": 1,
+    "retries": 0,
+    "alternateInputs": 0,
+    "totalMs": 3167.0189,
+    "frozenLimitMs": 5000,
+    "marginMs": 1832.9811,
+    "classification": "COMMON_STARTUP_COST_DOMINANT",
+    "response": "239 exact bytes; ERROR/MO1307_INPUT",
+    "transport": "RESOLVED; exit 0; all process and pipe terminal states observed",
+    "parserCorrection": "Offline parse of already sealed raw counter snapshots; zero additional helper executions and no changed measured bytes.",
+    "defensibleProductionCorrection": false,
+    "targetedCorrection": null,
+    "postCorrectionEquivalenceSecurity": "NOT_RUN",
+    "boundedValidation": "NOT_RUN",
+    "newNativeFilesystem35": "NOT_RUN",
+    "toctou2": "NOT_RUN",
+    "completeRegressionSecurity": "NOT_RUN",
+    "candidateCreation": "NOT_RUN",
+    "phase3ACertificationAO": "NOT_RUN",
+    "phase3A": "FAILED / INCOMPLETE"
+  },
+  "candidate": null,
+  "acceptedCandidate": false,
+  "historicalAcceptance": {
+    "phase3B": "702c1b6381f6112a50ac844831d195275dac3350",
+    "phase3C": "b02fc0226a1a2d800185a02071674ca80bdf4a1d",
+    "rerun": false
+  },
+  "refreshScope": {
+    "phase3B": "NOT_APPLICABLE_UNTIL_A_NEW_CANDIDATE_EXISTS",
+    "phase3C": "NOT_APPLICABLE_UNTIL_A_NEW_CANDIDATE_EXISTS"
+  },
+  "repository": {
+    "worktree": "C:/m7fix",
+    "statusAtEvidenceCommit": "CLEAN",
+    "productionSubtreeClean": true
+  },
+  "actions": {
+    "historicalPassPromotion": false,
+    "retry": false,
+    "secondSample": false,
+    "alternateInput": false,
+    "deadlineChange": false,
+    "push": false,
+    "tag": false,
+    "phase3D": false,
+    "anotherOptimizationLoop": false
+  },
+  "nextAction": "A separately authorized contract or architecture decision is required before any new Phase 3A candidate work."
+}

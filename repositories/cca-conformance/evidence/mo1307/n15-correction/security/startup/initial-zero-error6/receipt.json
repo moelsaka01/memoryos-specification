@@ -1,0 +1,124 @@
+{
+  "name": "initial-zero-error6",
+  "kind": "EXACT_EXTRACTED_FUNCTION_WITH_NATIVE_DOUBLE",
+  "expectedExit": 22,
+  "accepted": false,
+  "result": "PASS",
+  "nativeProductHelper": false,
+  "realHostProof": false,
+  "events": [
+    {
+      "event": "stdin-finish",
+      "elapsedMs": 19.203999999999724
+    },
+    {
+      "event": "stdin-close",
+      "elapsedMs": 19.284200000000055
+    },
+    {
+      "event": "stdout-end",
+      "elapsedMs": 1026.0501999999997
+    },
+    {
+      "event": "stdout-close",
+      "elapsedMs": 1026.3086000000003
+    },
+    {
+      "event": "stderr-end",
+      "elapsedMs": 1026.3587000000007
+    },
+    {
+      "event": "stderr-close",
+      "elapsedMs": 1026.5527000000002
+    },
+    {
+      "event": "exit",
+      "elapsedMs": 1044.377700000001,
+      "code": 22,
+      "signal": null
+    }
+  ],
+  "pid": 17548,
+  "exitCode": 22,
+  "exitSignal": null,
+  "elapsedMs": 1044.4822999999997,
+  "proof": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/security/startup/initial-zero-error6/proof.json",
+    "byteLength": 705,
+    "sha256": "sha256:8bed44af1380473287843ce7f9ee7738930b31d6f121ca67763f0e9fba657880"
+  },
+  "observed": {
+    "configuredErrorContext": 6,
+    "nativeLastErrorSet": false,
+    "membershipCalls": 1,
+    "freeConsoleCalls": 0,
+    "kind": "MO1307ExtractedHeadlessStartupSimulation",
+    "scenario": "initial-zero-error6",
+    "accepted": false,
+    "failure": "MO1307_INTERNAL",
+    "failureType": "System.InvalidOperationException",
+    "events": [
+      {
+        "name": "GetStdHandle",
+        "arguments": [
+          -10
+        ]
+      },
+      {
+        "name": "GetFileType",
+        "arguments": [
+          10
+        ]
+      },
+      {
+        "name": "GetStdHandle",
+        "arguments": [
+          -11
+        ]
+      },
+      {
+        "name": "GetFileType",
+        "arguments": [
+          11
+        ]
+      },
+      {
+        "name": "GetStdHandle",
+        "arguments": [
+          -12
+        ]
+      },
+      {
+        "name": "GetFileType",
+        "arguments": [
+          12
+        ]
+      },
+      {
+        "name": "GetConsoleProcessList",
+        "arguments": [
+          1
+        ]
+      }
+    ],
+    "detached": false,
+    "productionFunctionUnmodified": true,
+    "nativeProcessOperationsPerformed": false,
+    "realHostIdentityProof": false
+  },
+  "closed": true,
+  "timedOut": false,
+  "cleanupExpired": false,
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/security/startup/initial-zero-error6/stdout.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/security/startup/initial-zero-error6/stderr.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stdoutBytes": 0,
+  "stderrBytes": 0
+}

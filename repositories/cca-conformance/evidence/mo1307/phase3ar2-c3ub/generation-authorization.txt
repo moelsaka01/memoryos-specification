@@ -1,0 +1,386 @@
+MEMORYOS 1.3
+MO-1307 PHASE 3AR2
+
+FINAL 3A DEADLINE CORRECTION
+9000-MS PROSPECTIVE HELPER BOUND
+THEN FRESH CERTIFICATION
+
+We are finishing Phase 3A.
+
+Do not start another characterization or architecture investigation.
+
+Current failed C3TB Phase 3AR2 established:
+
+helper 1:
+2338.325 ms
+
+helper 2:
+1977.802 ms
+
+helper 3:
+8041.987 ms
+
+The existing prospective helper bound:
+
+8000 ms
+
+is therefore insufficient for valid installed-runtime execution.
+
+The failure was correctly:
+
+MO1307_TIMEOUT
+ACQUISITION
+exit 29
+
+No product semantic, security, package, filesystem, or protocol defect was established.
+
+==================================================
+1. FINAL CORRECTION
+==================================================
+
+Adopt prospectively for the next candidate:
+
+PROSPECTIVE_HELPER_BOUND@2.0.0
+
+Value:
+
+9000 ms
+
+Success requires:
+
+complete whole-helper lifecycle < 9000 ms
+
+Timeout occurs at:
+
+>= 9000 ms
+
+Historical:
+
+H = NOT_ESTABLISHED
+
+remains unchanged.
+
+Do NOT call 9000 ms H.
+
+==================================================
+2. OTHER LIMITS REMAIN UNCHANGED
+==================================================
+
+aggregate helper-active:
+20000 ms
+
+CLI admission:
+30000 ms
+
+API/worker:
+10000 ms
+
+cleanup:
+2000 ms
+
+No retry.
+
+No grace.
+
+No late-success recovery.
+
+No helper reuse.
+
+No persistent helper.
+
+No helper/helper overlap.
+
+No helper/worker overlap.
+
+==================================================
+3. RATIONALE
+==================================================
+
+The fresh installed Phase 3AR2 certification observed a valid helper lifecycle of:
+
+8041.987 ms
+
+under exact C3TB.
+
+Therefore 8000 ms cannot remain the prospective certification ceiling.
+
+9000 ms is selected as the final prospective bound because it:
+
+- exceeds the observed valid lifecycle,
+- retains bounded whole-helper semantics,
+- remains below 10000 ms,
+- remains compatible with the 20000 ms aggregate helper budget,
+- remains compatible with the 30000 ms CLI budget,
+- does not alter the separate 2000 ms cleanup rule.
+
+Do not perform another characterization campaign.
+
+==================================================
+4. PRESERVE FAILED C3TB GENERATION
+==================================================
+
+Preserve Phase 3AR2 failed-generation commit:
+
+9f45656cdb1fe8899cfd6abceb8061bbba459d73
+
+Its result remains:
+
+A FAIL
+B-O NOT_RUN
+
+Do not rewrite it.
+
+C3TB remains historical candidate:
+
+119e68bdcf0ffc906b4ca03a912aadcb25908346
+
+Do not mutate C3TB in place.
+
+==================================================
+5. CREATE NEW CANDIDATE
+==================================================
+
+Create the next repository-consistent production correction candidate.
+
+Change ONLY the prospective helper deadline authority from:
+
+8000 ms
+
+to:
+
+9000 ms
+
+and regenerate all mechanically dependent artifacts.
+
+Expected affected areas include:
+
+contracts/definitions.json
+
+contracts/contract.json
+
+src/constants.mjs
+
+generated embedded contract/resource data if applicable
+
+README deadline documentation
+
+helper README deadline documentation
+
+distribution manifest
+
+SBOM
+
+candidate authority/binding evidence.
+
+Do not alter unrelated product behavior.
+
+==================================================
+6. PRESERVE ALL EXISTING CORRECTIONS
+==================================================
+
+Keep unchanged:
+
+headless cleanup correction
+
+post-detach rule
+
+initial-zero fail-closed behavior
+
+CreateFileW SetLastError correction
+
+Open-Chain redundant Assert-Root removal
+
+wire 2.0.0
+
+filesystem boundaries
+
+TOCTOU controls
+
+publication semantics
+
+human-decision separation.
+
+==================================================
+7. BOUNDED CONSISTENCY CHECK
+==================================================
+
+Before certification verify mechanically:
+
+9000 appears in every required authoritative/generated consumer
+
+8000 no longer remains as the active prospective helper limit
+
+20000/30000/10000/2000 remain unchanged
+
+strict <9000 success semantics
+
+>=9000 timeout semantics
+
+cleanup remains separate
+
+package metadata internally consistent
+
+manifest internally consistent
+
+SBOM internally consistent
+
+89 package members accounted for.
+
+This is not another timing campaign.
+
+==================================================
+8. FRESH PHASE 3A GENERATION
+==================================================
+
+If consistency passes:
+
+run a completely NEW Phase 3A certification generation against the new exact candidate.
+
+Do not resume the failed C3TB campaign.
+
+Use a fresh certification namespace.
+
+Fresh package.
+
+Fresh offline installation.
+
+Verify exact installed members.
+
+Seal the complete A-O inventory.
+
+==================================================
+9. A-O
+==================================================
+
+A
+MO-1306 evaluate / verify / API parity
+
+B
+READY
+
+C
+NOT_READY
+
+D
+COULD_NOT_EVALUATE
+
+E
+REST
+
+F
+seven human-decision vectors
+
+G
+complete supplied-tag inventory
+
+H
+helper deadline/cancellation using strict <9000 semantics
+
+I
+worker deadline/cancellation
+
+J
+cleanup/process topology
+
+K
+finalization
+
+L
+filesystem/native controls
+
+M
+environment isolation
+
+N
+byte determinism
+
+O
+final MO-1306 confirmation
+
+==================================================
+10. EXECUTION
+==================================================
+
+Execute once.
+
+No retry.
+
+No case retry.
+
+No replacement execution.
+
+No historical PASS promotion.
+
+At first mandatory failure:
+
+STOP.
+
+Do not diagnose inside the certification campaign.
+
+==================================================
+11. ACCEPTANCE
+==================================================
+
+If A-O all pass:
+
+return:
+
+PHASE3AR2_ACCEPTED_NEW_CANDIDATE
+
+Create:
+
+accepted Phase 3A receipt
+
+accepted certification commit
+
+exact candidate binding
+
+Phase 3D handoff input.
+
+Do not start Phase 3D.
+
+==================================================
+12. PARALLEL 3B / 3C
+==================================================
+
+Phase 3BR2 and Phase 3CR2 are running independently.
+
+Do NOT interrupt them.
+
+Do NOT rerun them inside this task.
+
+If they become accepted against C3TB, preserve those accepted results.
+
+After this new 9000-ms candidate is accepted by 3A, determine only the exact deadline/candidate-bound refresh delta required for those accepted streams.
+
+Do not throw away successful R2 work unnecessarily.
+
+==================================================
+13. FINAL REPORT
+==================================================
+
+Report:
+
+1. 9000-ms authority identity
+2. exact files changed
+3. new production candidate commit
+4. new binding commit
+5. production tree
+6. helper SHA-256
+7. package identity
+8. generated-resource consistency
+9. fresh A-O results
+10. first failure if any
+11. helper/resource observations
+12. Phase 3A receipt
+13. PHASE3AR2_ACCEPTED_NEW_CANDIDATE or PHASE3AR2_FAILED_INCOMPLETE
+14. exact effect on existing 3BR2 result
+15. exact effect on existing 3CR2 result
+16. repository status
+17. Phase 3D handoff if accepted
+
+No push.
+No tag.
+No Phase 3D.
+
+FINISH PHASE 3A.

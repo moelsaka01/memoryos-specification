@@ -1,0 +1,56 @@
+/** Certification-only in-memory validation of downloaded bytes; no worker/helper launch. */
+import fs from 'node:fs';
+import path from 'node:path';
+import {pathToFileURL} from 'node:url';
+import assert from 'node:assert/strict';
+const request=JSON.parse(fs.readFileSync(process.argv[2]));
+const moduleUrl=p=>pathToFileURL(path.join(request.install,p)).href;
+const {verifyNode,verifyDistribution,semanticContractDigest}=await import(moduleUrl('src/integrity.mjs'));
+const {validate,checkResult,digest}=await import(moduleUrl('src/contracts.mjs'));
+const {J}=await import(moduleUrl('src/serialization.mjs'));
+const {parseJSON}=await import(moduleUrl('src/json.mjs'));
+const {verifySemantic}=await import(moduleUrl('src/verification.mjs'));
+verifyNode();
+const installation=verifyDistribution(request.install,'github'),ids=installation.identities;
+assert.equal(ids.distributionDigest,request.distributionDigest);
+const caps={'evaluation-identity.json':4060,'memoryos-ci-artifacts.json':8192,'memoryos-ci-complete.json':1024,'memoryos-ci-evidence.json':16384,'memoryos-ci-result.json':8192,'policy-outcome.json':4060};
+const contents=new Map(Object.entries(request.files).map(([name,b64])=>[name,Buffer.from(b64,'base64')]));
+assert.deepEqual([...contents.keys()].sort(),Object.keys(caps).sort());
+assert.ok([...contents.values()].reduce((s,b)=>s+b.length,0)<=49152);
+function json(name,schema) {
+ const bytes=contents.get(name);assert.ok(bytes.length<=caps[name]);
+ const value=validate(schema,parseJSON(bytes,caps[name],'BUNDLE_INTEGRITY'),'BUNDLE_INTEGRITY');
+ assert.equal(bytes.toString('utf8'),J(value));return value;
+}
+const result=checkResult(json('memoryos-ci-result.json','Result'));
+const evidence=json('memoryos-ci-evidence.json','Evidence'),manifest=json('memoryos-ci-artifacts.json','Artifacts'),marker=json('memoryos-ci-complete.json','Complete');
+assert.equal(result.provider,'github');assert.equal(result.classification,request.expectedDecision);
+assert.equal(result.process.exitCode,request.expectedExit);
+for(const item of [evidence,manifest,marker])assert.equal(item.runId,result.runId);
+assert.equal(marker.manifestSha256,digest(contents.get('memoryos-ci-artifacts.json')));
+const members=[...contents.keys()].filter(n=>!['memoryos-ci-artifacts.json','memoryos-ci-complete.json'].includes(n)).sort();
+assert.deepEqual(manifest.files.map(r=>r.path),members);
+for(const row of manifest.files){assert.equal(row.byteLength,contents.get(row.path).length);assert.equal(row.sha256,digest(contents.get(row.path)));}
+assert.equal(evidence.resultSha256,digest(contents.get('memoryos-ci-result.json')));
+assert.equal(evidence.projectionSha256,digest(J(result.projection)));
+assert.equal(evidence.configurationSha256,result.configurationDigest);
+assert.equal(result.configurationDigest,request.configurationDigest);
+assert.equal(evidence.contract.sha256,ids.contractDigest);assert.equal(result.contractDigest,ids.contractDigest);
+assert.equal(evidence.contract.limitsSha256,ids.limitsDigest);assert.equal(result.limitsDigest,ids.limitsDigest);
+assert.equal(result.adapterDigest,ids.adapterDigest);assert.equal(evidence.adapter.sha256,ids.adapterDigest);
+assert.equal(evidence.adapter.id,'memoryos.cicd.adapter.github');
+assert.equal(evidence.distributionSha256,ids.distributionDigest);
+assert.equal(evidence.runtimeClosureSha256,ids.runtimeClosureDigest);
+assert.equal(evidence.runtime.nodeSha256,ids.nodeDigest);
+assert.equal(evidence.semanticContractSha256,semanticContractDigest);
+assert.deepEqual(evidence.metadata,request.expectedMetadata);
+assert.deepEqual(evidence.inputs,request.expectedInputs);
+assert.equal(result.inputDigest,digest(J(evidence.inputs)));
+assert.equal(result.semantic.semanticDigest,request.expectedSemantic.semanticDigest);
+assert.equal(result.semantic.evaluationIdentityDigest,request.expectedSemantic.evaluationIdentityDigest);
+assert.equal(result.semantic.outcomeDigest,request.expectedSemantic.outcomeDigest);
+assert.equal(result.semantic.decision,request.expectedDecision);assert.equal(result.semantic.artifactKind,'policy');
+await verifySemantic({...result.semantic,evaluationIdentityBase64:request.files['evaluation-identity.json'],outcomeBase64:request.files['policy-outcome.json']});
+process.stdout.write(J({status:'PASS',result,evidence,manifest,marker,identities:ids,sdkVerification:true,
+ normativeFileDigests:Object.fromEntries(['evaluation-identity.json','policy-outcome.json'].map(n=>[n,digest(contents.get(n))]))}));
+

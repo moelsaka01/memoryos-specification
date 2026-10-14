@@ -1,0 +1,215 @@
+"""Independent evidence checks only; no product imports, product processes or network."""
+import argparse, copy, hashlib, json, ntpath, os, pathlib, re, subprocess, zipfile
+R = pathlib.Path(__file__).resolve().parents[4]
+E = R/'repositories/cca-conformance/evidence/mo1306/phase3a-hosted-resolution'
+T = pathlib.Path(__file__).resolve().parent
+OLD = R/'repositories/cca-conformance/evidence/mo1306/phase3a-certification'
+MAIN = R.parent/'cca-workspace'
+C = '701d48ee2012675966360dda775ab13013c09ab9'
+M = '85a0f85c1ebd013c545ccf2b3efe58a760e6cf37'
+S = '451599e7b95a537ebc2daac627b061fd88791dea'
+REMOTE = '5955af062152a84c10de17860ba0bcabe8b3555f'
+LABELS = dict(generic='REAL_EXECUTION_CERTIFIED',github='NOT_CERTIFIED',gitlab='CONTRACT_VALIDATED',jenkins='CONTRACT_VALIDATED',azure='CONTRACT_VALIDATED')
+BOUND = set()
+BLOBS = {}
+def need(ok, msg):
+    if not ok: raise AssertionError(msg)
+def sha(b): return 'sha256:'+hashlib.sha256(b).hexdigest()
+def read(p): return json.loads(pathlib.Path(p).read_text(encoding='utf-8-sig'))
+def git(*args, root=R, raw=False):
+    env=dict(os.environ,GIT_OPTIONAL_LOCKS='0')
+    p=subprocess.run(['git','-C',str(root),*args],capture_output=True,env=env,timeout=45)
+    need(p.returncode==0,'git read failed: '+repr(args))
+    return p.stdout if raw else p.stdout.decode('utf-8').strip()
+def blob(rev,path):
+    key=(rev,path)
+    if key not in BLOBS:BLOBS[key]=git('show',rev+':'+path,raw=True)
+    return BLOBS[key]
+def check_bytes(b,row):
+    need(len(b)==row['byteLength'] and sha(b)==row['sha256'],'byte binding mismatch '+str(row.get('path',row.get('repositoryPath'))))
+def ref(row):
+    p=R/row['path'];need(p.resolve().is_relative_to(R.resolve()),'binding outside refresh')
+    b=p.read_bytes();check_bytes(b,row);BOUND.add(row['path']);return p
+
+def walk(v):
+    if isinstance(v,dict):
+        if {'path','byteLength','sha256'}<=v.keys() and not 'revision' in v:ref(v)
+        for x in v.values():walk(x)
+    elif isinstance(v,list):
+        for x in v:walk(x)
+def row(p):
+    b=p.read_bytes();return dict(path=p.relative_to(R).as_posix(),byteLength=len(b),sha256=sha(b))
+def load(name):
+    p=E/name;BOUND.add(p.relative_to(R).as_posix());d=read(p);walk(d);return d
+
+def source_row(x):
+    p=x.get('repositoryPath',x.get('path'));b=blob(x['revision'],p);check_bytes(b,x)
+    for y in x.get('excerpts',[]):
+        need('\n'.join(b.decode('utf-8',errors='replace').splitlines()[y['startLine']-1:y['endLine']])==y['text'],'source excerpt mismatch')
+    return b
+
+def excerpts(v):
+    if isinstance(v,dict):
+        if {'source','startLine','endLine','excerpt'}<=v.keys():
+            b=source_row(v['source']);need('\n'.join(b.decode('utf-8',errors='replace').splitlines()[v['startLine']-1:v['endLine']])==v['excerpt'],'independent excerpt mismatch')
+        for x in v.values():excerpts(x)
+    elif isinstance(v,list):
+        for x in v:excerpts(x)
+
+def unresolved(d):
+    need(d['classification']=='UNRESOLVED','invented causal classification')
+    need(d['correctionAuthorizedByEvidence'] is False and d['retryAuthorizedByEvidence'] is False,'unjustified correction/retry')
+    need(d['firstObservedFailure']['firstFailingPrimitive'] is None,'invented first rejecting primitive')
+    need(d['layout']['actualRejectedPath'] is None and d['layout']['actualResolvedRejectedPath'] is None,'invented rejected path')
+    need(d['layout']['filesystemDriveFormat']=='UNOBSERVED','invented filesystem observation')
+    need(d['historicalPublicationCauseResolved'] is False,'restamped native history')
+    for x in d['environment']:
+        if x['variable'] in ['RUNNER_TEMP','RUNNER_TOOL_CACHE','RUNNER_WORKSPACE','USERPROFILE','TEMP','TMP']:
+            need(x['value'] is None and x['status']=='UNOBSERVED' and not x['occurrences'],'invented environment value')
+
+def remote_claim(d):
+    need(d['status']=='PASS' and d['defaultBranch']=='main','remote/default boundary')
+    need(d['remoteMain']==REMOTE and d['certificationCommit']==S,'remote refs')
+    need(d['certificationRunCount']==1 and d['runIds']==[36357568243] and d['artifactCount']==0,'run/artifact count')
+    need(d['remoteMutations']==[] and d['dispatches']==[],'remote writes')
+
+def receipt_claim(d):
+    need(d['status']=='HOSTED_BOOTSTRAP_UNRESOLVED' and d['classification']=='UNRESOLVED','false final disposition')
+    need(d['productionAuthority']==C and d['methodologyAuthority']==M,'authority mismatch')
+    need(d['nativeCertified'] is True and d['labels']==LABELS,'retained labels')
+    for k in ['causeEstablished','githubHostedCertified','historicalPublicationCauseResolved','historicalCauseResolved','failedRunReclassified','correctionJustified','completionCommitCreated','authoritativeCertificationCommitCreated','phase3DReady','allCertificationGatesPassed']:
+        need(d[k] is False,'false claim '+k)
+    for k in ['newHostedRuns','newHostedDispatches','nativeExecutions','methodologyEligibilityReruns','productExecutions','productionChanges','workflowChanges','remoteMutations','pushes']:
+        need(d[k]==0,'unauthorized activity '+k)
+    for k in ['correctedScaffold','firstRejectingOperation','exactRejectedPath','finalCommit']:need(d[k] is None,'invented '+k)
+    need(d['failedHostedRun']==36357568243 and d['failedHostedAttempt']==1 and d['failedHostedJob']==108728221298,'failed run identity')
+    need(d['containingCommitIdentity']=='NO_AUTHORITATIVE_CERTIFICATION_COMMIT_CREATED','false containing commit')
+    need(not d['tagsCreated'] and not d['releasesCreated'],'tag/release creation')
+
+def verify(final=False):
+    p=load('preservation-before.json');need(p['historicalFileCount']==978 and len(p['files'])==978,'history count')
+    need(len({x['path'] for x in p['files']})==978,'history duplicates')
+    need(git('rev-parse','HEAD')==p['head'] and git('branch','--show-current')==p['branch'],'HEAD/branch changed')
+    need(git('for-each-ref','--format=%(refname) %(objectname)')==p['protectedRefs'].strip(),'protected refs changed')
+    index=pathlib.Path(git('rev-parse','--git-path','index'));index=index if index.is_absolute() else R/index
+    need(sha(index.read_bytes())==p['realIndexSha256'],'real index changed')
+    need(not git('diff','--name-only') and not git('diff','--cached','--name-only'),'tracked changes')
+    main_old=read(OLD/'m3-verification.json')['mainReadOnly']
+    mi=pathlib.Path(git('rev-parse','--git-path','index',root=MAIN));mi=mi if mi.is_absolute() else MAIN/mi
+    need(git('rev-parse','HEAD',root=MAIN)==M and not git('status','--porcelain=v1','--untracked-files=all',root=MAIN),'main changed')
+    need(sha(mi.read_bytes())==main_old['indexSha256'],'main index changed')
+    prior=read(OLD/'execution-receipt.json');need(prior['nativeCertified'] is True and prior['labels']==LABELS and prior['status']=='HOSTED_CERTIFICATION_BLOCKED','prior labels changed')
+    need(read(OLD/'native-validation.json')['status']=='PASS' and read(OLD/'native-final-gate.json')['nativeCertified'] is True,'prior native evidence')
+    for x in read(OLD/'evidence-index.json')['files']:ref(x)
+    a=load('independent-causal-review.json');unresolved(a)
+    w=load('workflow-path-audit.json');f=load('filesystem-contract-audit.json')
+    need(w['classification']==f['classification']=='UNRESOLVED' and w['correctionJustified'] is False and f['correctionJustified'] is False,'audit disposition')
+    need(f['exactFirstFailingOperation'] is None and f['exactRejectedPath'] is None,'unobserved first failure')
+    need(all(v==0 for v in w['executionBoundary'].values()),'path audit executed product')
+    need(all(v==0 for k,v in f['scope'].items() if isinstance(v,int)),'source audit executed product')
+    for x in a['sourceBindings']:need(x['revision']==C,'source authority');source_row(x)
+    source_row(a['workflowBinding']);need(a['workflowBinding']['revision']==S,'workflow revision')
+    for x in f['sources']:need(x['revision']==C,'contract source authority');source_row(x)
+    excerpts(a)
+    for x in w['sourceBindings']:
+        need(x['candidate']==C and blob(C,x['repositoryPath'])==ref(x['installedFile']).read_bytes(),'installed/source mismatch')
+    for x in w['workflowBindings']:
+        need(x['toolRef']==C and blob(S,x['workflowPath'])==ref(x['retainedBytes']).read_bytes(),'workflow bytes mismatch')
+    archive=next(x for x in a['failedRun']['evidence'] if x['path'].endswith('logs.zip'))
+    with zipfile.ZipFile(ref(archive)) as z:
+        need(len(z.namelist())==11 and len(set(z.namelist()))==11,'log coverage')
+        texts={n:z.read(n).decode('utf-8-sig',errors='replace') for n in z.namelist()}
+        for x in a['archiveCoverage']['members']:
+            check_bytes(z.read(x['member']),x);need(len(texts[x['member']].splitlines())==x['lineCount'],'log lines')
+        for audit in [w,f]:
+            for x in audit['allLogMembersRead']:check_bytes(z.read(x.get('name',x.get('member'))),x)
+        for env in a['environment']:
+            for hit in env['occurrences']:need(texts[hit['member']].splitlines()[hit['line']-1]==hit['text'],'environment evidence')
+        boot=texts["MemoryOS CI/5_Run $ErrorActionPreference = 'Stop'.txt"]
+        need('MO1306_FILESYSTEM_BOUNDARY' in boot and '"stage":"ACQUISITION"' in boot and 'Process completed with exit code 1' in boot,'actual first failure')
+        need('MO1306_RUNTIME_INTEGRITY' not in boot,'different error diagnostic')
+    layout=a['layout'];workspace=r'D:\a\memoryos-specification\memoryos-specification'
+    need(layout['workspace']==workspace,'actual workspace')
+    home=ntpath.join(workspace,'_memoryos','tool','repositories','memoryos-ci')
+    node=ntpath.join(workspace,'_memoryos','runtime','node.exe')
+    manifest=json.loads(blob(C,'repositories/memoryos-ci/distribution-manifest.json'))
+    members=manifest.get('files',manifest.get('members'))
+    paths=[node,home]+[ntpath.join(home,x['path'].replace('/',chr(92))) for x in members]
+    need(len(paths)==95,'installation entries')
+    batches=a['staticPathModel']['batches'];need(len(batches)==2,'batch count')
+    flat=[]
+    for x in batches:
+        flat.extend(v['path'] for v in x['paths'])
+        request={'kind':'MemoryOSCICDPathCheckRequest','version':'1.0.0','paths':x['paths']}
+        size=len((json.dumps(request,sort_keys=True,separators=(',',':'),ensure_ascii=False)+'\n').encode())
+        need(size==x['serializedRequestBytes'] and size<=16384,'helper request bound')
+    need(flat==paths and [x['serializedRequestBytes'] for x in batches]==[8555,7623],'path/request reconstruction')
+    need(max(len(x.encode('utf-16le'))//2 for x in paths)==159,'path max')
+    need(a['staticPathModel']['maximumInstallPathUnits']==159 and a['staticPathModel']['configPathUnits']==148,'path model claims')
+    need(w['pathModel']['installationPathCount']==95 and w['pathModel']['maximumInstallationPathLength']==159,'independent path model')
+    pre=load('remote-preflight.json');end=load('final-remote-state.json')
+    for d in [pre,end]:
+        remote_claim(d)
+        bodies={}
+        for k,v in d['responses'].items():
+            raw=read(ref(v));need(raw['method']=='GET' and raw['status']==200,'non-read-only remote response');bodies[k]=raw['body']
+        need(bodies['repository']['default_branch']=='main','actual default branch')
+        need(bodies['main-ref']['object']['sha']==REMOTE and bodies['certification-ref']['object']['sha']==S,'actual remote commit')
+        runs=bodies['certification-runs'];need(runs['total_count']==1 and len(runs['workflow_runs'])==1,'additional actual run')
+        run=runs['workflow_runs'][0];need(run['id']==36357568243 and run['run_attempt']==1 and run['head_sha']==S and run['conclusion']=='failure','actual run identity/outcome')
+    arts=read(ref(pre['responses']['blocked-artifacts']))['body'];need(arts['total_count']==0 and arts['artifacts']==[],'actual artifact count')
+    jobs=read(ref(pre['responses']['blocked-jobs']))['body']['jobs'];need(len(jobs)==1 and jobs[0]['id']==108728221298,'actual job')
+    steps={x['number']:x for x in jobs[0]['steps']};need(steps[5]['conclusion']=='failure' and steps[6]['conclusion']=='skipped' and steps[7]['conclusion']=='skipped','bootstrap/evaluation/upload outcome')
+    need(read(ref(pre['gitRefs']))['refs']==read(ref(end['gitRefs']))['refs'],'remote refs changed')
+    need(end['allRemoteRefsUnchanged'] is True and end['remoteRefChangesSinceInitial']=={},'remote comparison')
+    need(end['repositorySettings']==pre['repositorySettings'],'repository settings')
+    for k in ['newDispatchCount','pushCount','settingsWriteCount']:need(end[k]==0,'remote action')
+    need(set(end['responses'])=={'repository','main-ref','certification-ref','certification-runs'},'fresh query scope')
+    for name in ['image-documentation-review.json','workspace-verification.json']:
+        if (E/name).exists():load(name)
+    need(not any(x.is_dir() and x.name not in ['initial-remote','final-remote'] for x in E.iterdir()),'new execution directory')
+    rec=None
+    if (E/'resolution-receipt.json').exists():
+        rec=load('resolution-receipt.json');receipt_claim(rec)
+        report=(E/'REPORT.md').read_text(encoding='utf-8-sig')
+        need([int(x) for x in re.findall(r'^\| (\d+) \|',report,re.M)]==list(range(1,60)),'report fields')
+        need(report.rstrip().endswith('MO-1306 PHASE 3A HOSTED BOOTSTRAP UNRESOLVED'),'report stop line')
+    elif final:raise AssertionError('final receipt missing')
+    idx=E/'evidence-index.json'
+    if idx.exists():
+        inventory=read(idx);rows=inventory['files'];need(len(rows)==len({x['path'] for x in rows}),'inventory duplicates')
+        for x in rows:ref(x)
+        actual={x.relative_to(R).as_posix() for base in [E,T] for x in base.rglob('*') if x.is_file() and x!=idx}
+        need(actual=={x['path'] for x in rows},'closed inventory mismatch')
+    elif final:raise AssertionError('final closed index missing')
+    return a,end,rec
+
+def negatives(a,end,rec):
+    results=[]
+    def reject(name,fn):
+        try:fn()
+        except (AssertionError,KeyError):results.append({'case':name,'status':'REJECTED'});return
+        raise AssertionError('negative accepted '+name)
+    reject('stale-file-hash',lambda:check_bytes(b'changed',{'byteLength':7,'sha256':sha(b'original')}))
+    for name,key,value in [('false-cause','classification','PRODUCT_DEFECT'),('false-correction','correctionAuthorizedByEvidence',True),('restamped-historical-native','historicalPublicationCauseResolved',True)]:
+        x=copy.deepcopy(a);x[key]=value;reject(name,lambda x=x:unresolved(x))
+    x=copy.deepcopy(a);x['firstObservedFailure']['firstFailingPrimitive']='checkPaths';reject('invented-first-operation',lambda:unresolved(x))
+    x=copy.deepcopy(a);next(v for v in x['environment'] if v['variable']=='RUNNER_TEMP')['value']=r'D:\a\_temp';reject('invented-environment',lambda:unresolved(x))
+    x=copy.deepcopy(end);x['defaultBranch']='mo1306-certification';reject('remote-default-not-restored',lambda:remote_claim(x))
+    x=copy.deepcopy(end);x['artifactCount']=1;reject('invented-artifact',lambda:remote_claim(x))
+    x=copy.deepcopy(end);x['certificationRunCount']=2;reject('extra-hosted-run',lambda:remote_claim(x))
+    if rec:
+        for name,key,value in [('false-hosted-certified','githubHostedCertified',True),('product-rerun','productExecutions',1),('false-final-commit','completionCommitCreated',True)]:
+            x=copy.deepcopy(rec);x[key]=value;reject(name,lambda x=x:receipt_claim(x))
+    return results
+
+def main():
+    ap=argparse.ArgumentParser();ap.add_argument('--check',action='store_true');ap.add_argument('--final',action='store_true');args=ap.parse_args()
+    a,end,rec=verify(args.final);ns=negatives(a,end,rec)
+    result={'kind':'MemoryOSHostedResolutionIndependentValidation','status':'PASS','validatedDisposition':'HOSTED_BOOTSTRAP_UNRESOLVED','historicalFiles':978,'boundFiles':len(BOUND),'logMembers':11,'newProductExecutions':0,'nativeOrMethodologyValidatorInvocations':0,'networkRequests':0,'negativeControls':len(ns),'finalReceiptValidated':rec is not None,'validator':row(pathlib.Path(__file__))}
+    if not args.check:
+        need(rec is not None,'receipt must be stable before output generation')
+        for name,d in [('validation.json',result),('validation-negatives.json',{'status':'PASS','cases':ns,'validator':row(pathlib.Path(__file__))})]:
+            with (E/name).open('x',encoding='utf-8',newline='\n') as f:json.dump(d,f,sort_keys=True,separators=(',',':'));f.write('\n')
+    print(json.dumps(result,sort_keys=True))
+if __name__=='__main__':main()

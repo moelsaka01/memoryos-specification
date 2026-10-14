@@ -1,0 +1,191 @@
+{
+  "cases": [
+    {
+      "elapsedMs": 24023,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-G1",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "evidence": {
+          "bare": {
+            "landedOutsideBeforeDetection": [
+              "checkpoint.json"
+            ]
+          },
+          "decoy": {
+            "landedOutsideBeforeDetection": []
+          }
+        },
+        "h40": "detected after the fact; nothing prevented; no existing content overwritten",
+        "results": {
+          "bare: later append": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "bare: later export": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "bare: later verify": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "bare: the append": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "decoy: later append": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "decoy: later export": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "decoy: later verify": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "decoy: the append": "3:MO1308_RECORD_BYTES_MISMATCH"
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 14302,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-G2",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "evidence": {
+          "bare": {
+            "landedOutsideBeforeDetection": [
+              "00000000000000000001.json"
+            ]
+          },
+          "decoy": {
+            "landedOutsideBeforeDetection": []
+          }
+        },
+        "results": {
+          "bare: later verify": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "bare: the append": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "decoy: later verify": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "decoy: note": "the decoy entry name existed, so the link lost like any commit race",
+          "decoy: the append": "4:MO1308_LEDGER_CONFLICT"
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 20300,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-G3",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "decoysDeletedThroughTheSwappedJunction": [],
+        "h40": "a swap between the check and one unlink is not prevented (Q01); a swap before a check is refused with nothing deleted",
+        "outside": {
+          "before the purge starts": {
+            "files": 4,
+            "unchanged": true
+          },
+          "between two members": {
+            "files": 4,
+            "unchanged": true
+          }
+        },
+        "results": {
+          "before the purge starts: later verify": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "before the purge starts: rerun finishes the purge": "0:ok",
+          "before the purge starts: the tombstone": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "before the purge starts: verify with the real directory back": "0:ok",
+          "between two members: later verify": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "between two members: rerun finishes the purge": "0:ok",
+          "between two members: the tombstone": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "between two members: verify with the real directory back": "0:ok"
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 16756,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-G4",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "evidence": {
+          "export bare": {
+            "landedOutsideBeforeDetection": [
+              "memoryos-history-export-complete.json"
+            ]
+          },
+          "export decoy": {
+            "landedOutsideBeforeDetection": []
+          },
+          "init bare": {
+            "landedOutsideBeforeDetection": []
+          },
+          "init decoy": {
+            "landedOutsideBeforeDetection": []
+          }
+        },
+        "results": {
+          "export bare": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "export decoy": "4:MO1308_IO",
+          "init bare": "4:MO1308_IO",
+          "init decoy": "4:MO1308_IO"
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 30605,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-G5",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "results": {
+          "different entry count": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "same entry count": "0:ok:original"
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 30209,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-G6",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "appenderAttempts": 18,
+        "byCode": {
+          "MO1308_FILESYSTEM_BOUNDARY": 3,
+          "MO1308_LEDGER_CORRUPT": 3,
+          "MO1308_RECORD_BYTES_MISMATCH": 3,
+          "ok": 9
+        },
+        "landedOutsideBeforeDetection": [],
+        "results": {
+          "final verify": "0:ok"
+        },
+        "schedule": "MO1308-P3-G6-SWAP-1 (200 swaps, seeded holds of 5-25 ms)",
+        "swaps": {
+          "completed": true,
+          "heldMs": 3062,
+          "refused": 1,
+          "swaps": 200
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    }
+  ],
+  "elapsedMs": 136196,
+  "failureCode": null,
+  "finishedAt": "2026-10-08T14:16:27.068Z",
+  "generation": "phase3a-rehearsal-r4",
+  "kind": "MO1308Phase3StepReceipt",
+  "result": "PASS",
+  "segment": "main2",
+  "startedAt": "2026-10-08T14:14:10.879Z",
+  "step": "G",
+  "stream": "3A",
+  "version": "1.0.0"
+}

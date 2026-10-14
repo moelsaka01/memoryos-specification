@@ -1,0 +1,432 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cca://schemas/memoryos/mo1303-final-conformance-binding/1.0",
+  "title": "MemoryOS MO-1303 final conformance binding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "crossPlatformParity",
+    "crossPlatformParityStatus",
+    "historicalRevisions",
+    "hostedCertificationStatus",
+    "hostedRun",
+    "implementationRevision",
+    "implementationStatus",
+    "kind",
+    "localCertification",
+    "macosStatus",
+    "marketplacePublicationStatus",
+    "predecessors",
+    "productIdentities",
+    "releaseException",
+    "releaseStatus",
+    "tag",
+    "version"
+  ],
+  "properties": {
+    "crossPlatformParity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "certified",
+        "evidence",
+        "jobId",
+        "reason",
+        "status",
+        "workflowConclusion"
+      ],
+      "properties": {
+        "certified": { "const": false },
+        "evidence": { "type": "null" },
+        "jobId": { "type": "integer", "minimum": 1 },
+        "reason": { "const": "certifyDependencyDidNotSucceedBecauseMacosDidNotExecute" },
+        "status": { "const": "notExecuted" },
+        "workflowConclusion": { "const": "skipped" }
+      }
+    },
+    "crossPlatformParityStatus": { "const": "notExecuted" },
+    "historicalRevisions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hostedCertificationCorrection",
+        "hostedPortabilityCorrectionReleaseCandidate",
+        "hostedWorkflowCorrection",
+        "phase1",
+        "phase2",
+        "phase3Implementation"
+      ],
+      "properties": {
+        "hostedCertificationCorrection": { "$ref": "#/$defs/revision" },
+        "hostedPortabilityCorrectionReleaseCandidate": { "$ref": "#/$defs/revision" },
+        "hostedWorkflowCorrection": { "$ref": "#/$defs/revision" },
+        "phase1": { "$ref": "#/$defs/revision" },
+        "phase2": { "$ref": "#/$defs/revision" },
+        "phase3Implementation": { "$ref": "#/$defs/revision" }
+      }
+    },
+    "hostedCertificationStatus": { "const": "partial" },
+    "hostedRun": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "number",
+        "overallConclusion",
+        "platforms",
+        "revision",
+        "strictArtifactValidator",
+        "workflow"
+      ],
+      "properties": {
+        "id": { "type": "integer", "minimum": 1 },
+        "number": { "type": "integer", "minimum": 1 },
+        "overallConclusion": { "const": "failure" },
+        "platforms": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "macos-14",
+            "ubuntu-24.04",
+            "windows-2022"
+          ],
+          "properties": {
+            "macos-14": { "$ref": "#/$defs/macosPlatform" },
+            "ubuntu-24.04": {
+              "allOf": [
+                { "$ref": "#/$defs/passedPlatform" },
+                {
+                  "type": "object",
+                  "properties": {
+                    "platform": { "const": "ubuntu-24.04" },
+                    "runnerImage": { "const": "ubuntu-24.04" }
+                  }
+                }
+              ]
+            },
+            "windows-2022": {
+              "allOf": [
+                { "$ref": "#/$defs/passedPlatform" },
+                {
+                  "type": "object",
+                  "properties": {
+                    "platform": { "const": "windows-2022" },
+                    "runnerImage": { "const": "windows-2022" }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "revision": { "$ref": "#/$defs/revision" },
+        "strictArtifactValidator": {
+          "const": "repositories/cca-conformance/tools/mo1303-hosted-evidence.mjs"
+        },
+        "workflow": { "const": "MemoryOS VS Code Certification" }
+      }
+    },
+    "implementationRevision": { "$ref": "#/$defs/revision" },
+    "implementationStatus": { "const": "complete" },
+    "kind": { "const": "MemoryOSMO1303FinalConformanceBinding" },
+    "localCertification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "modes",
+        "result",
+        "vscodeVersion"
+      ],
+      "properties": {
+        "modes": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "development",
+            "installed",
+            "restricted"
+          ],
+          "properties": {
+            "development": { "const": "PASS" },
+            "installed": { "const": "PASS" },
+            "restricted": { "const": "PASS" }
+          }
+        },
+        "result": { "const": "PASS" },
+        "vscodeVersion": { "const": "1.137.0" }
+      }
+    },
+    "macosStatus": { "const": "notExecutedExternalInfrastructure" },
+    "marketplacePublicationStatus": { "const": "notPublished" },
+    "predecessors": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mo1301",
+        "mo1302"
+      ],
+      "properties": {
+        "mo1301": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "peeledCommit",
+            "tag"
+          ],
+          "properties": {
+            "peeledCommit": { "$ref": "#/$defs/revision" },
+            "tag": { "const": "memoryos-1.3-mo1301" }
+          }
+        },
+        "mo1302": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "distributionFileCount",
+            "distributionManifestRawSha256",
+            "peeledCommit",
+            "tag"
+          ],
+          "properties": {
+            "distributionFileCount": { "const": 42 },
+            "distributionManifestRawSha256": { "$ref": "#/$defs/digest" },
+            "peeledCommit": { "$ref": "#/$defs/revision" },
+            "tag": { "const": "memoryos-1.3-mo1302" }
+          }
+        }
+      }
+    },
+    "productIdentities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contractIdentity",
+        "extension",
+        "runtime",
+        "transportLimits",
+        "vsix"
+      ],
+      "properties": {
+        "contractIdentity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "artifactByteLength",
+            "artifactRawSha256",
+            "canonicalSha256"
+          ],
+          "properties": {
+            "artifactByteLength": { "type": "integer", "minimum": 1 },
+            "artifactRawSha256": { "$ref": "#/$defs/digest" },
+            "canonicalSha256": { "$ref": "#/$defs/digest" }
+          }
+        },
+        "extension": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "identifier",
+            "version"
+          ],
+          "properties": {
+            "identifier": { "const": "moelsaka01.memoryos" },
+            "version": { "const": "0.1.0" }
+          }
+        },
+        "runtime": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "closureDigest",
+            "entryCount",
+            "inventoryDigest"
+          ],
+          "properties": {
+            "closureDigest": { "$ref": "#/$defs/digest" },
+            "entryCount": { "type": "integer", "minimum": 1 },
+            "inventoryDigest": { "$ref": "#/$defs/digest" }
+          }
+        },
+        "transportLimits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "mipBytes",
+            "policyBytes",
+            "policySetBytes"
+          ],
+          "properties": {
+            "mipBytes": { "type": "integer", "minimum": 1 },
+            "policyBytes": { "type": "integer", "minimum": 1 },
+            "policySetBytes": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "vsix": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "byteLength",
+            "inventoryDigest",
+            "sha256"
+          ],
+          "properties": {
+            "byteLength": { "type": "integer", "minimum": 1 },
+            "inventoryDigest": { "$ref": "#/$defs/digest" },
+            "sha256": { "$ref": "#/$defs/digest" }
+          }
+        }
+      }
+    },
+    "releaseException": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "decision",
+        "fullHostedCertification",
+        "futureMacosEvidenceMayCloseGapWithoutRewritingHistoricalEvidence",
+        "kind",
+        "macosCertified",
+        "strictThreePlatformValidatorPreserved",
+        "threePlatformParityCertified",
+        "threeValidHostedPlatformEvidenceRecords",
+        "twoOfThreeEquivalentToThreeOfThree",
+        "verifiedHostedPlatformEvidenceRecordCount"
+      ],
+      "properties": {
+        "authority": { "const": "projectOwner" },
+        "decision": { "const": "releaseWithoutWaitingForMacosHostedExecution" },
+        "fullHostedCertification": { "const": false },
+        "futureMacosEvidenceMayCloseGapWithoutRewritingHistoricalEvidence": { "const": true },
+        "kind": { "const": "externalInfrastructure" },
+        "macosCertified": { "const": false },
+        "strictThreePlatformValidatorPreserved": { "const": true },
+        "threePlatformParityCertified": { "const": false },
+        "threeValidHostedPlatformEvidenceRecords": { "const": false },
+        "twoOfThreeEquivalentToThreeOfThree": { "const": false },
+        "verifiedHostedPlatformEvidenceRecordCount": { "const": 2 }
+      }
+    },
+    "releaseStatus": { "const": "releasedWithExternalInfrastructureException" },
+    "tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "status"
+      ],
+      "properties": {
+        "name": { "const": "memoryos-1.3-mo1303" },
+        "status": { "const": "pendingManualReleaseTagReview" }
+      }
+    },
+    "version": { "const": "1.0.0" }
+  },
+  "$defs": {
+    "artifactIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "archiveByteLength",
+        "archiveSha256",
+        "id",
+        "name"
+      ],
+      "properties": {
+        "archiveByteLength": { "type": "integer", "minimum": 1 },
+        "archiveSha256": { "$ref": "#/$defs/digest" },
+        "id": { "type": "integer", "minimum": 1 },
+        "name": { "type": "string", "minLength": 1 }
+      }
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "evidenceIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "byteLength",
+        "kind",
+        "path",
+        "rawSha256",
+        "version"
+      ],
+      "properties": {
+        "byteLength": { "type": "integer", "minimum": 1 },
+        "kind": { "const": "MemoryOSMO1303HostedEvidence" },
+        "path": { "type": "string", "minLength": 1 },
+        "rawSha256": { "$ref": "#/$defs/digest" },
+        "version": { "const": "1.0.0" }
+      }
+    },
+    "macosPlatform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "architecture",
+        "artifact",
+        "evidence",
+        "externalBlock",
+        "jobId",
+        "platform",
+        "revision",
+        "runnerExecutionStarted",
+        "runnerImage",
+        "status",
+        "validationResult",
+        "workflowConclusion"
+      ],
+      "properties": {
+        "architecture": { "const": "x64" },
+        "artifact": { "type": "null" },
+        "evidence": { "type": "null" },
+        "externalBlock": {
+          "const": "The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings"
+        },
+        "jobId": { "type": "integer", "minimum": 1 },
+        "platform": { "const": "macos-14" },
+        "revision": { "$ref": "#/$defs/revision" },
+        "runnerExecutionStarted": { "const": false },
+        "runnerImage": { "const": "macos-14-large" },
+        "status": { "const": "notExecutedExternalInfrastructure" },
+        "validationResult": { "const": "notExecuted" },
+        "workflowConclusion": { "const": "failure" }
+      }
+    },
+    "passedPlatform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "architecture",
+        "artifact",
+        "evidence",
+        "jobId",
+        "platform",
+        "revision",
+        "runnerExecutionStarted",
+        "runnerImage",
+        "status",
+        "validationResult",
+        "workflowConclusion"
+      ],
+      "properties": {
+        "architecture": { "const": "x64" },
+        "artifact": { "$ref": "#/$defs/artifactIdentity" },
+        "evidence": { "$ref": "#/$defs/evidenceIdentity" },
+        "jobId": { "type": "integer", "minimum": 1 },
+        "platform": { "type": "string", "minLength": 1 },
+        "revision": { "$ref": "#/$defs/revision" },
+        "runnerExecutionStarted": { "const": true },
+        "runnerImage": { "type": "string", "minLength": 1 },
+        "status": { "const": "PASS" },
+        "validationResult": { "const": "PASS" },
+        "workflowConclusion": { "const": "success" }
+      }
+    },
+    "revision": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    }
+  }
+}

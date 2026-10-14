@@ -1,0 +1,63 @@
+{
+  "kind": "MO1307N15NativeBindingMetadataSeal",
+  "base": "b73f4bd6ce71228372614889d9c6da1b778df49d",
+  "sourceBefore": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/native-binding-metadata/before-source.ps1.data",
+    "byteLength": 27691,
+    "sha256": "sha256:6fe424212239cb8e6563532597b78e5dac61732d10fc605ee3d939c26eaa5b54"
+  },
+  "sourceAfter": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/native-binding-metadata/after-source.ps1.data",
+    "byteLength": 29136,
+    "sha256": "sha256:f9d68d43cba57b5fc64e6bca13605ccf82f6afa9e1b0ac110bf9e4357bdbce69"
+  },
+  "sourceWorking": {
+    "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+    "byteLength": 29136,
+    "sha256": "sha256:f9d68d43cba57b5fc64e6bca13605ccf82f6afa9e1b0ac110bf9e4357bdbce69"
+  },
+  "scripts": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/native-binding-metadata/before.metadata.ps1",
+      "byteLength": 3880,
+      "sha256": "sha256:6a702c7f8e681c21e80bb37630740336b6318b0f1a6048aadf8f9e0cda5477ba"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/native-binding-metadata/after.metadata.ps1",
+      "byteLength": 5325,
+      "sha256": "sha256:7277c4a0ac4c56156aa71f3b3bf53c15a21dc5a9863708dbfabfade7a6a62b2f"
+    }
+  ],
+  "driver": {
+    "path": "repositories/cca-conformance/tools/mo1307-n15-correction/native-binding-metadata.mjs",
+    "byteLength": 11258,
+    "sha256": "sha256:a2c0529bb3e450adbd63be1f3e20b665b8e54a8615fc8b800351b23561649704"
+  },
+  "runtime": [
+    {
+      "path": "../Users/melsa/Documents/Codex/cca-workspace/.cache/mo1305-phase3br/toolchain/node-v24.21.0-win-x64/node.exe",
+      "byteLength": 93580104,
+      "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+    },
+    {
+      "path": "../Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "byteLength": 495616,
+      "sha256": "sha256:8bb6fa8c283b4d92120b1ef249a9b311b0f804d4cabbe9981159976c8be76a5e"
+    }
+  ],
+  "patches": [
+    {
+      "before": "        $method = $builder.DefinePInvokeMethod($definition[0], $library, $definition[0],\n            [Reflection.MethodAttributes]'Public, Static, PinvokeImpl', [Reflection.CallingConventions]::Standard,\n            $definition[1], $definition[2], [Runtime.InteropServices.CallingConvention]::Winapi,\n            [Runtime.InteropServices.CharSet]::Unicode)",
+      "after": "        if ($definition[0] -ceq 'CreateFileW') {\n            # DefineMethod lets the complete DllImport attribute establish the\n            # mapping once, including marshaler last-error capture.\n            $method = $builder.DefineMethod($definition[0],\n                [Reflection.MethodAttributes]'Public, Static, PinvokeImpl', [Reflection.CallingConventions]::Standard,\n                $definition[1], $definition[2])\n        } else {\n            $method = $builder.DefinePInvokeMethod($definition[0], $library, $definition[0],\n                [Reflection.MethodAttributes]'Public, Static, PinvokeImpl', [Reflection.CallingConventions]::Standard,\n                $definition[1], $definition[2], [Runtime.InteropServices.CallingConvention]::Winapi,\n                [Runtime.InteropServices.CharSet]::Unicode)\n        }"
+    },
+    {
+      "before": "        $attribute = [Reflection.Emit.CustomAttributeBuilder]::new($dllConstructor, [object[]] @($library),\n            $fields, [object[]] @($true, $true, [Runtime.InteropServices.CharSet]::Unicode))",
+      "after": "        if ($definition[0] -ceq 'CreateFileW') {\n            $createFileFields = [Reflection.FieldInfo[]] @(\n                [Runtime.InteropServices.DllImportAttribute].GetField('EntryPoint'),\n                [Runtime.InteropServices.DllImportAttribute].GetField('PreserveSig'),\n                [Runtime.InteropServices.DllImportAttribute].GetField('SetLastError'),\n                [Runtime.InteropServices.DllImportAttribute].GetField('ExactSpelling'),\n                [Runtime.InteropServices.DllImportAttribute].GetField('CallingConvention'),\n                [Runtime.InteropServices.DllImportAttribute].GetField('CharSet'))\n            $attribute = [Reflection.Emit.CustomAttributeBuilder]::new($dllConstructor, [object[]] @($library),\n                $createFileFields, [object[]] @($definition[0], $true, $true, $true,\n                    [Runtime.InteropServices.CallingConvention]::Winapi, [Runtime.InteropServices.CharSet]::Unicode))\n        } else {\n            $attribute = [Reflection.Emit.CustomAttributeBuilder]::new($dllConstructor, [object[]] @($library),\n                $fields, [object[]] @($true, $true, [Runtime.InteropServices.CharSet]::Unicode))\n        }"
+    }
+  ],
+  "exactInverseEquality": true,
+  "scope": "Only exact extracted Initialize-Native method emission. Confirm-ConsoleQuiescence is an empty engineering stub. No emitted native method is invoked, no helper request, no startup assertion or console operation runs.",
+  "maximumMetadataProcesses": 2,
+  "stopOnFirstMandatoryFailure": true,
+  "productDeadlineClaims": false
+}

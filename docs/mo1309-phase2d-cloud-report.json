@@ -1,0 +1,479 @@
+{
+  "kind": "MemoryOSDashboardPerfReport",
+  "version": "1.0.0",
+  "host": {
+    "platform": "linux",
+    "arch": "x64",
+    "release": "6.18.44-fc-v114",
+    "node": "v22.22.0",
+    "cpus": 4,
+    "cpuModel": "Intel(R) Xeon(R) Processor @ 2.80GHz",
+    "totalMemoryMb": 16093
+  },
+  "tree": {
+    "composition": "mo1309/phase2d-perf tip 7d6ae4b6 + mo1309/phase2a-ui 6956c650 + mo1309/phase2b-build 2d0b66fe (unpushed throwaway merge)",
+    "browser": "Chromium 1194 (Playwright build preinstalled in the cloud image)",
+    "corpus": "synthetic, scripts/memoryos-dashboard-perf-corpus.mjs; POLICY_EVALUATION records, one tombstone per 20 entries"
+  },
+  "results": [
+    {
+      "entries": 1000,
+      "runs": [
+        {
+          "readMs": 102.3694310002029,
+          "verifyOnlyMs": 580.0416819998063,
+          "viewModelBuildMs": 831.9081830000505,
+          "assembleMs": 94.8944860000629,
+          "publishMs": 3.4943299998994917,
+          "snapshotBytes": 917890,
+          "generationMaxRssMb": 114.15234375,
+          "generationWallMs": 1720,
+          "loadEventMs": 82.0999999998603,
+          "domContentLoadedMs": 81.5999999998603,
+          "firstPageRows": 100,
+          "filterMs": 7,
+          "sortMs": 4.5,
+          "nextPageMs": 17.699999999953434,
+          "domNodes": 1108,
+          "pageHeapMb": 2.7747154235839844
+        },
+        {
+          "readMs": 87.95011899992824,
+          "verifyOnlyMs": 593.9436770000029,
+          "viewModelBuildMs": 800.2498010001145,
+          "assembleMs": 75.7604720001109,
+          "publishMs": 2.6392419999465346,
+          "snapshotBytes": 917890,
+          "generationMaxRssMb": 117.05859375,
+          "generationWallMs": 1652,
+          "loadEventMs": 85.69999999995343,
+          "domContentLoadedMs": 84.69999999995343,
+          "firstPageRows": 100,
+          "filterMs": 6.899999999906868,
+          "sortMs": 4.199999999953434,
+          "nextPageMs": 15.800000000046566,
+          "domNodes": 1108,
+          "pageHeapMb": 2.743927001953125
+        },
+        {
+          "readMs": 90.18204799992964,
+          "verifyOnlyMs": 617.4340800000355,
+          "viewModelBuildMs": 905.2901069999207,
+          "assembleMs": 99.04058500006795,
+          "publishMs": 2.8593330001458526,
+          "snapshotBytes": 917890,
+          "generationMaxRssMb": 114.91796875,
+          "generationWallMs": 1806,
+          "loadEventMs": 91.80000000004657,
+          "domContentLoadedMs": 91.30000000004657,
+          "firstPageRows": 100,
+          "filterMs": 7.100000000093132,
+          "sortMs": 5,
+          "nextPageMs": 28.5,
+          "domNodes": 1108,
+          "pageHeapMb": 2.7416419982910156
+        },
+        {
+          "readMs": 98.0265659999568,
+          "verifyOnlyMs": 590.3725960000884,
+          "viewModelBuildMs": 849.6201909999363,
+          "assembleMs": 100.78780500008725,
+          "publishMs": 2.9937219999264926,
+          "snapshotBytes": 917890,
+          "generationMaxRssMb": 116.5078125,
+          "generationWallMs": 1736,
+          "loadEventMs": 89.60000000009313,
+          "domContentLoadedMs": 89.10000000009313,
+          "firstPageRows": 100,
+          "filterMs": 8.399999999906868,
+          "sortMs": 6.699999999953434,
+          "nextPageMs": 17.5,
+          "domNodes": 1108,
+          "pageHeapMb": 2.7828025817871094
+        },
+        {
+          "readMs": 89.25347799994051,
+          "verifyOnlyMs": 576.2964999999385,
+          "viewModelBuildMs": 841.2429700000212,
+          "assembleMs": 96.76784500014037,
+          "publishMs": 2.7185209998860955,
+          "snapshotBytes": 917890,
+          "generationMaxRssMb": 118.75390625,
+          "generationWallMs": 1694,
+          "loadEventMs": 93.89999999990687,
+          "domContentLoadedMs": 93.19999999995343,
+          "firstPageRows": 100,
+          "filterMs": 6.899999999906868,
+          "sortMs": 4.400000000139698,
+          "nextPageMs": 17.800000000046566,
+          "domNodes": 1108,
+          "pageHeapMb": 2.748676300048828
+        }
+      ],
+      "summary": {
+        "readMs": {
+          "min": 87.95011899992824,
+          "median": 90.18204799992964,
+          "max": 102.3694310002029
+        },
+        "viewModelBuildMs": {
+          "min": 800.2498010001145,
+          "median": 841.2429700000212,
+          "max": 905.2901069999207
+        },
+        "verifyOnlyMs": {
+          "min": 576.2964999999385,
+          "median": 590.3725960000884,
+          "max": 617.4340800000355
+        },
+        "assembleMs": {
+          "min": 75.7604720001109,
+          "median": 96.76784500014037,
+          "max": 100.78780500008725
+        },
+        "publishMs": {
+          "min": 2.6392419999465346,
+          "median": 2.8593330001458526,
+          "max": 3.4943299998994917
+        },
+        "generationWallMs": {
+          "min": 1652,
+          "median": 1720,
+          "max": 1806
+        },
+        "generationMaxRssMb": {
+          "min": 114.15234375,
+          "median": 116.5078125,
+          "max": 118.75390625
+        },
+        "snapshotBytes": {
+          "min": 917890,
+          "median": 917890,
+          "max": 917890
+        },
+        "loadEventMs": {
+          "min": 82.0999999998603,
+          "median": 89.60000000009313,
+          "max": 93.89999999990687
+        },
+        "domContentLoadedMs": {
+          "min": 81.5999999998603,
+          "median": 89.10000000009313,
+          "max": 93.19999999995343
+        },
+        "firstPageRows": {
+          "min": 100,
+          "median": 100,
+          "max": 100
+        },
+        "filterMs": {
+          "min": 6.899999999906868,
+          "median": 7,
+          "max": 8.399999999906868
+        },
+        "sortMs": {
+          "min": 4.199999999953434,
+          "median": 4.5,
+          "max": 6.699999999953434
+        },
+        "nextPageMs": {
+          "min": 15.800000000046566,
+          "median": 17.699999999953434,
+          "max": 28.5
+        },
+        "pageHeapMb": {
+          "min": 2.7416419982910156,
+          "median": 2.748676300048828,
+          "max": 2.7828025817871094
+        },
+        "domNodes": {
+          "min": 1108,
+          "median": 1108,
+          "max": 1108
+        }
+      }
+    },
+    {
+      "entries": 10000,
+      "runs": [
+        {
+          "readMs": 756.0587050002068,
+          "verifyOnlyMs": 5504.501386999851,
+          "viewModelBuildMs": 30515.22421699995,
+          "assembleMs": 829.6573590000626,
+          "publishMs": 58.313883000053465,
+          "snapshotBytes": 8902247,
+          "generationMaxRssMb": 390.63671875,
+          "generationWallMs": 37801,
+          "loadEventMs": 277,
+          "domContentLoadedMs": 274.5,
+          "firstPageRows": 100,
+          "filterMs": 8.699999999953434,
+          "sortMs": 5.399999999906868,
+          "nextPageMs": 18.200000000186265,
+          "domNodes": 1108,
+          "pageHeapMb": 14.135215759277344
+        },
+        {
+          "readMs": 724.597200000193,
+          "verifyOnlyMs": 5279.9758599998895,
+          "viewModelBuildMs": 29530.359543000115,
+          "assembleMs": 861.2891419997904,
+          "publishMs": 59.49239100003615,
+          "snapshotBytes": 8902247,
+          "generationMaxRssMb": 397.21875,
+          "generationWallMs": 36585,
+          "loadEventMs": 316.29999999981374,
+          "domContentLoadedMs": 313.5,
+          "firstPageRows": 100,
+          "filterMs": 9.399999999906868,
+          "sortMs": 5.5,
+          "nextPageMs": 17.800000000046566,
+          "domNodes": 1108,
+          "pageHeapMb": 14.136154174804688
+        },
+        {
+          "readMs": 743.9510360001586,
+          "verifyOnlyMs": 5351.517957999837,
+          "viewModelBuildMs": 29274.061424999963,
+          "assembleMs": 841.2518000002019,
+          "publishMs": 64.64506599982269,
+          "snapshotBytes": 8902247,
+          "generationMaxRssMb": 358.70703125,
+          "generationWallMs": 36452,
+          "loadEventMs": 279.89999999990687,
+          "domContentLoadedMs": 276.5,
+          "firstPageRows": 100,
+          "filterMs": 13.899999999906868,
+          "sortMs": 8.300000000046566,
+          "nextPageMs": 22.800000000046566,
+          "domNodes": 1108,
+          "pageHeapMb": 14.138294219970703
+        },
+        {
+          "readMs": 733.1017199999187,
+          "verifyOnlyMs": 5564.859462999972,
+          "viewModelBuildMs": 29304.209630999947,
+          "assembleMs": 923.3457610001788,
+          "publishMs": 65.87944299983792,
+          "snapshotBytes": 8902247,
+          "generationMaxRssMb": 358.51171875,
+          "generationWallMs": 36752,
+          "loadEventMs": 285.0999999998603,
+          "domContentLoadedMs": 282.69999999995343,
+          "firstPageRows": 100,
+          "filterMs": 10.300000000046566,
+          "sortMs": 5.199999999953434,
+          "nextPageMs": 17.600000000093132,
+          "domNodes": 1108,
+          "pageHeapMb": 14.669513702392578
+        },
+        {
+          "readMs": 746.6214250000194,
+          "verifyOnlyMs": 5220.682708000066,
+          "viewModelBuildMs": 30199.314733000007,
+          "assembleMs": 905.7258780000266,
+          "publishMs": 61.56611599982716,
+          "snapshotBytes": 8902247,
+          "generationMaxRssMb": 393.07421875,
+          "generationWallMs": 37320,
+          "loadEventMs": 319.19999999995343,
+          "domContentLoadedMs": 316,
+          "firstPageRows": 100,
+          "filterMs": 13.199999999953434,
+          "sortMs": 8.199999999953434,
+          "nextPageMs": 26.800000000046566,
+          "domNodes": 1108,
+          "pageHeapMb": 14.673568725585938
+        }
+      ],
+      "summary": {
+        "readMs": {
+          "min": 724.597200000193,
+          "median": 743.9510360001586,
+          "max": 756.0587050002068
+        },
+        "viewModelBuildMs": {
+          "min": 29274.061424999963,
+          "median": 29530.359543000115,
+          "max": 30515.22421699995
+        },
+        "verifyOnlyMs": {
+          "min": 5220.682708000066,
+          "median": 5351.517957999837,
+          "max": 5564.859462999972
+        },
+        "assembleMs": {
+          "min": 829.6573590000626,
+          "median": 861.2891419997904,
+          "max": 923.3457610001788
+        },
+        "publishMs": {
+          "min": 58.313883000053465,
+          "median": 61.56611599982716,
+          "max": 65.87944299983792
+        },
+        "generationWallMs": {
+          "min": 36452,
+          "median": 36752,
+          "max": 37801
+        },
+        "generationMaxRssMb": {
+          "min": 358.51171875,
+          "median": 390.63671875,
+          "max": 397.21875
+        },
+        "snapshotBytes": {
+          "min": 8902247,
+          "median": 8902247,
+          "max": 8902247
+        },
+        "loadEventMs": {
+          "min": 277,
+          "median": 285.0999999998603,
+          "max": 319.19999999995343
+        },
+        "domContentLoadedMs": {
+          "min": 274.5,
+          "median": 282.69999999995343,
+          "max": 316
+        },
+        "firstPageRows": {
+          "min": 100,
+          "median": 100,
+          "max": 100
+        },
+        "filterMs": {
+          "min": 8.699999999953434,
+          "median": 10.300000000046566,
+          "max": 13.899999999906868
+        },
+        "sortMs": {
+          "min": 5.199999999953434,
+          "median": 5.5,
+          "max": 8.300000000046566
+        },
+        "nextPageMs": {
+          "min": 17.600000000093132,
+          "median": 18.200000000186265,
+          "max": 26.800000000046566
+        },
+        "pageHeapMb": {
+          "min": 14.135215759277344,
+          "median": 14.138294219970703,
+          "max": 14.673568725585938
+        },
+        "domNodes": {
+          "min": 1108,
+          "median": 1108,
+          "max": 1108
+        }
+      }
+    },
+    {
+      "entries": 100000,
+      "runs": [
+        {
+          "readMs": 8313.845957000041,
+          "verifyOnlyMs": 57796.69545400003,
+          "viewModelBuildMs": 2860961.715193,
+          "assembleMs": 15336.192822000012,
+          "publishMs": 702.6288780001923,
+          "snapshotBytes": 88840254,
+          "generationMaxRssMb": 2604.05859375,
+          "generationWallMs": 2943926,
+          "loadEventMs": 4352.300000000745,
+          "domContentLoadedMs": 4320.800000000745,
+          "firstPageRows": 100,
+          "filterMs": 28.90000000037253,
+          "sortMs": 23,
+          "nextPageMs": 41.799999999813735,
+          "domNodes": 1108,
+          "pageHeapMb": 111.33342742919922
+        }
+      ],
+      "summary": {
+        "readMs": {
+          "min": 8313.845957000041,
+          "median": 8313.845957000041,
+          "max": 8313.845957000041
+        },
+        "viewModelBuildMs": {
+          "min": 2860961.715193,
+          "median": 2860961.715193,
+          "max": 2860961.715193
+        },
+        "verifyOnlyMs": {
+          "min": 57796.69545400003,
+          "median": 57796.69545400003,
+          "max": 57796.69545400003
+        },
+        "assembleMs": {
+          "min": 15336.192822000012,
+          "median": 15336.192822000012,
+          "max": 15336.192822000012
+        },
+        "publishMs": {
+          "min": 702.6288780001923,
+          "median": 702.6288780001923,
+          "max": 702.6288780001923
+        },
+        "generationWallMs": {
+          "min": 2943926,
+          "median": 2943926,
+          "max": 2943926
+        },
+        "generationMaxRssMb": {
+          "min": 2604.05859375,
+          "median": 2604.05859375,
+          "max": 2604.05859375
+        },
+        "snapshotBytes": {
+          "min": 88840254,
+          "median": 88840254,
+          "max": 88840254
+        },
+        "loadEventMs": {
+          "min": 4352.300000000745,
+          "median": 4352.300000000745,
+          "max": 4352.300000000745
+        },
+        "domContentLoadedMs": {
+          "min": 4320.800000000745,
+          "median": 4320.800000000745,
+          "max": 4320.800000000745
+        },
+        "firstPageRows": {
+          "min": 100,
+          "median": 100,
+          "max": 100
+        },
+        "filterMs": {
+          "min": 28.90000000037253,
+          "median": 28.90000000037253,
+          "max": 28.90000000037253
+        },
+        "sortMs": {
+          "min": 23,
+          "median": 23,
+          "max": 23
+        },
+        "nextPageMs": {
+          "min": 41.799999999813735,
+          "median": 41.799999999813735,
+          "max": 41.799999999813735
+        },
+        "pageHeapMb": {
+          "min": 111.33342742919922,
+          "median": 111.33342742919922,
+          "max": 111.33342742919922
+        },
+        "domNodes": {
+          "min": 1108,
+          "median": 1108,
+          "max": 1108
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,4978 @@
+{
+  "kind": "MO1307FinalHeadlessEngineeringReceipt",
+  "suite": "existing107",
+  "result": "FAIL",
+  "expectedTests": 107,
+  "selectedTestPasses": 97,
+  "commands": [
+    {
+      "id": "package-check",
+      "args": [
+        "repositories/cca-conformance/tools/mo1307-phase1/package.mjs",
+        "check"
+      ],
+      "expectedTests": null,
+      "outerGuardMs": 60000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 1027.1794,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/package-check.stdout.txt",
+        "byteLength": 152,
+        "sha256": "sha256:7b34bbc892e1a4aab472162e4a60abd04554b6edb9d15fe740742d1180a8bae8"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/package-check.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "packageCheck": {
+        "kind": "MO1307Phase1PackageCheck",
+        "version": "1.0.0",
+        "members": 89,
+        "contractMembers": 53,
+        "externalProductionDependencies": 0,
+        "archiveCertification": false
+      }
+    },
+    {
+      "id": "package-tests-001",
+      "suite": "package-tests",
+      "testName": "package metadata and deterministic nonrecursive bindings",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^package metadata and deterministic nonrecursive bindings$",
+        "repositories/cca-conformance/tests/mo1307_phase1_package_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 8,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2322.9492,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/package-tests-001.stdout.txt",
+        "byteLength": 301,
+        "sha256": "sha256:717d614a929c4fa0639abbeb3c247106fa23750b3c1d27377d062eef51a4a121"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/package-tests-001.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "package metadata and deterministic nonrecursive bindings"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "package metadata and deterministic nonrecursive bindings",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "package-tests-002",
+      "suite": "package-tests",
+      "testName": "unexpected member is rejected without refreshing the binding",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^unexpected member is rejected without refreshing the binding$",
+        "repositories/cca-conformance/tests/mo1307_phase1_package_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 8,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2266.9417999999996,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/package-tests-002.stdout.txt",
+        "byteLength": 309,
+        "sha256": "sha256:7d0e21f9029e008e7c72042642da0b1bd66a427e97cc6fabc63fc599e1d55d1a"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/package-tests-002.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "unexpected member is rejected without refreshing the binding"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "unexpected member is rejected without refreshing the binding",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "package-tests-003",
+      "suite": "package-tests",
+      "testName": "changed shipped source fails exact distribution binding",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^changed shipped source fails exact distribution binding$",
+        "repositories/cca-conformance/tests/mo1307_phase1_package_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 8,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2339.8540000000003,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/package-tests-003.stdout.txt",
+        "byteLength": 299,
+        "sha256": "sha256:7a54f315cb844ed58b6a168c2fd64c8f74800b3bc46b9844229a31b8443c1783"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/package-tests-003.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "changed shipped source fails exact distribution binding"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "changed shipped source fails exact distribution binding",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "package-tests-004",
+      "suite": "package-tests",
+      "testName": "schema drift cannot be hidden by rebuilding manifests",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^schema drift cannot be hidden by rebuilding manifests$",
+        "repositories/cca-conformance/tests/mo1307_phase1_package_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 8,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2150.6412,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/package-tests-004.stdout.txt",
+        "byteLength": 295,
+        "sha256": "sha256:853382c5d66a8e2663aea4219789e501db615923f59870c469079dd652f7d1a7"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/package-tests-004.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "schema drift cannot be hidden by rebuilding manifests"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "schema drift cannot be hidden by rebuilding manifests",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "package-tests-005",
+      "suite": "package-tests",
+      "testName": "constants drift cannot be hidden by rebuilding manifests",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^constants drift cannot be hidden by rebuilding manifests$",
+        "repositories/cca-conformance/tests/mo1307_phase1_package_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 8,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2193.4665000000005,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/package-tests-005.stdout.txt",
+        "byteLength": 301,
+        "sha256": "sha256:2ee3ac4c8ee6d9d3025b548efa1168089ee9a9814bd76ac046ed7dbc3864d94c"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/package-tests-005.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "constants drift cannot be hidden by rebuilding manifests"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "constants drift cannot be hidden by rebuilding manifests",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "package-tests-006",
+      "suite": "package-tests",
+      "testName": "dependencies, lifecycle hooks, extra exports and traversal allowlist are rejected",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^dependencies, lifecycle hooks, extra exports and traversal allowlist are rejected$",
+        "repositories/cca-conformance/tests/mo1307_phase1_package_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 8,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2886.339399999999,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/package-tests-006.stdout.txt",
+        "byteLength": 349,
+        "sha256": "sha256:f318fc9765fbfd9831be351f2d7896601ed92042ec71d462355b4b0243e95a74"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/package-tests-006.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "dependencies, lifecycle hooks, extra exports and traversal allowlist are rejected"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "dependencies, lifecycle hooks, extra exports and traversal allowlist are rejected",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "package-tests-007",
+      "suite": "package-tests",
+      "testName": "network and external imports are rejected before manifest regeneration",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^network and external imports are rejected before manifest regeneration$",
+        "repositories/cca-conformance/tests/mo1307_phase1_package_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 8,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2627.9084999999977,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/package-tests-007.stdout.txt",
+        "byteLength": 329,
+        "sha256": "sha256:5f0b64ffc7d799fa8a5a47fcab68115aa7bfa1f623353d0aca3fca0479acf2af"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/package-tests-007.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "network and external imports are rejected before manifest regeneration"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "network and external imports are rejected before manifest regeneration",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "package-tests-008",
+      "suite": "package-tests",
+      "testName": "missing fixed helper and mutated manifest rows are rejected",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^missing fixed helper and mutated manifest rows are rejected$",
+        "repositories/cca-conformance/tests/mo1307_phase1_package_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 8,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2703.2308999999987,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/package-tests-008.stdout.txt",
+        "byteLength": 307,
+        "sha256": "sha256:80f1509ab37c2c8d963fb594815a01402b2f39f0bea3e9eb87a768c26d324ede"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/package-tests-008.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "missing fixed helper and mutated manifest rows are rejected"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "missing fixed helper and mutated manifest rows are rejected",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "launch-policy-001",
+      "suite": "launch-policy",
+      "testName": "LP01 exact trusted Windows PowerShell 5.1 executable",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP01 exact trusted Windows PowerShell 5\\.1 executable$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2108.1597,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-001.stdout.txt",
+        "byteLength": 291,
+        "sha256": "sha256:ad704392082e71fda9ee488bfbf19e7b7d9234185301433fe2334b0a873bdbfd"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-001.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "LP01 exact trusted Windows PowerShell 5.1 executable"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "LP01 exact trusted Windows PowerShell 5.1 executable",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "launch-policy-002",
+      "suite": "launch-policy",
+      "testName": "LP02 exact fixed argument ordering and Bypass value",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP02 exact fixed argument ordering and Bypass value$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2094.4379999999983,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-002.stdout.txt",
+        "byteLength": 289,
+        "sha256": "sha256:1fc8a6cebefafb637cd26056a40eb81e37b6af8369e2ed2895edda7fdb69473d"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-002.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "LP02 exact fixed argument ordering and Bypass value"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "LP02 exact fixed argument ordering and Bypass value",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "launch-policy-003",
+      "suite": "launch-policy",
+      "testName": "LP03 fixed packaged helper path from module location",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP03 fixed packaged helper path from module location$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2079.804100000001,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-003.stdout.txt",
+        "byteLength": 290,
+        "sha256": "sha256:3be1212d4d719c168c8425739974d5ec332240e4eb56f253e617c83ba4435145"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-003.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "LP03 fixed packaged helper path from module location"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "LP03 fixed packaged helper path from module location",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "launch-policy-004",
+      "suite": "launch-policy",
+      "testName": "LP04 no encoded command, expression or shell authority",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP04 no encoded command, expression or shell authority$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2195.5220999999983,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-004.stdout.txt",
+        "byteLength": 295,
+        "sha256": "sha256:27f591de035e4f795ff4db1ac437219a6781698f2eefd96df256ab642724aa0f"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-004.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "LP04 no encoded command, expression or shell authority"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "LP04 no encoded command, expression or shell authority",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "launch-policy-005",
+      "suite": "launch-policy",
+      "testName": "LP05 caller object cannot supply executable, script or policy",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP05 caller object cannot supply executable, script or policy$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2106.003300000004,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-005.stdout.txt",
+        "byteLength": 309,
+        "sha256": "sha256:7d019bc03a6fefb6f0b8a893aef18d7f3ea6e400c32f9d1e2eb2d6d95c2ab805"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-005.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "LP05 caller object cannot supply executable, script or policy"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "LP05 caller object cannot supply executable, script or policy",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "launch-policy-006",
+      "suite": "launch-policy",
+      "testName": "LP06 launch specification and nested authority are immutable",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP06 launch specification and nested authority are immutable$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2078.820399999997,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-006.stdout.txt",
+        "byteLength": 306,
+        "sha256": "sha256:7ec8a26c1b3bf2a4efc6495c54ff5ddb28221fb61ea3ec9f46e3df8124ecd7df"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-006.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "LP06 launch specification and nested authority are immutable"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "LP06 launch specification and nested authority are immutable",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "launch-policy-007",
+      "suite": "launch-policy",
+      "testName": "LP07 ambient PATH, system-root, policy and script poisons cannot select launch",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP07 ambient PATH, system-root, policy and script poisons cannot select launch$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2091.6464999999953,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-007.stdout.txt",
+        "byteLength": 343,
+        "sha256": "sha256:9c3add422d80363ae77c2d4e4e5b562b08ab20e1558441723a6becbd4aa8bbc7"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-007.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "LP07 ambient PATH, system-root, policy and script poisons cannot select launch"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "LP07 ambient PATH, system-root, policy and script poisons cannot select launch",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "launch-policy-008",
+      "suite": "launch-policy",
+      "testName": "LP08 actual transport calls spawn with fixed array and sanitized environment",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP08 actual transport calls spawn with fixed array and sanitized environment$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2073.277200000004,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-008.stdout.txt",
+        "byteLength": 339,
+        "sha256": "sha256:9066b82f8df2a4777869c87b5a7608d903abd6c5eee43f83e279413fdb8fe8eb"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-008.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "LP08 actual transport calls spawn with fixed array and sanitized environment"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "LP08 actual transport calls spawn with fixed array and sanitized environment",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "launch-policy-009",
+      "suite": "launch-policy",
+      "testName": "LP09 CLI cannot select --script",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP09 CLI cannot select --script$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2097.603799999997,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-009.stdout.txt",
+        "byteLength": 249,
+        "sha256": "sha256:51557fef6102db25919d7049a803af4f82bdebde40bce864426fdbed6884bc2c"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-009.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "LP09 CLI cannot select --script"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "LP09 CLI cannot select --script",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "launch-policy-010",
+      "suite": "launch-policy",
+      "testName": "LP09 CLI cannot select --execution-policy",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP09 CLI cannot select --execution-policy$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2088.605500000005,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-010.stdout.txt",
+        "byteLength": 269,
+        "sha256": "sha256:248596ce4fc561254364515151905eb544970e02b94a3c1aedfe7d62a09a7c94"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-010.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "LP09 CLI cannot select --execution-policy"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "LP09 CLI cannot select --execution-policy",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "launch-policy-011",
+      "suite": "launch-policy",
+      "testName": "LP09 CLI cannot select --powershell",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP09 CLI cannot select --powershell$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2134.5789000000004,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-011.stdout.txt",
+        "byteLength": 257,
+        "sha256": "sha256:ecefccef52f58332b27a668b6d6ca2fbf61c742590c7df32ecdbd70fcdcc3fa1"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-011.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "LP09 CLI cannot select --powershell"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "LP09 CLI cannot select --powershell",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "launch-policy-012",
+      "suite": "launch-policy",
+      "testName": "LP10 no persistent policy or registry mutation code is introduced",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP10 no persistent policy or registry mutation code is introduced$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 1924.8401000000013,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-012.stdout.txt",
+        "byteLength": 313,
+        "sha256": "sha256:97f79e8762d14c99d3108287d91ddb864caff9f1c890d3c53269e79399970ff9"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-012.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "LP10 no persistent policy or registry mutation code is introduced"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "LP10 no persistent policy or registry mutation code is introduced",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "launch-policy-013",
+      "suite": "launch-policy",
+      "testName": "LP11 public package exports cannot expose launch override",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^LP11 public package exports cannot expose launch override$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 13,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2108.4549000000043,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-013.stdout.txt",
+        "byteLength": 301,
+        "sha256": "sha256:cf78a61074ac1b47b2c5bc8040749932bf387c4a1832467c700ac7f8035855e0"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/launch-policy-013.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "LP11 public package exports cannot expose launch override"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "LP11 public package exports cannot expose launch override",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-001",
+      "suite": "runtime",
+      "testName": "R01 api exact absolute deadline and equality",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R01 api exact absolute deadline and equality$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2106.824999999997,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-001.stdout.txt",
+        "byteLength": 275,
+        "sha256": "sha256:b7142a65dc7760e1c710cb587636c7c530846b67f9ea5738d6a9ba7b4d6bd12a"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-001.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R01 api exact absolute deadline and equality"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R01 api exact absolute deadline and equality",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-002",
+      "suite": "runtime",
+      "testName": "R01 cli exact absolute deadline and equality",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R01 cli exact absolute deadline and equality$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2264.4346000000005,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-002.stdout.txt",
+        "byteLength": 275,
+        "sha256": "sha256:814700eea590467d00788393f4a8b0760ef97dabdad0e655abed31d310f8f21d"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-002.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R01 cli exact absolute deadline and equality"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R01 cli exact absolute deadline and equality",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-003",
+      "suite": "runtime",
+      "testName": "R02 earlier cancellation stays terminal after deadline",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R02 earlier cancellation stays terminal after deadline$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2193.359900000003,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-003.stdout.txt",
+        "byteLength": 295,
+        "sha256": "sha256:a4840bd687fae9236d48a67c971c6c6175bb798ed1aee9aa5c2be08b15ea5559"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-003.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R02 earlier cancellation stays terminal after deadline"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R02 earlier cancellation stays terminal after deadline",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-004",
+      "suite": "runtime",
+      "testName": "R03 timeout wins simultaneous first cancellation observation",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R03 timeout wins simultaneous first cancellation observation$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2144.023500000003,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-004.stdout.txt",
+        "byteLength": 307,
+        "sha256": "sha256:7991ff6b5b8f7558b96bbb734c2ff510115f85cd41742480c9154a84a818df3c"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-004.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R03 timeout wins simultaneous first cancellation observation"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R03 timeout wins simultaneous first cancellation observation",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-005",
+      "suite": "runtime",
+      "testName": "R04 preaborted signal prevents any launch",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R04 preaborted signal prevents any launch$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2095.515800000001,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-005.stdout.txt",
+        "byteLength": 269,
+        "sha256": "sha256:79144716c354b44f25930a6897b3866086e2991b1ee5ab700e1148265d082e36"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-005.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R04 preaborted signal prevents any launch"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R04 preaborted signal prevents any launch",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-006",
+      "suite": "runtime",
+      "testName": "R05 monotonic decreasing clock rejects",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R05 monotonic decreasing clock rejects$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2142.2602000000043,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-006.stdout.txt",
+        "byteLength": 263,
+        "sha256": "sha256:045a6e631c87cabe424b1449ad102a2089eb50fe769de2d15a5413083cb2adec"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-006.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R05 monotonic decreasing clock rejects"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R05 monotonic decreasing clock rejects",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-007",
+      "suite": "runtime",
+      "testName": "R06 API cannot launch helper",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R06 API cannot launch helper$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2110.3178000000044,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-007.stdout.txt",
+        "byteLength": 243,
+        "sha256": "sha256:8b27dcb665d8868bc914b306c514a710209b34a58aa9ecc2d740873a7b2c91de"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-007.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R06 API cannot launch helper"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R06 API cannot launch helper",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-008",
+      "suite": "runtime",
+      "testName": "R07 helper deadline includes all active time; equality rejects",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R07 helper deadline includes all active time; equality rejects$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2260.5918000000092,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-008.stdout.txt",
+        "byteLength": 311,
+        "sha256": "sha256:33dfc4494b1ddf26732fa47502a6ce139dcdc266929d8505f2ce268396d36b8d"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-008.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R07 helper deadline includes all active time; equality rejects"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R07 helper deadline includes all active time; equality rejects",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-009",
+      "suite": "runtime",
+      "testName": "R08 aggregate deadline does not reset across helpers",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R08 aggregate deadline does not reset across helpers$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2251.253700000001,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-009.stdout.txt",
+        "byteLength": 291,
+        "sha256": "sha256:dcb6d5686aa5505d19bc5e49b958690fd781ef6b77f96ead8cd27d073166284a"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-009.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R08 aggregate deadline does not reset across helpers"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R08 aggregate deadline does not reset across helpers",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-010",
+      "suite": "runtime",
+      "testName": "R09 worker time is excluded from helper aggregate but inside overall",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R09 worker time is excluded from helper aggregate but inside overall$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2103.1322000000073,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-010.stdout.txt",
+        "byteLength": 323,
+        "sha256": "sha256:900871b9be71e437df89856bf77f72630dbe35d678db2799a7a691e640bfc820"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-010.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R09 worker time is excluded from helper aggregate but inside overall"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R09 worker time is excluded from helper aggregate but inside overall",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-011",
+      "suite": "runtime",
+      "testName": "R10 helper overlap is terminal and cleans prior owned role",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R10 helper overlap is terminal and cleans prior owned role$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2142.138300000006,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-011.stdout.txt",
+        "byteLength": 303,
+        "sha256": "sha256:f39c82c290d41de35dd806a0c8cac2d26aebed2e1817dc32ae3b209346b2b6ef"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-011.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R10 helper overlap is terminal and cleans prior owned role"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R10 helper overlap is terminal and cleans prior owned role",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-012",
+      "suite": "runtime",
+      "testName": "R11 helper and worker cannot overlap",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R11 helper and worker cannot overlap$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2114.3687999999966,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-012.stdout.txt",
+        "byteLength": 258,
+        "sha256": "sha256:9b41e61cfe860bc3912cede957e5a6fd367ad2f39366f289110b1f20c040a487"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-012.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R11 helper and worker cannot overlap"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R11 helper and worker cannot overlap",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-013",
+      "suite": "runtime",
+      "testName": "R12 frame alone cannot advance before actual close",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R12 frame alone cannot advance before actual close$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2169.682799999995,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-013.stdout.txt",
+        "byteLength": 288,
+        "sha256": "sha256:7064a8a506e99807cb686b812236f29e3212e28e6f1894d338b75103fdca95d5"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-013.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R12 frame alone cannot advance before actual close"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R12 frame alone cannot advance before actual close",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-014",
+      "suite": "runtime",
+      "testName": "R13 launch uses only fixed executable/script/environment and no shell",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R13 launch uses only fixed executable/script/environment and no shell$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2122.060599999997,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-014.stdout.txt",
+        "byteLength": 325,
+        "sha256": "sha256:f2218856e307487751577e8634d7d50eba0a27625e307afdbff9cb13496abf9e"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-014.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R13 launch uses only fixed executable/script/environment and no shell"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R13 launch uses only fixed executable/script/environment and no shell",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-015",
+      "suite": "runtime",
+      "testName": "R14 helper trailing byte fails closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R14 helper trailing byte fails closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2245.340599999996,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-015.stdout.txt",
+        "byteLength": 261,
+        "sha256": "sha256:63dbf0bed12c135b170264dc6ae251c54b47f24f7f194a42aa5bbf3c54528b82"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-015.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R14 helper trailing byte fails closed"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R14 helper trailing byte fails closed",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-016",
+      "suite": "runtime",
+      "testName": "R14 helper extra frame fails closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R14 helper extra frame fails closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 1955.4667000000045,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-016.stdout.txt",
+        "byteLength": 257,
+        "sha256": "sha256:1c072bf55023d7a6a2cb9e4290cf49bdd4f4dc0908e9b0356c00ffffaba81735"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-016.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R14 helper extra frame fails closed"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R14 helper extra frame fails closed",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-017",
+      "suite": "runtime",
+      "testName": "R14 helper debug stdout fails closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R14 helper debug stdout fails closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2300.895199999999,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-017.stdout.txt",
+        "byteLength": 258,
+        "sha256": "sha256:a543179e0947996bd8e8b76bef7613643f6b2d6f9bb70a36e7ed4b332fe64899"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-017.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R14 helper debug stdout fails closed"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R14 helper debug stdout fails closed",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-018",
+      "suite": "runtime",
+      "testName": "R14 helper truncated frame fails closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R14 helper truncated frame fails closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2134.0959000000003,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-018.stdout.txt",
+        "byteLength": 265,
+        "sha256": "sha256:c3a6de7e478514b3af52768f9755cca05b50a49057c0f2343fc2d4810718be50"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-018.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R14 helper truncated frame fails closed"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R14 helper truncated frame fails closed",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-019",
+      "suite": "runtime",
+      "testName": "R14 helper oversized prefix fails closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R14 helper oversized prefix fails closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2297.4511000000057,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-019.stdout.txt",
+        "byteLength": 266,
+        "sha256": "sha256:787d9a494d03940095e2fde710c111f27c793cc0d5fa5a1eb2ed4ad8a8e944ce"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-019.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R14 helper oversized prefix fails closed"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R14 helper oversized prefix fails closed",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-020",
+      "suite": "runtime",
+      "testName": "R14 helper stderr overflow fails closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R14 helper stderr overflow fails closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2265.8031000000046,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-020.stdout.txt",
+        "byteLength": 265,
+        "sha256": "sha256:8f6651e900e3fc5cdd5f5d071615a9f1807af29801de9b569706c04357740f38"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-020.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R14 helper stderr overflow fails closed"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R14 helper stderr overflow fails closed",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-021",
+      "suite": "runtime",
+      "testName": "R14 helper nonzero exit fails closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R14 helper nonzero exit fails closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2005.5527000000002,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-021.stdout.txt",
+        "byteLength": 258,
+        "sha256": "sha256:387d3c02e13a6660dbcc1f541fc9757d6d3d56313932d2fe3b7e0c55f912b758"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-021.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R14 helper nonzero exit fails closed"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R14 helper nonzero exit fails closed",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-022",
+      "suite": "runtime",
+      "testName": "R15 cancellation in launch terminates and ignores later valid frame",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R15 cancellation in launch terminates and ignores later valid frame$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2114.711599999995,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-022.stdout.txt",
+        "byteLength": 320,
+        "sha256": "sha256:e35ec394b914ddacec602b8cbe555a6a2c2befa7731938e0103c76cd7a4cc43e"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-022.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R15 cancellation in launch terminates and ignores later valid frame"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R15 cancellation in launch terminates and ignores later valid frame",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-023",
+      "suite": "runtime",
+      "testName": "R16 cancellation during transport cleans child",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R16 cancellation during transport cleans child$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2028.0546000000031,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-023.stdout.txt",
+        "byteLength": 280,
+        "sha256": "sha256:e7b94da0b5ccc69a3e8d4f6b50a7ebbd83deae2db876bc1099837781902e04b3"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-023.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R16 cancellation during transport cleans child"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R16 cancellation during transport cleans child",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-024",
+      "suite": "runtime",
+      "testName": "R17 fixed actual worker has empty environment and exact heap intent",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R17 fixed actual worker has empty environment and exact heap intent$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2153.4398999999976,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-024.stdout.txt",
+        "byteLength": 322,
+        "sha256": "sha256:71e18b8c1ebf0a4e91af907610cf59982ae10561235a3e6df0f039e3d77b7bbd"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-024.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R17 fixed actual worker has empty environment and exact heap intent"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R17 fixed actual worker has empty environment and exact heap intent",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-025",
+      "suite": "runtime",
+      "testName": "R18 successful worker result waits for termination",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R18 successful worker result waits for termination$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2246.8157999999967,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-025.stdout.txt",
+        "byteLength": 289,
+        "sha256": "sha256:8f7397fb7bb97fb79920c5b47ac86805c550637c902f1c298415ef8d9aeae00c"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-025.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R18 successful worker result waits for termination"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R18 successful worker result waits for termination",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-026",
+      "suite": "runtime",
+      "testName": "R19 actual worker crash fails closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R19 actual worker crash fails closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2249.942599999995,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-026.stdout.txt",
+        "byteLength": 259,
+        "sha256": "sha256:51208e88520f218d347a03e5246aa4793ca3d2541a9a76a8e145bbb27f14bc61"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-026.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R19 actual worker crash fails closed"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R19 actual worker crash fails closed",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-027",
+      "suite": "runtime",
+      "testName": "R19 actual worker duplicate fails closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R19 actual worker duplicate fails closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2235.275900000008,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-027.stdout.txt",
+        "byteLength": 268,
+        "sha256": "sha256:c5d85dd62caa4bfa10ff34136dac8885f2eaa1728c0b72f4642eddc8339302aa"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-027.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R19 actual worker duplicate fails closed"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R19 actual worker duplicate fails closed",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-028",
+      "suite": "runtime",
+      "testName": "R19 actual worker stdout fails closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R19 actual worker stdout fails closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2175.5408000000025,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-028.stdout.txt",
+        "byteLength": 261,
+        "sha256": "sha256:4f4806406906560529deea5437e09f717a710ecdf0303e96203ec087cf94f0fb"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-028.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R19 actual worker stdout fails closed"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R19 actual worker stdout fails closed",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-029",
+      "suite": "runtime",
+      "testName": "R20 cancellation actually terminates CPU-bound worker thread",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R20 cancellation actually terminates CPU-bound worker thread$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2157.5187999999907,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-029.stdout.txt",
+        "byteLength": 308,
+        "sha256": "sha256:50dc1d44666a17726fd274640de53130c74d5bdc87ce8a769c9e9125e4ce43d7"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-029.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R20 cancellation actually terminates CPU-bound worker thread"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R20 cancellation actually terminates CPU-bound worker thread",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-030",
+      "suite": "runtime",
+      "testName": "R21 production worker executes accepted 2A/2B and confirms quiescence",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R21 production worker executes accepted 2A/2B and confirms quiescence$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2362.9342999999935,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-030.stdout.txt",
+        "byteLength": 326,
+        "sha256": "sha256:3955601d937baa85e5cd990ea6ab1ace670a6215dbd557d9eba1c03e44fbe684"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-030.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R21 production worker executes accepted 2A/2B and confirms quiescence"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R21 production worker executes accepted 2A/2B and confirms quiescence",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-031",
+      "suite": "runtime",
+      "testName": "R22 adapter matches closed 2A handoff; operational/session fields excluded",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R22 adapter matches closed 2A handoff; operational/session fields excluded$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2235.2266999999993,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-031.stdout.txt",
+        "byteLength": 335,
+        "sha256": "sha256:3ecf699a219fca560b47177261d51de2fa1ed4eb28f7f238742e746f6288bdfc"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-031.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R22 adapter matches closed 2A handoff; operational/session fields excluded"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R22 adapter matches closed 2A handoff; operational/session fields excluded",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-032",
+      "suite": "runtime",
+      "testName": "R23 verify evidence seam excludes result and decision bytes",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R23 verify evidence seam excludes result and decision bytes$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2301.0324999999866,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-032.stdout.txt",
+        "byteLength": 305,
+        "sha256": "sha256:4e205524310c639053c758e2c35d9523f97db4ec0cd7cf0b3d48a7dc5b0353e4"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-032.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R23 verify evidence seam excludes result and decision bytes"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R23 verify evidence seam excludes result and decision bytes",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-033",
+      "suite": "runtime",
+      "testName": "R24 malformed decision uses dedicated mismatch, cap uses resource",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R24 malformed decision uses dedicated mismatch, cap uses resource$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2040.4360999999917,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-033.stdout.txt",
+        "byteLength": 316,
+        "sha256": "sha256:722223f15c4dadbb0815533bb2d042621e6c238fbdb374a4558b8cf86e5526f0"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-033.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R24 malformed decision uses dedicated mismatch, cap uses resource"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R24 malformed decision uses dedicated mismatch, cap uses resource",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-034",
+      "suite": "runtime",
+      "testName": "R25 actual worker policy denies filesystem/network/process/module escape imports",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R25 actual worker policy denies filesystem/network/process/module escape imports$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2219.969700000016,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-034.stdout.txt",
+        "byteLength": 349,
+        "sha256": "sha256:3b5ebe7817a8a1d6334c5588177e3a3f80cbdf539e19644094c19acba938965b"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-034.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R25 actual worker policy denies filesystem/network/process/module escape imports"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R25 actual worker policy denies filesystem/network/process/module escape imports",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-035",
+      "suite": "runtime",
+      "testName": "R26 cancellation preempts pending publication promise without another role",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R26 cancellation preempts pending publication promise without another role$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2361.8617000000086,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-035.stdout.txt",
+        "byteLength": 335,
+        "sha256": "sha256:61a523b215b11c740c425bd7ccd5cce12d7fa4e602fb4857577188d35152cbbb"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-035.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R26 cancellation preempts pending publication promise without another role"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R26 cancellation preempts pending publication promise without another role",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "runtime-036",
+      "suite": "runtime",
+      "testName": "R27 late publication promise cannot restore terminal success",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^R27 late publication promise cannot restore terminal success$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 36,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2125.761599999998,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-036.stdout.txt",
+        "byteLength": 305,
+        "sha256": "sha256:27541a44a686ae89df610868490f5eb43d2e96a26c9e2b4fefcc4ff42f9196ef"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/runtime-036.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "R27 late publication promise cannot restore terminal success"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "R27 late publication promise cannot restore terminal success",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-001",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C01 corrected limits leave all byte ceilings unchanged",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C01 corrected limits leave all byte ceilings unchanged$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2033.2203000000154,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-001.stdout.txt",
+        "byteLength": 299,
+        "sha256": "sha256:48ed3d5a7ed8aa1a359ef32880f3fbda5802e18549fef7a787005973de79973b"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-001.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C01 corrected limits leave all byte ceilings unchanged"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C01 corrected limits leave all byte ceilings unchanged",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-002",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C02 every required observation has a canonical closed framed representation",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C02 every required observation has a canonical closed framed representation$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2105.7609999999986,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-002.stdout.txt",
+        "byteLength": 340,
+        "sha256": "sha256:31358288816eefde938dc8af41ccbf5cd36097a4a7f363cef097b6874489194f"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-002.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C02 every required observation has a canonical closed framed representation"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C02 every required observation has a canonical closed framed representation",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-003",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C03 old wire version missing session unknown fields and arbitrary operations reject",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C03 old wire version missing session unknown fields and arbitrary operations reject$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 1981.4918999999936,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-003.stdout.txt",
+        "byteLength": 356,
+        "sha256": "sha256:09e645fdd701d589d404b06826b634541aaf903a5b2f470c09a8b3a2266d1212"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-003.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C03 old wire version missing session unknown fields and arbitrary operations reject"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C03 old wire version missing session unknown fields and arbitrary operations reject",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-004",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C04 operation sequence and fixed output leaf authority are closed",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C04 operation sequence and fixed output leaf authority are closed$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2038.536999999982,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-004.stdout.txt",
+        "byteLength": 320,
+        "sha256": "sha256:26410aeff1118b37bc958752a07a3d400b04486ac793429a47aab3cb719b41dd"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-004.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C04 operation sequence and fixed output leaf authority are closed"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C04 operation sequence and fixed output leaf authority are closed",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-005",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C05 bounded frames reject trailing requests responses and alternate session",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C05 bounded frames reject trailing requests responses and alternate session$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2076.898199999996,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-005.stdout.txt",
+        "byteLength": 341,
+        "sha256": "sha256:02ab0fa1d09e091e44c068f369b6c5538eafe83962a0ad6a1a52bebd86cbdca0"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-005.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C05 bounded frames reject trailing requests responses and alternate session"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C05 bounded frames reject trailing requests responses and alternate session",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-006",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C06 complete acquisition then terminated worker then five publication requests",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C06 complete acquisition then terminated worker then five publication requests$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2124.422500000015,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-006.stdout.txt",
+        "byteLength": 347,
+        "sha256": "sha256:3de11a29dc48766ff74d5544323807aa532db02df11d51283aaeff8c32f4e31f"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-006.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C06 complete acquisition then terminated worker then five publication requests"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C06 complete acquisition then terminated worker then five publication requests",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-007",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C07 helper completion cannot substitute for fully quiescent exit",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C07 helper completion cannot substitute for fully quiescent exit$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2087.300500000012,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-007.stdout.txt",
+        "byteLength": 319,
+        "sha256": "sha256:cf4175058081f118867a62356cca9eb20a7515f5bd9ec8e4f6f55070bbf2947c"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-007.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C07 helper completion cannot substitute for fully quiescent exit"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C07 helper completion cannot substitute for fully quiescent exit",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-008",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C08 helper and worker overlap and repeated worker transition are terminal",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C08 helper and worker overlap and repeated worker transition are terminal$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2003.4699000000255,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-008.stdout.txt",
+        "byteLength": 337,
+        "sha256": "sha256:eb8bc56134b81be2eb4bf867c34ea0631f6a8cf23684b4d67ed76b5a74de1026"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-008.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C08 helper and worker overlap and repeated worker transition are terminal"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C08 helper and worker overlap and repeated worker transition are terminal",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-009",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C09 verify remains four reads followed by worker and cannot publish",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C09 verify remains four reads followed by worker and cannot publish$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2133.1258999999845,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-009.stdout.txt",
+        "byteLength": 325,
+        "sha256": "sha256:9e91f2b2fcbd0b326c50494e1eebd8d05c8af910c71838c10cd13b2f42ee34af"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-009.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C09 verify remains four reads followed by worker and cannot publish"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C09 verify remains four reads followed by worker and cannot publish",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-010",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C10 request failure abort and transport failure permit no retry",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C10 request failure abort and transport failure permit no retry$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2229.7504999999946,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-010.stdout.txt",
+        "byteLength": 316,
+        "sha256": "sha256:9f5cbc97bac08edfbf4635c2a59775d82d19bd97fb2b88aac1e758dda027e28d"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-010.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C10 request failure abort and transport failure permit no retry"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C10 request failure abort and transport failure permit no retry",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-011",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C11 full component chains reject missing ancestors wrong paths reparse and hardlinks",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C11 full component chains reject missing ancestors wrong paths reparse and hardlinks$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2016.2991000000038,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-011.stdout.txt",
+        "byteLength": 359,
+        "sha256": "sha256:32e7d0fd58cb040bdc61468afa2834d5201aad90dcf3889dc91538a7d138efa4"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-011.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C11 full component chains reject missing ancestors wrong paths reparse and hardlinks"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C11 full component chains reject missing ancestors wrong paths reparse and hardlinks",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-012",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C12 acquisition parent cannot be reused after native identity change",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C12 acquisition parent cannot be reused after native identity change$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 1941.5381000000052,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-012.stdout.txt",
+        "byteLength": 326,
+        "sha256": "sha256:fcbc8d5cf0d47937ae517d67cc6eac3aa68bf91d31da98a9fd6d4584417e16da"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-012.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C12 acquisition parent cannot be reused after native identity change"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C12 acquisition parent cannot be reused after native identity change",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-013",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C13 path and cross-invocation session substitutions terminate assessment",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C13 path and cross-invocation session substitutions terminate assessment$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2162.468200000003,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-013.stdout.txt",
+        "byteLength": 335,
+        "sha256": "sha256:8c71a1ba5de1afb0410552436c8f5548bf37204f4a15e38694e7267014c24e5a"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-013.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C13 path and cross-invocation session substitutions terminate assessment"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C13 path and cross-invocation session substitutions terminate assessment",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-014",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C14 capability branding root binding and single claim exclude substitution",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C14 capability branding root binding and single claim exclude substitution$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2251.3316999999806,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-014.stdout.txt",
+        "byteLength": 340,
+        "sha256": "sha256:5e130999fc60459cf06bc701160273c362dcfd9b8141523ce3ed6036844f08a1"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-014.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C14 capability branding root binding and single claim exclude substitution"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C14 capability branding root binding and single claim exclude substitution",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-015",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C15 unclaimed out-of-order or concurrent inspection cannot be retried",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C15 unclaimed out-of-order or concurrent inspection cannot be retried$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2238.1618000000017,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-015.stdout.txt",
+        "byteLength": 330,
+        "sha256": "sha256:653e92cc1f003f2c3638b2868834e57b5feeb4cceaafcb9f3685adcbb62dfbde"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-015.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C15 unclaimed out-of-order or concurrent inspection cannot be retried"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C15 unclaimed out-of-order or concurrent inspection cannot be retried",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-016",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C16 bridge requires exact transport fields and confirmed process quiescence",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C16 bridge requires exact transport fields and confirmed process quiescence$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2253.8242999999784,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-016.stdout.txt",
+        "byteLength": 342,
+        "sha256": "sha256:f77bafba02bca5a312f1c903eb97ed76ef9c7898c7aa420bb7036aad711acafe"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-016.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C16 bridge requires exact transport fields and confirmed process quiescence"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C16 bridge requires exact transport fields and confirmed process quiescence",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-017",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C17 per-invocation deadline includes response parsing and process exit",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C17 per-invocation deadline includes response parsing and process exit$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2230.936699999991,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-017.stdout.txt",
+        "byteLength": 330,
+        "sha256": "sha256:8b7f5ed68fc14198fcff98cd334934e9c673dfb30939f14d72f4ebf4e117f171"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-017.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C17 per-invocation deadline includes response parsing and process exit"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C17 per-invocation deadline includes response parsing and process exit",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-018",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C18 aggregate helper budget cannot silently multiply with sequential invocations",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C18 aggregate helper budget cannot silently multiply with sequential invocations$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2273.8649999999907,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-018.stdout.txt",
+        "byteLength": 351,
+        "sha256": "sha256:f6483e1e085fb9b6088bf4b2ce19132bc7e0cbc0306bbd7a1ab626b6180ee474"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-018.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C18 aggregate helper budget cannot silently multiply with sequential invocations"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C18 aggregate helper budget cannot silently multiply with sequential invocations",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-019",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C19 overall CLI deadline and nonmonotonic clock fail without grace",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C19 overall CLI deadline and nonmonotonic clock fail without grace$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2363.3799,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-019.stdout.txt",
+        "byteLength": 323,
+        "sha256": "sha256:1ae3ed168915b75482dee90d89d21f5a1defd6d75388c476446cf13210a55601"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-019.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C19 overall CLI deadline and nonmonotonic clock fail without grace"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C19 overall CLI deadline and nonmonotonic clock fail without grace",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-020",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C20 framed publication performs exact five observations and one final rename",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C20 framed publication performs exact five observations and one final rename$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2171.7114,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-020.stdout.txt",
+        "byteLength": 344,
+        "sha256": "sha256:bc1199eac02b9c08352fc1c0997f3c50b8828589731701f345f051a1f54f036a"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-020.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C20 framed publication performs exact five observations and one final rename"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C20 framed publication performs exact five observations and one final rename",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-021",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C21 cancellation after each publication inspection is terminal and retains incomplete attempt",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C21 cancellation after each publication inspection is terminal and retains incomplete attempt$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2401.4425000000047,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-021.stdout.txt",
+        "byteLength": 378,
+        "sha256": "sha256:fa49e6476d31ac0d9ede9814e71a855b0e4d7cfa37f3bcff8850a6e2db856372"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-021.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C21 cancellation after each publication inspection is terminal and retains incomplete attempt"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C21 cancellation after each publication inspection is terminal and retains incomplete attempt",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-022",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C22 immediate pre-rename checkpoint blocks timeout after final native observation",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C22 immediate pre-rename checkpoint blocks timeout after final native observation$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2260.7648000000045,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-022.stdout.txt",
+        "byteLength": 354,
+        "sha256": "sha256:dbf74198a2154b77066775b323c9de3e9d257f956cc6bf4b645127b16eca3b75"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-022.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C22 immediate pre-rename checkpoint blocks timeout after final native observation"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C22 immediate pre-rename checkpoint blocks timeout after final native observation",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-023",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C23 final native pending identity comparison rejects stale replacement and retains bytes",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C23 final native pending identity comparison rejects stale replacement and retains bytes$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2281.9450999999826,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-023.stdout.txt",
+        "byteLength": 368,
+        "sha256": "sha256:e3e90ed065987bb11345e9a91502eab0f59f6e7e2f68318a96ec87206644cd9b"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-023.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C23 final native pending identity comparison rejects stale replacement and retains bytes"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C23 final native pending identity comparison rejects stale replacement and retains bytes",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "protocol-publication-correction-024",
+      "suite": "protocol-publication-correction",
+      "testName": "C2C24 mismatched branded capability and legacy callback cannot create an output root",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^C2C24 mismatched branded capability and legacy callback cannot create an output root$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 24,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2099.2860999999975,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-024.stdout.txt",
+        "byteLength": 356,
+        "sha256": "sha256:0f47c41a93c304df02e73356a0f03aebc07adb49f9452025b5bf9ac348e9fe01"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/protocol-publication-correction-024.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "C2C24 mismatched branded capability and legacy callback cannot create an output root"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "C2C24 mismatched branded capability and legacy callback cannot create an output root",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "timer-lifetime-001",
+      "suite": "timer-lifetime",
+      "testName": "N24-C invocation timers clear after success, write/rename failure and pre/post-admission cancellation including a stalled write; no server, watcher or cross-run callbacks",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N24-C invocation timers clear after success, write/rename failure and pre/post-admission cancellation including a stalled write; no server, watcher or cross-run callbacks$",
+        "repositories/cca-conformance/tests/mo1307_phase2c_timer_lifetime_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 1,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2555.94650000002,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/timer-lifetime-001.stdout.txt",
+        "byteLength": 1735,
+        "sha256": "sha256:0ff3ff47a5cf65f83ec9732c627e073e95ce058359ba7dcac61b7878bf7f4e8f"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/timer-lifetime-001.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "N24-C invocation timers clear after success, write/rename failure and pre/post-admission cancellation including a stalled write; no server, watcher or cross-run callbacks"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "N24-C invocation timers clear after success, write/rename failure and pre/post-admission cancellation including a stalled write; no server, watcher or cross-run callbacks",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "native-foundation-001",
+      "suite": "native-foundation",
+      "testName": "N01 pinned native runtime and fixed PowerShell installation",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N01 pinned native runtime and fixed PowerShell installation$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2366.1603000000177,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-001.stdout.txt",
+        "byteLength": 305,
+        "sha256": "sha256:1927184425e1086905d0f41b9d5d7e39ada872aedf2f13b11a7065a0d1f8b8ac"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-001.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "N01 pinned native runtime and fixed PowerShell installation"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "N01 pinned native runtime and fixed PowerShell installation",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "native-foundation-002",
+      "suite": "native-foundation",
+      "testName": "N02 closed CLI commands and defaults",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N02 closed CLI commands and defaults$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2056.073299999989,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-002.stdout.txt",
+        "byteLength": 259,
+        "sha256": "sha256:da570a3e96767ad7baece179890de54de3047304a3fc206bda1a3e6e476ed6d6"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-002.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "N02 closed CLI commands and defaults"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "N02 closed CLI commands and defaults",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "native-foundation-003",
+      "suite": "native-foundation",
+      "testName": "N03 prototype-sensitive and invented commands reject as usage",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N03 prototype-sensitive and invented commands reject as usage$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2146.8770000000077,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-003.stdout.txt",
+        "byteLength": 309,
+        "sha256": "sha256:3b59d0aea84f34f2a2f4adb1605b75c9b4ee4e6e15fd9cf21b788427948bdb02"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-003.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "N03 prototype-sensitive and invented commands reject as usage"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "N03 prototype-sensitive and invented commands reject as usage",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "native-foundation-004",
+      "suite": "native-foundation",
+      "testName": "N04 duplicate unknown missing extra flags reject",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N04 duplicate unknown missing extra flags reject$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2112.2894999999844,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-004.stdout.txt",
+        "byteLength": 283,
+        "sha256": "sha256:7d31788fa9b0ca898c6a67f69ffb31c84d7b22ebdbc17d8517f0644065b89605"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-004.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "N04 duplicate unknown missing extra flags reject"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "N04 duplicate unknown missing extra flags reject",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "native-foundation-005",
+      "suite": "native-foundation",
+      "testName": "N05 forbidden runtime environment and Node options reject before I/O",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N05 forbidden runtime environment and Node options reject before I/O$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 1999.3078000000096,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-005.stdout.txt",
+        "byteLength": 323,
+        "sha256": "sha256:51b1a2c3334763fbbaecc0083f71327dfa982528e4bea7e26195341597043722"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-005.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "N05 forbidden runtime environment and Node options reject before I/O"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "N05 forbidden runtime environment and Node options reject before I/O",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "native-foundation-006",
+      "suite": "native-foundation",
+      "testName": "N04b inspectable configuration path failures select lowest logical ID",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N04b inspectable configuration path failures select lowest logical ID$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2133.775099999999,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-006.stdout.txt",
+        "byteLength": 324,
+        "sha256": "sha256:94a3526ebf02a69ece0f79cf09c49a3a14778571424c13cc335f735223c16ec9"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-006.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "N04b inspectable configuration path failures select lowest logical ID"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "N04b inspectable configuration path failures select lowest logical ID",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "native-foundation-007",
+      "suite": "native-foundation",
+      "testName": "N06 relative lexical boundaries and hostile spellings",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N06 relative lexical boundaries and hostile spellings$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2130.1472999999824,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-007.stdout.txt",
+        "byteLength": 293,
+        "sha256": "sha256:edadb71c3d90b9dbecd3f28d3589fe2ff98a8c1f956ef04814505a966a3c2ba7"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-007.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "N06 relative lexical boundaries and hostile spellings"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "N06 relative lexical boundaries and hostile spellings",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "native-foundation-008",
+      "suite": "native-foundation",
+      "testName": "N07 absolute roots full paths overlap and case aliases",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N07 absolute roots full paths overlap and case aliases$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2039.469700000016,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-008.stdout.txt",
+        "byteLength": 295,
+        "sha256": "sha256:991015e609477f5c43af88fc33e8e77e7c5bfb02911dbe90d826f9058306af2f"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-008.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "N07 absolute roots full paths overlap and case aliases"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "N07 absolute roots full paths overlap and case aliases",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "native-foundation-009",
+      "suite": "native-foundation",
+      "testName": "N08 identity policy rejects any reparse flag hardlink wrong type and changes",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N08 identity policy rejects any reparse flag hardlink wrong type and changes$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2126.02959999998,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-009.stdout.txt",
+        "byteLength": 338,
+        "sha256": "sha256:b9007764e911c787a4f92ae1067377edd0a32242747f9f920335fd5f6249d6fc"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-009.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "N08 identity policy rejects any reparse flag hardlink wrong type and changes"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "N08 identity policy rejects any reparse flag hardlink wrong type and changes",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "native-foundation-010",
+      "suite": "native-foundation",
+      "testName": "N09 helper canonical round-trip and closed operation fields",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N09 helper canonical round-trip and closed operation fields$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2098.022900000011,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-010.stdout.txt",
+        "byteLength": 305,
+        "sha256": "sha256:86166fff94d828c47fb424933dd0e2eb5eb807d324c9b8a22adecfb2545593a7"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-010.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "N09 helper canonical round-trip and closed operation fields"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "N09 helper canonical round-trip and closed operation fields",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "native-foundation-011",
+      "suite": "native-foundation",
+      "testName": "N10 helper frame prefix truncation trailing data and caps",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N10 helper frame prefix truncation trailing data and caps$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2072.623900000006,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-011.stdout.txt",
+        "byteLength": 301,
+        "sha256": "sha256:2030f0c9cb45bfb70c7c98ccf77b9b92643636736746a5fecb5312c193d1a9ab"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-011.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "N10 helper frame prefix truncation trailing data and caps"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "N10 helper frame prefix truncation trailing data and caps",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "native-foundation-012",
+      "suite": "native-foundation",
+      "testName": "N11 helper sorted explicit allowlist path and per-file boundaries",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N11 helper sorted explicit allowlist path and per-file boundaries$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2140.112699999998,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-012.stdout.txt",
+        "byteLength": 317,
+        "sha256": "sha256:94a70c6056474e65bbaaeb719c208e9dd3bd54f8bd79a0e836e46fba55c93ec0"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-012.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "N11 helper sorted explicit allowlist path and per-file boundaries"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "N11 helper sorted explicit allowlist path and per-file boundaries",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "native-foundation-013",
+      "suite": "native-foundation",
+      "testName": "N12 acquisition needs four serial exits and invalid overlap or retry is terminal",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N12 acquisition needs four serial exits and invalid overlap or retry is terminal$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2168.7838000000047,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-013.stdout.txt",
+        "byteLength": 347,
+        "sha256": "sha256:8c334c8469977b2c0c816c1db5475cc68beaa2dcd93e9ba8370e7cdfe1f47ffb"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-013.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "N12 acquisition needs four serial exits and invalid overlap or retry is terminal"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "N12 acquisition needs four serial exits and invalid overlap or retry is terminal",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "native-foundation-014",
+      "suite": "native-foundation",
+      "testName": "N13 helper response exact snapshot identity and base64 validation",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N13 helper response exact snapshot identity and base64 validation$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2073.9802999999956,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-014.stdout.txt",
+        "byteLength": 317,
+        "sha256": "sha256:64911fcd41eb6d825c04253e47941f6fb2eefe2d1fb76fcb1bcb18ae79a2482f"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-014.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "N13 helper response exact snapshot identity and base64 validation"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "N13 helper response exact snapshot identity and base64 validation",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "native-foundation-015",
+      "suite": "native-foundation",
+      "testName": "N14 helper decoded aggregate boundary and +1",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N14 helper decoded aggregate boundary and \\+1$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2362.553600000014,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-015.stdout.txt",
+        "byteLength": 274,
+        "sha256": "sha256:4780b487d8ea9bd89c52b4cba40c8847f0ed08ea8813d887778c1e4fe6a848be"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-015.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "N14 helper decoded aggregate boundary and +1"
+      ],
+      "selected": [
+        {
+          "status": "ok",
+          "name": "N14 helper decoded aggregate boundary and +1",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    },
+    {
+      "id": "native-foundation-016",
+      "suite": "native-foundation",
+      "testName": "N15 native fixed PowerShell snapshots and checked inspection sanitization",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=^N15 native fixed PowerShell snapshots and checked inspection sanitization$",
+        "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs"
+      ],
+      "expectedTests": 1,
+      "sourceSuiteTests": 25,
+      "outerGuardMs": 90000,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "exitCode": 1,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 7681.662400000001,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-016.stdout.txt",
+        "byteLength": 943,
+        "sha256": "sha256:59cf45ff4259d132bc60563a8c7241770f5ccf179dea3143521f504b26939032"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/final-headless/regressions/native-foundation-016.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "FAIL",
+      "tests": {
+        "tests": 1,
+        "pass": 0,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "N15 native fixed PowerShell snapshots and checked inspection sanitization"
+      ],
+      "selected": [
+        {
+          "status": "not ok",
+          "name": "N15 native fixed PowerShell snapshots and checked inspection sanitization",
+          "directive": null
+        }
+      ],
+      "excludedRegistrations": []
+    }
+  ],
+  "notRun": [
+    "native-foundation-017",
+    "native-foundation-018",
+    "native-foundation-019",
+    "native-foundation-020",
+    "native-foundation-021",
+    "native-foundation-022",
+    "native-foundation-023",
+    "native-foundation-024",
+    "native-foundation-025"
+  ],
+  "failure": {
+    "name": "Error",
+    "message": "Required command failed: native-foundation-016",
+    "stack": "Error: Required command failed: native-foundation-016\n    at file:///C:/m7fix/repositories/cca-conformance/tools/mo1307-final-headless/regressions.mjs:81:38\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)"
+  },
+  "scope": "Affected engineering regression subset only; native filesystem, TOCTOU and certification are separate mandatory results.",
+  "source": {
+    "path": "repositories/cca-conformance/evidence/mo1307/final-headless/validation-source.json",
+    "byteLength": 191990,
+    "sha256": "sha256:3be480c39be93a99aa51db28cebf7ffe2331f9f65ee9c48984d6bbaefe512add"
+  },
+  "sourceIdentity": "sha256:05ebd3890b650becdd8229dc39e623a029f84a0569231bdd8afb6fe72858d6c7",
+  "acceptedCandidate": null,
+  "sourcesUnchanged": true,
+  "sourceFailure": null,
+  "runtime": {
+    "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+    "version": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+  },
+  "finishedUtc": "2026-09-30T15:45:09.437Z",
+  "retries": 0,
+  "certificationAcceptance": false
+}

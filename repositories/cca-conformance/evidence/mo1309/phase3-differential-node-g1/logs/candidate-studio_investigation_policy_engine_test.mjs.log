@@ -1,0 +1,160 @@
+TAP version 13
+# Subtest: all frozen Evaluation Identity and outcome golden vectors validate byte-for-byte
+ok 1 - all frozen Evaluation Identity and outcome golden vectors validate byte-for-byte
+  ---
+  duration_ms: 46.642533
+  type: 'test'
+  ...
+# Subtest: trusted native evaluation reproduces the frozen no-Regression vector
+ok 2 - trusted native evaluation reproduces the frozen no-Regression vector
+  ---
+  duration_ms: 59.958687
+  type: 'test'
+  ...
+# Subtest: trusted MIP evaluation reproduces the frozen lifecycle and aggregate-CNE vectors
+ok 3 - trusted MIP evaluation reproduces the frozen lifecycle and aggregate-CNE vectors
+  ---
+  duration_ms: 443.719393
+  type: 'test'
+  ...
+# Subtest: trusted retained CF5B-2 recipes reproduce every remaining golden vector family
+ok 4 - trusted retained CF5B-2 recipes reproduce every remaining golden vector family
+  ---
+  duration_ms: 464.188121
+  type: 'test'
+  ...
+# Subtest: all reachable truth rows for the six frozen rules have exact decisions and evidence
+ok 5 - all reachable truth rows for the six frozen rules have exact decisions and evidence
+  ---
+  duration_ms: 1154.68946
+  type: 'test'
+  ...
+# Subtest: authoritative Replay ready, playing, and paused states deterministically FAIL completion
+ok 6 - authoritative Replay ready, playing, and paused states deterministically FAIL completion
+  ---
+  duration_ms: 176.526194
+  type: 'test'
+  ...
+# Subtest: Policy and Policy Set aggregation retains order and applies FAIL over CNE over PASS
+ok 7 - Policy and Policy Set aggregation retains order and applies FAIL over CNE over PASS
+  ---
+  duration_ms: 33.550276
+  type: 'test'
+  ...
+# Subtest: Policy and Policy Set aggregation exhaust the frozen two-result precedence matrix
+ok 8 - Policy and Policy Set aggregation exhaust the frozen two-result precedence matrix
+  ---
+  duration_ms: 34.657079
+  type: 'test'
+  ...
+# Subtest: metadata is non-semantic while transition-log state is evaluation-identifying
+ok 9 - metadata is non-semantic while transition-log state is evaluation-identifying
+  ---
+  duration_ms: 107.71337
+  type: 'test'
+  ...
+# Subtest: different trusted Regression baselines change external-source, identity, and outcome bytes
+ok 10 - different trusted Regression baselines change external-source, identity, and outcome bytes
+  ---
+  duration_ms: 111.022467
+  type: 'test'
+  ...
+# Subtest: frozen cache vectors classify exactly and production hits return retained immutable bytes
+ok 11 - frozen cache vectors classify exactly and production hits return retained immutable bytes
+  ---
+  duration_ms: 76.5806
+  type: 'test'
+  ...
+# Subtest: authority precedes cache lookup and prepared/evaluator/evaluation capabilities cannot be forged
+ok 12 - authority precedes cache lookup and prepared/evaluator/evaluation capabilities cannot be forged
+  ---
+  duration_ms: 140.950409
+  type: 'test'
+  ...
+# Subtest: captured intrinsics prevent prototype poisoning from splitting semantics or Core head binding
+ok 13 - captured intrinsics prevent prototype poisoning from splitting semantics or Core head binding
+  ---
+  duration_ms: 47.069153
+  type: 'test'
+  ...
+# Subtest: Phase H enforces the exact 16383/16384/16385 canonical-input boundary
+ok 14 - Phase H enforces the exact 16383/16384/16385 canonical-input boundary
+  ---
+  duration_ms: 308.895308
+  type: 'test'
+  ...
+# Subtest: Phase H enforces exact 3/4/5 rule and 15/16/17 selector-visit boundaries
+ok 15 - Phase H enforces exact 3/4/5 rule and 15/16/17 selector-visit boundaries
+  ---
+  duration_ms: 317.390293
+  type: 'test'
+  ...
+# Subtest: Phase I enforces exact 3/4/5 per-selection and aggregate identifier boundaries
+ok 16 - Phase I enforces exact 3/4/5 per-selection and aggregate identifier boundaries
+  ---
+  duration_ms: 53.69898
+  type: 'test'
+  ...
+# Subtest: Phase I enforces the exact 1023/1024/1025 aggregate evidence-byte boundary
+ok 17 - Phase I enforces the exact 1023/1024/1025 aggregate evidence-byte boundary
+  ---
+  duration_ms: 90.399211
+  type: 'test'
+  ...
+# Subtest: limit 31 admits the production 4059/4060 maximum and freezes 4061 as unreachable
+ok 18 - limit 31 admits the production 4059/4060 maximum and freezes 4061 as unreachable
+  ---
+  duration_ms: 90.550841
+  type: 'test'
+  ...
+# Subtest: frozen Phase H/I proofs and non-recursive limit-31 closure bind the profile
+ok 19 - frozen Phase H/I proofs and non-recursive limit-31 closure bind the profile
+  ---
+  duration_ms: 11.04792
+  type: 'test'
+  ...
+# Subtest: unsupported outcome version is rejected before root/identity cross-binding
+ok 20 - unsupported outcome version is rejected before root/identity cross-binding
+  ---
+  duration_ms: 1.437616
+  type: 'test'
+  ...
+# Subtest: outcome validation rejects unknown, mis-cardinalized, row-incompatible, and identity-unbound evidence
+ok 21 - outcome validation rejects unknown, mis-cardinalized, row-incompatible, and identity-unbound evidence
+  ---
+  duration_ms: 5.523051
+  type: 'test'
+  ...
+# Subtest: detached completed outcomes cannot bypass post-identity limits 28 through 31
+ok 22 - detached completed outcomes cannot bypass post-identity limits 28 through 31
+  ---
+  duration_ms: 3.900552
+  type: 'test'
+  ...
+# Subtest: a detached five-rule result cannot claim an identity that Phase H could never form
+ok 23 - a detached five-rule result cannot claim an identity that Phase H could never form
+  ---
+  duration_ms: 4.264291
+  type: 'test'
+  ...
+# Subtest: detached validators reject Policy/Set rule totals and source-specific selection overclaims
+ok 24 - detached validators reject Policy/Set rule totals and source-specific selection overclaims
+  ---
+  duration_ms: 31.705786
+  type: 'test'
+  ...
+# Subtest: authoritative evaluation is invariant under post-import String, Array, RegExp, and typed-byte poisoning
+ok 25 - authoritative evaluation is invariant under post-import String, Array, RegExp, and typed-byte poisoning
+  ---
+  duration_ms: 83.066032
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4015.290244

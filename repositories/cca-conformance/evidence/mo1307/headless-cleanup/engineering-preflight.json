@@ -1,0 +1,26 @@
+{
+  "kind": "MO1307HeadlessCleanupStaticPreflight",
+  "sourceBaseHead": "02d96d07b0ba926f7464f49ffa975273e8fed5c2",
+  "result": "STATIC_GO_NOT_EXECUTION_PASS",
+  "helperSha256": "158a4008131ede42458ba60a8166e63abad180443031ea05bf75c3180a2ad846",
+  "specificationSha256": "dbca55d6094ec6bbfaa51cf85b850cc2b01ca0a3b0d80e56f9c29ad1c4930da0",
+  "independentReview": [
+    "production implementation and scoped authority reviewed by inventory_authority",
+    "final minimum smoke and finite security harness reviewed by inventory_authority",
+    "regression/native filesystem/TOCTOU definitions and bindings reviewed by package_authority"
+  ],
+  "parserChecks": {
+    "node": "24.21.0 win-x64; six driver modules syntax checked",
+    "powerShell": "5.1.26100.9444; helper and engineering double parser-only checks passed",
+    "startupDoubleSha256": "50f03046e52bbcfdf31cd535da6c6d7fae38e6b1d3a638feb56702eac9d524c6"
+  },
+  "productExecution": false,
+  "helperExecution": false,
+  "securityExecution": false,
+  "regressionExecution": false,
+  "candidate": null,
+  "certification": false,
+  "preExecutionHarnessCorrection": "Suppress engineering-only PS module-loading progress before JSON commands; no product or oracle change",
+  "reviewScope": "No host identity or exit claim; unchanged acquisition/protocol and transport lifecycle; simulation results remain separate from native evidence",
+  "metadataWriterCorrection": "Initial PowerShell boolean-literal error produced null metadata; corrected before any execution"
+}

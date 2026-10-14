@@ -1,0 +1,466 @@
+TAP version 13
+# Subtest: canonical round trip and current binding
+ok 1 - canonical round trip and current binding
+  ---
+  duration_ms: 89.6497
+  type: 'test'
+  ...
+# Subtest: reject duplicate keys
+ok 2 - reject duplicate keys
+  ---
+  duration_ms: 1.7853
+  type: 'test'
+  ...
+# Subtest: reject noncanonical order
+ok 3 - reject noncanonical order
+  ---
+  duration_ms: 0.4047
+  type: 'test'
+  ...
+# Subtest: reject trailing whitespace
+ok 4 - reject trailing whitespace
+  ---
+  duration_ms: 0.9289
+  type: 'test'
+  ...
+# Subtest: reject negative zero
+ok 5 - reject negative zero
+  ---
+  duration_ms: 0.321
+  type: 'test'
+  ...
+# Subtest: reject exponent token
+ok 6 - reject exponent token
+  ---
+  duration_ms: 0.2817
+  type: 'test'
+  ...
+# Subtest: reject BOM
+ok 7 - reject BOM
+  ---
+  duration_ms: 0.2641
+  type: 'test'
+  ...
+# Subtest: reject malformed UTF-8
+ok 8 - reject malformed UTF-8
+  ---
+  duration_ms: 0.2106
+  type: 'test'
+  ...
+# Subtest: accept exact record set
+ok 9 - accept exact record set
+  ---
+  duration_ms: 0.5096
+  type: 'test'
+  ...
+# Subtest: reject missing case
+ok 10 - reject missing case
+  ---
+  duration_ms: 0.8854
+  type: 'test'
+  ...
+# Subtest: reject extra case
+ok 11 - reject extra case
+  ---
+  duration_ms: 0.4909
+  type: 'test'
+  ...
+# Subtest: reject duplicate ID
+ok 12 - reject duplicate ID
+  ---
+  duration_ms: 0.3813
+  type: 'test'
+  ...
+# Subtest: reject unknown ID
+ok 13 - reject unknown ID
+  ---
+  duration_ms: 0.7374
+  type: 'test'
+  ...
+# Subtest: reject wrong category
+ok 14 - reject wrong category
+  ---
+  duration_ms: 0.4137
+  type: 'test'
+  ...
+# Subtest: reject false PASS
+ok 15 - reject false PASS
+  ---
+  duration_ms: 0.2402
+  type: 'test'
+  ...
+# Subtest: reject missing state
+ok 16 - reject missing state
+  ---
+  duration_ms: 0.1957
+  type: 'test'
+  ...
+# Subtest: reject unknown gateway code
+ok 17 - reject unknown gateway code
+  ---
+  duration_ms: 0.2969
+  type: 'test'
+  ...
+# Subtest: reject wrong HTTP mapping
+ok 18 - reject wrong HTTP mapping
+  ---
+  duration_ms: 0.2276
+  type: 'test'
+  ...
+# Subtest: reject inconsistent client alias
+ok 19 - reject inconsistent client alias
+  ---
+  duration_ms: 0.2491
+  type: 'test'
+  ...
+# Subtest: normalize independent client aliases and resource probe status
+ok 20 - normalize independent client aliases and resource probe status
+  ---
+  duration_ms: 0.1547
+  type: 'test'
+  ...
+# Subtest: cancelled has no HTTP mapping
+ok 21 - cancelled has no HTTP mapping
+  ---
+  duration_ms: 0.3016
+  type: 'test'
+  ...
+# Subtest: reject altered binding unknown field
+ok 22 - reject altered binding unknown field
+  ---
+  duration_ms: 1.2688
+  type: 'test'
+  ...
+# Subtest: reject altered binding baseline
+ok 23 - reject altered binding baseline
+  ---
+  duration_ms: 0.6074
+  type: 'test'
+  ...
+# Subtest: reject altered binding runtime hash
+ok 24 - reject altered binding runtime hash
+  ---
+  duration_ms: 0.7528
+  type: 'test'
+  ...
+# Subtest: reject altered binding production hash
+ok 25 - reject altered binding production hash
+  ---
+  duration_ms: 87.0658
+  type: 'test'
+  ...
+# Subtest: reject altered binding missing production row
+ok 26 - reject altered binding missing production row
+  ---
+  duration_ms: 97.5176
+  type: 'test'
+  ...
+# Subtest: reject altered binding source closure hash
+ok 27 - reject altered binding source closure hash
+  ---
+  duration_ms: 83.8243
+  type: 'test'
+  ...
+# Subtest: reject altered binding missing source row
+ok 28 - reject altered binding missing source row
+  ---
+  duration_ms: 82.0149
+  type: 'test'
+  ...
+# Subtest: reject altered binding harness hash
+ok 29 - reject altered binding harness hash
+  ---
+  duration_ms: 78.491
+  type: 'test'
+  ...
+# Subtest: reject altered binding fixture hash
+ok 30 - reject altered binding fixture hash
+  ---
+  duration_ms: 81.0629
+  type: 'test'
+  ...
+# Subtest: reject altered binding regression input hash
+ok 31 - reject altered binding regression input hash
+  ---
+  duration_ms: 81.3479
+  type: 'test'
+  ...
+# Subtest: reject altered binding missing regression input
+ok 32 - reject altered binding missing regression input
+  ---
+  duration_ms: 82.7399
+  type: 'test'
+  ...
+# Subtest: reject altered binding FINAL state
+ok 33 - reject altered binding FINAL state
+  ---
+  duration_ms: 76.7138
+  type: 'test'
+  ...
+# Subtest: reference integrity and traversal protection
+ok 34 - reference integrity and traversal protection
+  ---
+  duration_ms: 1.6017
+  type: 'test'
+  ...
+# Subtest: accept structurally complete synthetic attempt without publishing it
+ok 35 - accept structurally complete synthetic attempt without publishing it
+  ---
+  duration_ms: 106.2067
+  type: 'test'
+  ...
+# Subtest: reject attempt stripped observed response
+ok 36 - reject attempt stripped observed response
+  ---
+  duration_ms: 97.3358
+  type: 'test'
+  ...
+# Subtest: reject attempt forged normative hash
+ok 37 - reject attempt forged normative hash
+  ---
+  duration_ms: 89.0582
+  type: 'test'
+  ...
+# Subtest: reject attempt false fresh oracle
+ok 38 - reject attempt false fresh oracle
+  ---
+  duration_ms: 102.9736
+  type: 'test'
+  ...
+# Subtest: reject attempt worker substitution claim
+ok 39 - reject attempt worker substitution claim
+  ---
+  duration_ms: 85.3398
+  type: 'test'
+  ...
+# Subtest: reject attempt unknown field
+ok 40 - reject attempt unknown field
+  ---
+  duration_ms: 7.2694
+  type: 'test'
+  ...
+# Subtest: reject attempt process never started
+ok 41 - reject attempt process never started
+  ---
+  duration_ms: 132.1898
+  type: 'test'
+  ...
+# Subtest: reject attempt unknown process field
+ok 42 - reject attempt unknown process field
+  ---
+  duration_ms: 96.2366
+  type: 'test'
+  ...
+# Subtest: reject attempt wrong full OS build
+ok 43 - reject attempt wrong full OS build
+  ---
+  duration_ms: 98.7063
+  type: 'test'
+  ...
+# Subtest: reject attempt PASS with failure
+ok 44 - reject attempt PASS with failure
+  ---
+  duration_ms: 95.1977
+  type: 'test'
+  ...
+# Subtest: reject attempt missing records
+ok 45 - reject attempt missing records
+  ---
+  duration_ms: 102.4183
+  type: 'test'
+  ...
+# Subtest: reject attempt duplicate records
+ok 46 - reject attempt duplicate records
+  ---
+  duration_ms: 110.2991
+  type: 'test'
+  ...
+# Subtest: reject attempt missing process proof
+ok 47 - reject attempt missing process proof
+  ---
+  duration_ms: 114.3885
+  type: 'test'
+  ...
+# Subtest: reject attempt unreaped process
+ok 48 - reject attempt unreaped process
+  ---
+  duration_ms: 106.7906
+  type: 'test'
+  ...
+# Subtest: reject attempt wrong runtime
+ok 49 - reject attempt wrong runtime
+  ---
+  duration_ms: 92.0896
+  type: 'test'
+  ...
+# Subtest: reject attempt wrong candidate digest
+ok 50 - reject attempt wrong candidate digest
+  ---
+  duration_ms: 111.9819
+  type: 'test'
+  ...
+# Subtest: reject attempt host classification
+ok 51 - reject attempt host classification
+  ---
+  duration_ms: 104.9237
+  type: 'test'
+  ...
+# Subtest: reject attempt clock domain
+ok 52 - reject attempt clock domain
+  ---
+  duration_ms: 111.2553
+  type: 'test'
+  ...
+# Subtest: reject attempt clock order
+ok 53 - reject attempt clock order
+  ---
+  duration_ms: 111.2843
+  type: 'test'
+  ...
+# Subtest: reject attempt host policy identity
+ok 54 - reject attempt host policy identity
+  ---
+  duration_ms: 89.7321
+  type: 'test'
+  ...
+# Subtest: reject attempt host evidence substitution
+ok 55 - reject attempt host evidence substitution
+  ---
+  duration_ms: 117.6494
+  type: 'test'
+  ...
+# Subtest: host evidence unavailable never excuses an assertion failure
+ok 56 - host evidence unavailable never excuses an assertion failure
+  ---
+  duration_ms: 206.5424
+  type: 'test'
+  ...
+# Subtest: the frozen catalog has all seven independent modules
+ok 57 - the frozen catalog has all seven independent modules
+  ---
+  duration_ms: 13.0523
+  type: 'test'
+  ...
+# Subtest: reject missing observed wire status
+ok 58 - reject missing observed wire status
+  ---
+  duration_ms: 11.7447
+  type: 'test'
+  ...
+# Subtest: reject missing observed authentication source mechanism
+ok 59 - reject missing observed authentication source mechanism
+  ---
+  duration_ms: 14.4545
+  type: 'test'
+  ...
+# Subtest: reject missing observed boundary observed bytes
+ok 60 - reject missing observed boundary observed bytes
+  ---
+  duration_ms: 11.6831
+  type: 'test'
+  ...
+# Subtest: accept exactly eight regression memberships and 283 leaf checks
+ok 61 - accept exactly eight regression memberships and 283 leaf checks
+  ---
+  duration_ms: 49.6752
+  type: 'test'
+  ...
+# Subtest: reject regression empty command
+ok 62 - reject regression empty command
+  ---
+  duration_ms: 8.711
+  type: 'test'
+  ...
+# Subtest: reject regression missing command argument
+ok 63 - reject regression missing command argument
+  ---
+  duration_ms: 9.6201
+  type: 'test'
+  ...
+# Subtest: reject regression extra command argument
+ok 64 - reject regression extra command argument
+  ---
+  duration_ms: 8.433
+  type: 'test'
+  ...
+# Subtest: reject regression altered command file
+ok 65 - reject regression altered command file
+  ---
+  duration_ms: 12.5651
+  type: 'test'
+  ...
+# Subtest: reject regression narrowed test selector
+ok 66 - reject regression narrowed test selector
+  ---
+  duration_ms: 13.5544
+  type: 'test'
+  ...
+# Subtest: reject regression empty source membership
+ok 67 - reject regression empty source membership
+  ---
+  duration_ms: 8.8481
+  type: 'test'
+  ...
+# Subtest: reject regression missing source member
+ok 68 - reject regression missing source member
+  ---
+  duration_ms: 11.256
+  type: 'test'
+  ...
+# Subtest: reject regression extra source member
+ok 69 - reject regression extra source member
+  ---
+  duration_ms: 9.849
+  type: 'test'
+  ...
+# Subtest: reject regression reordered source membership
+ok 70 - reject regression reordered source membership
+  ---
+  duration_ms: 9.8532
+  type: 'test'
+  ...
+# Subtest: reject regression altered source member
+ok 71 - reject regression altered source member
+  ---
+  duration_ms: 9.7727
+  type: 'test'
+  ...
+# Subtest: reject regression altered source hash
+ok 72 - reject regression altered source hash
+  ---
+  duration_ms: 8.5145
+  type: 'test'
+  ...
+# Subtest: reject regression unknown regression group
+ok 73 - reject regression unknown regression group
+  ---
+  duration_ms: 10.9253
+  type: 'test'
+  ...
+# Subtest: reject regression lowered regression count
+ok 74 - reject regression lowered regression count
+  ---
+  duration_ms: 9.9712
+  type: 'test'
+  ...
+# Subtest: reject regression missing regression count
+ok 75 - reject regression missing regression count
+  ---
+  duration_ms: 8.2928
+  type: 'test'
+  ...
+# Subtest: reject regression extra regression count
+ok 76 - reject regression extra regression count
+  ---
+  duration_ms: 12.2259
+  type: 'test'
+  ...
+1..76
+# tests 76
+# suites 0
+# pass 76
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5335.1249

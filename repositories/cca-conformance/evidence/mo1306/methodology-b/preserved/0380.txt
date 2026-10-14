@@ -1,0 +1,46 @@
+MO-1306 Phase 3A-R evidence checkpoint — CERTIFICATION_BLOCKED
+
+The corrected archive and independent CLI dispatch correction checks passed. Certification is incomplete for two independently evidenced reasons. Native Windows filesystem helpers reached the frozen two-second deadline; the quiet engineering observation returned safe:true after 2032 ms, so the deadline was preserved and no full campaign was blindly retried. GitHub accepted the authorized certification branch but rejected the first manual workflow dispatch with HTTP 404. Exact remote workflow bytes were verified, the workflows are absent from default main and the Actions registry, and the branch has zero manual runs. No hosted results or artifacts were fabricated or replaced by local simulation.
+
+| Requested item | Verified result |
+| --- | --- |
+| Initial workspace | Clean `mo1306/phase3a-refresh`, expected C3AB subject and HEAD |
+| Graph | B2 `0e35ffe70919d77b1db530929093826410b805f9` → C3A `90b9ac914e477fb90fe317d0de9ba310aae37f60` → C3AB `9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44`; exact single parents |
+| Archive | `memoryos-ci@0.1.0`, `memoryos-ci-0.1.0.tgz`, 197172 bytes, SHA-256 `2f1e9424ce64e44b7b1587ce206fe5f7ae72579652ca1fc891c489bc1a21925d`; independently rebuilt twice, 94 members, 25 SDK files, zero production dependencies |
+| Corrected distribution | `sha256:311927a980bd397ab70b95da77d546e4b212968d05973ecf998817764431d773` |
+| Original 3A | All 391 original paths byte-identical; B2 native certification / hosted ENVIRONMENT_BLOCKED / no original certification commit preserved |
+| Exact reuse analysis | 92/94 package members unchanged; only CLI and distribution differ. Original source-mechanism receipts remain historical; they do not certify corrected archive execution |
+| Windows | Windows 11 Home, 25H2, build 26200.9457, x64; registry legacy ProductName retained in environment receipt |
+| Toolchain | Node 24.21.0 x64, executable SHA-256 `ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32`; npm 11.19.0; Windows PowerShell 5.1.26100.9444; Python 3.12.14 native engineering runtime |
+| CLI correction | 21 installed actual invalid-command cases (20 prototype-sensitive names plus ordinary invalid), exact MO1306_USAGE / exit10, empty stdout; 191 installed parser checks pass with no handler bypass |
+| Native PASS | Corrected installed Policy PASS and CLI verify succeeded with six-file bundle and exact independent SDK normative bytes before retained harness log-name failure |
+| Native FAIL / CNE | Required full installed CLI refresh incomplete due frozen helper timeout; not certified |
+| Semantic parity | Nine direct installed permission-worker Policy / Policy Set / Regression PASS / FAIL / CNE comparisons match independent source SDK1.1.0 normative bytes/digests; this does not replace full CLI refresh |
+| Valid CLI commands | run and verify demonstrated in partial native evidence; generate dispatch reaches acquisition but successful generation is blocked by helper timing |
+| Correction A / publication | See native-summary.json for exact bounded observations and independent controls; incomplete overall native campaign is not certified |
+| Remote | Existing origin `https://github.com/moelsaka01/cca-workspace.git` resolves to `moelsaka01/memoryos-specification` |
+| Remote branch | `mo1306-certification`, left available for Phase3D verification |
+| Remote commit | `3096139e0108be22528859e4f462356dddf6ef29`, parent `9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44`, tree `b745f9528ea682ad7dcf231ea4b620cf2fb2ab65`; certification-only, adds only three workflow files, no product authority |
+| Workflow identity | Three fixed-case files retain `MemoryOS Provider-Neutral CI`, job `memoryos_ci`, runner `windows-2022`, 10-minute job bounds |
+| Immutable Action pins | checkout `3d3c42e5aac5ba805825da76410c181273ba90b1`; upload-artifact `043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`; exact GitHub commits verified |
+| Frozen Node bootstrap | Fixed Node24.21.0 x64 ZIP URL, 37618919 bytes, ZIP SHA-256 `158f7685b44de51f6c0df1d153526cbcd3e1bc739a8dfc607721cef75de9e541`; production bootstrap unchanged |
+| Permissions / trust | contents:read, manual workflow_dispatch only, persist-credentials:false, no pull_request_target, immutable trusted tool checkout separated from data checkout |
+| Workflow validation | Deterministic installed pure-generator API bytes twice per case; reviewed fixture staging preserved; 57 negative controls pass. CLI generation remains explicitly blocked |
+| Hosted run IDs / attempts / jobs | No runs created; one authenticated PASS dispatch attempt returned404, no blind retries or alternate triggers; FAIL/CNE not dispatched after shared registration blocker |
+| Hosted PASS / FAIL / CNE | NOT_EXECUTED; actual runner OS and run start/end/conclusion unavailable. windows-2022 is configured only |
+| Hosted artifacts | None produced/downloaded. Frozen four/six-file validators and negative controls exist; actual hosted artifact validation remains pending |
+| Completion / run-id | Partial native verified bundle binds core run ID; actual hosted completion/run-id and operational metadata binding remain pending |
+| Native/hosted parity | NOT_EXECUTED because no actual hosted bundles |
+| MO-1302 | Four targeted regression checks pass; released Action bytes unchanged |
+| Evidence / receipt validation | validation.json validates achieved claims and truthful blocked disposition; allCertificationGatesPassed=false; mutation controls reject forged success |
+| Labels | Generic and GitHub success labels not promoted; GitLab/Jenkins/Azure labels unchanged |
+| Workspace verification | PASS; final staged git diff --check and postcommit status are recorded by final checkpoint verification |
+| Local checkpoint | Exactly one requested evidence-only commit is to be made on `mo1306/phase3a-refresh`, exact requested subject, parent C3AB. Its body explicitly states CERTIFICATION_BLOCKED. Actual SHA/status are reported after commit; no self-reference |
+| Push scope / main / tags | Only temporary remote certification commit pushed to refs/heads/mo1306-certification. Local final evidence checkpoint is not pushed. Remote main remains `5955af062152a84c10de17860ba0bcabe8b3555f`; local main remains C3AB; all observed tags unchanged; no tags/releases/merges/rebases/cherry-picks |
+| Linux/Ubuntu / VM / other providers | No Linux, Ubuntu, WSL, local VM, GitLab, Jenkins or Azure DevOps execution/account operations |
+| Duration / budget | 23.7 minutes since first explicit clock observation at receipt creation; within90-minute target and180-minute hard stop. No hosted waiting or retries |
+| Phase3D | Not ready. Retain branch and historical evidence. Resolve both blockers through separately authorized targeted work; Action advisory disposition remains Phase3B-R responsibility |
+
+The local checkpoint preserves all failed native/harness attempts and all remote request evidence. Its required subject is a task label; the receipt, validation and this report explicitly withhold certification.
+
+MO-1306 PHASE 3A CERTIFICATION BLOCKED

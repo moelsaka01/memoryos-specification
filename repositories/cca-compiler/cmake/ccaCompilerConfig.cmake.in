@@ -1,0 +1,7 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+find_dependency(yaml-cpp CONFIG)
+
+include("${CMAKE_CURRENT_LIST_DIR}/ccaCompilerTargets.cmake")
+check_required_components(ccaCompiler)

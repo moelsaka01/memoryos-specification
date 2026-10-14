@@ -1,0 +1,421 @@
+TAP version 13
+# Subtest: F01 publication status is an immutable operational snapshot before submission
+not ok 1 - F01 publication status is an immutable operational snapshot before submission
+  ---
+  duration_ms: 7.239384
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:46:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async staged (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:20:22)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:47:21)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: F02 timeout before submission prevents any rename and retains pending
+not ok 2 - F02 timeout before submission prevents any rename and retains pending
+  ---
+  duration_ms: 2.605653
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:52:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async staged (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:20:22)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:53:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F03 cancellation before submission prevents rename and is terminal
+not ok 3 - F03 cancellation before submission prevents rename and is terminal
+  ---
+  duration_ms: 1.152858
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:58:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async staged (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:20:22)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:59:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F04 actual admission checkpoint rejects a deadline reached after final native inspection
+not ok 4 - F04 actual admission checkpoint rejects a deadline reached after final native inspection
+  ---
+  duration_ms: 1.183538
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:63:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:65:22)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F05 admitted delayed success remains unresolved at post-submission deadline
+not ok 5 - F05 admitted delayed success remains unresolved at post-submission deadline
+  ---
+  duration_ms: 1.227485
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:70:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async staged (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:20:22)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:71:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F06 cancellation after submission is recorded without early cancellation or namespace cleanup
+not ok 6 - F06 cancellation after submission is recorded without early cancellation or namespace cleanup
+  ---
+  duration_ms: 1.119178
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:85:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async staged (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:20:22)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:86:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F07 admitted failure after deadline resolves OUTPUT only after exact submitted operation settles
+not ok 7 - F07 admitted failure after deadline resolves OUTPUT only after exact submitted operation settles
+  ---
+  duration_ms: 0.994385
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:95:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async staged (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:20:22)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:96:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F08 no second rename or token reuse while an admitted rename is outstanding
+not ok 8 - F08 no second rename or token reuse while an admitted rename is outstanding
+  ---
+  duration_ms: 0.935781
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:106:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async staged (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:20:22)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:107:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F09 commit status changes only after successful actual rename and then preserves bytes
+not ok 9 - F09 commit status changes only after successful actual rename and then preserves bytes
+  ---
+  duration_ms: 1.519964
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:114:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async staged (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:20:22)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:115:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F10 mandatory checkpoint overrun after settlement is operational metadata, not precommit TIMEOUT
+not ok 10 - F10 mandatory checkpoint overrun after settlement is operational metadata, not precommit TIMEOUT
+  ---
+  duration_ms: 2.263556
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:123:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async staged (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:20:22)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:124:37)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F11 postcommit deadline or cancellation prevents a success summary and retains committed final
+not ok 11 - F11 postcommit deadline or cancellation prevents a success summary and retains committed final
+  ---
+  duration_ms: 1.170443
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:128:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async staged (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:20:22)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:130:18)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F12 normal verified commit permits transport while precommit and failed tokens do not
+not ok 12 - F12 normal verified commit permits transport while precommit and failed tokens do not
+  ---
+  duration_ms: 1.020095
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:135:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async staged (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:20:22)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:136:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F13 wrong interruption code and foreign token cannot create publication authority
+not ok 13 - F13 wrong interruption code and foreign token cannot create publication authority
+  ---
+  duration_ms: 2.324387
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:140:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async staged (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:20:22)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:141:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F14 changed pending bytes before admission prevent rename
+not ok 14 - F14 changed pending bytes before admission prevent rename
+  ---
+  duration_ms: 0.966713
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:144:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async staged (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:20:22)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:145:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F15 existing final is retained and finalization never retries or chooses another basename
+not ok 15 - F15 existing final is retained and finalization never retries or chooses another basename
+  ---
+  duration_ms: 0.741683
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:149:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async staged (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:20:22)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:150:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F16 postcommit transport error cannot retract or reclassify committed final as partial
+not ok 16 - F16 postcommit transport error cannot retract or reclassify committed final as partial
+  ---
+  duration_ms: 0.776264
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:154:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async staged (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:20:22)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:155:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F17 bounded invocation timers are allowed and destroyed after successful operation
+ok 17 - F17 bounded invocation timers are allowed and destroyed after successful operation
+  ---
+  duration_ms: 2.610185
+  type: 'test'
+  ...
+# Subtest: F18 timer lifetime policy detects a persistent cross-run scheduler
+ok 18 - F18 timer lifetime policy detects a persistent cross-run scheduler
+  ---
+  duration_ms: 1.418622
+  type: 'test'
+  ...
+# Subtest: F19 actual foundation finalization leaves no live timers across sequential invocations
+not ok 19 - F19 actual foundation finalization leaves no live timers across sequential invocations
+  ---
+  duration_ms: 3.482782
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:171:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async staged (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:20:22)
+    async file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:173:67
+    async auditTimers (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:41:9)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:173:22)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F20 failed and cancelled foundation calls leave no cross-run timers
+not ok 20 - F20 failed and cancelled foundation calls leave no cross-run timers
+  ---
+  duration_ms: 1.300923
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:177:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async staged (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:20:22)
+    async file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:179:67
+    async auditTimers (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:41:9)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:179:22)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F21 failed read-only namespace verification retains committed output and clears its timer
+not ok 21 - F21 failed read-only namespace verification retains committed output and clears its timer
+  ---
+  duration_ms: 0.974331
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:184:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async staged (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:20:22)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:185:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F22 read-only verification timeout is bounded and late handle completion only closes
+not ok 22 - F22 read-only verification timeout is bounded and late handle completion only closes
+  ---
+  duration_ms: 0.97814
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:195:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async staged (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:20:22)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:196:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F23 interruption recorded while pre-submission read is pending prevents later admission
+not ok 23 - F23 interruption recorded while pre-submission read is pending prevents later admission
+  ---
+  duration_ms: 0.958598
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:213:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async staged (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:20:22)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:214:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: F24 the first observed pre-submission interruption remains terminal
+not ok 24 - F24 the first observed pre-submission interruption remains terminal
+  ---
+  duration_ms: 2.072975
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:225:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\base\\.cache\\mo1307\\phase2c-finalization-correction\\focused-13459'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async staged (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:20:22)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:226:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 2
+# fail 22
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 154.345117

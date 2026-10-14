@@ -1,0 +1,87 @@
+﻿TAP version 13
+# Subtest: D01 the ten 3D cases (steps D and E) are all implemented and none is host-only
+ok 1 - D01 the ten 3D cases (steps D and E) are all implemented and none is host-only
+  ---
+  duration_ms: 1.9376
+  type: 'test'
+  ...
+# Subtest: D02 against the real repository: well-formed read-only report, D1 and D5 READY, preserved rehearsals add no D2 problem, nothing is written
+ok 2 - D02 against the real repository: well-formed read-only report, D1 and D5 READY, preserved rehearsals add no D2 problem, nothing is written
+  ---
+  duration_ms: 95556.7508
+  type: 'test'
+  ...
+# Subtest: D03 a complete accepted state: I3 is built, then the binding-only BF is certified ready to tag, and nothing is tagged
+not ok 3 - D03 a complete accepted state: I3 is built, then the binding-only BF is certified ready to tag, and nothing is tagged
+  ---
+  duration_ms: 337613.3294
+  type: 'test'
+  location: 'C:\\n8b\\repositories\\cca-conformance\\tests\\mo1308_phase3d_test.mjs:110:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"3D-D7","status":"NOT_READY","problems":["BF is not binding-only: M repositories/cca-conformance/mo1308-final-release-inventory.json","the parent of BF is not I3","the binding names another I3 commit","the tag memoryos-1.3-mo1308 exists and does not target the BF commit"],"observed":{"state":"BF"},"pendingBf":false}]
+    + actual - expected
+    
+    + 'NOT_READY'
+    - 'I3_VALID_PENDING_BF'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'I3_VALID_PENDING_BF'
+  actual: 'NOT_READY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/n8b/repositories/cca-conformance/tests/mo1308_phase3d_test.mjs:124:10)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: D04 a rehearsal is never an accepted input: a stream with only a rehearsal has no accepted generation
+ok 4 - D04 a rehearsal is never an accepted input: a stream with only a rehearsal has no accepted generation
+  ---
+  duration_ms: 123835.8845
+  type: 'test'
+  ...
+# Subtest: D05 tampering is caught: a changed receipt, a changed step receipt and a wrong disclosure all make the case NOT_READY
+ok 5 - D05 tampering is caught: a changed receipt, a changed step receipt and a wrong disclosure all make the case NOT_READY
+  ---
+  duration_ms: 435235.9591
+  type: 'test'
+  ...
+# Subtest: D06 a commit that changes a production path is caught by D1, and a regression record for another tree or a short suite by D4
+ok 6 - D06 a commit that changes a production path is caught by D1, and a regression record for another tree or a short suite by D4
+  ---
+  duration_ms: 259699.3232
+  type: 'test'
+  ...
+# Subtest: D07 the validator CLI is read-only and its exit code follows the result
+not ok 7 - D07 the validator CLI is read-only and its exit code follows the result
+  ---
+  duration_ms: 99242.1652
+  type: 'test'
+  location: 'C:\\n8b\\repositories\\cca-conformance\\tests\\mo1308_phase3d_test.mjs:176:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/n8b/repositories/cca-conformance/tests/mo1308_phase3d_test.mjs:178:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+    Test.postRun (node:internal/test_runner/test:1542:19)
+    Test.run (node:internal/test_runner/test:1467:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: D08 the retained regression needs its A8.10 preconditions: fresh worktree, no .cache/mo1307 leftovers, quiet host, F22 timing, no retries
+ok 8 - D08 the retained regression needs its A8.10 preconditions: fresh worktree, no .cache/mo1307 leftovers, quiet host, F22 timing, no retries
+  ---
+  duration_ms: 123701.9059
+  type: 'test'
+  ...

@@ -1,0 +1,88 @@
+TAP version 13
+# Subtest: LP01 exact trusted Windows PowerShell 5.1 executable
+ok 1 - LP01 exact trusted Windows PowerShell 5.1 executable
+  ---
+  duration_ms: 1.04
+  type: 'test'
+  ...
+# Subtest: LP02 exact fixed argument ordering and Bypass value
+ok 2 - LP02 exact fixed argument ordering and Bypass value
+  ---
+  duration_ms: 0.7307
+  type: 'test'
+  ...
+# Subtest: LP03 fixed packaged helper path from module location
+ok 3 - LP03 fixed packaged helper path from module location
+  ---
+  duration_ms: 0.1447
+  type: 'test'
+  ...
+# Subtest: LP04 no encoded command, expression or shell authority
+ok 4 - LP04 no encoded command, expression or shell authority
+  ---
+  duration_ms: 0.1603
+  type: 'test'
+  ...
+# Subtest: LP05 caller object cannot supply executable, script or policy
+ok 5 - LP05 caller object cannot supply executable, script or policy
+  ---
+  duration_ms: 0.1694
+  type: 'test'
+  ...
+# Subtest: LP06 launch specification and nested authority are immutable
+ok 6 - LP06 launch specification and nested authority are immutable
+  ---
+  duration_ms: 0.539
+  type: 'test'
+  ...
+# Subtest: LP07 ambient PATH, system-root, policy and script poisons cannot select launch
+ok 7 - LP07 ambient PATH, system-root, policy and script poisons cannot select launch
+  ---
+  duration_ms: 0.4292
+  type: 'test'
+  ...
+# Subtest: LP08 actual transport calls spawn with fixed array and sanitized environment
+ok 8 - LP08 actual transport calls spawn with fixed array and sanitized environment
+  ---
+  duration_ms: 1.8575
+  type: 'test'
+  ...
+# Subtest: LP09 CLI cannot select --script
+ok 9 - LP09 CLI cannot select --script
+  ---
+  duration_ms: 0.5692
+  type: 'test'
+  ...
+# Subtest: LP09 CLI cannot select --execution-policy
+ok 10 - LP09 CLI cannot select --execution-policy
+  ---
+  duration_ms: 0.2255
+  type: 'test'
+  ...
+# Subtest: LP09 CLI cannot select --powershell
+ok 11 - LP09 CLI cannot select --powershell
+  ---
+  duration_ms: 0.2499
+  type: 'test'
+  ...
+# Subtest: LP10 no persistent policy or registry mutation code is introduced
+ok 12 - LP10 no persistent policy or registry mutation code is introduced
+  ---
+  duration_ms: 9.6864
+  type: 'test'
+  ...
+# Subtest: LP11 public package exports cannot expose launch override
+ok 13 - LP11 public package exports cannot expose launch override
+  ---
+  duration_ms: 1.6608
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 147.4766

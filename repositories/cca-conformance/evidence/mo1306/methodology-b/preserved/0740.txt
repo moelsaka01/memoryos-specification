@@ -1,0 +1,17 @@
+from pathlib import Path
+import hashlib,json,os,re,subprocess,sys
+ROOT=Path(__file__).resolve().parents[4];OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3ar';NODE=ROOT/'.cache/mo1306-phase3ar/node-v24.21.0-win-x64/node.exe'
+name=sys.argv[1]
+if name=='mo1302':args=[str(NODE),'--test','--test-reporter=tap','--test-name-pattern=Action metadata, bootstrap exports|CLI transport accepts|PortablePath and action-input|outputs are exactly nineteen',str(ROOT/'repositories/cca-conformance/tests/mo1302_action_foundation_conformance_test.mjs')]
+elif name=='workspace':args=[sys.executable,'-B',str(ROOT/'tools/verify_workspace.py'),'--root',str(ROOT)]
+elif name=='diff':args=['git','diff','--check']
+else:raise AssertionError('unknown bounded check')
+env={**os.environ,'PYTHONDONTWRITEBYTECODE':'1','PYTHONPATH':str(ROOT/'.cache/mo1306/validators'),'GIT_OPTIONAL_LOCKS':'0'}
+r=subprocess.run(args,cwd=ROOT,env=env,capture_output=True,timeout=180,creationflags=subprocess.CREATE_NO_WINDOW)
+rec=dict(argv=args,exitCode=r.returncode,stdout=r.stdout.decode('utf8','replace'),stderr=r.stderr.decode('utf8','replace'),status='PASS' if r.returncode==0 else 'FAIL')
+if name=='mo1302':
+ rec['counts']={k:int(v) for k,v in re.findall(r'^# (tests|pass|fail|cancelled|skipped|todo) (\d+)\s*$',rec['stdout'],re.M)}
+ assert rec['counts']=={'tests':4,'pass':4,'fail':0,'cancelled':0,'skipped':0,'todo':0},rec
+ rec['releasedTree']=subprocess.check_output(['git','rev-parse','memoryos-1.3-mo1302^{commit}'],cwd=ROOT).decode().strip()
+ rec['actionChangesSinceC3AB']=subprocess.check_output(['git','diff','--name-only','9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44','--','.github/actions/memoryos-policy-gate'],cwd=ROOT).decode();assert not rec['actionChangesSinceC3AB']
+p=OUT/('check-'+name+'.json');assert not p.exists();p.write_text(json.dumps(rec,sort_keys=True,separators=(',',':'))+'\n',encoding='utf8');print(name,rec['status']);print(rec['stdout'][-1000:]);assert r.returncode==0,rec['stderr']

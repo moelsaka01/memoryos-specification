@@ -1,0 +1,37 @@
+"""Create prerequisite matching-byte engineering snapshot; never move HEAD or remote refs."""
+import datetime,hashlib,json,os,subprocess,uuid
+from pathlib import Path
+root=Path(__file__).resolve().parents[4];out=root/'repositories/cca-conformance/evidence/mo1306/phase3a-certification';tools=Path(__file__).resolve().parent
+M3='85a0f85c1ebd013c545ccf2b3efe58a760e6cf37';C3CB='701d48ee2012675966360dda775ab13013c09ab9';OLD='f236c4a2f94d8cd8e763aaa4bd6c52d703429692'
+def row(p):
+ b=p.read_bytes();return {'path':p.relative_to(root).as_posix(),'byteLength':len(b),'sha256':'sha256:'+hashlib.sha256(b).hexdigest()}
+def git(*a,input=None,env=None):return subprocess.check_output(['git',*a],cwd=root,input=input,env=env).decode().strip()
+def put(name,v):
+ with (out/name).open('xb') as f:f.write((json.dumps(v,sort_keys=True,separators=(',',':'))+'\n').encode());f.flush();os.fsync(f.fileno())
+assert not (out/'harness-snapshot.json').exists();assert git('rev-parse','HEAD')==OLD
+before=json.loads((out/'preservation-before.json').read_bytes());idx=Path(git('rev-parse','--git-path','index'));idx=idx if idx.is_absolute() else root/idx;idxbefore=idx.read_bytes();refs=git('for-each-ref','--format=%(refname) %(objectname)')
+for r in before['files']:assert row(root/r['path'])==r
+assert git('diff','--name-only','HEAD')=='' and git('diff','--cached','--name-only')==''
+put('graph-resolution.json',{'kind':'MemoryOSPhase3AFinalGraphResolution','status':'REVIEWED','supersedesParentChoiceOnly':row(out/'graph-plan.json'),'authority':'Freeze1 section23 requires exact executed harness revision; Phase1 tools/mo1306/binding.py constructs closed receipts only after matching-byte implementation/harness revision exists.','reason':'New final witness runner was executed uncommitted. Assigning M3 or a future certification hash as its harnessRevision would be false or cyclic.','methodologyAuthority':M3,'productionAuthority':C3CB,'prerequisite':'Create a non-authoritative engineering matching-byte snapshot H with soleparentM3, without moving historical HEAD.','finalCertification':'Create exactly one authoritative certification commit with soleparentH after native/hosted/frozenreceipt validation. Thus M3 and C3CB remain ancestors; no merge, amendment or rewritten historical checkpoint.','selfReference':False,'productionChanges':False,'pushSnapshot':False,'authoritativeCertificationCommitCount':1,'historicalCause':'UNRESOLVED'})
+for base in [out,tools]:
+ p=base/'.gitattributes';text=p.read_text(encoding='utf-8')
+ for f in sorted(base.rglob('*')):
+  if f.is_file() and f.suffix.lower() in ['.py','.mjs','.ps1','.json','.txt','.md','.yml'] and f.read_bytes().replace(b'\r\n',b'\n').endswith(b'\n\n'):
+   name=f.relative_to(base).as_posix();assert ' ' not in name;rule=name+' whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof\n'
+   if rule not in text:text+=rule
+ p.write_text(text,encoding='utf-8',newline='\n')
+cache=root/'.cache/mo1306-phase3a-certification';cache.mkdir(exist_ok=True);temp=cache/('harness-index-'+uuid.uuid4().hex);env={**os.environ,'GIT_INDEX_FILE':str(temp),'GIT_OPTIONAL_LOCKS':'0'};git('read-tree',M3,env=env)
+paths={r['path'] for r in before['files']};paths.update(p.relative_to(root).as_posix() for base in [out,tools] for p in base.rglob('*') if p.is_file())
+lines=[]
+for path in sorted(paths):
+ assert '\n' not in path and '\t' not in path
+ blob=git('hash-object','-w','--stdin',input=(root/path).read_bytes());lines.append('100644 '+blob+'\t'+path+'\n')
+git('update-index','--index-info',input=''.join(lines).encode(),env=env)
+git('diff','--cached','--check',M3,env=env)
+changed=git('diff','--cached','--name-only',M3,env=env).splitlines();allowed={'.github/workflows/mo1306-certification-'+c+'.yml' for c in ['pass','fail','cne']};assert all(p.startswith('repositories/cca-conformance/evidence/') or p.startswith('repositories/cca-conformance/tools/') or p in allowed for p in changed)
+tree=git('write-tree',env=env);assert git('rev-parse',tree+':repositories/memoryos-ci')==git('rev-parse',C3CB+':repositories/memoryos-ci')
+subject='test(memoryos-1.3): bind final MO-1306 certification harness'
+commit=git('commit-tree',tree,'-p',M3,'-m',subject);assert git('show','-s','--format=%P',commit)==M3 and git('rev-parse','HEAD')==OLD and idx.read_bytes()==idxbefore and git('for-each-ref','--format=%(refname) %(objectname)')==refs
+bound=[row(p) for p in sorted(tools.rglob('*')) if p.is_file()]
+put('harness-snapshot.json',{'kind':'MemoryOSPhase3AFinalMatchingByteHarnessSnapshot','status':'PASS','commit':commit,'tree':tree,'parent':M3,'productionAuthority':C3CB,'methodologyAuthority':M3,'subject':subject,'role':'NON_AUTHORITATIVE_PREREQUISITE_MATCHING_BYTE_HARNESS_BINDING','authoritativeCertification':False,'executionTiming':'Snapshot created after final native witness; exact executed runner/observer hashes match the committed bytes. Hosted campaign will execute these already committed harness bytes.','tools':bound,'addedPaths':len(changed),'historicalFilesPreserved':758,'headUnchanged':OLD,'realIndexUnchanged':True,'refsUnchanged':True,'productionChanges':False,'pushed':False,'tagged':False,'recordedUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'graphResolution':row(out/'graph-resolution.json')})
+print(json.dumps({'status':'PASS','commit':commit,'parent':M3,'tree':tree,'role':'NON_AUTHORITATIVE_HARNESS_SNAPSHOT','headUnchanged':OLD,'paths':len(changed)}))

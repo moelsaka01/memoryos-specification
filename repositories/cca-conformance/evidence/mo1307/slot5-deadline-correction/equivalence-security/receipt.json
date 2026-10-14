@@ -1,0 +1,118 @@
+{
+  "kind": "MO1307Slot5DeadlineCorrectionEngineeringReceipt",
+  "suite": "equivalence-security",
+  "result": "PASS",
+  "rows": [
+    {
+      "id": "exact-authorized-inverse",
+      "result": "PASS",
+      "detail": {
+        "baseCommit": "f1a78f64c13ad4ff06b8d31dc923331ad46ffe96",
+        "baseline": {
+          "path": "repositories/cca-conformance/evidence/mo1307/slot5-deadline-correction/equivalence-security/baseline-helper.ps1.data",
+          "byteLength": 29136,
+          "sha256": "sha256:f9d68d43cba57b5fc64e6bca13605ccf82f6afa9e1b0ac110bf9e4357bdbce69"
+        },
+        "candidate": {
+          "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+          "byteLength": 29153,
+          "sha256": "sha256:97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+        },
+        "inverseEqualsBaseExactly": true
+      }
+    },
+    {
+      "id": "closed-validated-call-sites",
+      "result": "PASS",
+      "detail": {
+        "rootBoundary": true,
+        "relativeBoundary": true,
+        "combinedLengthBoundary": true,
+        "openChainExternalSurface": false
+      }
+    },
+    {
+      "id": "native-observations-and-toctou-unchanged",
+      "result": "PASS",
+      "detail": {
+        "fiveComponentCheckOutput": {
+          "createFileWAttempts": 11,
+          "successfulChainHandles": 10,
+          "absenceAttempts": 1,
+          "readIdentityPasses": 15,
+          "heldAndFreshComparisons": 10,
+          "responseIdentities": 5
+        },
+        "initialHeldFreshObservations": "UNCHANGED",
+        "finalPathAndSevenFields": "UNCHANGED",
+        "nativeAbsenceError2": "UNCHANGED"
+      }
+    },
+    {
+      "id": "response-error-and-protocol-equivalence",
+      "result": "PASS",
+      "detail": {
+        "checkOutputSuccess": "ABSENT",
+        "existingOutput": "ERROR/MO1307_FILESYSTEM_BOUNDARY",
+        "presentSuccessState": false,
+        "canonicalResponseBytes": "UNCHANGED_CODE",
+        "errorMapping": "UNCHANGED_CODE",
+        "helperProtocol": "UNCHANGED_PRODUCT_MEMBER",
+        "filesystemBoundary": "UNCHANGED_CALLER_VALIDATION_PLUS_UNCHANGED_NATIVE_FINAL_PATH"
+      }
+    },
+    {
+      "id": "only-four-production-members-change",
+      "result": "PASS",
+      "detail": {
+        "changes": [
+          "repositories/memoryos-readiness/distribution-manifest.json",
+          "repositories/memoryos-readiness/helpers/README.md",
+          "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+          "repositories/memoryos-readiness/sbom.spdx.json"
+        ],
+        "packageCheck": {
+          "kind": "MO1307Phase1PackageCheck",
+          "version": "1.0.0",
+          "members": 89,
+          "contractMembers": 53,
+          "externalProductionDependencies": 0,
+          "archiveCertification": false
+        }
+      }
+    }
+  ],
+  "failure": null,
+  "helperExecutions": 0,
+  "productTestExecutions": 0,
+  "performanceEvidence": false,
+  "conclusions": {
+    "exactCheckOutputResponseEquivalence": true,
+    "exactErrorMapping": true,
+    "exactAbsentPresentSemantics": true,
+    "exactCanonicalBytes": true,
+    "unchangedFilesystemBoundaryRejection": true,
+    "unchangedFinalPathBehavior": true,
+    "unchangedToctouRequirements": true,
+    "unchangedHelperProtocol": true
+  },
+  "source": {
+    "path": "repositories/cca-conformance/evidence/mo1307/slot5-deadline-correction/validation-source.json",
+    "byteLength": 46929,
+    "sha256": "sha256:bddc52e472f8847f9f2e511804e6a746c4b951455bcfeae63655a1ebab73d3ab"
+  },
+  "sourceIdentity": "sha256:8ade4e1b48b1cb4ab990462a2d40a97507a9800dda6c3cab3aded161573d440f",
+  "acceptedCandidate": null,
+  "sourcesUnchanged": true,
+  "sourceFailure": null,
+  "runtime": {
+    "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+    "version": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+  },
+  "finishedUtc": "2026-09-30T19:43:01.151Z",
+  "retries": 0,
+  "certificationAcceptance": false
+}

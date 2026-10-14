@@ -1,0 +1,25 @@
+{
+  "historicalEvidenceChanged": false,
+  "observations": [
+    {
+      "cause": "Retained source lookup prepended the evidence prefix to an already complete tools path.",
+      "correction": "Distinguish full retained paths from evidence-relative paths; exact pinned schema bytes then validated.",
+      "id": "schema-source-path-lookup",
+      "result": "KeyError before schema validation"
+    },
+    {
+      "cause": "A 3C audit tool was introduced by the 3C commit and was absent from C3AB.",
+      "correction": "Bind retained audit tools to actual 3C commit blobs; compare product and pre-existing engineering dependencies from C3AB to C3CB.",
+      "id": "audit-tool-revision-lookup",
+      "result": "GIT_BLOB_REQUIRED before dependency reconciliation"
+    },
+    {
+      "cause": "Integration command wrapper used the product minimal environment for a Git engineering command.",
+      "correction": "Git uses explicit workspace/safe.directory and inherited engineering environment with optional locks disabled. Product build environment remains unchanged.",
+      "id": "git-environment-check",
+      "result": "Git diff exited 129: Not a git repository"
+    }
+  ],
+  "productionChanges": 0,
+  "scope": "Integration tooling observations only; no candidate identity mismatch, product defect, hosted claim or campaign was introduced."
+}

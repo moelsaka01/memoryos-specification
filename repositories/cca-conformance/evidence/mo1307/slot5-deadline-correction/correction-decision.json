@@ -1,0 +1,124 @@
+{
+  "schema": "memoryos.mo1307.slot5-deadline-correction-decision.v1",
+  "recordedAt": "2026-09-30T23:19:06.4534802+04:00",
+  "status": "SELECTED_BEFORE_PRODUCTION_EDIT",
+  "authority": {
+    "path": "repositories/cca-conformance/evidence/mo1307/slot5-deadline-correction/authorization.txt",
+    "sha256": "968b050475b625918869aa50520ff79eaf6c9f6635c42eb8fbc2c9f579160295"
+  },
+  "base": {
+    "commit": "f1a78f64c13ad4ff06b8d31dc923331ad46ffe96",
+    "tree": "669c321e69da21ec1fc1870104f7252a5bf1025f",
+    "branch": "codex/mo1307-slot5-deadline",
+    "helper": {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "sha256": "f9d68d43cba57b5fc64e6bca13605ccf82f6afa9e1b0ac110bf9e4357bdbce69"
+    },
+    "helperReadmeSha256": "f60c25549eabd260a2298ceec21a506a2cb334cd3a4f4d976c62f3a01ed04305",
+    "distributionManifestSha256": "873e02d542f2cf0e8b0cc6522e2323a94447fac142cbe2ccb9c1440260a2b85f",
+    "sbomSha256": "756d333ec5574f19bdb7391b8f1626023235f384cf59e91e7450b7d707ce8c92"
+  },
+  "firstFailure": {
+    "classification": "WHOLE_HELPER_LIFECYCLE_DID_NOT_SETTLE_BEFORE_5000_MS",
+    "stageLocalization": "NOT_ESTABLISHED",
+    "receipt": {
+      "path": "repositories/cca-conformance/evidence/mo1307/n17-correction/native-filesystem/receipt.json",
+      "sha256": "b7a853083aa512d14f4e889abb660a42bf0d42a2cdfe09a531dd4a098d373b44"
+    },
+    "case": 2,
+    "slot": 5,
+    "operation": "CHECK_OUTPUT",
+    "deadlineMs": 5000,
+    "observedSpawnSyncReturnMs": 5024.2634,
+    "exitCode": null,
+    "signal": "SIGTERM",
+    "error": "ETIMEDOUT",
+    "responseBytes": 0,
+    "stderrBytes": 0,
+    "interpretation": "The elapsed value is the engineering spawnSync launcher's return after timeout and termination, not a measured helper completion time. Zero output does not establish which internal stage remained active."
+  },
+  "comparison": {
+    "n17SameGenerationSlot4": {
+      "durationMs": 2145.5731,
+      "requestBytes": 294,
+      "requestSha256": "9ebe7421a723770cf6950694b0fea840123c5916c1d66ca141ab37a81933ef29",
+      "responseBytes": 1079,
+      "responseSha256": "b70262607df5ce92259649f4e6f104bbd1286123499764dca0761484bcaaf061",
+      "status": "ABSENT"
+    },
+    "n17Slot5": {
+      "durationMs": 5024.2634,
+      "requestBytes": 294,
+      "requestSha256": "71a9040815c137ac0980f9e985c1a03e23dfd57873f5940ba393f36d64113dad"
+    },
+    "requestDifference": "The two framed requests are byte-identical except at offset 196, where the ASCII sequence digit is 4 for the pass and 5 for the failure. Operation, session, output root, root id, files and protocol version are identical.",
+    "n15CurrentHelper": {
+      "receipt": "repositories/cca-conformance/evidence/mo1307/n15-correction/native-filesystem/receipt.json",
+      "receiptSha256": "33c76fe6888f9f5a8ca5c2f03e0ae1cd315d600e97be1ef5b468211bea422033",
+      "slot4DurationMs": 1471.5908,
+      "slot5DurationMs": 1319.8563,
+      "samePathExistingOutputDurationMs": 1306.4722,
+      "existingOutputResult": "ERROR/MO1307_FILESYSTEM_BOUNDARY"
+    },
+    "additionalSlot5Work": "No additional native or metadata work exists. Slot 5 differs from slot 4 only in closed sequence admission and the echoed sequence field."
+  },
+  "exactPath": [
+    "read the single framed request and require stdin EOF",
+    "strict UTF-8 decode, bounded JSON parse and exact canonical-request equality",
+    "closed schema, operation, session, sequence and output-root validation",
+    "derive the CHECK_OUTPUT parent from the validated normalized output root",
+    "open the complete drive-through-parent chain and capture initial native identities",
+    "probe exact output-leaf absence with CreateFileW and accept only ERROR_FILE_NOT_FOUND",
+    "reinspect every held handle",
+    "freshly reopen every chain component and reinspect it",
+    "compare all seven identity fields",
+    "construct and canonically serialize the ABSENT response",
+    "write and flush the framed response, exit, and require process plus all pipe settlement"
+  ],
+  "selectedOptimization": {
+    "count": 1,
+    "file": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+    "function": "Open-Chain",
+    "exactWorkRemoved": "The second Assert-Root lexical pass over a path that the request boundary already validated and bounded.",
+    "whyNonAuthoritative": "Every Open-Chain input is derived solely from an already Assert-Root-validated normalized root, optionally joined to an Assert-Relative-validated path with a full-length check, shortened to the CHECK_OUTPUT parent, or extended by a fixed pending name with a length check. The removed pass performs only repeated Replace, Split and segment regex work and obtains no native observation.",
+    "latencyMechanism": "Eliminate one repeated normalization and per-segment lexical scan before native chain acquisition. No claim is made that retained evidence proves this saving is sufficient or localizes the failed helper stage.",
+    "implementation": "Delete the redundant Assert-Root call at the Open-Chain boundary and update the adjacent Read-Identity comment so it credits request/caller validation rather than Open-Chain itself.",
+    "precedent": {
+      "commit": "58c98b7eb0aa2d07bab78753ce66b564066aafeb",
+      "evidence": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/optimization-design-pass1.json",
+      "evidenceSha256": "1190d225d40a932e8adea82a0e3d1094b4423a1150ce5066e8a3f29aff2c5939"
+    }
+  },
+  "preservedInvariants": {
+    "wireVersion": "2.0.0",
+    "successfulCheckOutputSemantics": "ABSENT only; an existing output remains ERROR/MO1307_FILESYSTEM_BOUNDARY",
+    "nativeWorkForFiveComponentCheckOutput": {
+      "createFileWAttempts": 11,
+      "successfulChainHandles": 10,
+      "requiredInvalidLeafAbsenceAttempt": 1,
+      "readIdentityPasses": 15,
+      "getFileInformationByHandleCalls": 15,
+      "getFileTypeCalls": 15,
+      "getFinalPathNameByHandleWCalls": 15,
+      "heldAndFreshIdentityComparisons": 10,
+      "responseIdentities": 5
+    },
+    "security": [
+      "initial chain identities",
+      "native exact-leaf absence and GetLastError equals 2",
+      "held-handle reinspection",
+      "fresh reopen and reinspection",
+      "all seven-field identity comparisons",
+      "reparse, type, link-count, volume and final-path predicates",
+      "all handle closure"
+    ],
+    "runtime": [
+      "fixed executable and launch arguments",
+      "sole-helper console membership and self-detachment",
+      "helper process and all three redirected transports settling",
+      "helper 5000 ms, aggregate 20000 ms, CLI 30000 ms, API/worker 10000 ms and cleanup 2000 ms bounds",
+      "no retry, grace, epsilon, cross-request cache or timeout forgiveness"
+    ]
+  },
+  "nextGate": "Apply only the selected production correction, refresh exact package metadata, then establish static/managed equivalence and security before either authorized performance witness is executed."
+}

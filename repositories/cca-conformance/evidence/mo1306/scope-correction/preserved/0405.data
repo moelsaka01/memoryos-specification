@@ -1,0 +1,39 @@
+"""Independent native receipt/M3 transition validation, entirely offline."""
+import argparse,copy,hashlib,importlib.util,json,sys
+from pathlib import Path
+sys.dont_write_bytecode=True
+ROOT=Path(__file__).resolve().parents[4];HERE=Path(__file__).resolve().parent;OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-certification';MAIN=Path(r'C:\Users\melsa\Documents\Codex\cca-workspace');M3='85a0f85c1ebd013c545ccf2b3efe58a760e6cf37';C3CB='701d48ee2012675966360dda775ab13013c09ab9'
+def module(name,path):
+ s=importlib.util.spec_from_file_location(name,path);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
+witness=module('actual_final_witness',HERE/'witness.py');reuse=module('exact_retained_reuse',HERE/'reuse.py')
+sys.path.insert(0,str(MAIN/'repositories/cca-conformance/tools/mo1306-methodology-b'));import rule
+need=witness.need
+def verify():
+ a=witness.prior.Audit();load=lambda n:json.loads(a.raw(OUT/n));gate=load('m3-verification.json');a.walk(gate)
+ actual_witness=witness.verify();actual_reuse=reuse.verify();saved_witness=load('witness-validation.json');saved_reuse=load('reused-evidence.json');need(actual_witness==saved_witness and actual_reuse==saved_reuse,'STALE_INDEPENDENT_VALIDATION')
+ receipt=load('native-receipt.json');a.walk(receipt);sidecar=load('methodology-sidecar.json');ledger=load('all-attempt-ledger.json');a.walk(ledger);a.walk(sidecar['attempts'])
+ casepath=MAIN/'repositories/cca-conformance/evidence/mo1306/methodology-b/eligibility.json';case=json.loads(a.raw(casepath));witness.prior.old.Audit().walk(sidecar['disclosure'],MAIN)
+ need(receipt['status']=='PASS' and receipt['productionAuthority']==C3CB and receipt['methodologyAuthority']==M3 and receipt['nativeEvidenceComplete'] is True and receipt['hostedCertified'] is False,'NATIVE_CLAIM_SCOPE')
+ need(receipt['historicalFailure']['history']==case['history'] and receipt['historicalFailure']['resolved'] is False and receipt['historicalFailure']['causalClaim'] is None and receipt['historicalCauseEstablished'] is False,'HISTORICAL_REWRITE')
+ need(receipt['recurrenceObserved'] is False and receipt['finalWitnessExecutionCount']==ledger['finalExecutionCount']==1 and ledger['additionalFinalExecutionsAllowed']==0 and receipt['finalAttemptAuthorizationConsumed'] is True,'RECURRENCE_OR_LEDGER')
+ need(receipt['retainedNativeGroups']['ids']==reuse.GROUPS and receipt['retainedNativeGroups']['rerunCount']==0 and len(receipt['retainedNativeGroups']['originalCases'])==8,'REUSE_SCOPE')
+ need(receipt['retainedNativeGroups']['independentDependencyValidation']==a.row(OUT/'reused-evidence.json') and receipt['witnessValidation']==a.row(OUT/'witness-validation.json'),'NATIVE_VALIDATOR_BINDING')
+ start=load('final-witness-ledger-start.json');need(ledger['attemptCount']==len(ledger['attempts'])==6 and ledger['attempts'][:5]==start['historicalAndDiagnosticAttempts'],'ALL_ATTEMPTS_ACCOUNTED')
+ last=ledger['attempts'][-1];need(last['class']=='FINAL_CERTIFICATION_WITNESS' and last['status']=='PASS' and last['attemptId']==actual_witness['attemptId'] and last['actual']==actual_witness['actual'] and last==receipt['acceptedFinalWitness'],'FINAL_ATTEMPT_DRIFT')
+ need([x['attemptId'] for x in ledger['attempts'][:5]]==[case['history']['attemptId'],*case['plan']['faithfulIds'],case['plan']['enhancedId']],'HISTORY_LEDGER_SET')
+ required={a.row(OUT/n)['path'] for n in ['witness-validation.json','reused-evidence.json','all-attempt-ledger.json','final-witness-outcome.json']}
+ def real_evidence(attempt):
+  need(attempt['id']==actual_witness['attemptId'] and attempt['candidate']==case['candidate'] and attempt['result']=='PASS' and attempt['recurrence'] is False,'REAL_ATTEMPT_REQUIRED');a.walk(attempt['evidence']);need(required<={r['path'] for r in attempt['evidence']},'MISSING_FINAL_DEPENDENCIES');need(all(r in attempt['evidence'] for r in actual_witness['bundleFiles']),'MISSING_REAL_FINAL_BUNDLE');return actual_witness['acceptedFinalWitness'] is True and actual_reuse['retainedGroupCount']==8
+ transition=rule.final_transition(case,sidecar,M3,real_evidence);need(transition=='NATIVE_MISSING_INPUT_GATE_ACCEPTABLE_HOSTED_STILL_REQUIRED','M3_TRANSITION')
+ negatives=[]
+ for name,change in [('second-final-attempt',lambda v:v['attempts'].append(copy.deepcopy(v['attempts'][0]))),('historical-diagnostic-as-final',lambda v:v['attempts'][0].update(id=case['plan']['enhancedId'])),('missing-all-attempts',lambda v:v.update(allAttemptsAccounted=False)),('wrong-M3-revision',lambda v:v.update(methodologyRevision=C3CB)),('unverified-reused-evidence',lambda v:v.update(retainedGroupsVerified=False))]:
+  bad=copy.deepcopy(sidecar);change(bad)
+  try:rule.final_transition(case,bad,M3,real_evidence)
+  except AssertionError as e:negatives.append({'id':name,'status':'REJECTED','reason':str(e)})
+  else:raise AssertionError('NEGATIVE_ACCEPTED '+name)
+ return {'kind':'MemoryOSPhase3ANativeIndependentValidation','status':'PASS','productionAuthority':C3CB,'methodologyAuthority':M3,'nativeCertified':True,'genericLabel':'REAL_EXECUTION_CERTIFIED','githubHostedCertified':False,'githubLabel':'PENDING_HOSTED_EXECUTION','historicalDisposition':'FAIL / UNRESOLVED','historicalCauseResolved':False,'transition':transition,'nativeReceipt':a.row(OUT/'native-receipt.json'),'methodologySidecar':a.row(OUT/'methodology-sidecar.json'),'allAttemptLedger':a.row(OUT/'all-attempt-ledger.json'),'witnessValidation':a.row(OUT/'witness-validation.json'),'reuseValidation':a.row(OUT/'reused-evidence.json'),'actualWitnessRunId':actual_witness['actual']['runId'],'finalExecutionCount':1,'retainedGroups':reuse.GROUPS,'productExecutionsByValidator':0,'negativeControls':negatives,'methodologyRule':a.row(MAIN/'repositories/cca-conformance/tools/mo1306-methodology-b/rule.py'),'validator':a.row(Path(__file__))}
+if __name__=='__main__':
+ p=argparse.ArgumentParser();p.add_argument('--check',action='store_true');args=p.parse_args();v=verify()
+ if not args.check:
+  target=OUT/'native-validation.json';need(not target.exists(),'IMMUTABLE_OUTPUT');target.write_text(json.dumps(v,sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8')
+ print(json.dumps({'status':'PASS','nativeCertified':True,'githubHostedCertified':False,'transition':v['transition'],'negativeControls':len(v['negativeControls'])}))

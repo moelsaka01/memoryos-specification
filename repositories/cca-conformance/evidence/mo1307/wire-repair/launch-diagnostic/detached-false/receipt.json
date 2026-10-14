@@ -1,0 +1,247 @@
+{
+  "name": "detached-false",
+  "detached": false,
+  "result": "OBSERVATION_RECORDED",
+  "launch": {
+    "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "args": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\m7fix\\repositories\\cca-conformance\\tools\\mo1307-wire-repair\\launch-probe.ps1",
+      "C:\\m7fix\\repositories\\cca-conformance\\evidence\\mo1307\\wire-repair\\launch-diagnostic\\detached-false\\private-probe"
+    ],
+    "options": {
+      "cwd": "C:\\m7fix\\repositories\\memoryos-readiness\\",
+      "env": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true,
+      "detached": false,
+      "shell": false,
+      "stdio": [
+        "pipe",
+        "pipe",
+        "pipe"
+      ]
+    }
+  },
+  "request": {
+    "path": "repositories/cca-conformance/evidence/mo1307/wire-repair/launch-diagnostic/detached-false/request.bin",
+    "byteLength": 350,
+    "sha256": "sha256:2c945ed527c248ca442e03330711b93026d914849715099f269f5398cd433328"
+  },
+  "events": [
+    {
+      "event": "spawn",
+      "atMs": 8.680700000000002
+    },
+    {
+      "event": "stdin-end-callback",
+      "atMs": 836.3036
+    },
+    {
+      "event": "stdin-finish",
+      "atMs": 836.3387
+    },
+    {
+      "event": "stdin-close",
+      "atMs": 836.4635000000001
+    },
+    {
+      "event": "stdout-end",
+      "atMs": 879.125
+    },
+    {
+      "event": "stderr-end",
+      "atMs": 879.2381
+    },
+    {
+      "event": "stderr-close",
+      "atMs": 879.3713
+    },
+    {
+      "event": "stdout-close",
+      "atMs": 879.3821
+    },
+    {
+      "event": "exit",
+      "atMs": 888.5034,
+      "code": 0,
+      "signal": null
+    },
+    {
+      "event": "process-close",
+      "atMs": 888.5328,
+      "code": 0,
+      "signal": null
+    }
+  ],
+  "startedAt": "2026-09-30T12:39:48.240Z",
+  "productHelperInvoked": false,
+  "pid": 6184,
+  "exit": 0,
+  "signal": null,
+  "elapsedMs": 888.5722000000001,
+  "streams": {
+    "stdinFinish": true,
+    "stdinClose": true,
+    "stdoutEnd": true,
+    "stdoutClose": true,
+    "stderrEnd": true,
+    "stderrClose": true
+  },
+  "stdoutTotalBytes": 350,
+  "stderrTotalBytes": 0,
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/wire-repair/launch-diagnostic/detached-false/stdout.data",
+    "byteLength": 350,
+    "sha256": "sha256:2c945ed527c248ca442e03330711b93026d914849715099f269f5398cd433328"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/wire-repair/launch-diagnostic/detached-false/stderr.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "captureTruncated": false,
+  "entryMarkerExists": true,
+  "stateExists": true,
+  "entryMarker": {
+    "path": "repositories/cca-conformance/evidence/mo1307/wire-repair/launch-diagnostic/detached-false/private-probe.entry",
+    "byteLength": 12,
+    "sha256": "sha256:fba1d20bebb961d2ffec7a124a3c5e62e3a6af12972fcfea2783846da8f17c91"
+  },
+  "stateBinding": {
+    "path": "repositories/cca-conformance/evidence/mo1307/wire-repair/launch-diagnostic/detached-false/private-probe.state.json",
+    "byteLength": 2011,
+    "sha256": "sha256:837170c21e121c5bf15496b4d23ceae67d9cff679c0e7fca2b2e30d32618a0da"
+  },
+  "state": {
+    "kind": "MO1307EngineeringLaunchProbe",
+    "phase": "COMPLETE",
+    "pid": 6184,
+    "powerShellVersion": "5.1.26100.9444",
+    "is64Bit": true,
+    "productionHelperInvoked": false,
+    "nativeMutationPerformed": false,
+    "rawStandardHandles": [
+      {
+        "channel": "stdin",
+        "selector": -10,
+        "handleHex": "00000000000002EC",
+        "isNull": false,
+        "isInvalid": false,
+        "getStdHandleLastError": 0,
+        "fileType": 3,
+        "fileTypeLastError": 0
+      },
+      {
+        "channel": "stdout",
+        "selector": -11,
+        "handleHex": "00000000000002F4",
+        "isNull": false,
+        "isInvalid": false,
+        "getStdHandleLastError": 0,
+        "fileType": 3,
+        "fileTypeLastError": 0
+      },
+      {
+        "channel": "stderr",
+        "selector": -12,
+        "handleHex": "00000000000002FC",
+        "isNull": false,
+        "isInvalid": false,
+        "getStdHandleLastError": 0,
+        "fileType": 3,
+        "fileTypeLastError": 0
+      }
+    ],
+    "startupInfo": {
+      "layout": "STARTUPINFOW-x64",
+      "bufferBytes": 104,
+      "cb": 104,
+      "flags": 257,
+      "showWindow": 0,
+      "reserved2Bytes": 31,
+      "standardHandles": [
+        {
+          "channel": "stdin",
+          "offset": 80,
+          "handleHex": "00000000000002EC",
+          "isNull": false,
+          "isInvalid": false,
+          "fileType": 3,
+          "fileTypeLastError": 0
+        },
+        {
+          "channel": "stdout",
+          "offset": 88,
+          "handleHex": "00000000000002F4",
+          "isNull": false,
+          "isInvalid": false,
+          "fileType": 3,
+          "fileTypeLastError": 0
+        },
+        {
+          "channel": "stderr",
+          "offset": 96,
+          "handleHex": "00000000000002FC",
+          "isNull": false,
+          "isInvalid": false,
+          "fileType": 3,
+          "fileTypeLastError": 0
+        }
+      ]
+    },
+    "console": {
+      "windowHex": "0000000000000000",
+      "windowIsNull": true,
+      "processListCapacity": 16,
+      "processCount": 1,
+      "lastError": 0,
+      "memberPids": [
+        6184
+      ],
+      "listComplete": true,
+      "soleSelf": true,
+      "hostPidInferred": false
+    },
+    "managedStreams": [
+      {
+        "channel": "stdin",
+        "type": "System.IO.__ConsoleStream",
+        "isStreamNull": false,
+        "canRead": true,
+        "canWrite": false,
+        "canSeek": false
+      },
+      {
+        "channel": "stdout",
+        "type": "System.IO.__ConsoleStream",
+        "isStreamNull": false,
+        "canRead": false,
+        "canWrite": true,
+        "canSeek": false
+      },
+      {
+        "channel": "stderr",
+        "type": "System.IO.__ConsoleStream",
+        "isStreamNull": false,
+        "canRead": false,
+        "canWrite": true,
+        "canSeek": false
+      }
+    ],
+    "inputEof": true,
+    "inputByteLength": 350,
+    "inputSha256": "sha256:2c945ed527c248ca442e03330711b93026d914849715099f269f5398cd433328",
+    "writeReturned": true,
+    "writeRequestedBytes": 350,
+    "flushReturned": true
+  },
+  "observation": "SCRIPT_ENTRY_AND_EXACT_BINARY_ECHO"
+}

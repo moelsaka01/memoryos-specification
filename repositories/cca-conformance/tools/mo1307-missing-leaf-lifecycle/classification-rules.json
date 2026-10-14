@@ -1,0 +1,16 @@
+{
+  "kind": "MO1307MissingLeafLifecycleClassificationRules",
+  "version": 1,
+  "clock": "On Windows, Node process.hrtime.bigint and System.Diagnostics.Stopwatch use QueryPerformanceCounter. Raw values are converted to nanoseconds and must align with marker-receipt causality; any origin/order mismatch is DIAGNOSTIC_INCOMPLETE.",
+  "buckets": [
+    { "name": "COMMON_STARTUP_COST_DOMINANT", "start": "T0", "end": "T5", "meaning": "process start, script entry, native initialization, framed request read, parse/schema, and admission validation" },
+    { "name": "COMMON_ACQUISITION_COST_DOMINANT", "start": "T5", "end": "T6", "meaning": "common checked root acquisition before the first file attempt" },
+    { "name": "MISSING_LEAF_ACQUISITION_COST_DOMINANT", "start": "T6", "end": "T8", "meaning": "checked file-prefix traversal, missing-leaf decision, and mandatory acquisition unwind" },
+    { "name": "SERIALIZATION_COST_DOMINANT", "start": "T8", "end": "T12", "meaning": "error mapping, response construction, canonical serialization, and response write" },
+    { "name": "SETTLEMENT_COST_DOMINANT", "start": "T12", "end": "T14", "meaning": "diagnostic final trace, helper exit, process close, and all three pipe closures" }
+  ],
+  "dominance": "A bucket is dominant only when it is the unique bucket whose measured duration is greater than 50 percent of T0-T14.",
+  "fallback": "NO_SINGLE_DOMINANT_COST",
+  "incomplete": "DIAGNOSTIC_INCOMPLETE when T0-T14, every T1-T13 helper tick, every external marker receipt, exact T8/T10 counters, QPC alignment, or monotonic/order checks are unavailable or invalid. A product timeout with complete evidence is classified normally. The exact helper lease deadline from the supervisor start event is paired from performance.now to QPC with measured pairing uncertainty; if the flushed T13 marker may cross it, the result is incomplete as instrumentation contamination.",
+  "limits": { "helperWholeLifecycleMs": 5000, "failureCleanupMs": 2000, "invocations": 1, "retries": 0, "alternateInputs": 0 }
+}

@@ -1,0 +1,40 @@
+{
+  "kind": "MemoryOSPhase2DSourceGateDiagnostic",
+  "version": "1.0.0",
+  "sourceRevision": "e1c990bf65d0c7925a68eea8222cd304f8ce6db6",
+  "scope": "Read-only pure generation from exact source commit. No workflow execution or provider access.",
+  "workflow": {
+    "path": ".github/workflows/memoryos-ci.yml",
+    "byteLength": 2957,
+    "sha256": "9c5561d53b7602d22d98d5131dcf90e950e421165a4fe57eddf8a306014fa28d"
+  },
+  "checks": [
+    {
+      "id": "pinned-node-bootstrap",
+      "pass": false,
+      "requirement": "Freeze 16.5 step 3: download and verify exact Node ZIP and executable"
+    },
+    {
+      "id": "node-bootstrap-capability",
+      "pass": false,
+      "requirement": "Freeze 16.1/16.5: establish protected absolute Node capability"
+    },
+    {
+      "id": "complete-success-output",
+      "pass": false,
+      "requirement": "Freeze 16.5 step 4: publish true only after complete bundle verification"
+    },
+    {
+      "id": "run-id-output",
+      "pass": false,
+      "requirement": "Freeze 16.5 step 4: write verified run ID to GITHUB_OUTPUT"
+    },
+    {
+      "id": "upload-basename-allowlist",
+      "pass": false,
+      "requirement": "Freeze 16.5 step 5: upload exact allowed basenames, not entire directory"
+    }
+  ],
+  "status": "FAIL",
+  "note": "Static requirement checks are corroborated by complete manual review of the fixed source generator. They do not assert hosted behavior was executed."
+}

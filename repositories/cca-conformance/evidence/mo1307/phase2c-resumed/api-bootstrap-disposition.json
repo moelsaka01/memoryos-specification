@@ -1,0 +1,16 @@
+{
+  "kind": "MO1307APIBootstrapReviewDisposition",
+  "version": "1.0.0",
+  "productFinding": "2C API admission selected a later ACQUISITION size failure before malformed CONFIGURATION, and copied envelopes under the raw-source cap.",
+  "classification": "PRODUCT_DEFECT",
+  "fix": "Validate detached bounded bootstrap records with phase-priority selection/checkpoints at entry; derive exact manifest file cap before copying file bytes. Authority and full evaluation remain worker-only.",
+  "regressionAttempt1": {
+    "tests": 9,
+    "pass": 8,
+    "fail": 1,
+    "classification": "HARNESS_DEFECT",
+    "cause": "JSON.parse received structuredClone Uint8Array directly, whose string coercion is comma-separated numeric bytes.",
+    "fix": "Use Buffer.from(bytes) to decode UTF-8 before JSON.parse; no production change."
+  },
+  "regressionAttempt2": "api-bootstrap-attempt2.stdout.txt"
+}

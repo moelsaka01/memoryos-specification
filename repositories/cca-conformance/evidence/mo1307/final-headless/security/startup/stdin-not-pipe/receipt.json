@@ -1,0 +1,94 @@
+{
+  "name": "stdin-not-pipe",
+  "kind": "EXACT_EXTRACTED_FUNCTION_WITH_NATIVE_DOUBLE",
+  "expectedExit": 22,
+  "accepted": false,
+  "result": "PASS",
+  "nativeProductHelper": false,
+  "realHostProof": false,
+  "events": [
+    {
+      "event": "stdin-finish",
+      "elapsedMs": 9.91879999999992
+    },
+    {
+      "event": "stdin-close",
+      "elapsedMs": 9.9703999999997
+    },
+    {
+      "event": "stdout-end",
+      "elapsedMs": 564.4324999999999
+    },
+    {
+      "event": "stderr-end",
+      "elapsedMs": 564.5856999999996
+    },
+    {
+      "event": "stderr-close",
+      "elapsedMs": 564.7356
+    },
+    {
+      "event": "stdout-close",
+      "elapsedMs": 564.7470999999996
+    },
+    {
+      "event": "exit",
+      "elapsedMs": 575.4489999999996,
+      "code": 22,
+      "signal": null
+    }
+  ],
+  "pid": 4260,
+  "exitCode": 22,
+  "exitSignal": null,
+  "elapsedMs": 575.5087999999996,
+  "proof": {
+    "path": "repositories/cca-conformance/evidence/mo1307/final-headless/security/startup/stdin-not-pipe/proof.json",
+    "byteLength": 490,
+    "sha256": "sha256:2b005e0a718e6cdbfdc43b7f4ccf9b47a16750f9a62cf0bc29e3e64003505f57"
+  },
+  "observed": {
+    "configuredErrorContext": null,
+    "nativeLastErrorSet": false,
+    "membershipCalls": 0,
+    "freeConsoleCalls": 0,
+    "kind": "MO1307ExtractedHeadlessStartupSimulation",
+    "scenario": "stdin-not-pipe",
+    "accepted": false,
+    "failure": "MO1307_INTERNAL",
+    "failureType": "System.InvalidOperationException",
+    "events": [
+      {
+        "name": "GetStdHandle",
+        "arguments": [
+          -10
+        ]
+      },
+      {
+        "name": "GetFileType",
+        "arguments": [
+          10
+        ]
+      }
+    ],
+    "detached": false,
+    "productionFunctionUnmodified": true,
+    "nativeProcessOperationsPerformed": false,
+    "realHostIdentityProof": false
+  },
+  "closed": true,
+  "timedOut": false,
+  "cleanupExpired": false,
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/final-headless/security/startup/stdin-not-pipe/stdout.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/final-headless/security/startup/stdin-not-pipe/stderr.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stdoutBytes": 0,
+  "stderrBytes": 0
+}

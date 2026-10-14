@@ -1,0 +1,97 @@
+"""Create closed Freeze1 native receipts after a real matching-byte harness snapshot exists."""
+import hashlib,json,os,platform,subprocess,sys
+from pathlib import Path
+sys.dont_write_bytecode=True
+ROOT=Path(__file__).resolve().parents[4];HERE=Path(__file__).resolve().parent;CONF=ROOT/'repositories/cca-conformance';BASE=CONF/'evidence/mo1306/phase3a-certification';OLD=CONF/'evidence/mo1306/phase3a-final/native/20260927T120240-b3df86';INSTALLED=ROOT/'.cache/mo1306-phase3a-final/install/node_modules/memoryos-ci'
+sys.path.insert(0,str(ROOT/'.cache/mo1306/validators'))
+from jsonschema import Draft202012Validator
+C3CB='701d48ee2012675966360dda775ab13013c09ab9';M3='85a0f85c1ebd013c545ccf2b3efe58a760e6cf37'
+def read(p):return json.loads(p.read_bytes())
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def ref(p):
+ b=p.read_bytes();return {'path':p.relative_to(ROOT).as_posix(),'byteLength':len(b),'sha256':sha(b)}
+def put(p,v):
+ b=(json.dumps(v,sort_keys=True,separators=(',',':'))+'\n').encode();assert len(b)<=2*1024*1024
+ with p.open('xb') as f:f.write(b);f.flush();os.fsync(f.fileno())
+ return ref(p)
+def git(*args):return subprocess.check_output(['git',*args],cwd=ROOT)
+def checked(row):
+ p=ROOT/row['path'];assert ref(p)==row;return p
+
+def main():
+ assert len(sys.argv)==2;harness=sys.argv[1];assert len(harness)==40 and all(c in '0123456789abcdef' for c in harness)
+ assert git('rev-parse',harness+'^').decode().strip()==M3,'HARNESS_PARENT_M3'
+ assert git('rev-parse',M3+'^').decode().strip()==C3CB
+ assert read(BASE/'native-validation.json')['status']=='PASS'
+ schemaPath=CONF/'schema/mo1306-receipt-1.0.0.json';schema=read(schemaPath);Draft202012Validator.check_schema(schema);validator=Draft202012Validator(schema)
+ native=read(BASE/'native-receipt.json');pre=read(BASE/'final-witness-preflight.json');outcome=read(BASE/'final-witness-outcome.json');observed=read(checked(outcome['observed']));trace=read(checked(observed['trace']));original=read(OLD/'summary.json')
+ assert native['status']=='PASS' and observed['exitCode']==11 and observed['actual']['publication']=='COMPLETE'
+ # Match every executed driver/observer byte to the existing prerequisite snapshot.
+ toolpaths=set()
+ for row in [pre['runner'],pre['wrapper'],pre['observer'],pre['traceValidator'],pre['reviewedWrapper']]:toolpaths.add(checked(row))
+ oldpre=read(OLD/'preflight.json')
+ def collecttools(v):
+  if isinstance(v,dict):
+   if isinstance(v.get('path'),str) and 'repositories/cca-conformance/tools/' in v['path'] and v.get('sha256'):
+    toolpaths.add(checked(v))
+   for x in v.values():collecttools(x)
+  elif isinstance(v,list):
+   for x in v:collecttools(x)
+ collecttools(oldpre['bindings'])
+ matching=[]
+ for p in sorted(toolpaths):
+  row=ref(p);assert git('show',harness+':'+row['path'])==p.read_bytes(),'HARNESS_BYTE_DRIFT';matching.append(row)
+ # Existing source-bound lifecycle/oracle/corrected helper tooling may reside on read-only main.
+ sourceToolBindings=[]
+ for name in ['lifecycleDriver','oracleDriver']:
+  row=oldpre['bindings'][name];relative='repositories/'+row['path'].replace('\\','/').split('/repositories/',1)[1]
+  data=git('show',harness+':'+relative);assert len(data)==row['byteLength'] and sha(data)==row['sha256']
+  sourceToolBindings.append({'path':relative,'byteLength':len(data),'sha256':sha(data)})
+ for row in oldpre['bindings']['sourceBindings']:
+  if row['source'].startswith('repositories/cca-conformance/tools/'):
+   data=git('show',harness+':'+row['source']);assert len(data)==row['byteLength'] and sha(data)==row['sha256']
+   sourceToolBindings.append({'path':row['source'],'byteLength':len(data),'sha256':sha(data)})
+ matching.extend(row for row in sourceToolBindings if row not in matching)
+ assert platform.system()=='Windows' and platform.machine()=='AMD64' and platform.version()=='10.0.26200'
+ environment={'os':'Windows 11','osBuild':platform.version(),'architecture':'x64','nodeVersion':'24.21.0','nodeSha256':pre['node']['sha256'],'hostedRun':None}
+ environmentEvidence=put(BASE/'native-environment.json',{'kind':'MemoryOSNativeReceiptEnvironmentBinding','status':'PASS','environment':environment,'retainedExecutionOs':oldpre['bindings']['os'],'retainedArchitecture':oldpre['bindings']['architecture'],'currentReadOnlyHostObservation':platform.platform(),'assumption':'Same native host session and unchanged environment allowlist as independently checked by exact reuse validation. No product process is launched here.'})
+ identities={'contractDigest':sha((INSTALLED/'contracts/contract.json').read_bytes()),'distributionDigest':sha((INSTALLED/'distribution-manifest.json').read_bytes()),'runtimeClosureDigest':sha((INSTALLED/'runtime/runtime-closure-manifest.json').read_bytes())}
+ limitations=['Historical attempt20260927T120240-b3df86 remains FAIL / UNRESOLVED and its original blocked receipt is unchanged. M3 prospectively permits the one final witness; no historical cause is claimed.','Harnesses executed from uncommitted files. harnessRevision is the existing subsequent matching-byte engineering snapshot, not a claimed execution-time revision. Production authority remains C3CB.','Eight groups are reused by exact dependency review; thirteen accepted command traces belong to those eight groups. The original missing-input failure is excluded from accepted cases and explicitly disclosed in separate evidence.','Native scope only; no GitHub hosted certification is conferred by this receipt.','Process topology is sampled. Observer bookkeeping is not subtracted from product deadlines.']
+ def receipt(identifier,cases,paths,reused):
+  v={'kind':'MemoryOSCICDConformanceReceipt','version':'1.0.0','id':identifier,'implementationRevision':C3CB,'harnessRevision':harness,**identities,'scope':{'provider':'generic','platform':'windows-11-x64','validationMode':'REAL_EXECUTION'},'environment':environment,'cases':sorted(cases,key=lambda c:c['id']),'artifacts':sorted([ref(p) for p in set(paths)],key=lambda r:r['path']),'reusedEvidence':reused,'limitations':limitations,'status':'PASS'}
+  validator.validate(v);assert len(v['artifacts'])<=4096 and len({a['path'] for a in v['artifacts']})==len(v['artifacts'])
+  for c in v['cases']:
+   assert c['status']=='PASS' and set(c['evidencePaths'])<={a['path'] for a in v['artifacts']}
+  return v
+ retainedPaths={schemaPath,ROOT/environmentEvidence['path'],BASE/'reused-evidence.json',CONF/'evidence/mo1306/phase3a-final/reuse-analysis.json',OLD/'preflight.json',*toolpaths}
+ retainedCases=[]
+ for command in original['commands']:
+  if command['status']!='PASS':continue
+  t=read(checked(command['trace']));p=ROOT/command['trace']['path'];retainedPaths.add(p)
+  retainedCases.append({'id':command['id'],'status':'PASS','command':t['command'],'exitCode':t['exitCode'],'elapsedMs':t['elapsedMs'],'evidencePaths':[command['trace']['path']]})
+ assert len(retainedCases)==13
+ for group in native['retainedNativeGroups']['originalCases']:
+  p=checked(group);retainedPaths.add(p);v=read(p)
+  for row in v.get('bundleFiles',[]):retainedPaths.add(checked(row))
+  if 'report' in v:retainedPaths.add(checked(v['report']))
+  for row in v.get('files',[]):retainedPaths.add(checked(row))
+ for parity in native['semanticParity']:
+  retainedPaths.add(checked(parity['oracle']))
+  for row in parity['oracleFiles']:retainedPaths.add(checked(row))
+ retained=receipt('mo1306-phase3a-retained-native',retainedCases,retainedPaths,[])
+ retainedRef=put(BASE/'mo1306-phase3a-retained-native.json',retained)
+ witnessPaths={schemaPath,ROOT/environmentEvidence['path'],ROOT/retainedRef['path'],*toolpaths}
+ for name in ['native-receipt.json','native-validation.json','methodology-sidecar.json','all-attempt-ledger.json','m3-verification.json','final-witness-ledger-start.json','final-witness-authorization-consumed.json','final-witness-go.json','final-witness-preflight.json','final-witness-protocol.json','final-witness-outcome.json','witness-validation.json','reused-evidence.json']:
+  witnessPaths.add(BASE/name)
+ run=checked(outcome['observed']).parent
+ witnessPaths.update(p for p in run.rglob('*') if p.is_file())
+ newcase={'id':'final-missing-input','status':'PASS','command':trace['command'],'exitCode':trace['exitCode'],'elapsedMs':trace['elapsedMs'],'evidencePaths':[observed['trace']['path'],outcome['observed']['path'],str((BASE/'witness-validation.json').relative_to(ROOT)).replace('\\','/')]}
+ reuse=[{'receiptId':retained['id'],'sha256':retainedRef['sha256'],'reason':'Exactly eight retained accepted groups, represented by thirteen actual successful command rows, remain compatible with C3CB and pinned runtime. Independent reused-evidence.json validates candidate, tool/input, environment, scope and receipt identity; no group reran. Historical ninth-group failure is not reused as success.','unchangedArtifactDigests':sorted(set(a['sha256'] for a in retained['artifacts']))}]
+ final=receipt('mo1306-phase3a-native',[newcase],witnessPaths,reuse);finalRef=put(BASE/'mo1306-phase3a-native.json',final)
+ # Immediate offline closure validation; no product import or CLI invocation.
+ assert final['reusedEvidence'][0]['sha256']==sha((ROOT/retainedRef['path']).read_bytes())
+ for v in [retained,final]:
+  for row in v['artifacts']:checked(row)
+ status={'kind':'MemoryOSFrozenNativeReceiptValidation','status':'PASS','schema':ref(schemaPath),'receipts':[retainedRef,finalRef],'actualProductExecutions':0,'closedSchemaFields':len(schema['required']),'retainedGroups':8,'retainedCommandRows':13,'newFinalWitnessCases':1,'harnessRevision':harness,'harnessParent':M3,'productionAuthority':C3CB,'matchingExecutedTools':matching,'historicalFailureRetained':True,'methodologySidecar':ref(BASE/'methodology-sidecar.json'),'validator':ref(Path(__file__))}
+ put(BASE/'frozen-native-validation.json',status);print(json.dumps(status))
+if __name__=='__main__':main()

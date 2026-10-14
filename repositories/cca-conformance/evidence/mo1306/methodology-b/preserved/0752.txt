@@ -1,0 +1,226 @@
+"""Read original B2 evidence only; write preservation/reuse records in Phase 3A-R.
+
+Run `preservation.py` before certification and `preservation.py --check` afterward.
+No original worktree file, Git index, ref, runtime, or evidence is written.
+"""
+import argparse
+import datetime
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+
+sys.dont_write_bytecode = True
+ROOT = Path(__file__).resolve().parents[4]
+ORIGINAL = ROOT.parent / 'cca-mo1306-3a'
+OUT = ROOT / 'repositories/cca-conformance/evidence/mo1306/phase3ar'
+B2 = '0e35ffe70919d77b1db530929093826410b805f9'
+C3A = '90b9ac914e477fb90fe317d0de9ba310aae37f60'
+C3AB = '9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44'
+PACKAGE = 'repositories/memoryos-ci/'
+OLD_EVIDENCE = 'repositories/cca-conformance/evidence/mo1306/phase3a/'
+ENV = {**os.environ, 'GIT_OPTIONAL_LOCKS': '0', 'PYTHONDONTWRITEBYTECODE': '1'}
+
+
+def canonical(value):
+    return (json.dumps(value, sort_keys=True, separators=(',', ':')) + '\n').encode()
+
+
+def digest(raw):
+    return 'sha256:' + hashlib.sha256(raw).hexdigest()
+
+
+def identity(raw):
+    return {'byteLength': len(raw), 'sha256': digest(raw)}
+
+
+def row(path, root=ROOT):
+    return {'path': path.relative_to(root).as_posix(), **identity(path.read_bytes())}
+
+
+def git(root, *args):
+    return subprocess.check_output(['git', '--no-optional-locks', '-c', 'core.quotePath=false', *args], cwd=root, env=ENV, stdin=subprocess.DEVNULL, timeout=45)
+
+
+def textgit(root, *args):
+    return git(root, *args).decode('utf-8').strip()
+
+
+def put(name, value):
+    target = OUT / name
+    target.resolve().relative_to(ROOT)
+    raw = canonical(value)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    if target.exists():
+        assert target.read_bytes() == raw, 'REFUSING_EVIDENCE_REPLACEMENT: ' + name
+    else:
+        target.write_bytes(raw)
+    return row(target)
+
+
+def protected_refs():
+    return {
+        'localMain': textgit(ROOT, 'rev-parse', 'refs/heads/main'),
+        'originMain': textgit(ROOT, 'rev-parse', 'refs/remotes/origin/main'),
+        'tags': textgit(ROOT, 'for-each-ref', '--format=%(refname) %(objectname)', 'refs/tags').splitlines(),
+    }
+
+
+def snapshot_original():
+    status_raw = git(ORIGINAL, 'status', '--porcelain=v1', '-z', '--untracked-files=all')
+    entries = [entry.decode('utf-8') for entry in status_raw.split(b'\0') if entry]
+    assert len(entries) == 391, ('ORIGINAL_PATH_COUNT', len(entries))
+    assert all(entry.startswith('?? ') for entry in entries), 'ORIGINAL_TRACKED_CHANGE'
+    paths = [entry[3:] for entry in entries]
+    files = []
+    for relative in paths:
+        path = ORIGINAL / relative
+        path.resolve().relative_to(ORIGINAL.resolve())
+        assert path.is_file() and not path.is_symlink(), relative
+        files.append(row(path, ORIGINAL))
+    assert git(ORIGINAL, 'diff', '--binary', 'HEAD') == b'', 'ORIGINAL_TRACKED_BYTES_CHANGED'
+    assert textgit(ORIGINAL, 'rev-parse', 'HEAD') == B2
+    assert textgit(ORIGINAL, 'branch', '--show-current') == 'mo1306/phase3a'
+    index = Path(textgit(ORIGINAL, 'rev-parse', '--path-format=absolute', '--git-path', 'index'))
+    return {
+        'root': str(ORIGINAL), 'head': B2, 'branch': 'mo1306/phase3a',
+        'pathCount': len(files), 'trackedChanges': 0, 'statusEntries': entries,
+        'statusNulBytes': identity(status_raw), 'files': files,
+        'inventorySha256': digest(canonical(files)), 'gitIndex': identity(index.read_bytes()),
+    }
+
+
+def blob(revision, relative):
+    return git(ROOT, 'show', revision + ':' + relative)
+
+
+def package_comparison():
+    old_manifest = json.loads(blob(B2, PACKAGE + 'distribution-manifest.json'))
+    new_manifest = json.loads(blob(C3AB, PACKAGE + 'distribution-manifest.json'))
+    old = {item['path']: item for item in old_manifest['files']}
+    new = {item['path']: item for item in new_manifest['files']}
+    assert set(old) == set(new) and len(new) == 93
+    comparisons = []
+    for relative in sorted(set(new) | {'distribution-manifest.json'}):
+        previous = (ORIGINAL / PACKAGE / relative).read_bytes()
+        corrected = (ROOT / PACKAGE / relative).read_bytes()
+        if relative != 'distribution-manifest.json':
+            assert identity(previous) == {key: old[relative][key] for key in ('byteLength', 'sha256')}
+            assert identity(corrected) == {key: new[relative][key] for key in ('byteLength', 'sha256')}
+        else:
+            assert previous == blob(B2, PACKAGE + relative)
+            assert corrected == blob(C3AB, PACKAGE + relative)
+        comparisons.append({'path': relative, 'B2': identity(previous), 'C3AB': identity(corrected), 'unchanged': previous == corrected})
+    assert [item['path'] for item in comparisons if not item['unchanged']] == ['bin/memoryos-ci.mjs', 'distribution-manifest.json']
+    # Compare Git trees as well as materialized manifests/files, without mutating indices.
+    changed = textgit(ROOT, 'diff', '--name-only', B2, C3AB, '--', PACKAGE).splitlines()
+    assert changed == [PACKAGE + 'bin/memoryos-ci.mjs', PACKAGE + 'distribution-manifest.json']
+    assert git(ROOT, 'diff', '--binary', C3AB, '--', PACKAGE) == b''
+    return comparisons
+
+
+def unchanged_records(prefixes=(), exact=()):
+    paths = textgit(ROOT, 'ls-tree', '-r', '--name-only', B2, '--', *prefixes, *exact).splitlines()
+    assert paths
+    assert git(ROOT, 'diff', '--binary', B2, C3AB, '--', *prefixes, *exact) == b''
+    result = []
+    for relative in paths:
+        original = (ORIGINAL / relative).read_bytes()
+        current = (ROOT / relative).read_bytes()
+        assert original == current, relative
+        result.append({'path': relative, **identity(current)})
+    return result
+
+
+def reuse_analysis(comparisons):
+    runtime = json.loads((ROOT / PACKAGE / 'runtime/runtime-closure-manifest.json').read_bytes())
+    assert len(runtime['files']) == 25
+    sdk = []
+    for item in runtime['files']:
+        shipped = (ROOT / PACKAGE / 'runtime' / item['path']).read_bytes()
+        source = (ROOT / item['source']).read_bytes()
+        original = (ORIGINAL / item['source']).read_bytes()
+        assert shipped == source == original
+        assert len(shipped) == item['byteLength'] and hashlib.sha256(shipped).hexdigest() == item['sha256']
+        sdk.append({'packagePath': 'runtime/' + item['path'], 'sourcePath': item['source'], **identity(shipped)})
+    unchanged = [item['path'] for item in comparisons if item['unchanged']]
+    support = unchanged_records(
+        prefixes=('repositories/cca-conformance/fixtures/mo1306',),
+        exact=('repositories/cca-conformance/tools/mo1306/lifecycle-driver.mjs',
+               'repositories/cca-conformance/tools/mo1306/oracle.mjs',
+               'repositories/cca-conformance/tools/mo1306/security.test.mjs',
+               'repositories/cca-conformance/tools/mo1306-phase2d/observer.py',
+               'repositories/cca-conformance/tools/mo1306-phase2d/trace_phase2d.py',
+               'repositories/cca-conformance/tools/mo1306-correction-a/topology.py',
+               'repositories/cca-conformance/tools/mo1306-correction-a/contract-tests.py'))
+    originals = []
+    for filename in ('accepted-execution-receipt.json', 'accepted-receipt-validation.json', 'receipt-disposition.json', 'terminal-publication.json', 'REPORT.md'):
+        source = ORIGINAL / OLD_EVIDENCE / filename
+        raw = source.read_bytes()
+        target = OUT / 'historical-b2' / filename
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if target.exists():
+            assert target.read_bytes() == raw
+        else:
+            target.write_bytes(raw)
+        originals.append({'original': row(source, ORIGINAL), 'retainedCopy': row(target)})
+    accepted = json.loads((ORIGINAL / OLD_EVIDENCE / 'accepted-execution-receipt.json').read_bytes())
+    assert accepted['testedRevision'] == B2 and accepted['status'] == 'ENVIRONMENT_BLOCKED'
+    assert accepted['native']['label'] == 'REAL_EXECUTION_CERTIFIED'
+    assert accepted['github']['hostedExecuted'] is False and accepted['certificationCommit'] is None
+    assert accepted['acceptance']['status'] == 'ACCEPTED_SCOPED_NATIVE_ONLY'
+    for reference in accepted['inputs']:
+        path = ORIGINAL / reference['path']
+        path.resolve().relative_to(ORIGINAL.resolve())
+        assert identity(path.read_bytes()) == {key: reference[key] for key in ('byteLength', 'sha256')}, reference['path']
+    mechanisms = [
+        {'id': 'sdk-and-normative-semantics', 'packageClosure': [p for p in unchanged if p.startswith(('runtime/', 'contracts/', 'schemas/')) or p in ('src/delegate.mjs', 'src/serialization.mjs', 'src/json.mjs', 'src/schema.mjs')], 'reuse': 'Independent historical SDK oracles and semantic mechanism evidence; corrected CLI PASS/FAIL/CNE execution and exact normative bytes must still be refreshed.'},
+        {'id': 'lifecycle-correction-a-filesystem-network', 'packageClosure': [p for p in unchanged if p.startswith(('src/', 'scripts/', 'contracts/', 'schemas/', 'runtime/'))], 'reuse': 'Historical direct-API lifecycle, filesystem, environment and worker-boundary mechanisms remain byte-identical. Reuse detailed B2 fault/limit characterization; refresh representative lifecycle, publication and sampled corrected-entrypoint topology.'},
+        {'id': 'provider-rendering', 'packageClosure': [p for p in unchanged if p.startswith(('src/', 'scripts/', 'templates/', 'contracts/', 'schemas/'))], 'reuse': 'Frozen provider/rendering and validator mechanisms remain byte-identical. Regenerate/review all hosted bindings that contain corrected source revision, archive or distribution identity; original B2 workflow is historical only.'},
+    ]
+    return {
+        'kind': 'MemoryOSPhase3ARByteDependencyReuseAnalysis', 'version': '1.0.0', 'status': 'PASS',
+        'baseline': {'B2': B2, 'C3A': C3A, 'C3AB': C3AB},
+        'package': {'memberCount': len(comparisons), 'unchangedMemberCount': len(unchanged), 'changedMembers': [p['path'] for p in comparisons if not p['unchanged']], 'members': comparisons},
+        'sdkClosure': {'count': 25, 'sourceAndShippedBytesIdentical': True, 'members': sdk},
+        'unchangedFixtureAndHarnessClosure': support,
+        'mechanismReuse': mechanisms,
+        'historicalEvidence': originals,
+        'historicalReceiptInputBindingsValidated': len(accepted['inputs']),
+        'historicalDisposition': {'native': 'NATIVE WINDOWS CERTIFIED FOR B2', 'github': 'ENVIRONMENT_BLOCKED', 'certificationCommit': None},
+        'requiredFreshEvidence': ['corrected archive identity and installation integrity', 'CLI valid run/generate/verify and invalid/prototype-sensitive names with no execution bypass', 'installed native PASS/FAIL/CNE plus Policy/Policy Set/Regression normative byte/digest parity', 'representative lifecycle and result/evidence publication including exact four/six-file sets', 'bounded Correction A corrected-entrypoint process confirmation', 'corrected reviewed hosted workflow and remote commit', 'actual hosted PASS/FAIL/CNE artifacts, completion/run-id validation and native-hosted parity', 'targeted MO-1302 regression', 'current environment and corrected receipt/negative validation'],
+        'reuseLimits': ['No old B2 archive, installation or CLI execution is promoted to the corrected candidate.', 'Historical process paths and records are preserved exactly; mechanism reuse does not rewrite their candidate identity.', 'All 92 unchanged members provide an overinclusive byte closure for reused direct-API mechanisms. The changed CLI and distribution inputs are explicitly excluded and covered by fresh candidate-bound checks.', 'Ignored caches and external runtimes are not copied or certified by this audit. The original review-supplement retains its historical reconstruction map.', 'No full Phase 1 characterization or unchanged provider campaigns are rerun.'],
+    }
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--check', action='store_true')
+    args = parser.parse_args()
+    assert ROOT.name == 'cca-mo1306-3a-refresh'
+    assert textgit(ROOT, 'show', '-s', '--format=%P', C3A) == B2
+    assert textgit(ROOT, 'show', '-s', '--format=%P', C3AB) == C3A
+    if args.check:
+        before = json.loads((OUT / 'preservation-before.json').read_bytes())
+        current = snapshot_original()
+        assert current == before['original3A'], 'ORIGINAL_3A_PRESERVATION_FAILURE'
+        assert protected_refs() == before['protectedGitRefs'], 'PROTECTED_REF_CHANGED'
+        report = {'kind': 'MemoryOSPhase3ARPreservationValidation', 'status': 'PASS', 'original391PathsByteIdentical': True, 'originalHeadStatusIndexUnchanged': True, 'mainOriginMainTagsUnchanged': True, 'before': row(OUT / 'preservation-before.json'), 'inventorySha256': current['inventorySha256']}
+        put('preservation-validation.json', report)
+        print(json.dumps(report, sort_keys=True))
+        return
+    assert textgit(ROOT, 'rev-parse', 'HEAD') == C3AB, 'SNAPSHOT_MUST_PRECEDE_CERTIFICATION_COMMIT'
+    original = snapshot_original()
+    refs = protected_refs()
+    before = {'kind': 'MemoryOSPhase3ARPreservationSnapshot', 'version': '1.0.0', 'capturedUtc': datetime.datetime.now(datetime.timezone.utc).isoformat(), 'baseline': C3AB, 'original3A': original, 'protectedGitRefs': refs, 'scope': 'Read-only original worktree snapshot; outputs and bounded historical copies exist only in the refresh worktree.'}
+    put('preservation-before.json', before)
+    reuse = reuse_analysis(package_comparison())
+    put('reuse-analysis.json', reuse)
+    assert snapshot_original() == original and protected_refs() == refs
+    print(json.dumps({'status': 'PASS', 'originalPathCount': len(original['files']), 'packageMembers': reuse['package']['memberCount'], 'unchangedMembers': reuse['package']['unchangedMemberCount'], 'sdkClosure': 25, 'historicalReceiptInputs': reuse['historicalReceiptInputBindingsValidated'], 'inventorySha256': original['inventorySha256']}))
+
+
+if __name__ == '__main__':
+    main()

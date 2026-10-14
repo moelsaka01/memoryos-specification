@@ -1,0 +1,37 @@
+"""Update only the dedicated certification ref, with exact old-SHA lease and full remote-ref comparison."""
+import datetime,hashlib,json,subprocess
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[4]
+OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-final/github'
+C3CB='701d48ee2012675966360dda775ab13013c09ab9'
+OLD='3096139e0108be22528859e4f462356dddf6ef29'
+MAIN='5955af062152a84c10de17860ba0bcabe8b3555f'
+REF='refs/heads/mo1306-certification'
+def run(args):
+ p=subprocess.run(args,cwd=ROOT,capture_output=True,timeout=180)
+ return {'argv':args,'exitCode':p.returncode,'stdout':p.stdout.decode('utf-8','replace'),'stderr':p.stderr.decode('utf-8','replace')}
+def git(*args):
+ r=run(['git',*args]);assert r['exitCode']==0,r;return r['stdout'].strip()
+def row(p):
+ b=p.read_bytes();return {'path':p.relative_to(ROOT).as_posix(),'byteLength':len(b),'sha256':'sha256:'+hashlib.sha256(b).hexdigest()}
+def write(name,v):
+ p=OUT/name;assert not p.exists();p.write_text(json.dumps(v,sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8',newline='\n')
+def refs():
+ r=run(['git','ls-remote','--heads','--tags','origin']);assert r['exitCode']==0,r
+ values={line.split('\t')[1]:line.split('\t')[0] for line in r['stdout'].splitlines()}
+ return values,r
+candidate=json.loads((OUT/'remote-candidate.json').read_bytes());new=candidate['commit']
+assert candidate['parent']==C3CB and git('show','-s','--format=%P',new)==C3CB
+assert git('diff','--name-only',C3CB,new).splitlines()==candidate['paths']
+assert git('rev-parse','origin/main')==MAIN
+before,read=refs();assert before['refs/heads/main']==MAIN and before[REF]==OLD
+is_ff=run(['git','merge-base','--is-ancestor',OLD,new])['exitCode']==0
+write('push-before.json',{'kind':'MemoryOSPhase3AFinalRemotePushPreflight','observedUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'refs':before,'read':read,'old':OLD,'new':new,'newParent':C3CB,'fastForward':is_ff,'candidate':row(OUT/'remote-candidate.json'),'tool':row(Path(__file__))})
+r=run(['git','push','--porcelain','--force-with-lease='+REF+':'+OLD,'origin',new+':'+REF])
+write('push-command.json',r)
+assert r['exitCode']==0,r
+after,read_after=refs();expected=dict(before);expected[REF]=new
+assert after==expected,'Unexpected remote-ref change: STOP'
+assert git('rev-parse','origin/main')==MAIN
+write('push-result.json',{'kind':'MemoryOSPhase3AFinalRemotePush','status':'PASS','observedUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'updatedRef':REF,'old':OLD,'new':new,'newParent':C3CB,'forceUpdateRequired':not is_ff,'lease':REF+':'+OLD,'remoteRefsBefore':before,'remoteRefsAfter':after,'readAfter':read_after,'onlyCertificationRefChanged':True,'remoteMainUnchanged':True,'originMainUnchanged':True,'tagsUnchanged':True,'push':row(OUT/'push-command.json'),'before':row(OUT/'push-before.json')})
+print(json.dumps({'status':'PASS','old':OLD,'new':new,'forceUpdateRequired':not is_ff,'onlyCertificationRefChanged':True,'main':MAIN}))

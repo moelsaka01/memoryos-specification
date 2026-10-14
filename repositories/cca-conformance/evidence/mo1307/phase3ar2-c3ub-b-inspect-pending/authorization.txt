@@ -1,0 +1,321 @@
+MEMORYOS 1.3
+MO-1307 PHASE 3AR2
+
+FINAL B / INSPECT_PENDING BLOCKER RESOLUTION
+
+The previous C3UB Phase 3AR2 generation is preserved:
+
+789d92f94638ddbe63d38dc957746bf1f7d308c2
+
+Result:
+
+A PASS
+B FAIL
+C-O NOT_RUN
+
+Do not rerun the full certification yet.
+
+Do not change the helper deadline again yet.
+
+This task resolves ONLY the exact B failure.
+
+==================================================
+1. EXACT FAILURE
+==================================================
+
+Candidate:
+
+C3UB
+91c07b1e93f65ab6252024984073c171ff5d7648
+
+Production:
+
+C3U
+34f42c50abfa1c440416c4cdf7f643f784585588
+
+Authority:
+
+PROSPECTIVE_HELPER_BOUND@2.0.0
+
+helper deadline:
+9000 ms
+
+Failure:
+
+B
+ready/evaluate
+
+20 prior helper exchanges completed successfully.
+
+Largest successful lifecycle:
+
+7307.892 ms
+
+The next helper exchange:
+
+INSPECT_PENDING
+
+returned:
+
+MO1307_TIMEOUT
+
+with no accepted response.
+
+The scheduled topology/RSS witness then failed because the required exchange had not completed.
+
+==================================================
+2. OBJECTIVE
+==================================================
+
+Identify exactly where the failing INSPECT_PENDING lifecycle spends its time.
+
+Then make ONE final decision:
+
+A. operation-specific implementation correction,
+
+or
+
+B. resource-bound correction.
+
+Do not run another broad characterization campaign.
+
+Do not run full A-O until this exact blocker is resolved.
+
+==================================================
+3. ONE DIAGNOSTIC EXECUTION
+==================================================
+
+Create an engineering-only diagnostic copy.
+
+Reproduce ONLY the exact failing B / ready/evaluate / INSPECT_PENDING exchange once.
+
+No retry.
+
+No alternate fixture.
+
+No second sample.
+
+No warmup.
+
+Do not modify production for the diagnostic.
+
+==================================================
+4. CAPTURE STAGES
+==================================================
+
+Capture cumulative monotonic timing for:
+
+T0 supervisor pre-spawn
+
+T1 PowerShell script entry
+
+T2 native/runtime initialization complete
+
+T3 request frame read complete
+
+T4 parse/schema validation complete
+
+T5 path/root validation complete
+
+T6 INSPECT_PENDING native acquisition start
+
+T7 pending-file identity/path acquisition complete
+
+T8 response object complete
+
+T9 canonical serialization complete
+
+T10 first response byte written
+
+T11 response write complete
+
+T12 helper exit initiated
+
+T13 process and all streams settled
+
+Also record:
+
+exact request size
+
+pending-file size
+
+path depth
+
+native call count
+
+response size
+
+exit/result
+
+cleanup state.
+
+==================================================
+5. CLASSIFY
+==================================================
+
+Return exactly one internal classification:
+
+COMMON_STARTUP_DOMINANT
+
+INSPECT_PENDING_ACQUISITION_DOMINANT
+
+SERIALIZATION_DOMINANT
+
+SETTLEMENT_DOMINANT
+
+OTHER_CONCRETE_DOMINANT_COST
+
+If the diagnostic itself fails before useful timing can be captured:
+
+DIAGNOSTIC_INCOMPLETE
+
+==================================================
+6. IF OPERATION-SPECIFIC COST DOMINATES
+==================================================
+
+If INSPECT_PENDING contains a concrete avoidable cost:
+
+implement exactly ONE smallest correction.
+
+Preserve:
+
+filesystem security
+
+fresh identity
+
+final paths
+
+TOCTOU
+
+wire 2.0.0
+
+response bytes
+
+cleanup
+
+all current resource limits.
+
+Then run the exact B exchange once.
+
+If it fails:
+
+STOP.
+
+==================================================
+7. IF COMMON STARTUP DOMINATES
+==================================================
+
+If PowerShell/common startup again dominates and no removable production-local work is established:
+
+do NOT micro-optimize another path.
+
+Determine from repository authority whether the per-helper deadline can be increased while keeping:
+
+aggregate helper:
+20000 ms
+
+CLI:
+30000 ms
+
+API/worker:
+10000 ms
+
+cleanup:
+2000 ms
+
+unchanged.
+
+State the exact relationship among those budgets.
+
+Then choose the smallest repository-defensible final helper ceiling that exceeds the observed valid lifecycle.
+
+Do not call it H.
+
+H remains NOT_ESTABLISHED.
+
+Do not select a number before seeing this diagnostic observation.
+
+==================================================
+8. FINAL FIX VALIDATION
+==================================================
+
+After either the operation correction or final bound correction:
+
+run ONLY the exact previously failing B / ready/evaluate path once.
+
+Require:
+
+all required helper exchanges accepted
+
+ready/evaluate returns its exact expected result
+
+scheduled topology/RSS witness passes
+
+no timeout
+
+cleanup confirmed where required.
+
+If this fails:
+
+STOP.
+
+Return PHASE3AR2_CONCRETE_BLOCKER.
+
+==================================================
+9. FRESH FINAL CERTIFICATION
+==================================================
+
+If the exact B path passes:
+
+create the final candidate if production/authority changed.
+
+Then run ONE completely fresh Phase 3A A-O generation.
+
+No reuse of A from the failed generation.
+
+No historical PASS promotion.
+
+No retry.
+
+At first mandatory failure:
+
+STOP.
+
+If A-O all pass:
+
+PHASE3AR2_ACCEPTED_NEW_CANDIDATE.
+
+==================================================
+10. OTHER STREAMS
+==================================================
+
+Do not touch accepted Phase 3BR2:
+
+4d92f0f21c9c3aad8202f4558d61b9229c7214fc
+
+Do not perform Phase 3CR2 work.
+
+Do not perform Phase 3D.
+
+==================================================
+11. FINAL REPORT
+==================================================
+
+Report:
+
+1. exact diagnostic timing breakdown
+2. dominant-cost classification
+3. exact correction or final bound decision
+4. exact B validation result
+5. final candidate identity
+6. fresh A-O results
+7. Phase 3A receipt
+8. Phase 3A status
+9. effect on accepted 3BR2
+10. exact 3CR2 delta required
+11. repository status
+12. next action
+
+No push.
+No tag.
+No Phase 3D.

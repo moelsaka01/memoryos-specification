@@ -1,0 +1,61 @@
+{
+  "kind": "MO1308Phase3AJCTimingTable",
+  "entries": 100000,
+  "timings": [
+    {
+      "label": "generate 99999 entries and members",
+      "ms": 137255,
+      "seconds": 137.3
+    },
+    {
+      "label": "query page of 1000 (real CLI)",
+      "ms": 31896,
+      "seconds": 31.9,
+      "stdoutBytes": 445426
+    },
+    {
+      "label": "query with a subject filter over the whole ledger (real CLI)",
+      "ms": 32337,
+      "seconds": 32.3,
+      "stdoutBytes": 445476
+    },
+    {
+      "label": "verify of 99999 entries (real SDK, production store)",
+      "ms": 71518,
+      "seconds": 71.5
+    },
+    {
+      "label": "append of the last allowed entry (real MIP admission, then publish)",
+      "ms": 65017,
+      "seconds": 65
+    },
+    {
+      "label": "export of 100000 entries",
+      "ms": 881123,
+      "seconds": 881.1
+    },
+    {
+      "label": "verify-export of 100000 entries",
+      "ms": 76478,
+      "seconds": 76.5
+    },
+    {
+      "label": "real process: memoryos history verify (process start, module load, verification)",
+      "ms": 70434,
+      "seconds": 70.4
+    },
+    {
+      "label": "the 100,001st append, refused (real CLI)",
+      "ms": 71358,
+      "seconds": 71.4
+    },
+    {
+      "label": "removal of the ceiling data (not retained)",
+      "ms": 202406,
+      "seconds": 202.4
+    }
+  ],
+  "headDigest": "sha256:42fa42360c941a590b5ae95b0d7a08d06a2c6638195907a6c3663e872948f2a3",
+  "entryCount": 100000,
+  "retained": "digests and timings only"
+}

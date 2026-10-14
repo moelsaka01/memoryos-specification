@@ -1,0 +1,420 @@
+{
+  "kind": "MemoryOSReadinessPhase2CBlockerReceipt",
+  "version": "1.0.0",
+  "campaign": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase2c/blocker-campaign.json",
+    "byteLength": 1476,
+    "sha256": "sha256:fc8f589f439db3d6d748403289551acf5b79b6b57f2699a82c8a0f0f112aec17"
+  },
+  "startedAt": "2026-09-28T15:06:01.180Z",
+  "taskStartedAt": "2026-09-28T14:59:00Z",
+  "taskStartPrecision": "minute; first timestamped preflight at 14:59:32Z",
+  "classification": "FROZEN_PUBLICATION_INSPECTION_SEAM_INSUFFICIENT",
+  "productionCertification": false,
+  "commands": [
+    {
+      "id": "head",
+      "executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+      "args": [
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "signal": null,
+      "errorCode": null,
+      "elapsedMs": 177.252,
+      "stdout": "3883ca889911fcc5a6f46c24e569478a8c32648e\n",
+      "stderr": ""
+    },
+    {
+      "id": "branch",
+      "executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+      "args": [
+        "branch",
+        "--show-current"
+      ],
+      "exit": 0,
+      "signal": null,
+      "errorCode": null,
+      "elapsedMs": 170.899,
+      "stdout": "codex/mo1307-phase2c-acquisition-publication\n",
+      "stderr": ""
+    },
+    {
+      "id": "b1-parent",
+      "executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+      "args": [
+        "rev-parse",
+        "HEAD^"
+      ],
+      "exit": 0,
+      "signal": null,
+      "errorCode": null,
+      "elapsedMs": 158.262,
+      "stdout": "7aa5ede6ec52b36d0428273d78c8ca7aa37a39ee\n",
+      "stderr": ""
+    },
+    {
+      "id": "i1-parent",
+      "executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+      "args": [
+        "rev-parse",
+        "7aa5ede6ec52b36d0428273d78c8ca7aa37a39ee^"
+      ],
+      "exit": 0,
+      "signal": null,
+      "errorCode": null,
+      "elapsedMs": 182.22,
+      "stdout": "e0cb8e9cc6aa73e26945db30756a6667a8d9e322\n",
+      "stderr": ""
+    },
+    {
+      "id": "freeze-ancestry",
+      "executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+      "args": [
+        "merge-base",
+        "--is-ancestor",
+        "e0cb8e9cc6aa73e26945db30756a6667a8d9e322",
+        "3883ca889911fcc5a6f46c24e569478a8c32648e"
+      ],
+      "exit": 0,
+      "signal": null,
+      "errorCode": null,
+      "elapsedMs": 175.833,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "id": "i1-ancestry",
+      "executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+      "args": [
+        "merge-base",
+        "--is-ancestor",
+        "7aa5ede6ec52b36d0428273d78c8ca7aa37a39ee",
+        "3883ca889911fcc5a6f46c24e569478a8c32648e"
+      ],
+      "exit": 0,
+      "signal": null,
+      "errorCode": null,
+      "elapsedMs": 169.723,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "id": "b1-subject",
+      "executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+      "args": [
+        "show",
+        "-s",
+        "--format=%s",
+        "HEAD"
+      ],
+      "exit": 0,
+      "signal": null,
+      "errorCode": null,
+      "elapsedMs": 187.77,
+      "stdout": "conformance(memoryos-1.3): bind MO-1307 phase 1 foundation\n",
+      "stderr": ""
+    },
+    {
+      "id": "b1-paths",
+      "executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+      "args": [
+        "diff",
+        "--name-only",
+        "7aa5ede6ec52b36d0428273d78c8ca7aa37a39ee",
+        "3883ca889911fcc5a6f46c24e569478a8c32648e"
+      ],
+      "exit": 0,
+      "signal": null,
+      "errorCode": null,
+      "elapsedMs": 180.906,
+      "stdout": "ROADMAP.md\nrepositories/cca-conformance/evidence/mo1307/phase1/binding.json\n",
+      "stderr": ""
+    },
+    {
+      "id": "tracked-worktree-diff",
+      "executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+      "args": [
+        "diff",
+        "--name-only",
+        "HEAD"
+      ],
+      "exit": 0,
+      "signal": null,
+      "errorCode": null,
+      "elapsedMs": 327.681,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "id": "powershell-identity",
+      "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-Command",
+        "[pscustomobject]@{version=$PSVersionTable.PSVersion.ToString();edition=$PSVersionTable.PSEdition;is64BitProcess=[Environment]::Is64BitProcess;os=[Environment]::OSVersion.Version.ToString();systemDirectory=[Environment]::SystemDirectory} | ConvertTo-Json -Compress"
+      ],
+      "exit": 0,
+      "signal": null,
+      "errorCode": null,
+      "elapsedMs": 594.836,
+      "stdout": "{\"version\":\"5.1.26100.9444\",\"edition\":\"Desktop\",\"is64BitProcess\":true,\"os\":\"10.0.26200.0\",\"systemDirectory\":\"C:\\\\WINDOWS\\\\system32\"}\r\n",
+      "stderr": ""
+    },
+    {
+      "id": "phase1-inventory",
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1304-phase3-toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "args": [
+        "repositories/cca-conformance/tools/mo1307-phase1/verify-binding.mjs",
+        "--inventory"
+      ],
+      "exit": 0,
+      "signal": null,
+      "errorCode": null,
+      "elapsedMs": 1321.854,
+      "stdout": "{\"kind\":\"MemoryOSReadinessPhase1BindingCheck\",\"mode\":\"--inventory\",\"result\":\"PASS\",\"artifacts\":821,\"head\":\"3883ca889911fcc5a6f46c24e569478a8c32648e\",\"freezeCommit\":\"e0cb8e9cc6aa73e26945db30756a6667a8d9e322\",\"package\":{\"kind\":\"MO1307Phase1PackageCheck\",\"version\":\"1.0.0\",\"members\":75,\"contractMembers\":53,\"externalProductionDependencies\":0,\"archiveCertification\":false},\"characterizationCases\":3}\n",
+      "stderr": ""
+    },
+    {
+      "id": "workspace",
+      "executable": "C:\\Users\\melsa\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+      "args": [
+        "-B",
+        "tools/verify_workspace.py",
+        "--root",
+        "."
+      ],
+      "exit": 0,
+      "signal": null,
+      "errorCode": null,
+      "elapsedMs": 810.58,
+      "stdout": "CCA workspace verification passed: C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c\r\n",
+      "stderr": ""
+    },
+    {
+      "id": "diff-check",
+      "executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+      "args": [
+        "diff",
+        "--check"
+      ],
+      "exit": 0,
+      "signal": null,
+      "errorCode": null,
+      "elapsedMs": 301.846,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "probes": [
+    {
+      "id": "B01",
+      "description": "Unmodified CHECK_OUTPUT round-trip carries ABSENT plus only output-parent",
+      "result": "PASS"
+    },
+    {
+      "id": "B02",
+      "description": "CHECK_OUTPUT cannot return the newly created root as output-parent",
+      "result": "PASS"
+    },
+    {
+      "id": "B03",
+      "description": "CHECK_OUTPUT cannot return both parent and created root",
+      "result": "PASS"
+    },
+    {
+      "id": "B04",
+      "description": "CHECK_OUTPUT cannot return pending file identity or bytes",
+      "result": "PASS"
+    },
+    {
+      "id": "B05",
+      "description": "A new ancestor chain response field is not wire compatible",
+      "result": "PASS"
+    },
+    {
+      "id": "B06",
+      "description": "An existing-output response status is not accepted",
+      "result": "PASS"
+    },
+    {
+      "id": "B07",
+      "description": "CHECK_OUTPUT request cannot ask to inspect a pending file",
+      "result": "PASS"
+    },
+    {
+      "id": "B08",
+      "description": "READ_SET cannot acquire the output capability",
+      "result": "PASS"
+    },
+    {
+      "id": "B09",
+      "description": "Sequence 5 is rejected",
+      "result": "PASS"
+    },
+    {
+      "id": "B10",
+      "description": "Four completed synthetic slots cannot be followed by another inspection",
+      "result": "PASS"
+    },
+    {
+      "id": "B11",
+      "description": "One parent identity cannot supply the complete parent ancestor chain",
+      "result": "PASS"
+    },
+    {
+      "id": "B12",
+      "description": "Publication without native inspect fails before filesystem mutation",
+      "result": "PASS"
+    }
+  ],
+  "limitations": [
+    "Protocol records use synthetic identities and do not prove checked native handles or filesystem policy.",
+    "No evaluation worker, native acquisition, publication or process-topology campaign was run.",
+    "Existing Phase 1 receipts are revalidated, not represented as a newly run Phase 1 regression.",
+    "An authorized contract/interface correction is required before dependent implementation."
+  ],
+  "runtime": {
+    "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1304-phase3-toolchain\\node-v24.21.0-win-x64\\node.exe",
+    "version": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "byteLength": 93580104,
+    "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32",
+    "execArgv": []
+  },
+  "baseline": {
+    "head": "3883ca889911fcc5a6f46c24e569478a8c32648e",
+    "parent": "7aa5ede6ec52b36d0428273d78c8ca7aa37a39ee",
+    "branch": "codex/mo1307-phase2c-acquisition-publication",
+    "freeze": "e0cb8e9cc6aa73e26945db30756a6667a8d9e322",
+    "b1Paths": [
+      "ROADMAP.md",
+      "repositories/cca-conformance/evidence/mo1307/phase1/binding.json"
+    ],
+    "initialStatus": "CLEAN (preflight before evidence creation)",
+    "trackedFilesUnchanged": true
+  },
+  "powershell": {
+    "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "byteLength": 495616,
+    "sha256": "sha256:8bb6fa8c283b4d92120b1ef249a9b311b0f804d4cabbe9981159976c8be76a5e",
+    "version": "5.1.26100.9444",
+    "edition": "Desktop",
+    "is64BitProcess": true,
+    "os": "10.0.26200.0",
+    "systemDirectory": "C:\\WINDOWS\\system32",
+    "scope": "engineering identity query; product helper not invoked"
+  },
+  "phase1Binding": {
+    "kind": "MemoryOSReadinessPhase1BindingCheck",
+    "mode": "--inventory",
+    "result": "PASS",
+    "artifacts": 821,
+    "head": "3883ca889911fcc5a6f46c24e569478a8c32648e",
+    "freezeCommit": "e0cb8e9cc6aa73e26945db30756a6667a8d9e322",
+    "package": {
+      "kind": "MO1307Phase1PackageCheck",
+      "version": "1.0.0",
+      "members": 75,
+      "contractMembers": 53,
+      "externalProductionDependencies": 0,
+      "archiveCertification": false
+    },
+    "characterizationCases": 3
+  },
+  "phase1BoundModeNote": "--bound is historical main-only and requires a clean tree. Exact B1 identity/parent/change set and I1/Freeze ancestry are checked above on the user-required branch; no main-branch claim is made.",
+  "bindings": [
+    {
+      "path": "docs/mo1307-contract-freeze-1.md",
+      "byteLength": 102086,
+      "sha256": "sha256:12493b715e45399c4a8122bc5955356f910e37eed0dbcd71b1ca2f753269eb65"
+    },
+    {
+      "path": "docs/mo1307-phase1-foundation.md",
+      "byteLength": 20043,
+      "sha256": "sha256:c1477dbad659b3b3836d3926ce35b12c0f9c129f7f5cb7998348193084ed6bf5"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+      "byteLength": 10659,
+      "sha256": "sha256:f901242f66686d0aead915f4f9b939cb1c2105196d9843cea45e5f5f8aca1a4d"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/publication.mjs",
+      "byteLength": 6534,
+      "sha256": "sha256:8c9d4d46dddf1ba6ebdd419f25991519ca49fdb55b855ffe057b00f2da083dfb"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/windows-paths.mjs",
+      "byteLength": 5990,
+      "sha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+    },
+    {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "byteLength": 11566,
+      "sha256": "sha256:37fcdcdee85dedd9f7b5df98831024fd264c889a5601674683affe3e90a5b38f"
+    },
+    {
+      "path": "repositories/memoryos-readiness/helpers/README.md",
+      "byteLength": 3512,
+      "sha256": "sha256:aabfb8931430496c285cdf252b5a5b8c211bcc4fd0d60a0a44cbfd11714bdefe"
+    },
+    {
+      "path": "repositories/memoryos-readiness/contracts/definitions.json",
+      "byteLength": 16242,
+      "sha256": "sha256:6c806bf6af4a415135897d2337a98d92a212229abb407d5a871ed401f9f4b8f3"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/index.mjs",
+      "byteLength": 1459,
+      "sha256": "sha256:81873bc18abb792dbe12214a183f96adfba3a02173e81a7033052d52843d5330"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/cli-args.mjs",
+      "byteLength": 4280,
+      "sha256": "sha256:107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7"
+    },
+    {
+      "path": "repositories/memoryos-readiness/package.json",
+      "byteLength": 2945,
+      "sha256": "sha256:3567e56ebe007ee4af23d2dac5f3288fee66fb0bbe97fcae171444e1e6bb4bb5"
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs",
+      "byteLength": 21588,
+      "sha256": "sha256:195a4ac35346f9585eff0abc0e6a26f50b33f5aaf70115179339d08738581c5b"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase1/binding.json",
+      "byteLength": 1785,
+      "sha256": "sha256:932a11ccd081b13e81f1924d2e2476b14840f96c06afe63e29dd51d4f0e47daa"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase1/acceptance/receipt.json",
+      "byteLength": 15745,
+      "sha256": "sha256:36fc879f0a2c26e09620df33b14b370b3c02faf4d94a3a1805762cef5070559c"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase1/characterization/summary.json",
+      "byteLength": 6058,
+      "sha256": "sha256:e3f723bc955a76c9213097e6703bd4d02c028e87d94a28778521736ce7a7eccb"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase2c/blocker-probe.mjs",
+      "byteLength": 12855,
+      "sha256": "sha256:286ff6c815efda572bf43a7c3865111dc9b12dadc94c72590d00808bd40fd6e3"
+    }
+  ],
+  "result": "BLOCKER_REPRODUCED",
+  "probeSummary": {
+    "count": 12,
+    "pass": 12,
+    "fail": 0
+  },
+  "finishedAt": "2026-09-28T15:06:06.126Z",
+  "elapsedMs": 4947.98
+}

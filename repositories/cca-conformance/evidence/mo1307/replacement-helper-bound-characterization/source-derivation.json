@@ -1,0 +1,70 @@
+{
+  "kind": "MO1307ReplacementBoundSourceDerivation",
+  "result": "PASS",
+  "prospectiveSequence": {
+    "tool": {
+      "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/prospective-sequence.mjs",
+      "byteLength": 9315,
+      "sha256": "sha256:de75b55feebb1a7e479aa2f1dc0ea6705eb0e74a143009287677adfd154369aa"
+    },
+    "productionSource": {
+      "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+      "byteLength": 17308,
+      "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    "delta": "Copy of private sequence/publication-inspection owner; request/response validation imported unchanged; helperDeadlineMs replaced only by sealed helperBoundMs; event snapshots and a synchronous evidence hook added after helperExited has charged the exact endpoint."
+  },
+  "prospectiveRuntime": {
+    "tool": {
+      "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/prospective-runtime.mjs",
+      "byteLength": 17391,
+      "sha256": "sha256:ca43eb3b31601228e84de1f3512136605d8272b96dc658013de8dd35ea74bce3"
+    },
+    "productionSource": {
+      "path": "repositories/memoryos-readiness/src/runtime.mjs",
+      "byteLength": 16904,
+      "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+    },
+    "mechanicallyVerifiedTransformation": true,
+    "delta": "Source-derived runtime; imports redirected to bound production/evidence publication modules; worker entry remains production; helperDeadlineMs replaced only by sealed helperBoundMs; snapshot records the bound."
+  },
+  "prospectivePublication": {
+    "tool": {
+      "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/prospective-publication.mjs",
+      "byteLength": 13934,
+      "sha256": "sha256:d2893718d94942abe0efa6dc92723804922d5b156de441410fa2b6034be04c95"
+    },
+    "productionSource": {
+      "path": "repositories/memoryos-readiness/src/publication.mjs",
+      "byteLength": 13610,
+      "sha256": "sha256:dcba8a23b848ceede6c5a9deb10e46b2ef795ae9573755bc78d44abd5943236b"
+    },
+    "mechanicallyVerifiedTransformation": true,
+    "delta": "Byte-for-byte production publication body with imports redirected to bound production modules and prospective sequence brand."
+  },
+  "prospectiveCli": {
+    "tool": {
+      "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/prospective-cli.mjs",
+      "byteLength": 3809,
+      "sha256": "sha256:c78b4a4f1928a690e5bc02cb8a4dd0b3bd5ffd766db482f0225d65a9052ba4c0"
+    },
+    "productionSource": {
+      "path": "repositories/memoryos-readiness/src/cli.mjs",
+      "byteLength": 4448,
+      "sha256": "sha256:3632c653e86e1315ac3b858137932b9750ed621526ad71d75c7f040935cfa5f2"
+    },
+    "delta": "Production orchestrateCli body with deterministic sealed session, prospective sequence/publication imports, post-helper evidence hook forwarding and evidence return projection."
+  },
+  "prohibitedDeltas": [
+    "protocol",
+    "security",
+    "path caps",
+    "byte caps",
+    "aggregate 20000",
+    "CLI 30000",
+    "worker/API 10000",
+    "cleanup 2000",
+    "worker entry",
+    "semantic evaluator"
+  ]
+}

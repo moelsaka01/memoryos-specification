@@ -1,0 +1,298 @@
+{
+  "kind": "MO1307ConsoleCorrectionFuture3BCRefreshRequirements",
+  "status": "FUTURE_ONLY_NOT_PERFORMED",
+  "candidate": "865978ff56229b60cca77bdb797987fc7d49aa4e",
+  "packageTree": "d9e5d6e407adb59157ee811c90918c9b065b14e1",
+  "productionBaseline": "defe93989efc6501b1a730b82e79e705884b269b",
+  "applicability": "Conditional on this correction passing its required engineering validation and being accepted as the new candidate. This report authorizes or records no Phase3B/3C run and grants no acceptance.",
+  "acceptedHistorical": {
+    "phase3B": {
+      "commit": "702c1b6381f6112a50ac844831d195275dac3350",
+      "receipt": "repositories/cca-conformance/evidence/mo1307/phase3b-c3rb-cert/certification-receipt.json",
+      "gitBlob": "14a74fbe594d5da3839a716384abc89e15d3a7f7",
+      "disposition": "Preserve unchanged; accepted for C3RB only."
+    },
+    "phase3C": {
+      "commit": "b02fc0226a1a2d800185a02071674ca80bdf4a1d",
+      "receipt": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/certification-receipt.json",
+      "gitBlob": "84fd131988b662d04d63470e1038b18743ed2d71",
+      "disposition": "Preserve unchanged; accepted for C3RB only."
+    }
+  },
+  "actualChangedShippedMembers": [
+    "helpers/README.md",
+    "helpers/windows-inspect.ps1",
+    "src/helper-transport.mjs",
+    "sbom.spdx.json",
+    "distribution-manifest.json"
+  ],
+  "unchangedContract": "contracts/contract.json and all 53 contract members are outside the production correction; any reuse must verify exact bytes.",
+  "phase3C": {
+    "inventoryAuthority": {
+      "commit": "b02fc0226a1a2d800185a02071674ca80bdf4a1d",
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/inventory-recovery.json",
+      "gitBlob": "c29ab34c110882150727b0857302211e1670940b",
+      "array": "rows",
+      "historicalPrimaryCount": 551
+    },
+    "selection": {
+      "suiteSelectors": [
+        {
+          "suite": "equivalence",
+          "count": 67
+        },
+        {
+          "suite": "protocol",
+          "count": 12
+        },
+        {
+          "suite": "toctou",
+          "count": 2
+        }
+      ],
+      "explicitAdditionalIds": [
+        "runtime-boundary:fixed-helper-environment-poison",
+        "refresh:deadline-timeout-exact-mapping",
+        "refresh:deadline-late-native-success-refused",
+        "refresh:deadline-crash-closed-transport",
+        "refresh:helper-path-count129",
+        "refresh:deadline-resource-native-declared-file-cap",
+        "runtime-boundary:fixed-powershell-launch"
+      ],
+      "expectedUniqueCount": 88
+    },
+    "reasons": [
+      "All 67 equivalence controls execute the changed helper or source-instrumented copies of it. Direct historical helper launches must be adapted to the new fixed launch topology without changing expected outcomes.",
+      "All 12 protocol controls depend on a newly generated ordinary native helper frame, even where their final check is JavaScript-only.",
+      "Both native TOCTOU controls execute engineering helper copies; keep reversible source instrumentation and frozen filesystem expectations.",
+      "Six deadline primary controls already depend on actual helper/transport execution. The 129-path control additionally has a native raw witness; retain both layers.",
+      "runtime-boundary:fixed-powershell-launch is the additional primary affected by the transport change. runtime-boundary.mjs:59-60 reads helperLaunchSpecification; a future review must bind detached:true and the corrected console policy explicitly.",
+      "The neighboring launch refusal controls at runtime-boundary.mjs:61-63 exercise unchanged validateLaunch, not helperLaunchSpecification. Their names alone do not make them affected.",
+      "The source contains actual-fixed-transport-poisoned-parent in runtime-boundary-supplement.mjs:24, but selectedIds excludes it; its obligation is already represented by fixed-helper-environment-poison, so it must not be counted twice."
+    ],
+    "sourceReferences": {
+      "toolPrefix": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert3/",
+      "commit": "b02fc0226a1a2d800185a02071674ca80bdf4a1d",
+      "fixedLaunch": "runtime-boundary.mjs:59-60",
+      "unchangedLaunchRefusals": "runtime-boundary.mjs:61-63",
+      "nativeDeadlineLaunch": "deadline-cleanup.mjs:139-175",
+      "nativeCases": "deadline-cleanup.mjs:181-190",
+      "unselectedSupplement": "runtime-boundary-supplement.mjs:15-24",
+      "nativeProtocolFrameDependency": "protocol.mjs:6"
+    },
+    "additionalNativeRawWitnesses": [
+      "fixed-native-timely",
+      "timeout-exact-mapping",
+      "late-native-success-refused",
+      "crash-closed-transport",
+      "fixed-launch-combined-environment-poison",
+      "resource-native-path-cap129",
+      "resource-native-request-prefix-cap",
+      "resource-native-declared-file-cap",
+      "resource-native-observed-file-cap",
+      "resource-sample-corrected"
+    ],
+    "rawWitnessCounting": "These are dependent raw evidence, not ten additional historical primary IDs. Retain per-layer accounting.",
+    "sourceAuditRefresh": [
+      {
+        "record": "helper-delta-review.json",
+        "requirement": "Replace the obsolete one-deleted-statement token-equality proof and unchanged-helper-transport assertion with an exact C3RB-to-new-candidate delta proof."
+      },
+      {
+        "record": "network-secrets-source.json",
+        "requirement": "Refresh fixedLaunch, nativeBoundary, diagnostic and deadline bindings. The historical fixedLaunch explicitly records detached:false; nativeBoundary API counts and console-policy text describe the superseded mechanism."
+      },
+      {
+        "record": "call-site-dominance.json",
+        "requirement": "Rebind helper hash and shifted line references; independently establish that native filesystem calls, checks, read/held/fresh order and disposal remain unchanged."
+      },
+      {
+        "record": "deadline-cleanup/attempt-1/bounded-state-and-fixed-source-review.json",
+        "requirement": "Refresh exact helper/transport source bindings and changed native console/process primitive inventory while preserving all limits."
+      },
+      {
+        "record": "deadline-cleanup/attempt-1/campaign.json and boundary-closure.json",
+        "requirement": "Fresh candidate launch/topology and observer/cleanup provenance. Existing native timing or process observations cannot certify a different launch topology."
+      },
+      {
+        "record": "governance release-effect inventory",
+        "requirement": "Fresh manual source/effect review of changed helper and helper-transport, following governance.mjs history-mode inventory shape. This is a source-review obligation, not an additional selected primary control."
+      },
+      {
+        "record": "binding.json, pre-execution-seal.json, final-seal.json and certification receipt",
+        "requirement": "Future candidate-specific source/tool/fixture/output and package identities; preserve historical records in place and create separate new records."
+      }
+    ],
+    "additionalConsoleCaseRequirements": [
+      "normal detached fixed launch and no-console path",
+      "valid sole optional host from current console window owner",
+      "unrelated process refusal without termination",
+      "PID reuse or replacement refusal without wrong-object termination",
+      "wrong executable image refusal",
+      "ambiguous or changed console owner refusal",
+      "extra console client refusal",
+      "OpenProcess or identity-query access denial",
+      "FreeConsole failure",
+      "TerminateProcess failure",
+      "native host wait timeout and failed wait",
+      "final helper/host exit plus pipe EOF quiescence before transition",
+      "silent startup exit22 mapping with no success frame",
+      "unchanged helper/aggregate/overall/cleanup deadlines"
+    ],
+    "additionalCaseCounting": "New correction-specific console cases supplement the historical primary selection; they are not represented as previously certified cases or silently added to the count88.",
+    "reuseBoundary": "No blanket reuse of the remaining historical primary outcomes is granted. A future dependency review may reference historical outcomes only for byte-identical exercised code, fixture/expectation bytes, and unchanged applicable launch/environment assumptions. Reading an unchanged module or listing an unused function is not execution of the changed helper.",
+    "executionPerformed": false,
+    "affectedPrimaryIds": [
+      "runtime-boundary:wire-valid-control",
+      "runtime-boundary:wire-response-wrong-session",
+      "runtime-boundary:wire-response-wrong-sequence",
+      "runtime-boundary:wire-response-wrong-operation",
+      "runtime-boundary:wire-response-unknown-field",
+      "runtime-boundary:wire-response-bad-base64",
+      "runtime-boundary:wire-response-noncanonical-base64",
+      "runtime-boundary:fixed-powershell-launch",
+      "runtime-boundary:native-ordinary-handle-control",
+      "runtime-boundary:native-traversal",
+      "runtime-boundary:native-drive-relative",
+      "runtime-boundary:native-unc",
+      "runtime-boundary:native-device",
+      "runtime-boundary:native-ads",
+      "runtime-boundary:native-reserved",
+      "runtime-boundary:native-wrong-type",
+      "runtime-boundary:native-missing-input",
+      "runtime-boundary:native-oversized-file",
+      "runtime-boundary:native-unknown-field",
+      "runtime-boundary:native-wrong-version",
+      "runtime-boundary:native-wrong-operation",
+      "runtime-boundary:native-hardlink",
+      "runtime-boundary:native-file-symlink",
+      "runtime-boundary:native-junction",
+      "runtime-boundary:native-directory-symlink",
+      "runtime-boundary:native-wire-duplicate-key",
+      "runtime-boundary:native-wire-noncanonical",
+      "runtime-boundary:native-wire-truncated-length",
+      "runtime-boundary:native-wire-oversized-length",
+      "runtime-boundary:native-wire-extra-frame",
+      "runtime-boundary:native-wire-trailing-bytes",
+      "runtime-boundary:native-wire-debug-prefix",
+      "runtime-boundary:fixed-helper-environment-poison",
+      "refresh:equivalence-mixed-case-root",
+      "refresh:equivalence-unicode-root",
+      "refresh:equivalence-mo1306-exact",
+      "refresh:equivalence-ready-exact",
+      "refresh:equivalence-wrong-root",
+      "refresh:equivalence-malformed-request",
+      "refresh:equivalence-wrong-session",
+      "refresh:equivalence-wrong-sequence",
+      "refresh:equivalence-changed-identity",
+      "refresh:equivalence-wrong-volume",
+      "refresh:equivalence-changed-ancestor-identity",
+      "refresh:equivalence-changed-size-observation",
+      "refresh:equivalence-changed-link-observation",
+      "refresh:equivalence-changed-attributes-observation",
+      "refresh:equivalence-wrong-final-path",
+      "refresh:equivalence-changed-final-expectation",
+      "refresh:equivalence-native-file-replacement",
+      "refresh:equivalence-native-size-mutation",
+      "refresh:equivalence-native-reparse-mutation",
+      "refresh:equivalence-native-ancestor-replacement",
+      "refresh:equivalence-observed-final-ads",
+      "refresh:equivalence-observed-final-trailing-dot",
+      "refresh:equivalence-observed-final-trailing-space",
+      "refresh:equivalence-observed-final-separator",
+      "refresh:equivalence-observed-final-control",
+      "refresh:equivalence-observed-final-alternate-root",
+      "refresh:equivalence-observed-final-bad-prefix",
+      "refresh:equivalence-dot-path-alias",
+      "refresh:equivalence-backslash-relative",
+      "refresh:equivalence-forward-separator-root",
+      "refresh:equivalence-truncated-frame",
+      "refresh:equivalence-publication-check_output-4",
+      "refresh:equivalence-publication-check_output-4-traversal",
+      "refresh:equivalence-publication-check_output-5",
+      "refresh:equivalence-publication-check_output-5-traversal",
+      "refresh:equivalence-publication-inspect_output_root-6",
+      "refresh:equivalence-publication-inspect_output_root-6-traversal",
+      "refresh:equivalence-publication-check_stage_root-7",
+      "refresh:equivalence-publication-check_stage_root-7-traversal",
+      "refresh:equivalence-publication-inspect_pending-8",
+      "refresh:equivalence-publication-inspect_pending-8-traversal",
+      "refresh:equivalence-publication-check_finalization-9",
+      "refresh:equivalence-publication-check_finalization-9-traversal",
+      "refresh:protocol-response-wrong-version",
+      "refresh:protocol-response-truncated-frame",
+      "refresh:protocol-response-extra-frame",
+      "refresh:protocol-response-trailing-bytes",
+      "refresh:protocol-sequence-entry-bypass",
+      "refresh:before-read-replacement",
+      "refresh:held-to-fresh-replacement",
+      "refresh:deadline-timeout-exact-mapping",
+      "refresh:deadline-late-native-success-refused",
+      "refresh:deadline-crash-closed-transport",
+      "refresh:helper-path-count129",
+      "refresh:deadline-resource-native-declared-file-cap"
+    ]
+  },
+  "phase3B": {
+    "futureCandidateBoundRequirements": [
+      "Recompute and bind exact source89-member inventory and source Git blobs to the new candidate.",
+      "Recompute runtime import closure, distribution88 entries and SPDX87 file bindings plus package verification code; rebind unchanged contract53/schema semantics by exact dependency proof.",
+      "Produce two independent fresh deterministic offline archives from the candidate and verify equal archive bytes and all safe regular member bytes against source.",
+      "Perform a fresh offline installation from the newly selected archive with empty install cache, scripts/audit/fund/network fallback disabled, and zero production dependencies.",
+      "Verify all89 installed members against new source and archive before and after installed-context smoke; record persistence and source independence for the new installation.",
+      "Bind new installed public-name API-ready vector and closed invalid-CLI-dispatch smoke. These smoke controls contain no native helper execution and cannot establish console cleanup.",
+      "Create candidate/archive/distribution/SBOM/helper provenance, bounded advisory dependency record, preservation evidence and separate fresh review/seal/acceptance records."
+    ],
+    "artifactBoundTamperControls": [
+      "archive-byte-tamper",
+      "missing-member",
+      "unexpected-member",
+      "unsafe-tar-path",
+      "nonregular-tar-member",
+      "duplicate-member",
+      "missing-tar-terminator",
+      "trailing-tar-data",
+      "helper-tamper",
+      "distribution-hash-tamper",
+      "distribution-length-tamper",
+      "sbom-checksum-tamper",
+      "extra-package-file",
+      "missing-package-file",
+      "provenance-byte-tamper",
+      "installed-helper-mutation"
+    ],
+    "otherHistoricalTamperControlsForDependencyReview": [
+      "schema-tamper",
+      "unexpected-production-dependency",
+      "external-runtime-import",
+      "source-worktree-import",
+      "network-builtin-import",
+      "runtime-identity-mismatch"
+    ],
+    "tamperBoundary": "The first list consumes new archive/source/install/provenance artifacts and requires fresh candidate evidence. The second list is only a possible reuse scope after exact checker/input dependency proof; this report grants no inherited tamper PASS.",
+    "reusableSlicesSubjectToProof": [
+      "Exact unchanged toolchain bytes and license/source provenance",
+      "Exact unchanged schema and contract bytes plus validators",
+      "Unchanged package metadata, zero-dependency and lifecycle policy definitions",
+      "Byte API semantic expectations and fixtures whose executed closure is unchanged"
+    ],
+    "authoritativeReuseBoundary": {
+      "commit": "702c1b6381f6112a50ac844831d195275dac3350",
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3b-c3rb-cert/reuse-details.json",
+      "field": "reuseScope",
+      "text": "Explicit exact dependency and scope checks under Freeze section 8. No archive, assembly, installation, tamper or complete fresh receipt result is inherited."
+    },
+    "executionPerformed": false
+  },
+  "processLimitsMs": {
+    "helper": 5000,
+    "aggregateHelper": 20000,
+    "cli": 30000,
+    "apiWorker": 10000,
+    "cleanup": 2000,
+    "nativeHostWait": 1000
+  },
+  "noNewAcceptance": true,
+  "historicalEvidenceModified": false,
+  "productionOrHelperExecutionByThisReport": false
+}

@@ -1,0 +1,265 @@
+[
+  {
+    "actual": {
+      "accepted": false,
+      "checks": {
+        "exactlyOnePriorPidBinding": false,
+        "probeObjectProofPreserved": true,
+        "probePidMatchesCandidate": true,
+        "queryErrorRecorded": true,
+        "queryOperationEligible": true
+      },
+      "classification": "NO_PRIOR_POSITIVE_IDENTITY",
+      "policy": "MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0",
+      "priorIdentity": null,
+      "priorParentIdentity": null,
+      "priorRole": null
+    },
+    "description": "unknown process plus identity query failure",
+    "deterministicReplay": true,
+    "expected": {
+      "accepted": false,
+      "classification": "NO_PRIOR_POSITIVE_IDENTITY"
+    },
+    "id": "A",
+    "result": "PASS"
+  },
+  {
+    "actual": {
+      "accepted": true,
+      "checks": {
+        "completeNativeTimingProof": true,
+        "completePriorObjectProof": true,
+        "exactBoundParentPresent": true,
+        "exactlyOnePriorPidBinding": true,
+        "imageMatchesPriorBinding": true,
+        "observationTimingConsistent": true,
+        "parentLifetimeCompatible": true,
+        "parentMatchesPriorBinding": true,
+        "pidMatchesPriorBinding": true,
+        "probeObjectProofPreserved": true,
+        "probePidMatchesCandidate": true,
+        "queryErrorRecorded": true,
+        "queryOperationEligible": true,
+        "requeryOccurredAfterSignal": true,
+        "retainedHandleSignaled": true,
+        "roleMatchesPriorBinding": true,
+        "sameObserverSession": true,
+        "sameProcessCreationTime": true,
+        "sameProcessExitTime": true,
+        "snapshotConsistentWithBoundLifetime": true
+      },
+      "classification": "POST_IDENTITY_REQUERY_UNAVAILABLE",
+      "policy": "MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0",
+      "priorIdentity": {
+        "creationTime100ns": 1000,
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "pid": 100
+      },
+      "priorParentIdentity": {
+        "creationTime100ns": 500,
+        "executable": "C:\\pinned\\node.exe",
+        "pid": 50
+      },
+      "priorRole": "helper"
+    },
+    "description": "authenticated helper plus post-signal image re-query failure",
+    "deterministicReplay": true,
+    "expected": {
+      "accepted": true,
+      "classification": "POST_IDENTITY_REQUERY_UNAVAILABLE"
+    },
+    "id": "B",
+    "result": "PASS"
+  },
+  {
+    "actual": {
+      "accepted": false,
+      "checks": {
+        "completePriorObjectProof": true,
+        "exactBoundParentPresent": true,
+        "exactlyOnePriorPidBinding": true,
+        "parentMatchesPriorBinding": false,
+        "pidMatchesPriorBinding": true,
+        "probeObjectProofPreserved": true,
+        "probePidMatchesCandidate": true,
+        "queryErrorRecorded": true,
+        "queryOperationEligible": true,
+        "sameObserverSession": true
+      },
+      "classification": "PARENT_CONTRADICTION",
+      "policy": "MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0",
+      "priorIdentity": {
+        "creationTime100ns": 1000,
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "pid": 100
+      },
+      "priorParentIdentity": {
+        "creationTime100ns": 500,
+        "executable": "C:\\pinned\\node.exe",
+        "pid": 50
+      },
+      "priorRole": "helper"
+    },
+    "description": "same PID with contradictory parent",
+    "deterministicReplay": true,
+    "expected": {
+      "accepted": false,
+      "classification": "PARENT_CONTRADICTION"
+    },
+    "id": "C",
+    "result": "PASS"
+  },
+  {
+    "actual": {
+      "accepted": false,
+      "checks": {
+        "completePriorObjectProof": true,
+        "exactBoundParentPresent": true,
+        "exactlyOnePriorPidBinding": true,
+        "imageMatchesPriorBinding": false,
+        "parentMatchesPriorBinding": true,
+        "pidMatchesPriorBinding": true,
+        "probeObjectProofPreserved": true,
+        "probePidMatchesCandidate": true,
+        "queryErrorRecorded": true,
+        "queryOperationEligible": true,
+        "sameObserverSession": true
+      },
+      "classification": "IMAGE_CONTRADICTION",
+      "policy": "MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0",
+      "priorIdentity": {
+        "creationTime100ns": 1000,
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "pid": 100
+      },
+      "priorParentIdentity": {
+        "creationTime100ns": 500,
+        "executable": "C:\\pinned\\node.exe",
+        "pid": 50
+      },
+      "priorRole": "helper"
+    },
+    "description": "same PID with contradictory image",
+    "deterministicReplay": true,
+    "expected": {
+      "accepted": false,
+      "classification": "IMAGE_CONTRADICTION"
+    },
+    "id": "D",
+    "result": "PASS"
+  },
+  {
+    "actual": {
+      "accepted": false,
+      "checks": {
+        "completeNativeTimingProof": true,
+        "completePriorObjectProof": true,
+        "exactBoundParentPresent": true,
+        "exactlyOnePriorPidBinding": true,
+        "imageMatchesPriorBinding": true,
+        "observationTimingConsistent": true,
+        "parentLifetimeCompatible": true,
+        "parentMatchesPriorBinding": true,
+        "pidMatchesPriorBinding": true,
+        "probeObjectProofPreserved": true,
+        "probePidMatchesCandidate": true,
+        "queryErrorRecorded": true,
+        "queryOperationEligible": true,
+        "requeryOccurredAfterSignal": true,
+        "retainedHandleSignaled": true,
+        "roleMatchesPriorBinding": true,
+        "sameObserverSession": true,
+        "sameProcessCreationTime": false,
+        "sameProcessExitTime": true,
+        "snapshotConsistentWithBoundLifetime": true
+      },
+      "classification": "PID_REUSE_OR_REPLACEMENT_EVIDENCE",
+      "policy": "MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0",
+      "priorIdentity": {
+        "creationTime100ns": 1000,
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "pid": 100
+      },
+      "priorParentIdentity": {
+        "creationTime100ns": 500,
+        "executable": "C:\\pinned\\node.exe",
+        "pid": 50
+      },
+      "priorRole": "helper"
+    },
+    "description": "same PID with replacement creation identity",
+    "deterministicReplay": true,
+    "expected": {
+      "accepted": false,
+      "classification": "PID_REUSE_OR_REPLACEMENT_EVIDENCE"
+    },
+    "id": "E",
+    "result": "PASS"
+  },
+  {
+    "actual": {
+      "accepted": true,
+      "checks": {
+        "absenceObservedAfterSignal": true,
+        "completePriorObjectProof": true,
+        "exactBoundParentPresent": true,
+        "exactlyOnePriorPidBinding": true,
+        "parentLifetimeCompatible": true,
+        "positiveObservationProvenance": true,
+        "qpcOrderingConsistent": true,
+        "retainedHandleSignaled": true,
+        "retainedObjectTimesMatchIdentity": true,
+        "roleMatchesPriorBinding": true,
+        "sameObserverSession": true,
+        "snapshotProvesPidAbsent": true,
+        "snapshotSucceeded": true
+      },
+      "classification": "TERMINATED_KNOWN_IDENTITY",
+      "policy": "MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0",
+      "priorIdentity": {
+        "creationTime100ns": 1000,
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "pid": 100
+      },
+      "priorParentIdentity": {
+        "creationTime100ns": 500,
+        "executable": "C:\\pinned\\node.exe",
+        "pid": 50
+      },
+      "priorRole": "helper"
+    },
+    "description": "authenticated process cleanly exited and absent after signal",
+    "deterministicReplay": true,
+    "expected": {
+      "accepted": true,
+      "classification": "TERMINATED_KNOWN_IDENTITY"
+    },
+    "id": "F",
+    "result": "PASS"
+  },
+  {
+    "actual": {
+      "accepted": false,
+      "checks": {
+        "probeObjectProofPreserved": false,
+        "probePidMatchesCandidate": true,
+        "queryErrorRecorded": true,
+        "queryOperationEligible": false
+      },
+      "classification": "INELIGIBLE_UNRELATED_OBSERVATION_ERROR",
+      "policy": "MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0",
+      "priorIdentity": null,
+      "priorParentIdentity": null,
+      "priorRole": null
+    },
+    "description": "unrelated observation error",
+    "deterministicReplay": true,
+    "expected": {
+      "accepted": false,
+      "classification": "INELIGIBLE_UNRELATED_OBSERVATION_ERROR"
+    },
+    "id": "G",
+    "result": "PASS"
+  }
+]

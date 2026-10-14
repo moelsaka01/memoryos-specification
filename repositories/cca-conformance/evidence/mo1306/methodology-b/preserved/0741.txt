@@ -1,0 +1,22 @@
+"""Finish helper-independent CLI correction checks while frozen helper timing is blocked."""
+import sys
+from pathlib import Path
+sys.dont_write_bytecode=True
+from native import Campaign,put,ref,inventory,INSTALLED
+c=Campaign()
+c.bindings['dispatchDriver']=ref(Path(__file__))
+status='FAIL';failure=None
+try:
+    c.preflight()
+    c.dispatch()
+    after=inventory(INSTALLED)
+    assert after==c.before,'INSTALLED_CANDIDATE_CHANGED'
+    put(c.output/'installed-integrity-after.json',{'status':'PASS','members':after,'count':len(after),'before':ref(c.output/'preflight.json')})
+    status='PASS'
+except BaseException as error:
+    failure=type(error).__name__+': '+str(error)
+    raise
+finally:
+    record={'kind':'MemoryOSPhase3ARInstalledDispatchOnly','version':'1.0.0','status':status,'failure':failure,'run':c.id,'bindings':c.bindings,'cases':c.cases,'commands':c.commands,'scope':'Helper-independent correction closure only; does not replace required semantic/lifecycle/publication campaign.'}
+    put(c.output/'dispatch-summary.json',record)
+    print({'status':status,'dispatchSummary':str(c.output/'dispatch-summary.json'),'failure':failure},flush=True)

@@ -1,0 +1,28 @@
+$taskRoot='C:\Users\melsa\Documents\Codex\cca-mo1306-3a-refresh'
+$taskCenter=[DateTime]::FromFileTimeUtc(134349842977050555)
+$taskStart=$taskCenter.AddSeconds(-60)
+$taskEnd=$taskCenter.AddSeconds(60)
+$taskRows=@()
+foreach($taskLog in @('System','Application','Microsoft-Windows-Windows Defender/Operational')) {
+ $taskMetadata=$null; $taskMetadataError=$null
+ try {
+  $taskLogInfo=Get-WinEvent -ListLog $taskLog -ErrorAction Stop
+  $taskMetadata=[ordered]@{enabled=$taskLogInfo.IsEnabled;logMode=[string]$taskLogInfo.LogMode;recordCount=$taskLogInfo.RecordCount;oldestRecordNumber=$taskLogInfo.OldestRecordNumber;fileSize=$taskLogInfo.FileSize;maximumSizeBytes=$taskLogInfo.MaximumSizeInBytes;lastWriteTime=$taskLogInfo.LastWriteTime}
+ } catch { $taskMetadataError=[ordered]@{type=$_.Exception.GetType().FullName;message=$_.Exception.Message;errorId=$_.FullyQualifiedErrorId} }
+ $taskFilter=@{LogName=$taskLog;StartTime=$taskStart;EndTime=$taskEnd}
+ if($taskLog -ne 'Microsoft-Windows-Windows Defender/Operational') { $taskFilter.Level=@(1,2,3) }
+ $taskEvents=@();$taskError=$null;$taskStatus='OBSERVED'
+ try { $taskEvents=@(Get-WinEvent -FilterHashtable $taskFilter -MaxEvents 65 -ErrorAction Stop) }
+ catch {
+  if($_.FullyQualifiedErrorId -like 'NoMatchingEventsFound*') { $taskStatus='NO_MATCHING_EVENTS' }
+  else { $taskStatus='UNAVAILABLE';$taskError=[ordered]@{type=$_.Exception.GetType().FullName;message=$_.Exception.Message;errorId=$_.FullyQualifiedErrorId} }
+ }
+ $taskSelected=@($taskEvents | Select-Object -First 64 | ForEach-Object { [ordered]@{timeUtc=$_.TimeCreated.ToUniversalTime().ToString('o');provider=$_.ProviderName;id=$_.Id;level=$_.LevelDisplayName;recordId=$_.RecordId;message=$_.Message} })
+ $taskRows += [ordered]@{logName=$taskLog;status=$taskStatus;levels=if($taskLog -eq 'Microsoft-Windows-Windows Defender/Operational'){'all'}else{'critical,error,warning'};metadata=$taskMetadata;metadataError=$taskMetadataError;eventCount=$taskSelected.Count;truncated=($taskEvents.Count -gt 64);events=$taskSelected;error=$taskError}
+}
+$taskValue=[ordered]@{kind='MemoryOSPublicationOriginalTimeWindowEventObservation';status='READ_ONLY_OBSERVATION';observedUtc=[DateTime]::UtcNow.ToString('o');originalHelperPid=19232;originalCreationFiletime100ns='134349842977050555';centerUtc=$taskCenter.ToString('o');windowStartUtc=$taskStart.ToString('o');windowEndUtc=$taskEnd.ToString('o');logs=$taskRows;limitations=@('Current retained event log query cannot reconstruct events that were never logged or were overwritten.','No matching events is not proof of no interference or environment transient.','System/Application query covers critical/error/warning levels; Defender query covers all levels in this window.','No security settings changed and no product process launched.')}
+$taskPath=Join-Path $taskRoot 'repositories\cca-conformance\evidence\mo1306\phase3a-publication-diagnostic\windows-eventlog.json'
+if(Test-Path -LiteralPath $taskPath){throw 'Refuse evidence overwrite'}
+[IO.File]::WriteAllText($taskPath,($taskValue | ConvertTo-Json -Depth 9 -Compress)+[char]10,(New-Object Text.UTF8Encoding($false)))
+[ordered]@{path=$taskPath;centerUtc=$taskValue.centerUtc;logs=@($taskRows | ForEach-Object { @{name=$_.logName;status=$_.status;count=$_.eventCount;truncated=$_.truncated} });byteLength=(Get-Item -LiteralPath $taskPath).Length;sha256=('sha256:'+(Get-FileHash -LiteralPath $taskPath -Algorithm SHA256).Hash.ToLowerInvariant())} | ConvertTo-Json -Depth 4 -Compress
+

@@ -1,0 +1,127 @@
+{
+  "cases": [
+    {
+      "elapsedMs": 46555,
+      "escalation": null,
+      "failure": null,
+      "id": "3D-D1",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "observed": {
+          "candidate": "deff3c8016ca685db18a3874b18ff956d289c0e0",
+          "commitsChecked": 62,
+          "productionTreeDigest": "sha256:111bd7dd6860221bb2f00f344f38750450c9be3a509bbe888630443d47a83481"
+        },
+        "runResult": "NOT_READY",
+        "status": "READY"
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 0,
+      "escalation": null,
+      "failure": {
+        "code": null,
+        "message": "NOT_READY: phase3d-rehearsal-r1: docs/mo1308-phase3-protocol.md: changed since the seal; phase3d-rehearsal-r1: a rehearsal must be non-certifying and not promotable; phase3d-rehearsal-r2: stream-receipt.json: missing; phase3d-rehearsal-r2: a rehearsal must be non-certifying and not promotable; 3A: no accepted certifying generation",
+        "name": "Error"
+      },
+      "id": "3D-D2",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "observed": {
+          "accepted": {},
+          "generations": [
+            {
+              "evidenceSealSha256": "9ba671526d1600b752b733c8f8ca76264c16e03afd1b55cd0e3fa2585d704b62",
+              "id": "phase3d-rehearsal-r1",
+              "result": null
+            },
+            {
+              "evidenceSealSha256": null,
+              "id": "phase3d-rehearsal-r2",
+              "result": null
+            }
+          ],
+          "preserved": [],
+          "rehearsals": [
+            "phase3d-rehearsal-r1",
+            "phase3d-rehearsal-r2"
+          ]
+        },
+        "runResult": "NOT_READY",
+        "status": "NOT_READY"
+      },
+      "outcome": null,
+      "result": "FAIL"
+    },
+    {
+      "elapsedMs": 0,
+      "escalation": null,
+      "failure": null,
+      "id": "3D-D3",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {},
+      "outcome": null,
+      "result": "NOT_RUN"
+    },
+    {
+      "elapsedMs": 0,
+      "escalation": null,
+      "failure": null,
+      "id": "3D-D4",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {},
+      "outcome": null,
+      "result": "NOT_RUN"
+    },
+    {
+      "elapsedMs": 0,
+      "escalation": null,
+      "failure": null,
+      "id": "3D-D5",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {},
+      "outcome": null,
+      "result": "NOT_RUN"
+    },
+    {
+      "elapsedMs": 0,
+      "escalation": null,
+      "failure": null,
+      "id": "3D-D6",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {},
+      "outcome": null,
+      "result": "NOT_RUN"
+    },
+    {
+      "elapsedMs": 0,
+      "escalation": null,
+      "failure": null,
+      "id": "3D-D7",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {},
+      "outcome": null,
+      "result": "NOT_RUN"
+    }
+  ],
+  "elapsedMs": 46558,
+  "failureCode": null,
+  "finishedAt": "2026-10-09T05:59:21.680Z",
+  "generation": "phase3d-rehearsal-r2",
+  "kind": "MO1308Phase3StepReceipt",
+  "result": "FAIL",
+  "segment": "main",
+  "startedAt": "2026-10-09T05:58:35.123Z",
+  "step": "D",
+  "stream": "3D",
+  "version": "1.0.0"
+}

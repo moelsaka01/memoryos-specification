@@ -1,0 +1,132 @@
+"""Read-only historical preservation and current Phase 3A-R workflow cross-check.
+
+Writes only new R2 evidence. --check compares fresh current bytes to the recorded
+before/after inventories. No prior advisory conclusion is used as R2 authority.
+"""
+from pathlib import Path
+import argparse, ast, hashlib, json, subprocess, sys
+sys.dont_write_bytecode = True
+ROOT = Path(__file__).resolve().parents[4]
+OLD = ROOT.parent / 'cca-mo1306-3b'
+FIRST = ROOT.parent / 'cca-mo1306-3b-refresh'
+A = ROOT.parent / 'cca-mo1306-3a-refresh'
+OUT = ROOT / 'repositories/cca-conformance/evidence/mo1306/phase3b-r2'
+GIT = 'C:/Program Files/Git/cmd/git.exe'
+C3AB = '9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44'
+PINS = {'checkout':'3d3c42e5aac5ba805825da76410c181273ba90b1', 'upload-artifact':'043fb46d1a93c77aae656e7c1c64a875d1fc6a0a'}
+sys.path.insert(0, str(OLD / '.cache/mo1306/validators'))
+import yaml
+
+def need(ok, message):
+    if not ok: raise ValueError(message)
+
+def canonical(d): return (json.dumps(d, sort_keys=True, indent=2)+'\n').encode()
+def identity(raw): return {'byteLength':len(raw), 'sha256':'sha256:'+hashlib.sha256(raw).hexdigest()}
+def row(root,p): return {'path':p.relative_to(root).as_posix(), **identity(p.read_bytes())}
+def git(*args,root=ROOT):
+    return subprocess.run([GIT,*args],cwd=root,capture_output=True,check=True,creationflags=subprocess.CREATE_NO_WINDOW).stdout.decode().strip()
+
+def inventory(root, scopes):
+    files=[]
+    for scope in scopes:
+        p=root/scope
+        need(p.exists(),'Missing history scope '+str(p))
+        for q in sorted(p.rglob('*')) if p.is_dir() else [p]:
+            need(not q.is_symlink(),'History symlink '+str(q))
+            if q.is_file(): files.append(row(root,q))
+    files=sorted(files,key=lambda r:r['path'])
+    need(len(files)==len({r['path'] for r in files}),'History duplicate path')
+    return {'worktree':str(root),'head':git('rev-parse','HEAD',root=root),
+            'gitStatus':git('status','--porcelain=v1',root=root),'fileCount':len(files),
+            'inventorySha256':identity(canonical(files))['sha256'],'files':files}
+
+def run():
+    need(ROOT.name=='cca-mo1306-3b-refresh2','Wrong worktree')
+    scopes={
+      'original3B':(OLD,['repositories/cca-conformance/evidence/mo1306/phase3b','repositories/cca-conformance/tools/mo1306-phase3b','docs/mo1306-phase3b-certification.md','docs/mo1306-phase3b-supply-review.md']),
+      'first3BR':(FIRST,['repositories/cca-conformance/evidence/mo1306/phase3b-refresh','repositories/cca-conformance/tools/mo1306-phase3b-refresh'])}
+    before={k:inventory(root,paths) for k,(root,paths) in scopes.items()}
+    old_receipt_path=OLD/'repositories/cca-conformance/evidence/mo1306/phase3b/certification-receipt.json'
+    old_receipt=json.loads(old_receipt_path.read_bytes())
+    need(before['original3B']['head']=='d522385de980a0105c5e6f17ba7f3ffb73cab6bd','Original HEAD')
+    need(before['original3B']['gitStatus']=='','Original no longer clean')
+    source=FIRST/'repositories/cca-conformance/tools/mo1306-phase3b-refresh/receipt_refresh.py'
+    syntax=ast.parse(source.read_text())
+    assignment=next(n for n in syntax.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='FINDINGS' for t in n.targets))
+    historical_intention=ast.literal_eval(assignment.value)
+    source_text=source.read_text()
+    need('"releaseReady": False' in source_text,'First draft intended readiness missing')
+    absent=[p for p in [
+      'repositories/cca-conformance/evidence/mo1306/phase3b-refresh/advisory-review.json',
+      'repositories/cca-conformance/evidence/mo1306/phase3b-refresh/certification-receipt.json',
+      'repositories/cca-conformance/evidence/mo1306/phase3b-refresh/provenance.json',
+      'docs/mo1306-phase3b-refresh-certification.md',
+      'docs/mo1306-phase3b-refresh-advisories.md'] if not (FIRST/p).exists()]
+    template_path=ROOT/'repositories/memoryos-ci/templates/github.yml.tpl'
+    template=yaml.load(template_path.read_bytes(),Loader=yaml.BaseLoader)
+    expected_upload=next(s for s in template['jobs']['memoryos_ci']['steps'] if s.get('id')=='upload')
+    expected_basenames=['evaluation-identity.json','memoryos-ci-artifacts.json','memoryos-ci-complete.json','memoryos-ci-evidence.json','memoryos-ci-result.json','policy-outcome.json']
+    need([p.rsplit('/',1)[1] for p in expected_upload['with']['path'].splitlines()]==expected_basenames,'Frozen template basename set')
+    workflows=[]
+    for case in ['pass','fail','cne']:
+        name='mo1306-certification-'+case+'.yml'
+        p=A/'.github/workflows'/name
+        e=A/'repositories/cca-conformance/evidence/mo1306/phase3ar/github'/name
+        raw=p.read_bytes()
+        need(raw==e.read_bytes(),'Current workflow differs from retained hosted workflow '+name)
+        document=yaml.load(raw,Loader=yaml.BaseLoader)
+        need(document['on']=={'workflow_dispatch':{}},'Only manual dispatch '+name)
+        need(document['permissions']=={'contents':'read'},'Permissions '+name)
+        steps=document['jobs']['memoryos_ci']['steps']
+        upload=next(s for s in steps if s.get('id')=='upload')
+        need(upload==expected_upload,'Exact relevant upload invocation '+name)
+        tools=next(s for s in steps if s.get('id')=='tools')
+        data=next(s for s in steps if s.get('id')=='data')
+        for step in [tools,data]:
+            need(step['uses']=='actions/checkout@'+PINS['checkout'],'Checkout pin '+name)
+            need(step['with']['persist-credentials']=='false','Persist credentials '+name)
+            need(step['with']['submodules']=='false' and step['with']['lfs']=='false','Expanded checkout scope '+name)
+        need(tools['with']['ref']==C3AB and tools['with']['path']=='_memoryos/tool','Trusted tools '+name)
+        need(data['with']['ref']=='${{ github.sha }}' and data['with']['path']=='_memoryos/data','Separate repository data '+name)
+        need(b'secrets.' not in raw,'Unexpected ordinary secret reference '+name)
+        workflows.append({'case':case,'workingWorkflow':row(A,p),'retainedEvidence':row(A,e),
+            'exactBytesEqual':True,'uploadInvocationExactlyEqualsFrozenTemplate':True,
+            'manualDispatchOnly':True,'contentsReadOnly':True,'trustedToolsCommit':C3AB,
+            'separateToolAndDataPaths':True,'ordinarySecretReferencePresent':False,
+            'checkoutPins':[s['uses'] for s in [tools,data]],'upload':upload})
+    ar_path=A/'repositories/cca-conformance/evidence/mo1306/phase3ar/execution-receipt.json'
+    ar=json.loads(ar_path.read_bytes())
+    current_a={'kind':'MemoryOSPhase3BR2Current3ARWorkflowCrossCheck','version':'1.0.0','status':'PASS',
+      'worktree':str(A),'head':git('rev-parse','HEAD',root=A),'gitStatus':git('status','--porcelain=v1',root=A),
+      'frozenTemplate':row(ROOT,template_path),'pins':PINS,'workflows':workflows,
+      'artifactBasenameAllowlist':expected_basenames,'invocationCount':3,
+      'existing3ARReceipt':{'identity':row(A,ar_path),'status':ar.get('status'),'hostedStatus':ar.get('hostedStatus'),
+        'nativeStatus':ar.get('nativeStatus'),'remoteCommit':ar.get('remoteCommit')},
+      'scope':'Read-only local dependency/invocation cross-check. No remote query, hosted run, account operation, or claim that pending 3A-R certification succeeded.'}
+    after={k:inventory(root,paths) for k,(root,paths) in scopes.items()}
+    need(before==after,'History changed during verification')
+    history={'kind':'MemoryOSPhase3BR2HistoricalPreservation','version':'1.0.0','status':'PASS',
+      'before':before,'after':after,'inventoriesEqual':True,
+      'original3B':{'receipt':row(OLD,old_receipt_path),'status':old_receipt['status'],'release':old_receipt['release'],
+        'authority':'Historical certification of old B2 only; two open hosted findings retained.'},
+      'first3BR':{'userReportedStop':{'advisory':'GHSA-8gc5-j5rx-235r','disposition':'APPLICABLE_ACCEPTANCE_REQUIRED','releaseReady':False,
+          'source':'Authoritative user request; not an independently discovered completed receipt.'},
+        'retainedDraftReceiptTool':row(FIRST,source),'draftFindingConstants':historical_intention,
+        'draftReleaseReady':False,'absentFinalEvidencePaths':absent,
+        'interpretation':'Retained draft source supports the reported intended stopped disposition. No final advisory-review, canonical receipt, provenance, or final report exists at these conventional paths. Draft constants are historical observations, not R2 dispositions.'},
+      'reviewBoundary':'No prior advisory conclusion is adopted. R2 own source/call-path/input/witness review is separately required.'}
+    return {'supply-history.json':history,'supply-workflow-crosscheck.json':current_a}
+
+if __name__=='__main__':
+    parser=argparse.ArgumentParser();parser.add_argument('--check',action='store_true');args=parser.parse_args()
+    results=run()
+    for name,d in results.items():
+        p=OUT/name
+        if args.check: need(p.read_bytes()==canonical(d),'Recorded evidence changed '+name)
+        else:
+            need(p.resolve().is_relative_to(ROOT.resolve()),'Output outside authority')
+            p.write_bytes(canonical(d))
+    print(json.dumps({'status':'PASS','mode':'check' if args.check else 'record',
+       'originalFiles':results['supply-history.json']['before']['original3B']['fileCount'],
+       'firstRefreshFiles':results['supply-history.json']['before']['first3BR']['fileCount'],
+       'sameFrozenInvocations':len(results['supply-workflow-crosscheck.json']['workflows'])}))

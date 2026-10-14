@@ -1,0 +1,13 @@
+// Cache-only post-C3RB verification. No native repetitions or certification campaigns.
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {spawnSync} from 'node:child_process';
+import {performance} from 'node:perf_hooks';
+import {root,hash,record,write,str} from './common.mjs';
+assert.equal(process.version,'v24.21.0');assert.equal(hash(fs.readFileSync(process.execPath)),'sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32');
+assert.equal(process.argv.length,4);assert.equal(process.argv[2],'--output');const output=process.argv[3].replaceAll('\\','/');assert.ok(path.resolve(root,output).startsWith(path.resolve(root,'.cache/mo1307/phase3a-readset-correction/post-binding')+path.sep));assert.equal(fs.existsSync(path.resolve(root,output)),false);fs.mkdirSync(path.resolve(root,output),{recursive:true});
+const before=str('status','--porcelain');assert.equal(before,'');const rows=[];let result='PASS',failure=null;
+const commands=[['binding',process.execPath,['repositories/cca-conformance/tools/mo1307-phase3a-readset-correction/verify-binding.mjs','--bound']],['package',process.execPath,['repositories/cca-conformance/tools/mo1307-phase1/package.mjs','check']],['workspace','C:/Users/melsa/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe',['-B','tools/verify_workspace.py','--root','.']],['diff','git',['diff','--check','HEAD^','HEAD']]];
+try{for(const [id,exe,args] of commands){const started=performance.now(),r=spawnSync(exe,args,{cwd:root,windowsHide:true,encoding:null,timeout:60000,maxBuffer:16*1024*1024});for(const [n,b] of [['stdout.txt',r.stdout??Buffer.alloc(0)],['stderr.txt',r.stderr??Buffer.alloc(0)]])fs.writeFileSync(path.resolve(root,output,id+'.'+n),b,{flag:'wx'});const row={id,exe,args,exit:r.status,error:r.error?.code??null,elapsedMs:performance.now()-started,stdout:record(output+'/'+id+'.stdout.txt'),stderr:record(output+'/'+id+'.stderr.txt'),result:r.status===0&&!r.error?'PASS':'FAIL'};rows.push(row);assert.ifError(r.error);assert.equal(r.status,0);console.log(JSON.stringify({id,result:row.result}));}assert.equal(str('status','--porcelain'),'');}catch(error){result='FAIL';failure={message:error.message,stack:error.stack};}
+write(output+'/receipt.json',{kind:'MO1307ReadSetCorrectionPostBinding',version:'1.0.0',result,failure,C3RB:str('rev-parse','HEAD'),commands:rows,workingTreeBefore:before,workingTreeAfter:str('status','--porcelain'),nativeCampaignsRun:false,certification:false});console.log(JSON.stringify({result,failure}));process.exitCode=result==='PASS'?0:1;

@@ -1,0 +1,40 @@
+from pathlib import Path
+import hashlib,json,os,platform,subprocess,sys,tarfile,winreg
+ROOT=Path(__file__).resolve().parents[4]
+CACHE=ROOT/'.cache/mo1306-phase3ar'; OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3ar'
+NODE=CACHE/'node-v24.21.0-win-x64/node.exe'; NPM=NODE.parent/'node_modules/npm/bin/npm-cli.js'; SOURCE=ROOT/'repositories/memoryos-ci'
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def row(p):
+ b=p.read_bytes();return dict(path=p.relative_to(ROOT).as_posix(),byteLength=len(b),sha256=sha(b))
+def put(name,v):
+ p=OUT/name;assert not p.exists();p.write_text(json.dumps(v,sort_keys=True,separators=(',',':'))+'\n',encoding='utf8')
+def run(name,args,cwd=ROOT):
+ r=subprocess.run(list(map(str,args)),cwd=cwd,env={k:os.environ[k] for k in ['SystemRoot','WINDIR']},capture_output=True,timeout=120,creationflags=subprocess.CREATE_NO_WINDOW)
+ rec=dict(argv=list(map(str,args)),exitCode=r.returncode,stdout=r.stdout.decode('utf8'),stderr=r.stderr.decode('utf8'));put('package-'+name+'.json',rec);assert r.returncode==0,rec;return rec['stdout'].strip()
+assert sha(NODE.read_bytes())=='sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32'
+archives=[]
+for name in ['assembly-a','assembly-b']:
+ folder=CACHE/name;folder.mkdir();archive=folder/'memoryos-ci-0.1.0.tgz'
+ run(name,[NODE,SOURCE/'scripts/pack.mjs',archive]);assert archive.stat().st_size==197172
+ assert sha(archive.read_bytes())=='sha256:2f1e9424ce64e44b7b1587ce206fe5f7ae72579652ca1fc891c489bc1a21925d'
+ archives.append(row(archive))
+manifest=json.loads((SOURCE/'distribution-manifest.json').read_bytes());expected={r['path'] for r in manifest['files']}|{'distribution-manifest.json'}
+archive=CACHE/'assembly-a/memoryos-ci-0.1.0.tgz'
+with tarfile.open(archive) as t:
+ members=t.getmembers();assert len(members)==94 and len({m.name.casefold() for m in members})==94
+ assert {m.name for m in members}=={'package/'+p for p in expected}
+ for m in members:assert m.isfile() and m.uid==m.gid==m.mtime==0 and t.extractfile(m).read()==(SOURCE/m.name[8:]).read_bytes()
+closure=json.loads((SOURCE/'runtime/runtime-closure-manifest.json').read_bytes());assert len(closure['files'])==25
+for e in closure['files']:
+ p=SOURCE/'runtime'/e['path'];assert p.stat().st_size==e['byteLength'] and sha(p.read_bytes())=='sha256:'+e['sha256']
+package=json.loads((SOURCE/'package.json').read_bytes());assert package['name']=='memoryos-ci' and package['version']=='0.1.0' and not package.get('dependencies')
+install=CACHE/'install';install.mkdir();npmcache=CACHE/'npm-cache';npmcache.mkdir();assert not list(npmcache.iterdir())
+for name in ['empty-user.npmrc','empty-global.npmrc']:(CACHE/name).write_bytes(b'')
+run('install',[NODE,NPM,'install','--offline','--ignore-scripts','--no-audit','--no-fund','--cache',npmcache,'--prefix',install,'--userconfig',CACHE/'empty-user.npmrc','--globalconfig',CACHE/'empty-global.npmrc',archive],install)
+pkg=install/'node_modules/memoryos-ci';actual={p.relative_to(pkg).as_posix() for p in pkg.rglob('*') if p.is_file()};assert actual==expected
+for rel in expected:assert (pkg/rel).read_bytes()==(SOURCE/rel).read_bytes()
+put('package.json',dict(status='PASS',baseline='9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44',archive=archives[0],assemblies=archives,memberCount=94,sdkClosureFiles=25,productionDependencies=0,distribution=row(SOURCE/'distribution-manifest.json'),offlineInstall=True,emptyInitialCache=True,installedRoot=str(pkg),installedBefore=[row(pkg/r) for r in sorted(expected)],oldArchiveRejected='6541e2a935f7bd0d5580b32fc9f17a07d471bc16486fd2a044ecef7628d2458b'))
+with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,r'SOFTWARE\Microsoft\Windows NT\CurrentVersion') as k:windows={n:winreg.QueryValueEx(k,n)[0] for n in ['ProductName','EditionID','DisplayVersion','CurrentBuild','UBR']}
+ps=Path(os.environ['SystemRoot'])/'System32/WindowsPowerShell/v1.0/powershell.exe'
+put('environment.json',dict(windows=windows,actualEdition='Windows 11 Home' if platform.win32_ver()[0]=='11' and windows['EditionID']=='Core' else platform.platform(),win32Version=platform.win32_ver(),architecture=platform.machine(),node=json.loads(run('node-version',[NODE,'-p','JSON.stringify({version:process.version,architecture:process.arch,platform:process.platform,execPath:process.execPath})'])),nodeIdentity=row(NODE),npmVersion=run('npm-version',[NODE,NPM,'--version']),windowsPowerShellVersion=run('powershell-version',[ps,'-NoProfile','-NonInteractive','-Command','$PSVersionTable.PSVersion.ToString()']),engineeringPython=dict(path=sys.executable,version=sys.version,sha256=sha(Path(sys.executable).read_bytes()))))
+print('Corrected package independently rebuilt twice, verified 94 members/25 SDK files/zero dependencies, fresh offline installed; Windows environment recorded.')

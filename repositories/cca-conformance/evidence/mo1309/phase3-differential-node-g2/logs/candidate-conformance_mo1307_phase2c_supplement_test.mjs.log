@@ -1,0 +1,232 @@
+TAP version 13
+# Subtest: SUP01 post-rename TIMEOUT returns OUTPUT and retains exact committed result
+not ok 1 - SUP01 post-rename TIMEOUT returns OUTPUT and retains exact committed result
+  ---
+  duration_ms: 6.443589
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_supplement_test.mjs:17:45'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+    
+    Caught error:
+    
+    ReadinessError: MO1307_FILESYSTEM_BOUNDARY
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_supplement_test.mjs:20:2)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: SUP01 post-rename CANCELLED returns OUTPUT and retains exact committed result
+not ok 2 - SUP01 post-rename CANCELLED returns OUTPUT and retains exact committed result
+  ---
+  duration_ms: 0.854399
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_supplement_test.mjs:17:45'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+    
+    Caught error:
+    
+    ReadinessError: MO1307_FILESYSTEM_BOUNDARY
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_supplement_test.mjs:20:2)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: SUP02 verify stdout backpressure times out without product filesystem changes
+not ok 3 - SUP02 verify stdout backpressure times out without product filesystem changes
+  ---
+  duration_ms: 10.074599
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_supplement_test.mjs:23:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+    
+    Caught error:
+    
+    ReadinessError: MO1307_FILESYSTEM_BOUNDARY
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_supplement_test.mjs:26:2)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: SUP03 input root identity change between helper slots fails closed
+not ok 4 - SUP03 input root identity change between helper slots fails closed
+  ---
+  duration_ms: 2.662196
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_supplement_test.mjs:29:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   1,
+    -   2
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 1
+    1: 2
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_supplement_test.mjs:33:174)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: SUP04 physical file alias across bootstrap slots is rejected despite distinct paths
+not ok 5 - SUP04 physical file alias across bootstrap slots is rejected despite distinct paths
+  ---
+  duration_ms: 0.714286
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_supplement_test.mjs:35:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   1,
+    -   2
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 1
+    1: 2
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_supplement_test.mjs:41:173)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: SUP05 malformed external decision rejects without stdout or changes
+not ok 6 - SUP05 malformed external decision rejects without stdout or changes
+  ---
+  duration_ms: 46.703501
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_supplement_test.mjs:48:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+    
+    Caught error:
+    
+    ReadinessError: MO1307_FILESYSTEM_BOUNDARY
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_supplement_test.mjs:49:133)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: SUP06 wrong external decision proof binding rejects
+not ok 7 - SUP06 wrong external decision proof binding rejects
+  ---
+  duration_ms: 42.595164
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_supplement_test.mjs:52:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+    
+    Caught error:
+    
+    ReadinessError: MO1307_FILESYSTEM_BOUNDARY
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_supplement_test.mjs:53:213)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: SUP07 contrary APPROVE preserves not-ready and reports unverified authenticity
+not ok 8 - SUP07 contrary APPROVE preserves not-ready and reports unverified authenticity
+  ---
+  duration_ms: 15.984511
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_supplement_test.mjs:56:54'
+  failureType: 'testCodeFailure'
+  error: 'MO1307_FILESYSTEM_BOUNDARY'
+  code: 'MO1307_FILESYSTEM_BOUNDARY'
+  name: 'ReadinessError'
+  stack: |-
+    fail (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/memoryos-readiness/src/errors.mjs:21:61)
+    boundary (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/memoryos-readiness/src/windows-paths.mjs:16:39)
+    validateAbsoluteRoot (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/memoryos-readiness/src/windows-paths.mjs:34:95)
+    validateHelperRequest (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/memoryos-readiness/src/helper-protocol.mjs:44:24)
+    file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/memoryos-readiness/src/helper-protocol.mjs:201:7
+    terminal (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/memoryos-readiness/src/helper-protocol.mjs:187:69)
+    Object.begin (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/memoryos-readiness/src/helper-protocol.mjs:199:29)
+    read (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/memoryos-readiness/src/acquisition.mjs:19:30)
+    acquireCliInputs (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/memoryos-readiness/src/acquisition.mjs:46:23)
+    orchestrateCli (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/memoryos-readiness/src/cli.mjs:21:25)
+  ...
+# Subtest: SUP07 contrary APPROVE preserves could-not-evaluate and reports unverified authenticity
+not ok 9 - SUP07 contrary APPROVE preserves could-not-evaluate and reports unverified authenticity
+  ---
+  duration_ms: 16.733919
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_supplement_test.mjs:56:54'
+  failureType: 'testCodeFailure'
+  error: 'MO1307_FILESYSTEM_BOUNDARY'
+  code: 'MO1307_FILESYSTEM_BOUNDARY'
+  name: 'ReadinessError'
+  stack: |-
+    fail (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/memoryos-readiness/src/errors.mjs:21:61)
+    boundary (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/memoryos-readiness/src/windows-paths.mjs:16:39)
+    validateAbsoluteRoot (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/memoryos-readiness/src/windows-paths.mjs:34:95)
+    validateHelperRequest (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/memoryos-readiness/src/helper-protocol.mjs:44:24)
+    file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/memoryos-readiness/src/helper-protocol.mjs:201:7
+    terminal (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/memoryos-readiness/src/helper-protocol.mjs:187:69)
+    Object.begin (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/memoryos-readiness/src/helper-protocol.mjs:199:29)
+    read (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/memoryos-readiness/src/acquisition.mjs:19:30)
+    acquireCliInputs (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/memoryos-readiness/src/acquisition.mjs:46:23)
+    orchestrateCli (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/memoryos-readiness/src/cli.mjs:21:25)
+  ...
+# Subtest: SUP08 slot4 output inspection ERROR maps to frozen OUTPUT before worker
+not ok 10 - SUP08 slot4 output inspection ERROR maps to frozen OUTPUT before worker
+  ---
+  duration_ms: 1.47764
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_supplement_test.mjs:61:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+    
+    Caught error:
+    
+    ReadinessError: MO1307_FILESYSTEM_BOUNDARY
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_supplement_test.mjs:65:46)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 0
+# fail 10
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 290.411122

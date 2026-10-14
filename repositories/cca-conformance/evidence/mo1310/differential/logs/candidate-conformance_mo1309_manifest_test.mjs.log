@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: DB27 the manifest lists every MO-1309 test file, and each listed file exists
+ok 1 - DB27 the manifest lists every MO-1309 test file, and each listed file exists
+  ---
+  duration_ms: 7.4641
+  type: 'test'
+  ...
+# Subtest: DB27 negative control: a manifest missing a test file is detected, and a malformed manifest is refused
+ok 2 - DB27 negative control: a manifest missing a test file is detected, and a malformed manifest is refused
+  ---
+  duration_ms: 6.2865
+  type: 'test'
+  ...
+# Subtest: DB30 a rerun is its own row with its own numbered log, and the row digest binds the log bytes
+ok 3 - DB30 a rerun is its own row with its own numbered log, and the row digest binds the log bytes
+  ---
+  duration_ms: 208.4792
+  type: 'test'
+  ...
+# Subtest: DB30 tapCounts reads the node --test summary and reports a missing summary as NaN (never as a pass)
+ok 4 - DB30 tapCounts reads the node --test summary and reports a missing summary as NaN (never as a pass)
+  ---
+  duration_ms: 0.4873
+  type: 'test'
+  ...
+# Subtest: runner: on Windows `npm` runs as node plus the npm-cli.js beside it; other commands and platforms are untouched; a missing npm-cli.js is an error, not a fallback
+ok 5 - runner: on Windows `npm` runs as node plus the npm-cli.js beside it; other commands and platforms are untouched; a missing npm-cli.js is an error, not a fallback
+  ---
+  duration_ms: 1.2414
+  type: 'test'
+  ...
+# Subtest: DB30 tapCounts also reads the Node 24 spec-reporter summary, and a failure or garbled line is never read as a pass (negative control)
+ok 6 - DB30 tapCounts also reads the Node 24 spec-reporter summary, and a failure or garbled line is never read as a pass (negative control)
+  ---
+  duration_ms: 0.7014
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 410.2558

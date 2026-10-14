@@ -1,0 +1,77 @@
+{
+    "kind":  "MO1308Phase3PreconditionG2Receipt",
+    "amendments":  "A3 as refined by A3.1, A3.2 (differential gate) and A3.3 (SAC exclusion); docs/mo1308-contract-freeze-1.md sections 26, 31, 32, 33",
+    "verdict":  "FAILED_PRESERVED",
+    "reason":  "A3.2 rule 2 violated: memoryos.vscode.runtime passes on BASELINE and fails on CANDIDATE. Rules 1, 3 and 4 hold.",
+    "baseline":  {
+                     "commit":  "1dd1e8c82fe0ed5a32a894744392f2c279f89d4c",
+                     "worktree":  "c3b",
+                     "registered":  190,
+                     "excluded":  12,
+                     "executed":  178,
+                     "passed":  87,
+                     "failed":  90,
+                     "notRun":  1,
+                     "exitCode":  8,
+                     "startedLocal":  "2026-10-06T21:27:16",
+                     "endedLocal":  "2026-10-06T21:54:08"
+                 },
+    "candidate":  {
+                      "commit":  "47595cc95204307dd43c4772c417b52f0ac8402b",
+                      "worktree":  "c3c",
+                      "registered":  190,
+                      "excluded":  12,
+                      "executed":  178,
+                      "passed":  86,
+                      "failed":  91,
+                      "notRun":  1,
+                      "exitCode":  8,
+                      "startedLocal":  "2026-10-06T21:54:09",
+                      "endedLocal":  "2026-10-06T22:21:35"
+                  },
+    "command":  "ctest --preset default -E \"^(cca_core_tests_NOT_BUILT|cca_compiler_tests_NOT_BUILT|cca\\.memory\\.example|cca\\.memory_provider\\.example|cca\\.procedural_memory\\.example|cca\\.process\\.example\\.runtime|cca\\.semantic_memory\\.example|cca_long_term_memory_allocation_tests_NOT_BUILT|cca_procedural_memory_allocation_tests_NOT_BUILT|memoryos\\.sdk\\.cpp\\.example|cca_memory_studio_allocation_tests_NOT_BUILT|cca_memory_studio_tests_NOT_BUILT)$\" --timeout 3600",
+    "exclusions":  "setup/exclusions.json (frozen and committed before the recorded runs, commit 93536b24f0efe3b6ea7e53580aa2a5200b5e05b3)",
+    "rules":  {
+                  "rule1_workspaceVerifyPassesOnCandidate":  true,
+                  "rule2_noBaselinePassingTestFailsOrNotRunOnCandidate":  false,
+                  "rule3_everyCandidateOnlyTestPasses":  true,
+                  "rule4_everyFailBothTestListedPreExistingWithClassification":  true
+              },
+    "comparison":  {
+                       "PASS_BOTH":  86,
+                       "PRE_EXISTING":  91,
+                       "NEW_FAILURE":  1,
+                       "NEWLY_PASSING":  0,
+                       "MO1308_ADDED_TESTS":  0,
+                       "REMOVED_ON_CANDIDATE":  0
+                   },
+    "newFailures":  [
+                        {
+                            "test":  "memoryos.vscode.runtime",
+                            "baseline":  "PASSED",
+                            "candidate":  "FAILED",
+                            "classification":  "product",
+                            "detail":  "runtime_foundation.test.mjs:182 \"runtime closure manifest and identities reproduce the frozen independent digests\": vendor/repositories/cca-studio/package.json is not byte-preserved from its authoritative source. MO-1308 (Phase 2D) extended the test script in repositories/cca-studio/package.json (history tests, test:history-phase1); the vendored copy under repositories/memoryos-vscode/runtime/vendor/repositories/cca-studio/ was not refreshed (1922 vs 2130 bytes)."
+                        }
+                    ],
+    "preExisting":  {
+                        "count":  91,
+                        "allocationFailureTests":  81,
+                        "other":  10,
+                        "note":  "classifications per test in comparison.json and comparison.csv"
+                    },
+    "workspaceVerify":  {
+                            "baseline":  "PASSED",
+                            "candidate":  "PASSED"
+                        },
+    "setupDeviations":  [
+                            "MEMORYOS_VSCODE_NPM_EXECUTABLE pinned to npm.cmd at configure (A3.3, identical in both trees)",
+                            "blocked gtest executables renamed to *.exe.sac-blocked in both build dirs (A3.3)",
+                            "npm ci --ignore-scripts in repositories with lockfiles; built artifacts such as memoryos-mcp/out/phase2/*.tgz were not produced (causes environment-classified pre-existing failures)"
+                        ],
+    "smartAppControl":  {
+                            "enforcing":  true,
+                            "blockedUnion":  13,
+                            "blockedExcludedTests":  12
+                        }
+}

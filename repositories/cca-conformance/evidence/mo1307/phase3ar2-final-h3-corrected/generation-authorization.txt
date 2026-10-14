@@ -1,0 +1,18 @@
+READ-ONLY, then PREPARE ONLY. Do not run any Phase B tool. Do not delete, edit or commit
+existing evidence.
+
+Cause is known: I ran Phase B Block 1 once earlier today, which created the
+phase3ar2-final-h2-corrected namespace; my second attempt failed at prepare (namespace exists),
+then run (no seal) and close (receipt a740a4b6…, CONCRETE_BLOCKER, A–O NOT_RUN).
+
+1. Confirm in a few lines: how far the earlier run got (which files exist, any campaign-seal.json
+   or campaign-run-start.json), and whether any product/helper/CLI/API process ever ran for H2.
+2. If NO product process ran: treat h2-corrected as a closed, preserved blocked generation and
+   prepare the next append-only generation (e.g. phase3ar2-final-h3-corrected) with the minimum
+   change needed (new namespace name and generation identity; harness logic unchanged). Re-run
+   only the zero-product checks needed to bind the new tooling. Leave h2 evidence and the docs
+   report in place.
+3. Add a guard so campaign.mjs run/close refuse to act unless prepare and seal succeeded in this
+   generation.
+4. Print the exact 7 commands for the new generation, then STOP.
+If ANY product process did run, stop after step 1 and report only.

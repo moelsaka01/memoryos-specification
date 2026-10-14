@@ -1,0 +1,116 @@
+{
+  "kind": "MO1307PublicationGuardCharacterization",
+  "version": "1.0.0",
+  "campaign": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase2c-correction/guard-characterization/attempt1/campaign.json",
+    "byteLength": 4459,
+    "sha256": "sha256:c71ecb43c5c088cdec0d80a8b415bb529c9c80f4e34cd7c81b527e0942b7034b"
+  },
+  "runtime": {
+    "node": {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1304-phase3-toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "byteLength": 93580104,
+      "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32",
+      "version": "v24.21.0",
+      "platform": "win32",
+      "arch": "x64"
+    },
+    "powershell": {
+      "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "byteLength": 495616,
+      "sha256": "sha256:8bb6fa8c283b4d92120b1ef249a9b311b0f804d4cabbe9981159976c8be76a5e",
+      "requiredVersionPrefix": "5.1.",
+      "version": "5.1.26100.9444"
+    }
+  },
+  "sourceBindings": [
+    {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "byteLength": 12378,
+      "sha256": "sha256:d5a684bf72819b9f729fd70e1c2013a0b53455553646106e2bc364d2ac42481d"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+      "byteLength": 17117,
+      "sha256": "sha256:cc44f646c1d6a3da807198620c90d6a8e9b28ffd84cf4123f713902ec5c06d10"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/constants.mjs",
+      "byteLength": 16791,
+      "sha256": "sha256:987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/canonical.mjs",
+      "byteLength": 6813,
+      "sha256": "sha256:b0e22be147436b7fd962c00825f9f5c1e581825653baa0af4a68a9832a0b9805"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/errors.mjs",
+      "byteLength": 1823,
+      "sha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/windows-paths.mjs",
+      "byteLength": 5990,
+      "sha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+    },
+    {
+      "path": "repositories/memoryos-readiness/contracts/definitions.json",
+      "byteLength": 16555,
+      "sha256": "sha256:b621c0d17f2018ff8e73675878278f2fda10c2ad1f987a89747ebfb54b66e13e"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase2c-correction/guard-characterization.mjs",
+      "byteLength": 9821,
+      "sha256": "sha256:450c4d825d74fada58ceb911f5b297bdb5ec4e200e2478d219f6f46232d8c5a2"
+    }
+  ],
+  "startedAt": "2026-09-28T15:53:48.604Z",
+  "classification": "BOUNDED_FIXED_GUARD_STARTUP_AND_FRAMING_ONLY",
+  "invocations": [],
+  "result": "FAIL",
+  "nativeAcquisition": false,
+  "nativeHandleCertification": false,
+  "consoleProcessProof": false,
+  "successfulAssessmentLifecycle": false,
+  "workersStarted": 0,
+  "maxConcurrentSpawnedGuards": 1,
+  "processTopologyCertified": false,
+  "network": false,
+  "retries": 0,
+  "previousSemanticCharacterizationRetained": true,
+  "limitation": "Each guard invocation independently validates one framed request then rejects with MO1307_INTERNAL. ERROR is terminal in a real assessment; these nine independent measurements are not a successful nine-state lifecycle. No supplied path is acquired and no identity is fabricated.",
+  "metadataProbe": {
+    "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "args": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-Command",
+      "$PSVersionTable.PSVersion.ToString()"
+    ],
+    "exit": 0,
+    "error": null,
+    "stdout": {
+      "path": "powershell-version.stdout.txt",
+      "byteLength": 16,
+      "sha256": "sha256:20e955843dca875613392595b8b605fe7c7ddeb5dd374f8eea4f6f2820fcf270"
+    },
+    "stderr": {
+      "path": "powershell-version.stderr.txt",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "error": {
+    "name": "AssertionError",
+    "code": "ERR_ASSERTION",
+    "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n+ [Object: null prototype] {\n- {\n    files: [\n+     [Object: null prototype] {\n-     {\n        id: 'authority',\n        maxBytes: 1048576,\n        path: 'authority.json',\n        root: 'input'\n      },\n+     [Object: null prototype] {\n-     {\n        id: 'config',\n        maxBytes: 16384,\n        path: 'config.json',\n        root: 'input'\n      }\n...\n    roots: [\n+     [Object: null prototype] {\n-     {\n        id: 'input',\n        path: 'C:\\\\Users\\\\melsa\\\\Documents\\\\Codex\\\\cca-workspace\\\\.cache\\\\mo1307\\\\guard-characterization-input'\n      }\n    ],\n    sequence: 1,\n",
+    "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n+ [Object: null prototype] {\n- {\n    files: [\n+     [Object: null prototype] {\n-     {\n        id: 'authority',\n        maxBytes: 1048576,\n        path: 'authority.json',\n        root: 'input'\n      },\n+     [Object: null prototype] {\n-     {\n        id: 'config',\n        maxBytes: 16384,\n        path: 'config.json',\n        root: 'input'\n      }\n...\n    roots: [\n+     [Object: null prototype] {\n-     {\n        id: 'input',\n        path: 'C:\\\\Users\\\\melsa\\\\Documents\\\\Codex\\\\cca-workspace\\\\.cache\\\\mo1307\\\\guard-characterization-input'\n      }\n    ],\n    sequence: 1,\n\n    at file:///C:/Users/melsa/Documents/Codex/cca-workspace/repositories/cca-conformance/tools/mo1307-phase2c-correction/guard-characterization.mjs:69:73\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)"
+  },
+  "seriesWallMs": 8.854900000000043,
+  "aggregateHelperActiveMs": 0,
+  "finishedAt": "2026-09-28T15:53:49.190Z"
+}

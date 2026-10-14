@@ -1,0 +1,61 @@
+"""Static workflow/layout reconstruction only; no product import, execution, or filesystem fixture."""
+from pathlib import Path
+import hashlib,json,ntpath,re,sys,zipfile,subprocess
+ROOT=Path(__file__).resolve().parents[4]
+sys.path.insert(0,str(ROOT/'repositories/cca-conformance/tools/mo1306-phase3a-certification'))
+from remote_state import put,row,now,sha
+OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-hosted-resolution'
+OLD=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-certification/github'
+C3CB='701d48ee2012675966360dda775ab13013c09ab9';SCAFFOLD='451599e7b95a537ebc2daac627b061fd88791dea'
+INSTALL=ROOT/'.cache/mo1306-phase3a-final/install/node_modules/memoryos-ci'
+RUN=OLD/'campaign-20260927T230612Z/runs/36357568243'
+def load(p):return json.loads(p.read_text(encoding='utf-8-sig'))
+def lexical(value):
+    forbidden=r'[:\x00-\x1f\x7f"\x27`$;|&<>{}\[\]()!*?]'
+    parts=value[3:].split('\\')
+    return len(value)<=240 and re.match(r'^[A-Za-z]:\\',value) is not None and re.search(forbidden,value[2:]) is None and all(part and part not in ['.','..'] and not re.search(r'^[ ]|[ .]$',part) and not re.match(r'^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)',part,re.I) for part in parts) and ntpath.normpath(value).lower()==value.lower()
+def main():
+    preflight=load(OUT/'remote-preflight.json');assert preflight['status']=='PASS'
+    with zipfile.ZipFile(RUN/'logs.zip') as z:
+        logs={item.filename:z.read(item.filename).decode('utf-8-sig') for item in z.infolist()}
+        members=[{'name':item.filename,'byteLength':item.file_size,'sha256':sha(z.read(item.filename))} for item in z.infolist()]
+    toolLog=logs['MemoryOS CI/2_Run actions_checkout@3d3c42e5aac5ba805825da76410c181273ba90b1.txt'];dataLog=logs['MemoryOS CI/3_Run actions_checkout@3d3c42e5aac5ba805825da76410c181273ba90b1.txt']
+    tool=re.search(r"Working directory is '([^']+)'",toolLog).group(1);data=re.search(r"Working directory is '([^']+)'",dataLog).group(1)
+    suffix=r'\_memoryos\tool';assert tool.endswith(suffix);workspace=tool[:-len(suffix)]
+    assert data==ntpath.join(workspace,r'_memoryos\data')
+    product=ntpath.join(tool,r'repositories\memoryos-ci');runtime=ntpath.join(workspace,r'_memoryos\runtime');node=ntpath.join(runtime,'node.exe')
+    config=ntpath.join(tool,r'repositories\cca-conformance\fixtures\mo1306\evaluate-policy-pass\memoryos-ci.json')
+    manifest=load(INSTALL/'distribution-manifest.json')
+    paths=[node,product]+[ntpath.join(product,item['path'].replace('/','\\')) for item in manifest['files']]
+    pathRows=[{'path':path,'characterLength':len(path),'lexicalRulePass':lexical(path)} for path in paths]
+    requests=[]
+    for start in range(0,len(paths),48):
+        obj={'kind':'MemoryOSCICDPathCheckRequest','version':'1.0.0','paths':[{'path':path,'allowMissingLeaf':False} for path in paths[start:start+48]]}
+        raw=(json.dumps(obj,sort_keys=True,separators=(',',':'))+'\n').encode()
+        requests.append({'ordinal':start//48+1,'entryCount':len(obj['paths']),'canonicalByteLength':len(raw),'within16384':len(raw)<=16384,'sha256':sha(raw)})
+    sources=[]
+    for relative in ['scripts/Initialize-GitHubCI.ps1','scripts/Invoke-GitHubCI.ps1','scripts/github-transport.mjs','src/github-transport.mjs','src/integrity.mjs','src/filesystem.mjs','scripts/check-paths.ps1','src/serialization.mjs','distribution-manifest.json']:
+        result=subprocess.run(['git','show',C3CB+':repositories/memoryos-ci/'+relative],cwd=ROOT,capture_output=True,timeout=20,creationflags=subprocess.CREATE_NO_WINDOW)
+        assert result.returncode==0 and result.stdout==(INSTALL/relative).read_bytes()
+        sources.append({'candidate':C3CB,'repositoryPath':'repositories/memoryos-ci/'+relative,'installedFile':row(INSTALL/relative),'sourceBytesMatchCandidate':True})
+    review=load(OLD/'workflow-review.json');workflows=[]
+    for item in review['workflows']:
+        raw=(ROOT/item['path']).read_bytes();text=raw.decode()
+        assert len(raw)==item['byteLength'] and sha(raw)==item['sha256']
+        assert text.count("path: '_memoryos/tool'")==1 and text.count("path: '_memoryos/data'")==1
+        assert text.count("$env:MEMORYOS_CI_HOME = [IO.Path]::Combine($env:GITHUB_WORKSPACE, '_memoryos\\tool\\repositories\\memoryos-ci')")==3
+        assert text.count('-WorkspaceRoot $env:GITHUB_WORKSPACE')==3
+        assert "ref: '"+C3CB+"'" in text and "ref: ${{ github.sha }}" in text
+        workflows.append({'case':item['case'],'workflowPath':item['workflowPath'],'retainedBytes':row(ROOT/item['path']),'toolRef':C3CB,'dataRef':'github.sha','workspaceArgument':'GITHUB_WORKSPACE','toolCheckoutRelative':'_memoryos/tool','dataCheckoutRelative':'_memoryos/data','sourceMatchesExpectedSeparation':True})
+    bootstrap=logs["MemoryOS CI/5_Run $ErrorActionPreference = 'Stop'.txt"]
+    errorLine=[line for line in bootstrap.splitlines() if 'MO1306_FILESYSTEM_BOUNDARY' in line];assert len(errorLine)==1
+    roots={'workspace':workspace,'trustedToolCheckout':tool,'productRoot':product,'configuration':config,'candidateDataCheckout':data,'candidateInput':ntpath.join(data,'candidate.mip'),'policyInput':ntpath.join(data,'policy.json'),'runtimeRoot':runtime,'nodeExecutable':node,'nodeArchive':ntpath.join(runtime,'node-v24.21.0-win-x64.zip')}
+    assert all(lexical(path) for path in roots.values()) and all(item['lexicalRulePass'] for item in pathRows)
+    expected=[{'child':tool,'root':workspace},{'child':data,'root':workspace},{'child':runtime,'root':workspace},{'child':product,'root':tool},{'child':config,'root':tool}]
+    for item in expected:
+        item['relative']=ntpath.relpath(item['child'],item['root']);item['lexicallyContained']=not item['relative'].startswith('..') and not ntpath.isabs(item['relative'])
+        assert item['lexicallyContained']
+    receipt={'kind':'MemoryOSPhase3AHostedResolutionWorkflowPathAudit','version':'1.0.0','status':'READ_ONLY_AUDIT_COMPLETE','classification':'UNRESOLVED','observedUtc':now(),'preflight':row(OUT/'remote-preflight.json'),'candidate':C3CB,'scaffold':SCAFFOLD,'retainedRun':row(RUN/'run.json'),'retainedJobs':row(RUN/'jobs.json'),'retainedLogArchive':row(RUN/'logs.zip'),'allLogMembersRead':members,'sourceBindings':sources,'workflowBindings':workflows,'roots':roots,'rootProvenance':{'trustedToolCheckout':'Direct checkout log working-directory value.','candidateDataCheckout':'Direct checkout log working-directory value.','workspace':'Derived uniquely from direct checkout path and fixed workflow checkout suffix; environment value was not printed directly.','productRoot':'Source-derived from workspace plus exact bootstrap/workflow suffix; no standalone hosted path dump.','configuration':'Source-derived from workspace and exact fixed fixture suffix.','runtimeRoot':'Source-derived from Initialize-GitHubCI fixed workspace suffix; not RUNNER_TEMP or system TEMP.','nodeExecutable':'Source-derived runtimeRoot/node.exe; source reaches Node diagnostic after its earlier identity/path checks.','physicalResolvedPaths':'No original fs.realpath result, drive filesystem metadata, or native error path captured.'},'containmentModel':expected,'pathModel':{'method':'Python ntpath/string arithmetic on exact observed checkout roots and C3CB manifest; does not create topology or invoke product.','installationPathCount':len(paths),'maximumInstallationPathLength':max(map(len,paths)),'maximumAllowedPathLength':240,'allLexicallyValid':True,'requestChunks':requests,'allRequestSizesWithinLimit':all(item['within16384'] for item in requests),'installationPaths':pathRows},'firstObservableFailure':{'step':5,'operation':'Initialize-GitHubCI.ps1 -> trusted Node scripts/github-transport.mjs bootstrap -> transportInstallation','logMember':"MemoryOS CI/5_Run $ErrorActionPreference = 'Stop'.txt",'exactLine':errorLine[0],'exactInternalRejectSite':'NOT_CAPTURED','exactRejectedPath':'NOT_CAPTURED','windowsErrno':'NOT_CAPTURED'},'reparseAndFilesystemEvidence':{'earlierPowerShellChecks':'Source/control-flow inference only: prepare_fixture and bootstrap Assert-GitHubPath checks had returned before the observed Node diagnostic. No raw attribute values retained.','failingNodeOrHelperCheck':'Unknown. Node lstat/realpath and helper DriveInfo/GetAttributes results and timing are absent.','driveLetter':'D: for workflow workspace and fixed runtime; C: Windows shell observed.','driveFormat':'NOT_CAPTURED; drive letter/image label is not proof of NTFS or ReFS.'},'workflowDefect':'NOT_ESTABLISHED','scaffoldDefect':'NOT_ESTABLISHED','correctionJustified':False,'proposedChangedLines':[],'disposition':'No causal workflow/scaffold defect established; moving paths or changing scripts would be an unsupported retry. Preserve failure and apply unresolved stop rule unless independent retained evidence establishes exact cause.','executionBoundary':{'productCalls':0,'nativeReruns':0,'filesystemFixturesCreated':0,'remoteMutations':0,'dispatches':0,'productionChanges':0}}
+    result=put(OUT/'workflow-path-audit.json',receipt)
+    print(json.dumps({'receipt':result,'classification':receipt['classification'],'maxPathLength':receipt['pathModel']['maximumInstallationPathLength'],'requestChunks':requests,'correctionJustified':False}))
+if __name__=='__main__':main()

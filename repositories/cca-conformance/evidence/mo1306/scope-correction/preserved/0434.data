@@ -1,0 +1,92 @@
+"""Close the bounded hosted-only investigation without another execution or mutation."""
+import datetime,hashlib,json,os,re,subprocess,sys
+from pathlib import Path
+R=Path(__file__).resolve().parents[4];E=R/'repositories/cca-conformance/evidence/mo1306/phase3a-hosted-resolution';T=Path(__file__).resolve().parent;OLD=R/'repositories/cca-conformance/evidence/mo1306/phase3a-certification';MAIN=Path(r'C:/Users/melsa/Documents/Codex/cca-workspace')
+C3CB='701d48ee2012675966360dda775ab13013c09ab9';M3='85a0f85c1ebd013c545ccf2b3efe58a760e6cf37';H='f6e181ae330c8f884f5b9737f71f546eb2494201';HEAD='f236c4a2f94d8cd8e763aaa4bd6c52d703429692';REMOTE='5955af062152a84c10de17860ba0bcabe8b3555f';SCAFFOLD='451599e7b95a537ebc2daac627b061fd88791dea'
+def read(p):return json.loads(p.read_bytes())
+def row(p):
+ b=p.read_bytes();return {'path':p.relative_to(R).as_posix(),'byteLength':len(b),'sha256':'sha256:'+hashlib.sha256(b).hexdigest()}
+def put(p,v):
+ with p.open('x',encoding='utf-8',newline='\n') as f:f.write(json.dumps(v,sort_keys=True,separators=(',',':'))+'\n')
+def git(*a,cwd=R):return subprocess.check_output(['git',*a],cwd=cwd,env={**os.environ,'GIT_OPTIONAL_LOCKS':'0'}).decode().strip()
+assert sys.argv[1:]==['--close-unresolved'];assert git('rev-parse','HEAD')==HEAD and git('branch','--show-current')=='mo1306/phase3a-refresh'
+for n in ['independent-causal-review.json','filesystem-contract-audit.json','workflow-path-audit.json']:assert read(E/n)['classification']=='UNRESOLVED'
+remote=read(E/'final-remote-state.json');assert remote['status']=='PASS' and remote['defaultBranch']=='main' and remote['remoteMain']==REMOTE and remote['certificationCommit']==SCAFFOLD and remote['newDispatchCount']==0
+prior=read(E/'preservation-before.json');assert prior['historicalFileCount']==978
+for x in prior['files']:assert row(R/x['path'])==x
+assert git('for-each-ref','--format=%(refname) %(objectname)')==prior['protectedRefs']
+idx=Path(git('rev-parse','--git-path','index'));idx=idx if idx.is_absolute() else R/idx
+assert 'sha256:'+hashlib.sha256(idx.read_bytes()).hexdigest()==prior['realIndexSha256']
+assert not git('diff','--name-only') and not git('diff','--cached','--name-only')
+assert git('rev-parse','HEAD',cwd=MAIN)==M3 and not git('status','--porcelain=v1','--untracked-files=all',cwd=MAIN)
+mi=Path(git('rev-parse','--git-path','index',cwd=MAIN));mi=mi if mi.is_absolute() else MAIN/mi
+assert 'sha256:'+hashlib.sha256(mi.read_bytes()).hexdigest()==read(OLD/'m3-verification.json')['mainReadOnly']['indexSha256']
+assert read(OLD/'native-final-gate.json')['nativeCertified'] is True
+names=re.findall(r'^\d+\. (.+)$',(E/'task-request.txt').read_text().rsplit('Return:\n',1)[1].split('If fully successful:',1)[0],re.M);assert len(names)==59
+finished=datetime.datetime.now(datetime.timezone.utc);started=datetime.datetime.fromisoformat(prior['startedUtc']);duration=(finished-started).total_seconds()
+values=[
+'Default main; remote main '+REMOTE+'; certification '+SCAFFOLD+'; only retained failed run36357568243. No observed changes since prior blocked final readback.',
+'COMPLETE and retained: REAL_EXECUTION_CERTIFIED. No native witness/group/deadline/publication/filesystem/semantic/CorrectionA/CorrectionB reruns and no M3 eligibility rerun.',
+C3CB,M3,
+'Run36357568243 attempt1 remains bootstrap FAILURE, evaluation NOT_STARTED, no product artifacts. All978 historical files match preserved hashes.',
+'PASS workflow368631903; job108728221298; windows-2022; scaffold451599e7b95a537ebc2daac627b061fd88791dea.',
+'First observed failure: Initialize-GitHubCI.ps1 line103 invokes Node scripts/github-transport.mjs bootstrap; catch lines31-35 emits the diagnostic. The first rejecting primitive is NOT_ESTABLISHED. Earliest possible source is integrity.mjs:15 nodePathCheck(process.execPath), followed by installation helper batches and configuration checks.',
+'Exact rejected path NOT_ESTABLISHED. Complete candidate path list is retained in workflow-path-audit.json; it includes W\\_memoryos\\runtime\\node.exe, trusted package members and trusted configuration.',
+'Frozen separate capabilities: trusted tool W\\_memoryos\\tool; package beneath repositories\\memoryos-ci; config under trusted tool fixture; runtime W\\_memoryos\\runtime; candidate/data W\\_memoryos\\data. Trusted paths need not be inside data.',
+'W is derived from two logged checkout destinations: D:\\a\\memoryos-specification\\memoryos-specification. Lexical normalization and containment pass; original OS realpath, drive format and helper-resolved failing path are unobserved.',
+'GITHUB_WORKSPACE derived as W; MEMORYOS_CI_HOME and MEMORYOS_CI_CONFIG derived from printed assignments. RUNNER_TEMP, RUNNER_TOOL_CACHE, RUNNER_WORKSPACE, USERPROFILE, TEMP and TMP values unobserved. HOME has temporary checkout-only D:\\a\\_temp overrides; bootstrap HOME is unknown. SystemRoot/WINDIR values unobserved; shell executable is logged on C:.',
+'PowerShell no-reparse checks before Node invocation passed by trusted control-flow inference. Exact state at the later Node/helper failure, link counts, volume format and failed realpath observation are not retained.',
+'Observed MO1306_FILESYSTEM_BOUNDARY / ACQUISITION at2026-09-27T23:07:03.6720266Z; GitHub step exit1. Catalog maps this code to INPUT_ERROR11; actual Node/helper exit and Windows errno are not directly recorded. Step exit1 is not proof that helper exited1.',
+'Freeze1 Â§11 requires ordinary local NTFS paths, max240UTF-16 units, no reparse ancestors, explicit read capabilities and output separation. Â§16.5 prescribes sibling tool/data. Different drive letters are not prohibited. No frozen-contract conflict proved.',
+'UNRESOLVED. Distinct permitted rejection branches produce the same retained diagnostic; no record identifies which occurred.',
+'NOT_ESTABLISHED; no production defect claim.',
+'NOT_ESTABLISHED; no certification workflow defect claim.',
+'NOT_ESTABLISHED; no scaffold defect claim.',
+'NOT_ESTABLISHED; actual volume/helper properties absent.',
+'NOT_ESTABLISHED; no concrete transient-platform evidence.',
+'Pure Python string/request reconstruction PASS:95installation paths, max159characters, config148; chunks48/47 with8555/7623canonical bytes. No product import/helper/native filesystem execution, and no claim this recreates actual hosted filesystem behavior.',
+'Necessity unknown; no correction is justified or authorized by the available causal evidence.',
+'None changed.',SCAFFOLD,'None created; old scaffold retained.',
+'checkout3d3c42e5aac5ba805825da76410c181273ba90b1; upload-artifact043fb46d1a93c77aae656e7c1c64a875d1fc6a0a; unchanged.',
+'Unchanged Node24.21.0 win-x64; ZIP37618919bytes; SHA256158f7685b44de51f6c0df1d153526cbcd3e1bc739a8dfc607721cef75de9e541. No bootstrap rerun.',
+'Existing workflow/source byte bindings and static root/request reasoning PASS. Corrected-workflow grammar/PowerShell-parse gate not invoked because no correction exists.',
+'None; certification branch remains451599e7b95a537ebc2daac627b061fd88791dea.',
+'No registration mutation or default switch this task. Prior established procedure retained but its causal dispatch prerequisite did not pass.',
+'NOT_EXECUTED; zero new hosted PASS runs.',
+'NOT_EXECUTED; hosted PASS prerequisite unavailable.',
+'NOT_EXECUTED; hosted FAIL prerequisite unavailable.',
+'No new hosted runtime capture. Prior exact Node pin checks have qualified source/control-flow support only; no directly retained executable measurement or architecture/version output.',
+'Prior actual runner1000000460, Windows Server2022 10.0.20348, image20260920.314.1, Actions runner2.337.0. Logged shell C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE; actual PowerShell version unrecorded.',
+'None; original artifact count0 unchanged. All11 downloaded log members were read and bound.',
+'NOT_ESTABLISHED: no product completion marker or hosted bundle run-id.',
+'NOT_PERFORMED: no hosted normative artifacts. Accepted native results unchanged.',
+'Failed hosted run retained without restamping; original historical native publication attempt separately remains FAIL / UNRESOLVED.',
+'Not required this task; prior restoration retained, and final independent GET confirms main.',
+'main.',REMOTE,SCAFFOLD,
+'No authoritative success receipt. resolution-receipt.json records HOSTED_BOOTSTRAP_UNRESOLVED and the stop decision.',
+'REAL_EXECUTION_CERTIFIED.','NOT_CERTIFIED.',
+'None created.',
+'Already reviewed acyclic plan remains H=f6e181ae330c8f884f5b9737f71f546eb2494201, parentM3, parentC3CB; only full hosted success would authorize a final child certificate. No graph mutation this task.',
+'0; no production, contract, deadline, workflow or Action-pin changes.',
+'PASS: tools/verify_workspace.py on refresh checkout; main remains read-only, clean and atM3.',
+'PASS for tracked worktree/index; new investigation evidence remains untracked.',
+'HEADf236c4a2f94d8cd8e763aaa4bd6c52d703429692 unchanged; no tracked/staged changes; protected local refs/index unchanged; prior and new evidence untracked.',
+'0 this task.','No tags or releases created; remote tag map unchanged.',
+'No Linux/Ubuntu/WSL execution.','No new VM or hosted runner execution; retained prior hosted logs only.',
+'No GitLab/Jenkins/Azure account usage.',
+f'{duration/60:.2f} minutes through diagnostic/report decision; later offline sealing checks recorded separately. Below20-minute diagnostic target,75-minute normal ceiling and3-hour hard stop.',
+'NOT READY FOR PHASE 3D INTEGRATION. Stop under user section33; no further observer campaign or blind retry requested.'
+]
+assert len(values)==59
+p=subprocess.run([sys.executable,'-B','tools/verify_workspace.py','--root',str(R)],cwd=R,capture_output=True,timeout=120);assert p.returncode==0,p.stderr.decode()
+diff=subprocess.run(['git','diff','--check'],cwd=R,capture_output=True);assert diff.returncode==0
+workspace={'kind':'MemoryOSHostedResolutionWorkspaceCheck','status':'PASS','head':HEAD,'mainHead':M3,'mainReadOnly':True,'mainIndexUnchanged':True,'workspaceArgv':[sys.executable,'-B','tools/verify_workspace.py','--root',str(R)],'workspaceExitCode':0,'workspaceStdout':p.stdout.decode(),'workspaceStderr':p.stderr.decode(),'gitDiffCheck':{'exitCode':0,'scope':'Tracked working tree/index; untracked evidence preserved.'},'trackedChanges':False,'stagedChanges':False,'statusPorcelain':git('status','--porcelain=v1','--untracked-files=normal'),'preservedHistoricalFiles':978,'nativeProductExecutions':0,'methodologyEligibilityReruns':0,'observedUtc':datetime.datetime.now(datetime.timezone.utc).isoformat()}
+put(E/'workspace-verification.json',workspace)
+report=['# MO-1306 hosted bootstrap resolution: unresolved','','The single bounded investigation did not establish the first rejecting filesystem operation or its cause. Native certification remains complete. The user section33 stop rule applies: no correction, new hosted execution, observer campaign or authoritative certificate.','','W = `D:\\a\\memoryos-specification\\memoryos-specification`. The logged tool/data checkout paths establish this lexical workspace; the original filesystem realpath and helper state were not captured.','','| # | Required area | Finding |','|---|---|---|']
+report+=['| '+str(i)+' | '+n+' | '+v.replace('|','/')+' |' for i,(n,v) in enumerate(zip(names,values),1)]
+report+=['','The full causal review records exact command arguments, source sites, all observed environment occurrences, absent measurements, and distinct compatible failure branches. The error catalog and GitHub step exit are kept separate.','','The [official pinned image documentation](https://github.com/actions/runner-images/blob/win22/20260920.314/images/windows/Windows2022-Readme.md) matches image20260920.314.1 but supplies no per-run NTFS/ReFS, reparse, helper or failing-path measurement.','','MO-1306 PHASE 3A HOSTED BOOTSTRAP UNRESOLVED','']
+with (E/'REPORT.md').open('x',encoding='utf-8',newline='\n') as f:f.write('\n'.join(report))
+bindings=[row(E/n) for n in ['preservation-before.json','remote-preflight.json','workflow-path-audit.json','independent-causal-review.json','filesystem-contract-audit.json','image-documentation-review.json','final-remote-state.json','workspace-verification.json','REPORT.md']]
+bindings += [row(OLD/n) for n in ['native-final-gate.json','native-validation.json','methodology-sidecar.json','all-attempt-ledger.json','execution-receipt.json','evidence-index.json']]
+v={'kind':'MemoryOSPhase3AHostedBootstrapResolutionDisposition','status':'HOSTED_BOOTSTRAP_UNRESOLVED','classification':'UNRESOLVED','causeEstablished':False,'productionAuthority':C3CB,'methodologyAuthority':M3,'historicalPublicationCauseResolved':False,'historicalCauseResolved':False,'nativeCertified':True,'githubHostedCertified':False,'labels':{'generic':'REAL_EXECUTION_CERTIFIED','github':'NOT_CERTIFIED','gitlab':'CONTRACT_VALIDATED','jenkins':'CONTRACT_VALIDATED','azure':'CONTRACT_VALIDATED'},'failedHostedRun':36357568243,'failedHostedAttempt':1,'failedHostedJob':108728221298,'failedRunReclassified':False,'firstRejectingOperation':None,'exactRejectedPath':None,'correctionJustified':False,'correctedScaffold':None,'oldScaffold':SCAFFOLD,'newHostedRuns':0,'newHostedDispatches':0,'nativeExecutions':0,'methodologyEligibilityReruns':0,'productExecutions':0,'productionChanges':0,'workflowChanges':0,'remoteMutations':0,'pushes':0,'tagsCreated':[],'releasesCreated':[],'completionCommitCreated':False,'authoritativeCertificationCommitCreated':False,'phase3DReady':False,'allCertificationGatesPassed':False,'expectedParent':H,'containingCommitIdentity':'NO_AUTHORITATIVE_CERTIFICATION_COMMIT_CREATED','finalCommit':None,'stopRule':'User section33: causal classification cannot be established from preserved evidence plus this bounded investigation; no further observer campaign.','diagnosticDecisionUtc':finished.isoformat(),'durationSecondsToDecision':duration,'phase3DRecommendation':'NOT READY FOR PHASE 3D INTEGRATION','bindings':bindings,'creator':row(Path(__file__))}
+put(E/'resolution-receipt.json',v);print(json.dumps({'status':v['status'],'reportFields':59,'historicalFiles':978,'durationMinutes':duration/60,'receipt':row(E/'resolution-receipt.json')}))

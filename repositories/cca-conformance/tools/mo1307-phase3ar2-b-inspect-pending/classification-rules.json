@@ -1,0 +1,30 @@
+{
+  "kind": "MO1307Phase3AR2BInspectPendingClassificationRules",
+  "version": 1,
+  "clock": "On Windows, Node process.hrtime.bigint and System.Diagnostics.Stopwatch use QueryPerformanceCounter. Raw values are converted to nanoseconds and must align with marker-receipt causality; any origin/order mismatch is DIAGNOSTIC_INCOMPLETE.",
+  "buckets": [
+    { "key": "commonStartup", "classification": "COMMON_STARTUP_DOMINANT", "start": "T0", "end": "T6", "meaning": "process launch, script entry, native/runtime initialization, framed request read, canonical/schema validation, and complete path/root/operation validation" },
+    { "key": "inspectPendingAcquisition", "classification": "INSPECT_PENDING_ACQUISITION_DOMINANT", "start": "T6", "end": "T7", "meaning": "pending-file checked chain acquisition, held-handle stability, fresh reopen, and identity materialization" },
+    { "key": "responseObjectCompletion", "classification": "OTHER_CONCRETE_DOMINANT_COST", "start": "T7", "end": "T8", "meaning": "acquisition unwind and response-object completion" },
+    { "key": "serialization", "classification": "SERIALIZATION_DOMINANT", "start": "T8", "end": "T11", "meaning": "canonical serialization, frame construction, first response write, complete response write, and flush" },
+    { "key": "settlement", "classification": "SETTLEMENT_DOMINANT", "start": "T11", "end": "T13", "meaning": "buffered diagnostic telemetry, exit initiation, process close, and all three pipe closures" }
+  ],
+  "dominance": "A bucket's classification is selected only when that bucket is the unique measured duration greater than 50 percent of T0-T13. Otherwise classify OTHER_CONCRETE_DOMINANT_COST with basis no_unique_majority and preserve every named bucket, so fallback is distinguishable from a dominant responseObjectCompletion bucket.",
+  "incomplete": "DIAGNOSTIC_INCOMPLETE when T0-T13, every T1-T12 helper tick, every external marker receipt, all required counter snapshots, QPC alignment, canonical response, exact fixture, or monotonic/order checks are unavailable or invalid.",
+  "stageOrder": ["T0", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12", "T13"],
+  "snapshotStages": ["T2", "T6", "T7", "T12"],
+  "counterKeys": ["rootValidations", "relativeValidations", "segmentValidations", "openChains", "chainComponents", "createFileW", "lastErrorReads", "getFileInformationByHandle", "getFinalPathNameByHandleW", "getFileType", "getStdHandle", "getConsoleProcessList", "freeConsole", "stablePasses", "heldChecks", "freshReopens", "handleDisposals", "successfulHandles", "requestBytes", "pendingBytes", "pathDepth", "responseBytes"],
+  "qpcAlignmentToleranceNs": 1000000,
+  "limits": {
+    "diagnosticSupervisorHelperMs": 9000,
+    "preservedBSupervisorLeaseMs": 702.2263,
+    "preservedBT0PreSpawnWindowMs": 702.1707,
+    "helperAggregateMs": 20000,
+    "cliMs": 30000,
+    "apiWorkerMs": 10000,
+    "failureCleanupMs": 2000,
+    "invocations": 1,
+    "retries": 0,
+    "alternateInputs": 0
+  }
+}

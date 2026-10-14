@@ -1,0 +1,99 @@
+{
+  "kind": "MO1309CampaignReceipt",
+  "version": "1.0.0",
+  "stream": "4C",
+  "certifying": true,
+  "mode": "certifying",
+  "generation": 1,
+  "commit": "f8bcf30f05001ced8d5660b77c876dd84cf70d9c",
+  "requirements": [
+    "DB02",
+    "DB03",
+    "DB04",
+    "DB06",
+    "DB07",
+    "DB08",
+    "DB09",
+    "DB13",
+    "DB14",
+    "DB15",
+    "DB17",
+    "DB19",
+    "DB28"
+  ],
+  "host": {
+    "platform": "win32",
+    "arch": "x64",
+    "release": "10.0.26200",
+    "node": "v24.21.0"
+  },
+  "result": "ACCEPTED",
+  "accepted": true,
+  "cases": [
+    {
+      "id": "4C-S1",
+      "windowsOnlyPart": "injection corpus rendered in the Windows browser",
+      "outcome": "PASS",
+      "detail": "hostile strings in subjects and identifiers render as inert text: nothing executes, no image, no request",
+      "state": {
+        "pwned": true,
+        "scripts": 2,
+        "imgs": 0
+      },
+      "fixtures": 5
+    },
+    {
+      "id": "4C-S2",
+      "windowsOnlyPart": "CSP enforced in the Windows browser, network blocked",
+      "outcome": "PASS",
+      "detail": "CSP enforced in the browser and zero requests",
+      "exitCode": 0,
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "logSha256": "sha256:e90544d02e56bb4b81e6037014ef17e081253dddf1e607e7ce9fbfa391dbc02e"
+    },
+    {
+      "id": "4C-S3",
+      "windowsOnlyPart": "tamper corpus on NTFS files",
+      "outcome": "PASS",
+      "detail": "every tamper variant is rejected with DASH_EXPORT_INVALID and nothing is emitted",
+      "result": {
+        "chain": "DASH_EXPORT_INVALID",
+        "member": "DASH_EXPORT_INVALID",
+        "manifest": "DASH_EXPORT_INVALID",
+        "marker": "DASH_EXPORT_INVALID",
+        "truncatedTail": "DASH_EXPORT_INVALID"
+      }
+    },
+    {
+      "id": "4C-S4",
+      "windowsOnlyPart": "forbidden-affordance scan of the Windows-rendered DOM",
+      "outcome": "PASS",
+      "detail": "forbidden-affordance scan of the rendered DOM and adversarial words in data",
+      "exitCode": 0,
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "logSha256": "sha256:450e84bf1bf6363c64d3cff35d56a80348eb33dcd20d35569a309c99aa947d7d"
+    },
+    {
+      "id": "4C-S5",
+      "windowsOnlyPart": "swap-after-read probe on NTFS (real directory swap during the read)",
+      "outcome": "PASS",
+      "detail": "swap-after-read: the displayed data is the bytes read once",
+      "exitCode": 0,
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "logSha256": "sha256:073a6f0e83b86278021a390ea8cb95e452e2b7d707cd55b04f765c698d8541cd"
+    },
+    {
+      "id": "4C-S6",
+      "windowsOnlyPart": "data-class scan of Windows-generated output",
+      "outcome": "PASS",
+      "detail": "the data-class scan of every generated snapshot finds no violation",
+      "violations": {}
+    }
+  ]
+}

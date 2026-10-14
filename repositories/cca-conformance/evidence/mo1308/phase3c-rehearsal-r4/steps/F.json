@@ -1,0 +1,163 @@
+{
+  "cases": [
+    {
+      "elapsedMs": 10443,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-F1",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "files": 10,
+        "results": {
+          "descriptor-removed": "MO1308_EXPORT_CORRUPT",
+          "entry-removed": "MO1308_EXPORT_CORRUPT",
+          "extra-file": "MO1308_EXPORT_CORRUPT",
+          "files-reordered": "MO1308_EXPORT_CORRUPT",
+          "manifest-removed": "MO1308_EXPORT_CORRUPT",
+          "marker-removed": "MO1308_EXPORT_CORRUPT",
+          "member-removed": "MO1308_EXPORT_CORRUPT",
+          "memoryos-history-export-complete.json": "298/298 failed closed",
+          "memoryos-history-export.json": "3434/3434 failed closed"
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 7324,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-F2",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "control": "manifest accepted",
+        "hostileNames": 23,
+        "results": {
+          "\"\"": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\".\"": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\"..\"": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\"../escape.json\"": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\"../records/029318176746fc541e4d2e7ea525": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\"./memoryos-history-ledger.json\"": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\"/etc/passwd\"": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\"C:/x\"": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\"C:\\\\Windows\\\\x\"": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\"CON\"": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\"ENTRIES/00000000000000000000.JSON\"": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\"ENTRIES/00000000000000000000.json\"": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\"NUL.json\"": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\"RECORDS/029318176746FC541E4D2E7EA5256DB": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\"\\\\\\\\server\\\\share\\\\x\"": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\"entries/../memoryos-history-ledger.json": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\"entries/./00000000000000000000.json\"": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\"entries/00000000000000000000.json \"": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\"entries/00000000000000000000.json:strea": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\"entries/00000000000000000000.json\\u0000": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\"entries\\\\00000000000000000000.json\"": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\"records//x\"": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT",
+          "\"records/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": "manifest MO1308_EXPORT_CORRUPT; export MO1308_EXPORT_CORRUPT"
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 49110,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-F3",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "links": [
+          "junction",
+          "directory symlink",
+          "file symlink",
+          "dangling"
+        ],
+        "results": {
+          "00000000000000000000.json is a file symlink": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "a dangling directory symlink in the export root": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "a dangling junction in the export root": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "a directory symlink inside entries": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "a junction inside entries": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "an extra dangling file symlink": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "an extra directory symlink in the export root": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "an extra junction in the export root": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "entries is a directory symlink": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "entries is a junction": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "evaluation-identity.json is a file symlink": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "memoryos-history-export-complete.json is a file symlink": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "memoryos-history-export.json is a file symlink": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "memoryos-history-ledger.json is a file symlink": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "pristine": "0",
+          "records (a record directory) is a directory symlink": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "records (a record directory) is a junction": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "records is a directory symlink": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "records is a junction": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "the export directory is a directory symlink": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "the export directory is a junction": "4:MO1308_FILESYSTEM_BOUNDARY"
+        },
+        "variants": 18
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 29290,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-F4",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "results": {
+          "..dotted": "0",
+          "dot-dot-into-ledger": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "dot-segment": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "inside-entries": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "inside-ledger": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "inside-pending": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "inside-records": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "p3c-f4-sibling": "0",
+          "relative-from-ledger-cwd": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "symlink-alias": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "the-ledger-itself": "4:MO1308_FILESYSTEM_BOUNDARY",
+          "trailing-separator": "4:MO1308_FILESYSTEM_BOUNDARY"
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 22294,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-F5",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "built": 2,
+        "files": 10,
+        "identicalExports": true,
+        "markerCreatedLast": true,
+        "orderCheck": "birth times (strict step ordering is 3A-H7)"
+      },
+      "outcome": null,
+      "result": "PASS"
+    }
+  ],
+  "elapsedMs": 118462,
+  "failureCode": null,
+  "finishedAt": "2026-10-08T18:42:49.894Z",
+  "generation": "phase3c-rehearsal-r4",
+  "kind": "MO1308Phase3StepReceipt",
+  "result": "PASS",
+  "segment": "main",
+  "startedAt": "2026-10-08T18:40:51.426Z",
+  "step": "F",
+  "stream": "3C",
+  "version": "1.0.0"
+}

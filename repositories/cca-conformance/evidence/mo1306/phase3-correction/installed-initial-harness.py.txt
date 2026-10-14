@@ -1,0 +1,55 @@
+from common import *
+import shutil,socket
+package=json.loads((OUT/'package.json').read_bytes());installed=Path(package['installRoot']);commands=[]
+for name in ['invalid-command','constructor','toString','__proto__']:
+ r=command([NODE,'--max-old-space-size=128',installed/'bin/memoryos-ci.mjs',name],timeout=10);assert r['exitCode']==10 and json.loads(r['stderr'])['code']=='MO1306_USAGE' and r['stdout']=='',r;commands.append(r)
+semantic=[]
+smoke=json.loads((OUT/'semantic-smoke.json').read_bytes())
+for case in smoke['cases']:
+ work=CACHE/'native'/case['id'];shutil.copytree(Path(case['work']),work)
+ r=command([NODE,'--max-old-space-size=128',installed/'bin/memoryos-ci.mjs','run','--workspace',work,'--config',work/'memoryos-ci.json'],cwd=installed,timeout=90)
+ put('native-commands/'+case['id']+'.json',r)
+ assert r['exitCode']==case['expectedExit'],r
+ summary=json.loads(r['stdout']);assert summary['publication']=='COMPLETE' and summary['classification']==case['decision']
+ bundle=work/'.memoryos-ci/out'/summary['runId'];retained=OUT/'bundles'/case['id']/summary['runId'];retained.parent.mkdir(parents=True,exist_ok=True);shutil.copytree(bundle,retained)
+ for name,oracle in [('evaluation-identity.json','oracle-identity.json'),('policy-outcome.json','oracle-outcome.json')]:assert (bundle/name).read_bytes()==(work/oracle).read_bytes()
+ verify=command([NODE,'--max-old-space-size=128',installed/'bin/memoryos-ci.mjs','verify','--bundle',bundle],timeout=30);assert verify['exitCode']==0,verify
+ semantic.append({'id':case['id'],'decision':case['decision'],'exitCode':r['exitCode'],'bundle':str(retained.relative_to(ROOT).as_posix()),'files':inventory(retained),'command':row(OUT/'native-commands'/ (case['id']+'.json')),'verification':verify})
+ print('installed semantic',case['id'],'PASS',flush=True)
+oldpin=json.loads((OUT/'metadata-impact.json').read_bytes())['beforeDistribution'];newpin=sha((PKG/'distribution-manifest.json').read_bytes())
+outputs=[]
+for pkg,pin in [(CACHE/'b2-package',oldpin),(installed,oldpin),(installed,newpin)]:
+ r=command([NODE,TOOLS/'providers.mjs',pkg,ROOT,pin],timeout=30);assert r['exitCode']==0,r;outputs.append(json.loads(r['stdout']))
+old,same,current=outputs
+assert old['providers']==same['providers'],'All five providers must generate identical bytes for identical frozen inputs'
+assert old['adapterDigests']==current['adapterDigests'] and old['generatorDigest']==current['generatorDigest']
+sys.path[:0]=[str(TOOLS.parent/'mo1306-phase2b'),str(TOOLS.parent/'mo1306-phase2c'),str(ROOT/'.cache/mo1306/validators')]
+from gitlab_validator import validate_gitlab
+from jenkins_validator import validate_jenkins
+from azure_validator import validate as validate_azure
+from github_validator import validate_workflow
+socket.create_connection=lambda *a,**k:(_ for _ in ()).throw(AssertionError('Network forbidden in correction provider validator'))
+socket.socket.connect=socket.create_connection
+providers=[]
+paths={'generic':None,'gitlab':'.gitlab-ci.yml','jenkins':'Jenkinsfile','azure':'azure-pipelines.yml','github':'.github/workflows/memoryos-ci.yml'}
+for prior,new in zip(old['providers'],current['providers']):
+ name=new['provider'];assert new['projections']==prior['projections']
+ assert {f['path']:f['text'] for f in prior['files'] if f['path']!='memoryos-ci-generation.json'}=={f['path']:f['text'].replace(newpin,oldpin) for f in new['files'] if f['path']!='memoryos-ci-generation.json'}
+ deploy=CACHE/(name+'-deployment.json');deploy.write_bytes(j(new['deployment']));target=CACHE/'generated'/name
+ r=command([NODE,'--max-old-space-size=128',installed/'bin/memoryos-ci.mjs','generate','--config',ROOT/'repositories/cca-conformance/fixtures/mo1306/evaluate-policy-pass/memoryos-ci.json','--deployment',deploy,'--output',target],timeout=45);assert r['exitCode']==0,r;commands.append(r)
+ actual={p.relative_to(target).as_posix():p.read_bytes() for p in target.rglob('*') if p.is_file()};assert actual=={f['path']:f['text'].encode() for f in new['files']}
+ manifest=json.loads(actual['memoryos-ci-generation.json']);pin=manifest['configurationSha256'];artifact=actual.get(paths[name]);settings=new['deployment']['options']
+ if name=='gitlab':validation=validate_gitlab(artifact,settings['runnerTag'],pin,newpin)
+ elif name=='jenkins':validation=validate_jenkins(artifact,settings['agentLabel'],pin,newpin)
+ elif name=='azure':validation=validate_azure(artifact,pin,newpin,settings['pool'])
+ elif name=='github':validation=validate_workflow(artifact,{'configurationDigest':pin,'deployment':new['deployment']})
+ else:validation={'status':'PASS'}
+ retained=OUT/'generated'/name;shutil.copytree(target,retained)
+ providers.append({'provider':name,'status':'PASS','validator':validation,'files':inventory(retained),'sameInputBytesUnchanged':True,'onlyChangedInput':'distributionDigest','projectionsUnchanged':True})
+ print('provider',name,'PASS',flush=True)
+after=inventory(installed);assert after==json.loads((OUT/'installed-before.json').read_bytes())['files']
+put('installed-after.json',{'files':after,'root':str(installed)})
+put('semantic-native.json',{'status':'PASS','cases':semantic,'count':9,'normativeBytesEqualIndependentSourceSDK':True,'installedPackage':installed.as_posix()})
+put('provider-preservation.json',{'status':'PASS','providers':providers,'oldAndSamePin':old,'newPin':current,'capabilities':row(ROOT/'repositories/cca-conformance/mo1306-phase2-capabilities.json'),'workflowSemanticsUnchanged':True,'fixtureToolRevision':B2,'scope':'Offline provider preservation only. Certification workflow must later bind actual corrected revision; no hosted execution.'})
+put('installed-regression.json',{'status':'PASS','commands':commands,'validCommands':['run','generate','verify'],'semanticCommands':9,'verifyCommands':9,'generationCommands':5,'negativeCommands':4,'integrityUnchanged':True,'before':row(OUT/'installed-before.json'),'after':row(OUT/'installed-after.json')})
+print('Installed integrity PASS',flush=True)

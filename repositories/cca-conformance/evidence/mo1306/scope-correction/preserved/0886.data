@@ -1,0 +1,52 @@
+"""Read-only historical replay and source dependency binding; no product execution or network."""
+import base64,copy,hashlib,importlib.util,io,json,os,re,subprocess,sys,time,unittest
+from pathlib import Path,PureWindowsPath
+ROOT=Path(__file__).resolve().parents[4]; OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3cr'; PKG=ROOT/'repositories/memoryos-ci'; NODE=ROOT/'.cache/mo1305-phase3br/toolchain/node-v24.21.0-win-x64/node.exe'
+BASE='9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44'; B2='0e35ffe70919d77b1db530929093826410b805f9'
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def row(p):
+ b=p.read_bytes();return {'path':p.relative_to(ROOT).as_posix(),'byteLength':len(b),'sha256':sha(b)}
+def save(name,data):(OUT/name).write_text(json.dumps(data,sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8')
+def load(relative):return json.loads((ROOT/relative).read_bytes())
+# The first contracts run completed successfully before its stdout counter parser failed.
+text=(OUT/'security-contracts.tap').read_text(encoding='utf-8'); counts={k:int(re.search(r'(?:#|ℹ) '+k+r' (\d+)',text)[1]) for k in ['tests','pass','fail']};assert counts=={'tests':152,'pass':152,'fail':0}
+suites=[{'id':'contracts','counts':counts,'log':row(OUT/'security-contracts.tap'),'harness':row(ROOT/'repositories/cca-conformance/tools/mo1306/contracts.test.mjs'),'status':'PASS','captureDisposition':'Original completed 152-case spec output parsed; no product rerun after wrapper counter mismatch'}]
+cmd=[str(NODE),'--max-old-space-size=128','--test','--test-reporter=tap','repositories/cca-conformance/tools/mo1306/security.test.mjs'];start=time.perf_counter();p=subprocess.run(cmd,cwd=ROOT,env={'SystemRoot':os.environ['SystemRoot'],'WINDIR':os.environ['WINDIR']},stdin=subprocess.DEVNULL,capture_output=True,timeout=60,creationflags=subprocess.DETACHED_PROCESS|subprocess.CREATE_NEW_PROCESS_GROUP)
+(OUT/'security-network-boundary.tap').write_bytes(p.stdout);text=p.stdout.decode();counts={k:int(re.search(r'# '+k+r' (\d+)',text)[1]) for k in ['tests','pass','fail']};assert p.returncode==0 and counts=={'tests':37,'pass':37,'fail':0},p.stderr.decode()
+suites.append({'id':'network-worker-authority','status':'PASS','command':cmd,'exitCode':p.returncode,'elapsedMs':round((time.perf_counter()-start)*1000),'counts':counts,'log':row(OUT/'security-network-boundary.tap'),'harness':row(ROOT/'repositories/cca-conformance/tools/mo1306/security.test.mjs'),'scope':'Deny calls intercepted in-process before network, child process, addon, writable-open or worker-thread creation; no OS-wide network denial claim'})
+# Import tests without their __main__ historical-output mutation.
+sys.path.insert(0,str(ROOT/'repositories/cca-conformance/tools/mo1306-correction-a'))
+spec=importlib.util.spec_from_file_location('historical_correction_tests',ROOT/'repositories/cca-conformance/tools/mo1306-correction-a/contract-tests.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);stream=io.StringIO();r=unittest.TextTestRunner(stream=stream,verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(module.Correction));assert r.wasSuccessful(),stream.getvalue();(OUT/'security-correction-a.txt').write_text(stream.getvalue(),encoding='utf-8');suites.append({'id':'correction-a-contract-negatives','status':'PASS','tests':r.testsRun,'failures':len(r.failures),'errors':len(r.errors),'log':row(OUT/'security-correction-a.txt'),'scope':'Historical contract, role, command, environment and cleanup validator; does not relabel original blocked attempt'})
+save('security-existing-suites.json',{'baseline':BASE,'status':'PASS','suites':suites,'executedHarness':row(Path(__file__))})
+# Reuse only whole unchanged candidate dependency files, never the old CLI or distribution identity.
+old=json.loads(subprocess.check_output(['git','show',B2+':repositories/memoryos-ci/distribution-manifest.json'],cwd=ROOT));new=json.loads((PKG/'distribution-manifest.json').read_bytes());prior={r['path']:r for r in old['files']};current={r['path']:r for r in new['files']};changed=[];unchanged=[]
+for name in sorted(set(prior)|set(current)):
+ if prior.get(name)!=current.get(name):changed.append(name)
+ else:
+  actual=row(PKG/name);assert actual['sha256']==current[name]['sha256'] and actual['byteLength']==current[name]['byteLength'];unchanged.append(actual)
+assert changed==['bin/memoryos-ci.mjs'],changed
+life=load('repositories/cca-conformance/evidence/mo1306/phase2d/lifecycle.json')
+for key in ['filesystem','helper','supervisor']:assert row(ROOT/life[key]['path'])==life[key]
+sys.path.insert(0,str(ROOT/'repositories/cca-conformance/tools/mo1306-phase2d'));from trace_phase2d import validate_trace
+results=[]
+for c in life['cases']:
+ p=ROOT/c['trace']['path'];assert row(p)==c['trace'];record=json.loads(p.read_bytes());assert record['status']=='PASS' and record['exitCode']==0 and json.loads(record['stdout'])['result']==c['expected']
+ assert record['observerSha256']==sha((ROOT/'repositories/cca-conformance/tools/mo1306-phase2d/observer.py').read_bytes());assert record['traceValidatorSha256']==sha((ROOT/'repositories/cca-conformance/tools/mo1306-phase2d/trace_phase2d.py').read_bytes())
+ ids={'node':record['command'][0],'powershell':r'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe','conhost':r'C:\Windows\System32\conhost.exe'};topology=validate_trace(record,ids)
+ expanded=copy.deepcopy(record);dictionary=expanded.pop('traceEncoding')['commandLines']
+ for proc in expanded['lifetimes']+[v for s in expanded['observation']['samples'] for v in s['processes']]:
+  if isinstance(proc.get('commandLine'),dict):key=proc['commandLine']['sha256'];value=dictionary[key];assert sha(value.encode())==key;proc['commandLine']=value
+ package=PureWindowsPath(record['command'][4]);expected_worker=subprocess.list2cmdline([ids['node'],'--permission','--allow-fs-read='+str(package),'--max-old-space-size=256','--max-semi-space-size=16',str(package/'src/worker.mjs')]);expected_helper=subprocess.list2cmdline([ids['powershell'],'-NoProfile','-NonInteractive','-EncodedCommand',base64.b64encode((PKG/'scripts/check-paths.ps1').read_bytes().decode('utf-8').encode('utf-16le')).decode()])
+ for proc in expanded['lifetimes']:
+  if proc['parent']==record['rootPid'] and proc['pid']!=record['rootPid']:
+   expected=expected_worker if proc['executable'].lower()==ids['node'].lower() else expected_helper
+   actual=proc['commandLine']; assert actual.split(' ',1)[0].lower()==expected.split(' ',1)[0].lower() and actual.split(' ',1)[1]==expected.split(' ',1)[1],'FIXED_ARGV'
+ negatives=[]
+ for label,mutate in [('fourth',lambda r:r['observation'].update(peakProcessCount=4)),('rss',lambda r:r['observation'].update(peakAggregateRssBytes=768*1024*1024+1)),('orphan',lambda r:r['cleanup'].update(remainingPids=[999])),('dictionary',lambda r:r['traceEncoding']['commandLines'].update({next(iter(r['traceEncoding']['commandLines'])):'changed'}))]:
+  bad=copy.deepcopy(record);mutate(bad)
+  try:validate_trace(bad,ids)
+  except (AssertionError,ValueError):negatives.append(label)
+  else:raise AssertionError('forged trace accepted '+label)
+ results.append({'id':c['id'],'status':'PASS','expected':c['expected'],'trace':row(p),'faultInjection':c['faultInjection'],'topology':topology,'commandBytesChecked':True,'negativeRejections':negatives,'sampleCount':record['observation']['sampleCount'],'maximumGapMs':record['observation']['maximumGapMs'],'remainingPids':record['cleanup']['remainingPids']})
+save('security-lifecycle-reuse.json',{'baseline':BASE,'sourceRevision':B2,'status':'PASS','scope':'Helper handled cancellation, semantic-worker timeout and handled cancellation, unchanged fixed helper/supervisor commands, role-bound sampled topology and observed cleanup. Fault workers retained explicitly. Not whole corrected archive certification or current installed resource measurement.','changedExcludedDependencies':['repositories/memoryos-ci/bin/memoryos-ci.mjs','repositories/memoryos-ci/distribution-manifest.json'],'unchangedDependencies':unchanged,'sourceReceipt':row(ROOT/'repositories/cca-conformance/evidence/mo1306/phase2d/lifecycle.json'),'traces':results,'limitations':['Sampled observer cannot prove absence of arbitrarily short-lived descendants','No kernel-enforced process isolation or exact peak RSS claim','Forced parent termination evidence remains historical; final installed cleanup certification is 3A-R'],'harness':row(Path(__file__))})
+print('Read-only suites:',[(x['id'],x.get('counts',x.get('tests'))) for x in suites]);print('Lifecycle exact dependency reuse:',len(results),'traces,',sum(len(x['negativeRejections']) for x in results),'negative witnesses,',len(unchanged),'unchanged dependencies')

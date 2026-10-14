@@ -1,0 +1,23 @@
+"""Exact correction assertions, batching immutable Git blobs to bound replay time."""
+import json,sys,time,subprocess,functools,hashlib
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[4];OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3cr'
+started=time.monotonic()
+sys.path.insert(0,str(ROOT/'repositories/cca-conformance/tools/mo1306-phase3-correction'))
+import conformance as c
+raw=c.git;c.git=functools.lru_cache(None)(raw)
+inv=json.loads(c.INV.read_bytes());binding=json.loads(c.BIND.read_bytes())
+requests=[(c.B2,'repositories/memoryos-ci/bin/memoryos-ci.mjs'),(c.B2,'repositories/memoryos-ci/distribution-manifest.json')]+[(binding['correctionCommit'],r['path']) for r in inv['artifacts']]+[(binding['correctionCommit'],c.INV.relative_to(ROOT).as_posix())]
+requests=list(dict.fromkeys(requests))
+queries=''.join(rev+':'+p+'\n' for rev,p in requests).encode()
+r=subprocess.run(['git','cat-file','--batch'],input=queries,cwd=ROOT,capture_output=True,timeout=30,creationflags=subprocess.CREATE_NO_WINDOW);assert r.returncode==0
+stream=r.stdout;offset=0;blobs={}
+for key in requests:
+ end=stream.index(b'\n',offset);oid,kind,length=stream[offset:end].decode().split();assert kind=='blob';size=int(length);b=stream[end+1:end+1+size]
+ assert hashlib.sha1(b'blob '+str(size).encode()+b'\0'+b).hexdigest()==oid and stream[end+size+1]==10
+ blobs[key]=b;offset=end+size+2
+assert offset==len(stream)
+c.blob=lambda revision,p:blobs[(revision,p)]
+c.validate(inv);rejected=c.negatives(inv);c.validate_binding(binding,inv,post=True)
+result={'status':'PASS','baseline':c.git('rev-parse','HEAD'),'originalValidator':c.row(Path(c.__file__)),'batchedImmutableGitBlobs':len(blobs),'negativeControls':len(rejected),'rejected':rejected,'elapsedMs':round((time.monotonic()-started)*1000),'adaptation':'Unmodified correction assertion functions. Git show transport uses one cat-file batch whose blob hashes are independently checked; repeated git strings cached within read-only run. No assertion weakened.','priorAttempt':{'status':'ENGINEERING_TIMEOUT','limitSeconds':120,'argv':[sys.executable,'-B',str(ROOT/'repositories/cca-conformance/tools/mo1306-phase3-correction/conformance.py'),'post'],'stdout':'','stderr':'No validator output before timeout; top-level harness TimeoutExpired preserved in tool execution.','diagnosis':'Original validator invokes git show separately for every 284-artifact committed binding and rehashes it across eight negative controls, exceeding bounded orchestration deadline in this worktree. Batched immutable object reads remove repeated subprocess cost; no product witness was involved.'}}
+p=OUT/'correction-validator.json';assert not p.exists();p.write_bytes((json.dumps(result,sort_keys=True,separators=(',',':'))+'\n').encode());print(json.dumps({'status':'PASS','negativeControls':len(rejected),'elapsedMs':result['elapsedMs']}))

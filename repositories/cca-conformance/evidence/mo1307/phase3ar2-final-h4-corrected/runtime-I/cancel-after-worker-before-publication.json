@@ -1,0 +1,114 @@
+{
+  "name": "cancel-after-worker-before-publication",
+  "started": 20848.8015,
+  "finished": 20897.2571,
+  "result": "PASS",
+  "elapsedMs": 48.45639999999912,
+  "error": {
+    "code": "MO1307_CANCELLED",
+    "message": "MO1307_CANCELLED"
+  },
+  "detail": null,
+  "snapshot": {
+    "kind": "cli",
+    "deadline": 50848.8188,
+    "helpers": 0,
+    "workers": 1,
+    "helperUsedMs": 0,
+    "activeRole": null,
+    "cleanupConfirmed": true,
+    "publication": null,
+    "terminalCode": "MO1307_CANCELLED",
+    "terminalAt": 20897.2087,
+    "cleanupDeadline": 22897.2087,
+    "events": [
+      {
+        "type": "start",
+        "at": 20848.9599,
+        "role": "worker",
+        "deadline": 30848.9305,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 20849.4188,
+        "role": "worker",
+        "threadId": 4,
+        "resourceLimits": {
+          "maxYoungGenerationSizeMb": 16,
+          "maxOldGenerationSizeMb": 128,
+          "codeRangeSizeMb": -1,
+          "stackSizeMb": 4
+        }
+      },
+      {
+        "type": "quiescent",
+        "at": 20896.9741,
+        "role": "worker",
+        "ordinal": 1
+      },
+      {
+        "type": "terminal",
+        "at": 20897.2176,
+        "code": "MO1307_CANCELLED",
+        "stage": "LAUNCH"
+      }
+    ]
+  },
+  "expectedError": "MO1307_CANCELLED",
+  "engineeringElapsedEnvelope": {
+    "minMs": null,
+    "maxMs": 1500,
+    "productDeadlineOverride": false
+  },
+  "invocations": [],
+  "workerObservations": [
+    {
+      "type": "start",
+      "caseName": "cancel-after-worker-before-publication",
+      "threadId": 4,
+      "at": 20849.3,
+      "env": {},
+      "execArgv": [],
+      "resourceLimits": {
+        "maxOldGenerationSizeMb": 128,
+        "maxYoungGenerationSizeMb": 16
+      }
+    },
+    {
+      "type": "message",
+      "threadId": 4,
+      "at": 20895.4245
+    },
+    {
+      "type": "exit",
+      "threadId": 4,
+      "at": 20896.8735,
+      "code": 0
+    },
+    {
+      "type": "stream-end",
+      "stream": "stdout",
+      "threadId": 4,
+      "at": 20896.9027
+    },
+    {
+      "type": "stream-end",
+      "stream": "stderr",
+      "threadId": 4,
+      "at": 20896.9318
+    },
+    {
+      "type": "stream-close",
+      "stream": "stdout",
+      "threadId": 4,
+      "at": 20896.9441
+    },
+    {
+      "type": "stream-close",
+      "stream": "stderr",
+      "threadId": 4,
+      "at": 20896.9467
+    }
+  ]
+}

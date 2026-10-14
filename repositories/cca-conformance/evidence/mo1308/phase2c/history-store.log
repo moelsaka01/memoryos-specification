@@ -1,0 +1,29 @@
+✔ T01 store constants equal the Freeze contract module (layout, limits, member names) (2.1712ms)
+✔ T02 init creates exactly the frozen layout once; an existing target or a missing parent is refused (section 9.1) (38.4435ms)
+✔ T03 append publishes members, then the entry; every earlier file is untouched (R06, R15) (68.1133ms)
+✔ T04 rejected appends change nothing: duplicates, wrong members, purged re-supply (R09, R10, R20) (62.0652ms)
+✔ T05 the commit point is exclusive creation of entries/<n>.json: a lost race is LEDGER_CONFLICT and publishes nothing (R15, H41) (89.9087ms)
+✔ T06 interruption at every mutating step before the commit point publishes nothing; after it, a complete entry (R16) (1534.3187ms)
+✔ T07 tombstone commits first, then purges every member; the chain still verifies (R18, R19, section 10.2) (76.8457ms)
+✔ T08 a crash during purge leaves purgePending; re-running the same command finishes it without a new entry (section 10.2) (276.3509ms)
+✔ T09 verify fails closed on every layout defect (section 11.1) (172.6719ms)
+✔ T10 verify reports staging and unreferenced artifacts; tampered bytes fail closed (R21) (125.1628ms)
+✔ T11 filesystem boundary: a link anywhere on the path or inside the ledger fails closed on every operation (R17, H40) (102.4731ms)
+✔ T12 a handle/path identity mismatch fails closed (H40) (21.2323ms)
+✔ T12b a published name whose identity differs from the staged file is detected after the link (H40) (37.7844ms)
+✔ T13 a directory swapped for a link during an append is detected after the fact; no content is overwritten; reads then fail closed (H40 risk acceptance) (57.5547ms)
+✔ T13b the same swap with no decoy is detected after the link: a boundary failure, the entry is never committed (H40) (54.3235ms)
+✔ T14 export is written once, marker last, byte-identical for equal ledgers, and verify-export fails closed (R23, section 12) (504.8801ms)
+✔ T15 query and verify-export are read-only; query verifies the chain and never reads member bytes (R22) (71.4608ms)
+✔ T16 commands: arguments become store operations, inputs are read through the boundary, errors carry only fixed text (section 13.3, 14.1) (215.8819ms)
+✔ T17 concurrent appenders in separate processes: exactly one entry per index, losers get LEDGER_CONFLICT, the chain verifies (R15) (345.2643ms)
+✔ T18 the store is Node-only, helper-free, timeless and never overwrites (R06, R35, R37, H40) (1.7094ms)
+✔ T19 nothing outside the SDK facade and the contract is imported by the history sources; commands.js stays the only SDK importer (ARCHITECTURE section 5) (0.6208ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3999.3211

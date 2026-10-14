@@ -1,0 +1,294 @@
+name: CCA CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: cca-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  VCPKG_DISABLE_METRICS: "1"
+
+jobs:
+  build-and-test:
+    name: Build and test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-14, windows-2022]
+    env:
+      # Reference-host-only evidence (see docs/maint-pre-1.3-release.md): excluded BY EXACT NAME, never by pattern.
+      # mo1304-phase3-windows still runs, and passes, on the Windows runner; mo1305-phase3 is registered on Windows only.
+      CCA_CTEST_EXCLUDE: ${{ matrix.os == 'windows-2022' && '^(memoryos\.standard\.mo1304-phase2|memoryos\.standard\.mo1305-phase3)$' || '^(memoryos\.standard\.mo1304-phase2|memoryos\.standard\.mo1304-phase3-windows|memoryos\.standard\.mo1305-phase3)$' }}
+      # Only the MO-1304 Windows-toolchain parity sub-check of cca.workspace.verify is reported NOT_RUN_ON_HOSTED_RUNNER
+      # on POSIX runners; every other check stays enforced.
+      CCA_WORKSPACE_VERIFY_NOT_RUN_MO1304_PARITY: ${{ matrix.os == 'windows-2022' && '0' || '1' }}
+    steps:
+      - name: Enable long paths (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: git config --system core.longpaths true
+
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Use a canonical temporary directory
+        shell: bash
+        run: |
+          # The history store and the MCP integrity checks require a temp root whose canonical form equals its
+          # name. The runner defaults are aliases (Windows 8.3 'RUNNER~1', macOS /var -> /private/var).
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            echo "TEMP=${RUNNER_TEMP}" >> "$GITHUB_ENV"
+            echo "TMP=${RUNNER_TEMP}" >> "$GITHUB_ENV"
+          else
+            echo "TMPDIR=${RUNNER_TEMP}" >> "$GITHUB_ENV"
+          fi
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+
+      - name: Set up exact Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 24.21.0
+
+      - name: Install JavaScript test dependencies
+        shell: bash
+        run: |
+          npm ci --ignore-scripts --prefix repositories/memoryos-mcp
+          npm ci --ignore-scripts --prefix repositories/memoryos-vscode
+          # Removes exactly the 198 hash-verified Zod dev-test files that npm ci installs but the pinned production
+          # closure excludes (tracked bytes are unchanged); the evidence-bound conformance suites inspect this tree in place.
+          node repositories/memoryos-mcp/scripts/assemble-dependencies.mjs
+
+      - name: Check out the sibling Standard publication
+        shell: bash
+        run: |
+          git clone --quiet https://github.com/moelsaka01/cca-specifications "${GITHUB_WORKSPACE}/../cca-specifications"
+          git -C "${GITHUB_WORKSPACE}/../cca-specifications" checkout --quiet bdf8fd465c1a402879911c1166179b41e72ca290
+
+      - name: Bootstrap dependencies (POSIX)
+        if: runner.os != 'Windows'
+        run: bash scripts/bootstrap.sh --skip-configure
+
+      - name: Bootstrap dependencies (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./scripts/bootstrap.ps1 -SkipConfigure
+
+      - name: Select the MSVC toolchain (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          # The runner's PATH also carries MinGW; without this the generator picks GCC and links
+          # vcpkg's MSVC-ABI libraries incorrectly.
+          $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+          $bat = Join-Path $vs 'VC\Auxiliary\Build\vcvars64.bat'
+          cmd /c "`"$bat`" >nul 2>&1 && set" | ForEach-Object {
+            if ($_ -match '^([^=]+)=(.*)$') { Add-Content -Path $env:GITHUB_ENV -Value "$($Matches[1])=$($Matches[2])" }
+          }
+          Add-Content -Path $env:GITHUB_ENV -Value 'CC=cl'
+          Add-Content -Path $env:GITHUB_ENV -Value 'CXX=cl'
+
+      - name: Configure
+        # MSVC Debug enables checked iterators (_ITERATOR_DEBUG_LEVEL=2): STL containers then allocate a proxy
+        # inside noexcept constructors, so the allocation-failure sweeps (one injected bad_alloc per allocation)
+        # reach std::terminate (exit 3) instead of exercising the product's strong guarantee. RelWithDebInfo
+        # (/MD, level 0) removes that artifact; every other platform keeps the preset's Debug build.
+        run: cmake --preset ci ${{ runner.os == 'Windows' && '-DCMAKE_BUILD_TYPE=RelWithDebInfo' || '' }}
+
+      - name: Build
+        # -k 0 reports every compile error in one run instead of stopping at the first.
+        run: cmake --build --preset ci -- -k 0
+
+      - name: Test
+        # Windows keeps its default shell (pwsh): running ctest under Git Bash puts MSYS tools ahead of the
+        # native git/tar on PATH, which the git-reading conformance tests are sensitive to.
+        if: runner.os != 'Windows'
+        run: ctest --preset ci --timeout 600 -E "${CCA_CTEST_EXCLUDE}"
+
+      - name: Test (Windows)
+        if: runner.os == 'Windows'
+        run: ctest --preset ci --timeout 600 -E $env:CCA_CTEST_EXCLUDE
+
+      - name: Diagnose Windows-only crashes (on failure)
+        if: failure() && runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem out/build/ci -Recurse -Filter cca_memory_provider_allocation_tests.exe | Select-Object -First 1
+          & $exe.FullName --gtest_filter='*DescriptorWorkspaceFailureConstruction*' --gtest_catch_exceptions=0 2>&1 | Select-Object -First 30
+          "exit code: $LASTEXITCODE (0xC0000005 = access violation)"
+          Get-WinEvent -FilterHashtable @{LogName='Application'; ProviderName='Application Error'} -MaxEvents 2 -ErrorAction SilentlyContinue | Format-List TimeCreated, Message
+
+      - name: Install smoke test
+        run: cmake --install out/build/ci --prefix out/stage
+
+  format:
+    name: clang-format
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+
+      - name: Install clang-format 18
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes clang-format-18
+
+      - name: Verify formatting
+        env:
+          CLANG_FORMAT: clang-format-18
+        run: python3 tools/run_clang_format.py --root .
+
+  static-analysis:
+    name: clang-tidy
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+
+      - name: Install clang-tidy 18
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes clang-tidy-18
+
+      - name: Bootstrap dependencies
+        run: bash scripts/bootstrap.sh --skip-configure
+
+      - name: Configure analysis
+        run: cmake --preset analysis -DCCA_CLANG_TIDY_EXECUTABLE=/usr/bin/clang-tidy-18
+
+      - name: Run analysis
+        run: cmake --build --preset analysis
+
+  sanitizers:
+    name: AddressSanitizer and UBSan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      CCA_CTEST_EXCLUDE: '^(memoryos\.standard\.mo1304-phase2|memoryos\.standard\.mo1304-phase3-windows|memoryos\.standard\.mo1305-phase3)$'
+      CCA_WORKSPACE_VERIFY_NOT_RUN_MO1304_PARITY: '1'
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+
+      - name: Set up exact Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 24.21.0
+
+      - name: Install JavaScript test dependencies
+        shell: bash
+        run: |
+          npm ci --ignore-scripts --prefix repositories/memoryos-mcp
+          npm ci --ignore-scripts --prefix repositories/memoryos-vscode
+          # Removes exactly the 198 hash-verified Zod dev-test files that npm ci installs but the pinned production
+          # closure excludes (tracked bytes are unchanged); the evidence-bound conformance suites inspect this tree in place.
+          node repositories/memoryos-mcp/scripts/assemble-dependencies.mjs
+
+      - name: Check out the sibling Standard publication
+        shell: bash
+        run: |
+          git clone --quiet https://github.com/moelsaka01/cca-specifications "${GITHUB_WORKSPACE}/../cca-specifications"
+          git -C "${GITHUB_WORKSPACE}/../cca-specifications" checkout --quiet bdf8fd465c1a402879911c1166179b41e72ca290
+
+      - name: Bootstrap dependencies
+        run: bash scripts/bootstrap.sh --skip-configure
+
+      - name: Configure
+        run: cmake --preset sanitizer
+
+      - name: Build
+        run: cmake --build --preset sanitizer
+
+      - name: Test
+        run: ctest --preset sanitizer --timeout 600 -E "${CCA_CTEST_EXCLUDE}"
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      CCA_CTEST_EXCLUDE: '^(memoryos\.standard\.mo1304-phase2|memoryos\.standard\.mo1304-phase3-windows|memoryos\.standard\.mo1305-phase3)$'
+      CCA_WORKSPACE_VERIFY_NOT_RUN_MO1304_PARITY: '1'
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+
+      - name: Set up exact Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 24.21.0
+
+      - name: Install JavaScript test dependencies
+        shell: bash
+        run: |
+          npm ci --ignore-scripts --prefix repositories/memoryos-mcp
+          npm ci --ignore-scripts --prefix repositories/memoryos-vscode
+          # Removes exactly the 198 hash-verified Zod dev-test files that npm ci installs but the pinned production
+          # closure excludes (tracked bytes are unchanged); the evidence-bound conformance suites inspect this tree in place.
+          node repositories/memoryos-mcp/scripts/assemble-dependencies.mjs
+
+      - name: Check out the sibling Standard publication
+        shell: bash
+        run: |
+          git clone --quiet https://github.com/moelsaka01/cca-specifications "${GITHUB_WORKSPACE}/../cca-specifications"
+          git -C "${GITHUB_WORKSPACE}/../cca-specifications" checkout --quiet bdf8fd465c1a402879911c1166179b41e72ca290
+
+      - name: Install coverage tooling
+        run: python3 -m pip install --requirement tools/requirements-ci.txt
+
+      - name: Bootstrap dependencies
+        run: bash scripts/bootstrap.sh --skip-configure
+
+      - name: Generate coverage report
+        run: bash scripts/coverage.sh -E "${CCA_CTEST_EXCLUDE}"
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: cca-coverage
+          path: out/build/coverage/coverage
+          if-no-files-found: error
+          retention-days: 14

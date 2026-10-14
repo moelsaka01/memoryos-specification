@@ -1,0 +1,56 @@
+{
+  "name": "late-real-worker-completion-rejected",
+  "outcome": "PASS",
+  "elapsedMs": 10547.876200000006,
+  "error": {
+    "code": "MO1307_TIMEOUT",
+    "message": "MO1307_TIMEOUT"
+  },
+  "detail": null,
+  "snapshot": {
+    "kind": "cli",
+    "deadline": 75943.23790000001,
+    "helpers": 0,
+    "workers": 1,
+    "helperUsedMs": 0,
+    "activeRole": null,
+    "cleanupConfirmed": true,
+    "publication": null,
+    "terminalCode": "MO1307_TIMEOUT",
+    "terminalAt": 55954.5403,
+    "cleanupDeadline": 57954.5403,
+    "events": [
+      {
+        "type": "start",
+        "at": 45943.4729,
+        "role": "worker",
+        "deadline": 55943.4633,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 45944.2588,
+        "role": "worker",
+        "threadId": 4,
+        "resourceLimits": {
+          "maxYoungGenerationSizeMb": 16,
+          "maxOldGenerationSizeMb": 128,
+          "codeRangeSizeMb": -1,
+          "stackSizeMb": 4
+        }
+      },
+      {
+        "type": "terminal",
+        "at": 55954.5462,
+        "code": "MO1307_TIMEOUT",
+        "stage": "EVALUATION"
+      },
+      {
+        "type": "cleanup",
+        "at": 56490.9442,
+        "role": "worker",
+        "confirmed": true
+      }
+    ]
+  }
+}

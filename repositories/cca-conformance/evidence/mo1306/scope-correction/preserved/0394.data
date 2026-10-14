@@ -1,0 +1,93 @@
+"""Independent offline closure checks; no product process or network operations.
+
+--native-only checks the closed native receipts before hosted authorization.
+--check performs read-only validation; --postcommit additionally binds the actual
+containing commit. Without --check, only new validation receipts are created.
+"""
+import argparse,base64,copy,hashlib,importlib.util,json,os,re,subprocess,sys
+from pathlib import Path
+sys.dont_write_bytecode=True
+HERE=Path(__file__).resolve().parent;ROOT=HERE.parents[3];OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-certification';MAIN=Path(r'C:\Users\melsa\Documents\Codex\cca-workspace')
+C3CB='701d48ee2012675966360dda775ab13013c09ab9';M3='85a0f85c1ebd013c545ccf2b3efe58a760e6cf37';HEAD='f236c4a2f94d8cd8e763aaa4bd6c52d703429692';H='f6e181ae330c8f884f5b9737f71f546eb2494201';SCAFFOLD='451599e7b95a537ebc2daac627b061fd88791dea';REMOTE_MAIN='5955af062152a84c10de17860ba0bcabe8b3555f';REMOTE_OLD='3096139e0108be22528859e4f462356dddf6ef29'
+SUBJECT='cert(memoryos-1.3): certify final MO-1306 Windows and GitHub execution'
+def module(name,path):
+ spec=importlib.util.spec_from_file_location(name,path);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
+native=module('native_closure',HERE/'native-validate.py');w=native.witness;need=w.need;sha=w.sha;PKG=w.PKG
+sys.path.insert(0,str(HERE));import hosted_bundle as hb
+
+def git(*args,cwd=ROOT):return subprocess.check_output(['git','-C',str(cwd),*args],env={**os.environ,'GIT_OPTIONAL_LOCKS':'0'},timeout=60)
+def g(*args,cwd=ROOT):return git(*args,cwd=cwd).decode().strip()
+def refmap(text):return dict(line.split(' ',1) for line in text.strip().splitlines())
+
+def claims(v):
+ need(v['productionAuthority']==C3CB and v['methodologyAuthority']==M3,'FALSE_AUTHORITY')
+ need(v['historicalCauseResolved'] is False,'HISTORICAL_CAUSE_REWRITTEN')
+ for key in ['rootCauseProven','environmentTransientProven','productDefectProven','harnessDefectProven','productChanged','acceptedGroupsRerun']:
+  if key in v:need(v[key] is False,'FALSE_CAUSE_OR_SCOPE: '+key)
+ need(v['nativeCertified'] is True and v['githubHostedCertified'] is True,'INCOMPLETE_CERTIFICATION')
+ need(v['labels']['generic']=='REAL_EXECUTION_CERTIFIED' and v['labels']['github']=='HOSTED_EXECUTION_CERTIFIED','LABEL_SCOPE')
+ for key in ['gitlab','jenkins','azure']:need(v['labels'][key]=='CONTRACT_VALIDATED','OTHER_PROVIDER_PROMOTED')
+ need(v['expectedParent']==H and v['containingCommitIdentity']=='VALIDATED_BY_CONTAINING_COMMIT','CYCLIC_OR_WRONG_COMMIT_BINDING')
+ for key in ['commit','finalCommit','completionCommit']:
+  if key in v:need(v[key] in (None,'VALIDATED_BY_CONTAINING_COMMIT'),'FUTURE_HASH_SELF_REFERENCE')
+
+class Audit(w.prior.Audit):
+ def target(self,name,base=ROOT):
+  path=Path(name)
+  if not path.is_absolute() and base==ROOT and not (ROOT/path).exists() and (MAIN/path).is_file():return super().target(path,MAIN)
+  return super().target(name,base)
+ def load(self,name):return json.loads(self.raw(OUT/name))
+ def preservation(self,post):
+  before=self.load('preservation-before.json');need(before['head']==HEAD and before['historicalFileCount']==len(before['files'])==758,'PRESERVATION_BASELINE');self.walk(before['files']);need(len({r['path'] for r in before['files']})==758,'DUPLICATE_HISTORY')
+  old=refmap(before['protectedRefs']);now=refmap(g('for-each-ref','--format=%(refname) %(objectname)'));need(set(old)==set(now),'UNAUTHORIZED_REF_SET')
+  allowed={'refs/remotes/origin/mo1306-certification','refs/heads/mo1306/phase3a-refresh'}
+  for key in old:
+   if key not in allowed:need(now[key]==old[key],'PROTECTED_REF_CHANGED: '+key)
+  need(now['refs/remotes/origin/mo1306-certification'] in ([SCAFFOLD] if post else [REMOTE_OLD,SCAFFOLD]),'UNAUTHORIZED_REMOTE_REF')
+  head=g('rev-parse','HEAD');need(g('branch','--show-current')==before['branch'],'WORKTREE_BRANCH_CHANGED')
+  need(now['refs/heads/mo1306/phase3a-refresh']==head,'HEAD_BRANCH_MISMATCH')
+  need(g('rev-parse',M3+'^')==C3CB and g('rev-parse',H+'^')==M3,'AUTHORITY_GRAPH')
+  need(not git('diff','--name-only',C3CB,M3,'--','repositories/memoryos-ci','.github/actions/memoryos-policy-gate').strip(),'M3_PRODUCTION_DIFF')
+  if post:
+   need(g('rev-list','--parents','-n','1','HEAD').split()==[head,H] and g('log','-1','--format=%s')==SUBJECT,'FINAL_COMMIT_GRAPH')
+   need(not g('status','--porcelain=v1','--untracked-files=all'),'FINAL_WORKTREE_NOT_CLEAN')
+   paths=g('diff','--name-only',H,head).splitlines();need(paths and all(p.startswith(('repositories/cca-conformance/tools/mo1306-phase3a-certification/','repositories/cca-conformance/evidence/mo1306/phase3a-certification/')) for p in paths),'FINAL_NOT_EVIDENCE_ONLY')
+   for r in before['files']:need(git('show',head+':'+r['path'])==self.ref(r),'COMMITTED_HISTORY_CHANGED')
+  else:
+   need(head==HEAD,'PRECOMMIT_HEAD_CHANGED');idx=Path(g('rev-parse','--git-path','index'));idx=idx if idx.is_absolute() else ROOT/idx;need(sha(idx.read_bytes())==before['realIndexSha256'],'PRECOMMIT_INDEX_CHANGED');need(not g('diff','--name-only') and not g('diff','--cached','--name-only'),'TRACKED_CHANGES')
+  gate=self.load('m3-verification.json');need(g('rev-parse','HEAD',cwd=MAIN)==M3 and not g('status','--porcelain=v1','--untracked-files=all',cwd=MAIN),'MAIN_CHANGED');idx=Path(g('rev-parse','--git-path','index',cwd=MAIN));idx=idx if idx.is_absolute() else MAIN/idx;need(sha(idx.read_bytes())==gate['mainReadOnly']['indexSha256'],'MAIN_INDEX_CHANGED')
+  for namespace in ['phase3ar','phase3ar-resolution','phase3a-final','phase3a-publication-diagnostic','phase3a-environment-capture']:
+   index=json.loads(self.raw(ROOT/'repositories/cca-conformance/evidence/mo1306'/namespace/'evidence-index.json'));self.walk(index.get('files',index.get('artifacts',[])))
+  return {'historicalFiles':758,'mainHead':M3,'head':head,'postcommit':post,'protectedRefExceptions':sorted(allowed)}
+ def frozen_native(self):
+  actual=native.verify();saved=self.load('native-validation.json');need(actual==saved,'NATIVE_VALIDATION_DRIFT');self.walk(saved)
+  schema_path=ROOT/'repositories/cca-conformance/schema/mo1306-receipt-1.0.0.json';schema=json.loads(self.raw(schema_path));need(len(schema['required'])==15,'FROZEN_SCHEMA_FIELD_COUNT')
+  need(git('show',M3+':'+schema_path.relative_to(ROOT).as_posix())==self.raw(schema_path),'FROZEN_SCHEMA_CHANGED')
+  receipts=[self.load(n) for n in ['mo1306-phase3a-retained-native.json','mo1306-phase3a-native.json']];validation=self.load('frozen-native-validation.json');self.walk(validation)
+  need(validation['status']=='PASS' and validation['harnessRevision']==H and validation['productionAuthority']==C3CB,'FROZEN_VALIDATOR_SCOPE')
+  for r in validation['matchingExecutedTools']:need(git('show',H+':'+r['path'])==self.ref(r),'H_EXECUTED_HARNESS_DRIFT')
+  ids={'contractDigest':sha(self.raw(PKG/'contracts/contract.json')),'distributionDigest':w.DIST,'runtimeClosureDigest':sha(self.raw(PKG/'runtime/runtime-closure-manifest.json'))}
+  for receipt in receipts:
+   w.schema(schema,receipt);self.walk(receipt);need(receipt['status']=='PASS' and receipt['implementationRevision']==C3CB and receipt['harnessRevision']==H,'FROZEN_AUTHORITY');need(receipt['scope']=={'provider':'generic','platform':'windows-11-x64','validationMode':'REAL_EXECUTION'},'FROZEN_SCOPE');need(all(receipt[k]==v for k,v in ids.items()),'FROZEN_IDENTITIES')
+   env=receipt['environment'];need(env['nodeVersion']=='24.21.0' and env['nodeSha256']==w.NODESHA and env['architecture']=='x64' and env['hostedRun'] is None,'FROZEN_ENVIRONMENT')
+   artifacts={r['path']:r for r in receipt['artifacts']};need(len(artifacts)==len(receipt['artifacts']),'FROZEN_DUPLICATE_ARTIFACT')
+   need([r['id'] for r in receipt['cases']]==sorted({r['id'] for r in receipt['cases']}),'FROZEN_CASE_SET')
+   for case in receipt['cases']:
+    need(case['status']=='PASS' and set(case['evidencePaths'])<=artifacts.keys(),'FROZEN_CASE_EVIDENCE')
+    traces=[]
+    for path in case['evidencePaths']:
+     v=json.loads(self.ref(artifacts[path]))
+     if {'command','elapsedMs','exitCode','cleanup'}<=v.keys():traces.append(v)
+    need(len(traces)==1,'FROZEN_ACTUAL_TRACE_REQUIRED');trace=traces[0];need(all(case[k]==trace[k] for k in ['command','elapsedMs','exitCode']),'FROZEN_TRACE_MISMATCH')
+  retained,final=receipts;original=json.loads(self.raw(w.OLD/'summary.json'));accepted=[c for c in original['commands'] if c['status']=='PASS'];need(len(accepted)==len(retained['cases'])==13 and {c['id'] for c in accepted}=={c['id'] for c in retained['cases']},'RETAINED_COMMANDS');need([c['id'] for c in final['cases']]==['final-missing-input'] and final['cases'][0]['exitCode']==11,'FINAL_FROZEN_CASE')
+  need(retained['reusedEvidence']==[] and len(final['reusedEvidence'])==1,'FROZEN_REUSE_SET');reuse=final['reusedEvidence'][0];need(reuse['receiptId']==retained['id'] and reuse['sha256']==sha(self.raw(OUT/'mo1306-phase3a-retained-native.json')) and reuse['unchangedArtifactDigests']==sorted({r['sha256'] for r in retained['artifacts']}),'FROZEN_REUSE_DIGEST')
+  return {'status':'PASS','nativeCertified':True,'githubHostedCertified':False,'harnessRevision':H,'closedSchemaFields':15,'retainedCommands':13,'retainedGroups':8,'finalWitnessCases':1,'bindings':[self.row(OUT/n) for n in ['native-validation.json','mo1306-phase3a-retained-native.json','mo1306-phase3a-native.json','frozen-native-validation.json']]}
+
+def verify():
+ a=Audit();preserved=a.preservation(False);frozen=a.frozen_native()
+ return {'kind':'MemoryOSFrozenNativeIndependentValidation','status':'PASS',**frozen,'preservation':preserved,'productExecutions':0,'validator':a.row(Path(__file__))}
+if __name__=='__main__':
+ parser=argparse.ArgumentParser();parser.add_argument('--check',action='store_true');args=parser.parse_args();value=verify()
+ if not args.check:
+  with (OUT/'frozen-independent-validation.json').open('x',encoding='utf-8',newline='\n') as stream:stream.write(json.dumps(value,sort_keys=True,separators=(',',':'))+'\n')
+ print(json.dumps({'status':'PASS','nativeCertified':True,'githubHostedCertified':False,'harnessRevision':H,'closedSchemaFields':15}))

@@ -1,0 +1,173 @@
+{
+  "cases": [
+    {
+      "elapsedMs": 4673,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-A1",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "bytes": 122,
+        "flips": 244,
+        "outcomes": {
+          "MO1308_LEDGER_CORRUPT": 239,
+          "MO1308_VERSION_UNSUPPORTED": 5
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 2059,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-A2",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "bytes": 3380,
+        "entries": 3,
+        "flips": 6760,
+        "outcomes": {
+          "MO1308_LEDGER_CORRUPT": 6745,
+          "MO1308_VERSION_UNSUPPORTED": 15
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 4409,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-A3",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "flips": 2086,
+        "outcomes": {
+          "MO1308_RECORD_BYTES_MISMATCH": 2086
+        },
+        "stride": 61
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 364992,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-A4",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "codes": {
+          "MO1308_LEDGER_CORRUPT": 10,
+          "MO1308_RECORD_BYTES_MISMATCH": 290
+        },
+        "sample": 300,
+        "seedName": "MO1308-P3-A4-CLI-FLIP-1",
+        "totalBytes": 68851
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 28240,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-A5",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "results": {
+          "delete-first-entry": "MO1308_LEDGER_CORRUPT",
+          "delete-middle-entry": "MO1308_LEDGER_CORRUPT",
+          "delete-retained-member": "MO1308_RECORD_BYTES_MISMATCH",
+          "descriptor-substitution": "MO1308_LEDGER_CORRUPT",
+          "duplicate-index": "MO1308_LEDGER_CORRUPT",
+          "empty-entry": "MO1308_LEDGER_CORRUPT",
+          "extra-file-in-entries": "MO1308_LEDGER_CORRUPT",
+          "extra-member-in-record-directory": "MO1308_RECORD_BYTES_MISMATCH",
+          "foreign-ledger-splice": "MO1308_LEDGER_CORRUPT",
+          "gap-after-head": "MO1308_LEDGER_CORRUPT",
+          "half-entry": "MO1308_LEDGER_CORRUPT",
+          "missing-descriptor": "MO1308_LEDGER_NOT_FOUND",
+          "swap-two-entries": "MO1308_LEDGER_CORRUPT",
+          "trailing-lf-in-entry": "MO1308_LEDGER_CORRUPT",
+          "truncated-member": "MO1308_RECORD_BYTES_MISMATCH"
+        },
+        "variants": 15
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 4883,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-A6",
+      "mandatory": true,
+      "mode": "record",
+      "observed": {
+        "externalAnchorDetectsRemoval": true,
+        "fullEntryCount": 4,
+        "fullHeadDigest": "sha256:ca1cb3fed0694fe60f58cff3a54a33a8d793bf8cb6e5aaa53c99529604a46a24",
+        "outcome": "CONFIRMED",
+        "rolledBack": {
+          "entryCount": 2,
+          "exit": 0,
+          "headDigest": "sha256:a0e3025243867ebbb8aaf9f210223c67719680c0ef9fa6198bb8785bfbfb4484"
+        },
+        "truncatedEntryOnly": {
+          "code": null,
+          "entryCount": 3,
+          "exit": 0,
+          "headDigest": "sha256:666d838ed971fc54a85bdaddd9150346e63e3fa66fa586c164d02385cb9b6e7f",
+          "unreferencedRecords": 1
+        },
+        "truncatedWithRecord": {
+          "code": null,
+          "entryCount": 3,
+          "exit": 0,
+          "headDigest": "sha256:666d838ed971fc54a85bdaddd9150346e63e3fa66fa586c164d02385cb9b6e7f"
+        },
+        "verifiesWithLowerCount": true
+      },
+      "outcome": "CONFIRMED",
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 3678,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-A7",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "pristineIndices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "tamperedCode": "MO1308_LEDGER_CORRUPT",
+        "tamperedExit": 3
+      },
+      "outcome": null,
+      "result": "PASS"
+    }
+  ],
+  "elapsedMs": 412937,
+  "failureCode": null,
+  "finishedAt": "2026-10-09T05:43:38.256Z",
+  "generation": "phase3c-rehearsal-r5",
+  "kind": "MO1308Phase3StepReceipt",
+  "result": "PASS",
+  "segment": "main",
+  "startedAt": "2026-10-09T05:36:45.319Z",
+  "step": "A",
+  "stream": "3C",
+  "version": "1.0.0"
+}

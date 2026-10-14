@@ -1,0 +1,105 @@
+"""Independent offline verification of the single M3 final witness; no product execution."""
+import argparse,base64,datetime,hashlib,importlib.util,json,math,os,re,sys
+from pathlib import Path
+sys.dont_write_bytecode=True
+ROOT=Path(__file__).resolve().parents[4];HERE=Path(__file__).resolve().parent;OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-certification';PKG=ROOT/'.cache/mo1306-phase3a-final/install/node_modules/memoryos-ci';OLD=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-final/native/20260927T120240-b3df86'
+M3='85a0f85c1ebd013c545ccf2b3efe58a760e6cf37';C3CB='701d48ee2012675966360dda775ab13013c09ab9';DIST='sha256:b41d024d8ec1c588ca3fc919f8e3ac59a622aebc7cff3377f6a20ce7fc2ca4f3';NODESHA='sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32'
+spec=importlib.util.spec_from_file_location('prior_offline',HERE.parent/'mo1306-phase3a-publication-diagnostic/validate.py');prior=importlib.util.module_from_spec(spec);spec.loader.exec_module(prior)
+def need(v,c):
+ if not v:raise AssertionError(c)
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def utc(s):return datetime.datetime.fromisoformat(s)
+def schema(doc,value,s=None):
+ s=doc if s is None else s
+ allowed={'$defs','$id','$ref','$schema','type','const','enum','oneOf','properties','required','additionalProperties','items','minItems','maxItems','minLength','maxLength','pattern','minimum','maximum'};need(set(s)<=allowed,'UNSUPPORTED_SCHEMA_KEYWORD')
+ if '$ref' in s:
+  parts=s['$ref'].split('/');need(parts[0]=='#','EXTERNAL_SCHEMA_REF');target=doc
+  for p in parts[1:]:target=target[p]
+  schema(doc,value,target)
+ if 'oneOf' in s:
+  count=0
+  for variant in s['oneOf']:
+   try:schema(doc,value,variant);count+=1
+   except AssertionError:pass
+  need(count==1,'SCHEMA_ONEOF')
+ if 'const' in s:need(value==s['const'],'SCHEMA_CONST')
+ if 'enum' in s:need(value in s['enum'],'SCHEMA_ENUM')
+ if 'type' in s:
+  kinds={'object':dict,'array':list,'string':str,'integer':int,'number':(int,float),'boolean':bool,'null':type(None)};need(type(value) in (kinds[s['type']] if isinstance(kinds[s['type']],tuple) else (kinds[s['type']],)),'SCHEMA_TYPE')
+ if isinstance(value,dict):
+  need(set(s.get('required',[]))<=value.keys(),'SCHEMA_REQUIRED');props=s.get('properties',{})
+  if s.get('additionalProperties') is False:need(set(value)<=props.keys(),'SCHEMA_EXTRA')
+  for k,v in value.items():
+   if k in props:schema(doc,v,props[k])
+ if isinstance(value,list):
+  need(len(value)>=s.get('minItems',0) and len(value)<=s.get('maxItems',float('inf')),'SCHEMA_ARRAY_BOUNDS')
+  if 'items' in s:
+   for v in value:schema(doc,v,s['items'])
+ if isinstance(value,str):need(len(value)>=s.get('minLength',0) and len(value)<=s.get('maxLength',float('inf')) and ('pattern' not in s or re.search(s['pattern'],value) is not None),'SCHEMA_STRING')
+ if type(value) in (int,float):need(math.isfinite(value) and value>=s.get('minimum',-float('inf')) and value<=s.get('maximum',float('inf')),'SCHEMA_NUMBER')
+
+def verify():
+ a=prior.Audit();load=lambda n:json.loads(a.raw(OUT/n))
+ gate=load('m3-verification.json');a.walk(gate);need(gate['status']=='PASS' and gate['methodologyRevision']==M3 and gate['productionAuthority']==C3CB and gate['eligibility']=={'PASS':18,'FAIL':0,'NOT_ESTABLISHED':0} and gate['productExecutions']==0,'M3_GATE')
+ ledger=load('final-witness-ledger-start.json');consumed=load('final-witness-authorization-consumed.json');outcome=load('final-witness-outcome.json');a.walk(ledger);a.walk(consumed);a.walk(outcome)
+ need(not (OUT/'final-witness-failure.json').exists(),'FINAL_FAILURE_RECORDED');need(ledger['maximumFinalExecutions']==outcome['executionCount']==1 and outcome['additionalExecutionsAllowed']==0 and consumed['authorizationConsumed'] is True,'ATTEMPT_CAP')
+ pre=a.value(ledger['preflight']);v=a.value(outcome['observed']);need(pre['attemptId']==ledger['attemptId']==consumed['attemptId']==outcome['attemptId']==v['attemptId'],'LEDGER_ID')
+ need(len(list((OUT/'native').iterdir()))==1 and (OUT/'native'/v['attemptId']/'observed.json').exists(),'EXTRA_FINAL_ATTEMPT')
+ need(utc(gate['endedUtc'])<=utc(ledger['recordedUtc'])<utc(consumed['recordedUtc'])<=utc(v['startedUtc'])<utc(v['endedUtc']),'LEDGER_NOT_BEFORE_LAUNCH')
+ need(consumed['ledger']==outcome['ledger']==a.row(OUT/'final-witness-ledger-start.json') and v['consumed']==outcome['consumed']==a.row(OUT/'final-witness-authorization-consumed.json'),'LEDGER_HASH_RELATION')
+ need(pre['productionAuthority']==ledger['productionAuthority']==C3CB and pre['methodologyAuthority']==ledger['methodologyAuthority']==M3,'AUTHORITY_DRIFT')
+ for k in ['archive','node','distribution','protocol','runner','wrapper','reviewedWrapper','observer','traceValidator']:a.ref(pre[k])
+ need(pre['node']['sha256']==NODESHA and pre['distribution']['sha256']==DIST and pre['archive']['byteLength']==197290 and pre['archive']['sha256']=='sha256:7649f6df77c3f6163eb94b343974abaeccebbd5bcb8a2208cc889128904ce45d','CANDIDATE_IDENTITY')
+ need(a.ref(pre['wrapper'])==a.ref(pre['reviewedWrapper']),'OBSERVER_CHANGED')
+ original=json.loads(a.raw(OLD/'traces/error-input.json'))['command'];command=pre['productCommand'];need(pre['originalArgv']==original and len(command)==len(original) and all(x==y for i,(x,y) in enumerate(zip(command,original)) if i not in [5,7]),'PRODUCT_COMMAND_DRIFT')
+ work=Path(pre['workspace']);need(command[5]==str(work) and command[7]==str(work/'memoryos-ci.json') and len(str(work))==len(original[5])==117 and pre['maximumPublicationOperandLength']==207 and pre['freshWorkspaceCreatedExclusive'] and pre['initialOutputAbsent'],'EXCLUSIVE_PROTOCOL')
+ oldcase=json.loads(a.raw(OLD/'cases/error-input.json'));a.walk(pre['inputFiles']);need({Path(r['path']).name:(r['byteLength'],r['sha256']) for r in pre['inputFiles']}=={Path(r['path']).name:(r['byteLength'],r['sha256']) for r in oldcase['inputFiles']},'INPUT_DRIFT')
+ integrity=a.value(v['installedIntegrity']);need(integrity['status']=='PASS' and integrity['count']==94 and integrity['members']==pre['installedMembersBefore'],'INSTALLED_INTEGRITY');need({p.relative_to(PKG).as_posix() for p in PKG.rglob('*') if p.is_file()}=={r['path'] for r in integrity['members']},'INSTALLED_SET')
+ for r in integrity['members']:a.ref(r,PKG)
+ raw=a.value(v['events']);trace=a.value(v['trace']);actual=json.loads(a.ref(v['stdout']));stderr=a.ref(v['stderr']).decode();need(actual==v['actual'] and actual['classification']=='INPUT_ERROR' and actual['exitCode']==v['exitCode']==trace['exitCode']==11 and actual['publication']=='COMPLETE','ACTUAL_RESULT')
+ need(json.loads(stderr)['code']=='MO1306_INPUT_READ','ACTUAL_DIAGNOSTIC');need(raw['productArgv']==pre['productArgv']==[command[0],*command[2:]] and raw['externalArgv']==[pre['externalArgv'][0],*pre['externalArgv'][2:]] and trace['command']==pre['externalArgv'],'ACTUAL_ARGV')
+ need(raw['originalExecArgv']==raw['execArgvAtExit']==['--max-old-space-size=128'] and raw['environment']==pre['environment']=={k:os.environ[k] for k in ('SystemRoot','WINDIR')} and raw['cwd']==pre['cwd']==str(PKG.parent),'ACTUAL_ENVIRONMENT')
+ events=raw['events'];need([e['sequence'] for e in events]==list(range(1,len(events)+1)) and all(math.isfinite(e['atMs']) for e in events) and all(x['atMs']<=y['atMs'] for x,y in zip(events,events[1:])),'EVENT_ORDER')
+ need(raw['clock']=='Node performance.now; no clock patched; relative values comparable only within this process','CLOCK_DOMAIN')
+ need(not [e for e in events if e['event'] in ['timerFireBefore','helperKillBefore','helperStderr']],'TERMINAL_CONTRADICTION')
+ helper=base64.b64encode(a.raw(PKG/'scripts/check-paths.ps1').decode().encode('utf-16le')).decode();helpers=[]
+ for i in range(1,21):
+  own=[e for e in events if e.get('ordinal')==i];spawns=[e for e in own if e['event']=='helperSpawnBefore'];arms=[e for e in own if e['event']=='timerArmed'];closes=[e for e in own if e['event']=='helperEventBefore' and e['eventName']=='close'];need(len(spawns)==len(arms)==len(closes)==1,'HELPER_COUNT');s=spawns[0];t=arms[0];c=closes[0]
+  need(s['argv']==['-NoProfile','-NonInteractive','-EncodedCommand',helper] and s['options']['env']==pre['environment'] and s['options']['shell'] is False,'HELPER_IDENTITY')
+  need(0<t['requestedDelayMs']<=2000 and t['callbackSource']=='()=>stop(timeoutCode)' and math.isclose(t['dueLowerMs'],t['registrationBeforeMs']+t['requestedDelayMs'],abs_tol=1e-7) and math.isclose(t['dueUpperMs'],t['registrationAfterMs']+t['requestedDelayMs'],abs_tol=1e-7),'DEADLINE_RELAXATION')
+  need(c['args']==[0,None] and c['atMs']<t['dueLowerMs'] and ''.join(e['text'] for e in own if e['event']=='helperStdout')=='{"kind":"MemoryOSCICDPathCheck","safe":true,"version":"1.0.0"}\n','UNSAFE_OR_LATE_HELPER')
+  helpers.append({'ordinal':i,'closeAtMs':c['atMs'],'dueLowerMs':t['dueLowerMs'],'marginMs':t['dueLowerMs']-c['atMs']})
+ need(raw['helperCount']==v['helperCount']==20 and len([e for e in events if e['event']=='helperSpawnBefore'])==20,'EXTRA_HELPER')
+ checked_trace=prior.old.Audit();tr,topology=checked_trace.trace(v['trace']);need(raw['remainingTrackedFileDescriptors']==[] and trace['cleanup']['remainingPids']==[] and trace['cleanup']['elapsedMs']<=2000,'CLEANUP')
+ deadline=a.value(outcome['deadlineCleanup']);need(deadline['helpers']==helpers and deadline['cleanup']==trace['cleanup'] and deadline['overheadNeverSubtracted'] is True,'DEADLINE_RECEIPT')
+ contents={Path(r['path']).name:a.ref(r) for r in v['bundleFiles']};actual_dir=Path(v['actualBundlePath']);need(actual_dir.name==actual['runId'] and set(contents)==prior.BASIC and {p.name for p in actual_dir.iterdir()}==prior.BASIC,'BUNDLE_EXACT_FILES')
+ for name,b in contents.items():need((actual_dir/name).read_bytes()==b,'BUNDLE_COPY_DRIFT')
+ checked=prior.old.bundle.bundle_valid(contents,actual['runId'],'generic',11);need(sha(contents['memoryos-ci-result.json'])==actual['resultSha256'],'SUMMARY_DIGEST')
+ schemas=[]
+ for name in ['result','evidence','artifacts','complete']:
+  path=PKG/('schemas/'+name+'-1.0.0.schema.json');doc=json.loads(a.raw(path));schema(doc,json.loads(contents['memoryos-ci-'+name+'.json']));schemas.append(a.row(path))
+ result=json.loads(contents['memoryos-ci-result.json']);evidence=json.loads(contents['memoryos-ci-evidence.json']);need(result['error']=={'code':'MO1306_INPUT_READ','semanticCode':None,'stage':'ACQUISITION'} and result['semantic'] is None and result['inputDigest'] is None and result['process']['termination']=='NORMAL','INPUT_CLASSIFICATION')
+ policy=next(r for r in pre['inputFiles'] if Path(r['path']).name=='policy.json');need(evidence['inputs']==[{'role':'policy','byteLength':policy['byteLength'],'sha256':policy['sha256']}] and evidence['adapter']['id']=='memoryos.cicd.adapter.generic','ACQUIRED_INPUT_IDENTITY')
+ import posixpath
+ members=set()
+ def closure(name):
+  if name in members:return
+  members.add(name)
+  for match in re.finditer(r"(?:from\s*|import\s*)['\"]([^'\"]+)['\"]",a.raw(PKG/name).decode()):
+   dep=match[1]
+   if dep.startswith('node:'):continue
+   need(dep.startswith('.'),'ADAPTER_IMPORT');closure(posixpath.normpath(posixpath.join(posixpath.dirname(name),dep)))
+ closure('src/providers/generic.mjs');manifest=json.loads(a.raw(PKG/'distribution-manifest.json'));rows={r['path']:r for r in manifest['files']};need(result['adapterDigest']==sha(prior.enc([rows[n] for n in sorted(members)])),'ADAPTER_CLOSURE_IDENTITY')
+ renames=[e for e in events if e['event']=='fsAfter' and e.get('method')=='renameSync' and e['operands'][-1].endswith('memoryos-ci-artifacts.json')];markers=[e for e in events if e['event']=='fsBefore' and e.get('method')=='writeFileSync' and e['operands'][0].endswith('memoryos-ci-complete.json')];need(len(renames)==len(markers)==1 and renames[0]['sequence']<markers[0]['sequence'] and markers[0]['arguments'][-1]=={'flag':'wx'},'PUBLICATION_LINEARIZATION')
+ errors=[e for e in events if e['event']=='fsError'];need(len(errors)==1 and errors[0]['error']['code']=='ENOENT' and errors[0]['operands']==[str(work/'missing.mip')],'UNEXPECTED_FILESYSTEM_ERROR')
+ negative=[]
+ for id,fn in [('missing-marker',lambda:prior.old.bundle.bundle_valid({k:b for k,b in contents.items() if k!='memoryos-ci-complete.json'},actual['runId'],'generic',11)),('extra-file',lambda:prior.old.bundle.bundle_valid({**contents,'extra.json':b'{}'},actual['runId'],'generic',11)),('false-schema-field',lambda:schema(json.loads(a.raw(PKG/'schemas/result-1.0.0.schema.json')),{**result,'certified':True}))]:
+  try:fn()
+  except AssertionError as ex:negative.append({'id':id,'status':'REJECTED','reason':str(ex)})
+  else:raise AssertionError('NEGATIVE_ACCEPTED '+id)
+ return {'kind':'MemoryOSPhase3ASingleFinalWitnessValidation','status':'PASS','acceptedFinalWitness':True,'methodologyRevision':M3,'productionAuthority':C3CB,'attemptId':v['attemptId'],'observed':outcome['observed'],'outcome':a.row(OUT/'final-witness-outcome.json'),'ledgerStart':a.row(OUT/'final-witness-ledger-start.json'),'authorizationConsumed':a.row(OUT/'final-witness-authorization-consumed.json'),'executionCount':1,'additionalExecutionsAllowed':0,'actual':actual,'bundleFiles':v['bundleFiles'],'consumerAcceptance':{'status':'PASS','method':'Independent Python interpretation of exact installed four schemas, frozen canonical/hash/run-id/contract/candidate relationships and real directory exact file set; no product verify CLI invocation.','schemas':schemas,'checked':checked},'deadlineCleanup':outcome['deadlineCleanup'],'helperCount':20,'minimumHelperDeadlineMarginMs':min(x['marginMs'] for x in helpers),'installedIntegrity':v['installedIntegrity'],'topology':topology,'historicalFailure':'FAIL / UNRESOLVED','historicalCauseResolved':False,'nativeCertified':False,'hostedCertified':False,'retainedEightGroups':'PENDING_EXACT_DEPENDENCY_REUSE','negativeControls':negative,'checkedFileCount':len(a.bound),'validator':a.row(Path(__file__)),'retainedBundleValidator':a.row(HERE.parent/'mo1306-phase3ar/validate.py')}
+if __name__=='__main__':
+ p=argparse.ArgumentParser();p.add_argument('--check',action='store_true');args=p.parse_args();v=verify()
+ if not args.check:
+  path=OUT/'witness-validation.json';need(not path.exists(),'IMMUTABLE_OUTPUT');path.write_text(json.dumps(v,sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8')
+ print(json.dumps({'status':v['status'],'acceptedFinalWitness':v['acceptedFinalWitness'],'attemptId':v['attemptId'],'runId':v['actual']['runId'],'checkedFiles':v['checkedFileCount'],'negativeControls':len(v['negativeControls'])}))

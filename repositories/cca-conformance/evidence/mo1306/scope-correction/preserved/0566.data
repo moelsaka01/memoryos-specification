@@ -1,0 +1,135 @@
+"""R2 independently executes mechanical SPDX rebind; adapted from historical sbom_refresh.py.
+External component metadata is reused only with independent supply identity verification.
+"""
+import copy, hashlib, importlib.metadata, json, subprocess, sys, tarfile
+from pathlib import Path
+sys.dont_write_bytecode = True
+ROOT = Path(__file__).resolve().parents[4]
+OLD = ROOT.parent / 'cca-mo1306-3b'
+HERE = Path(__file__).parent
+OUT = ROOT / 'repositories/cca-conformance/evidence/mo1306/phase3b-r2'
+B2 = '0e35ffe70919d77b1db530929093826410b805f9'
+C3A = '90b9ac914e477fb90fe317d0de9ba310aae37f60'
+C3AB = '9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44'
+ORIGINAL = 'd522385de980a0105c5e6f17ba7f3ffb73cab6bd'
+SHA = '2f1e9424ce64e44b7b1587ce206fe5f7ae72579652ca1fc891c489bc1a21925d'
+SCHEMA_SHA = '239208b7ac287b3cf5d9a9af23f9d69863971102a5e1587a27a398b43490b89b'
+OLD_SBOM = 'repositories/cca-conformance/evidence/mo1306/phase3b/sbom-candidate.spdx.json'
+GIT = 'C:/Program Files/Git/cmd/git.exe'
+def digest(raw, algorithm='sha256'): return hashlib.new(algorithm, raw).hexdigest()
+def canonical(value): return (json.dumps(value, sort_keys=True, separators=(',', ':')) + '\n').encode()
+def blob(commit, path): return subprocess.check_output([GIT, 'show', commit + ':' + path], cwd=ROOT)
+def row(path):
+    raw = path.read_bytes()
+    return {'path': path.relative_to(ROOT).as_posix(), 'byteLength': len(raw), 'sha256': 'sha256:' + digest(raw)}
+def need(condition, message):
+    if not condition: raise ValueError(message)
+def files_of(archive):
+    raw = archive.read_bytes()
+    need(len(raw) == 197172 and digest(raw) == SHA, 'ARCHIVE_IDENTITY')
+    with tarfile.open(archive, 'r:gz') as t:
+        members = t.getmembers()
+        need(len(members) == 94 and all(m.isfile() and m.name.startswith('package/') for m in members), 'ARCHIVE_MEMBERS')
+        files = {m.name[8:]: t.extractfile(m).read() for m in members}
+        need(len(files) == 94, 'DUPLICATE_MEMBER')
+    return files
+
+def expected_document(files):
+    original_raw = blob(ORIGINAL, OLD_SBOM)
+    need(digest(original_raw) == '5bff23aaa19f1e9dfcbfefd88d229e307d88e647e2a0ec616796e76555f3c281', 'ORIGINAL_SBOM_IDENTITY')
+    old = json.loads(original_raw)
+    d = copy.deepcopy(old)
+    d['name'] = 'memoryos-ci-0.1.0-phase3b-r2-release-artifact'
+    d['documentNamespace'] = 'https://memoryos.invalid/spdx/memoryos-ci/0.1.0/phase3b-r2/' + SHA
+    d['creationInfo'] = {'created': '2026-09-26T19:53:02Z', 'creators': ['Tool: memoryos-mo1306-phase3b-r2-sbom-1.0.0']}
+    d['comment'] = ('External corrected candidate evidence: C3A ' + C3A + ', C3AB ' + C3AB + '. '
+        'Mechanically refreshed from original Phase 3B ' + ORIGINAL + '. All 94 shipped files retain their component distinctions: '
+        '69 directly owned product files and 25 SDK files. Only CLI and distribution-manifest file checksums, product archive checksum, '
+        'product verification code/source identity, and document identity are changed. Unchanged external supply metadata and SDK '
+        'source attribution retain original certification references; supply-identities.json binds their exact dependencies. '
+        'SHA1 supports SPDX file checksums and verification codes; SHA256 binds integrity. NOASSERTION preserves scoped licensing. '
+        'Hosted advisory disposition is separate in advisory-undici.json and advisory-xml.json; this SBOM grants no risk acceptance. Final release requires separately integrated 3A-R, 3C-R and 3D authority.')
+    changed = []
+    for f in d['files']:
+        name = f['fileName'][2:]
+        value = [{'algorithm': 'SHA1', 'checksumValue': digest(files[name], 'sha1')}, {'algorithm': 'SHA256', 'checksumValue': digest(files[name])}]
+        if value != f['checksums']: changed.append(name)
+        f['checksums'] = value
+    need(sorted(changed) == ['bin/memoryos-ci.mjs', 'distribution-manifest.json'], 'SBOM_DELTA_SCOPE')
+    product = next(p for p in d['packages'] if p['SPDXID'] == 'SPDXRef-memoryos-ci')
+    product['checksums'] = [{'algorithm': 'SHA256', 'checksumValue': SHA}]
+    owned = [n for n in files if not n.startswith('runtime/authoritative/')]
+    need(len(owned) == 69, 'PRODUCT_FILE_COUNT')
+    product['packageVerificationCode'] = {'packageVerificationCodeValue': digest(''.join(sorted(digest(files[n], 'sha1') for n in owned)).encode(), 'sha1')}
+    product['sourceInfo'] = ('Corrected C3A ' + C3A + '; certification authority C3AB ' + C3AB + '; directly owned analyzed files: 69; '
+        'no supplier or copyright ownership assertion is inferred from structural file ownership.')
+    need(d['packages'][1:] == old['packages'][1:] and d['relationships'] == old['relationships'], 'UNCHANGED_COMPONENT_DISTINCTIONS')
+    return d, old
+
+def engine():
+    vendor = OLD / '.cache/mo1306/validators'
+    sys.path.insert(0, str(vendor))
+    import jsonschema
+    from referencing import Registry
+    need(Path(jsonschema.__file__).resolve().is_relative_to(vendor.resolve()), 'PINNED_VALIDATOR_IMPORT')
+    need(importlib.metadata.version('jsonschema') == '4.26.0', 'PINNED_VALIDATOR_VERSION')
+    raw = (HERE / 'sbom-spdx-2.3-schema.json').read_bytes()
+    need(len(raw) == 45312 and digest(raw) == SCHEMA_SHA, 'FULL_SCHEMA_IDENTITY')
+    schema = json.loads(raw)
+    def deny(uri): raise ValueError('REMOTE_REFERENCE_DENIED:' + uri)
+    jsonschema.Draft7Validator.check_schema(schema)
+    return jsonschema.Draft7Validator(schema, registry=Registry(retrieve=deny), format_checker=jsonschema.FormatChecker())
+
+def verify(d, files, validator):
+    validator.validate(d)
+    expected, old = expected_document(files)
+    need(d == expected, 'EXACT_MECHANICAL_REFRESH')
+    ids = {p['SPDXID'] for p in d['packages']} | {f['SPDXID'] for f in d['files']} | {d['SPDXID']}
+    need(len(d['packages']) == 161 and len(d['files']) == 94 and len(d['relationships']) == 255, 'COUNTS')
+    need(all(r['spdxElementId'] in ids and r['relatedSpdxElement'] in ids for r in d['relationships']), 'RELATIONSHIP_REFERENCES')
+    for f in d['files']:
+        owners = [r['spdxElementId'] for r in d['relationships'] if r['relationshipType'] == 'CONTAINS' and r['relatedSpdxElement'] == f['SPDXID']]
+        need(owners == ['SPDXRef-SDK' if f['fileName'].startswith('./runtime/authoritative/') else 'SPDXRef-memoryos-ci'], 'FILE_OWNERSHIP')
+    return {'status': 'PASS', 'packageCount': 161, 'fileCount': 94, 'relationshipCount': 255, 'productFiles': 69, 'sdkFiles': 25, 'productionExternalDependencies': 0}
+
+def main():
+    archive = Path(sys.argv[sys.argv.index('--archive') + 1]).resolve()
+    files = files_of(archive)
+    validator = engine()
+    d, old = expected_document(files)
+    validator.validate(json.loads(files['sbom.spdx.json']))
+    result = verify(d, files, validator)
+    negatives = []
+    cases = {
+        'old-cli-checksum': lambda x: next(f for f in x['files'] if f['fileName']=='./bin/memoryos-ci.mjs').update(checksums=next(f['checksums'] for f in old['files'] if f['fileName']=='./bin/memoryos-ci.mjs')),
+        'old-distribution-checksum': lambda x: next(f for f in x['files'] if f['fileName']=='./distribution-manifest.json').update(checksums=next(f['checksums'] for f in old['files'] if f['fileName']=='./distribution-manifest.json')),
+        'old-archive-binding': lambda x: x['packages'][0].update(checksums=old['packages'][0]['checksums']),
+        'old-product-verification-code': lambda x: x['packages'][0].update(packageVerificationCode=old['packages'][0]['packageVerificationCode']),
+        'wrong-source-authority': lambda x: x['packages'][0].update(sourceInfo=B2),
+        'omit-member': lambda x: x['files'].pop(),
+        'erase-sdk-distinction': lambda x: x['relationships'][1].update(relationshipType='DEPENDS_ON'),
+        'changed-supply-component': lambda x: x['packages'][2].update(versionInfo='0.0.0'),
+        'unknown-schema-root-field': lambda x: x.update(unknown=True),
+        'invalid-schema-file-field': lambda x: x['files'][0].update(fileTypes=['INVALID']),
+    }
+    for name, mutate in cases.items():
+        value = copy.deepcopy(d); mutate(value)
+        try: verify(value, files, validator)
+        except Exception as e: negatives.append({'id': name, 'status': 'PASS', 'rejectionType': type(e).__name__, 'rejection': str(e).splitlines()[0][:240]})
+        else: raise ValueError('NEGATIVE_ACCEPTED:' + name)
+    OUT.mkdir(parents=True, exist_ok=True)
+    p = OUT / 'sbom-candidate.spdx.json'
+    if '--check' in sys.argv:
+        need(p.read_bytes() == canonical(d), 'RECORDED_SBOM_BYTES')
+    else: p.write_bytes(canonical(d))
+    evidence = {**result, 'kind': 'MemoryOSCICDPhase3BR2SBOMValidation', 'candidate': row(p), 'archive': row(archive),
+        'C3A': C3A, 'C3AB': C3AB, 'original': {'commit': ORIGINAL, 'path': OLD_SBOM, 'sha256': 'sha256:' + digest(blob(ORIGINAL, OLD_SBOM))},
+        'fullAuthoritativeSchema': row(HERE / 'sbom-spdx-2.3-schema.json'), 'schemaSource': 'https://raw.githubusercontent.com/spdx/spdx-spec/v2.3/schemas/spdx-schema.json',
+        'schemaValidation': {'status': 'PASS', 'validator': 'jsonschema.Draft7Validator', 'version': '4.26.0', 'remoteReferences': 'DENIED', 'embedded': 'PASS', 'candidate': 'PASS'},
+        'unchanged': ['160 non-product component package records including SDK', 'all 255 relationships', '92 of 94 file records', 'embedded component SBOM', 'scoped license declarations'],
+        'changedFiles': ['bin/memoryos-ci.mjs', 'distribution-manifest.json'], 'negativeCount': len(negatives), 'negatives': negatives,
+        'licensing': 'Product, SDK and files remain NOASSERTION; external declared metadata does not grant blanket rights.'}
+    if '--check' not in sys.argv: (OUT / 'sbom-validation.json').write_bytes(canonical(evidence))
+    else: need((OUT / 'sbom-validation.json').read_bytes() == canonical(evidence), 'RECORDED_VALIDATION_BYTES')
+    print(json.dumps({'status': 'PASS', 'candidate': row(p), 'negatives': len(negatives), 'schema': 'complete authoritative SPDX 2.3'}))
+if __name__ == '__main__': main()

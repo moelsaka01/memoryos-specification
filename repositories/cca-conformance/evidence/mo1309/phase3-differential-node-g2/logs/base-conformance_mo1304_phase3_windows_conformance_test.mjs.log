@@ -1,0 +1,233 @@
+TAP version 13
+# Traceback (most recent call last):
+#   File "/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-windows/validate_windows.py", line 127, in <module>
+#     print(json.dumps(validate(v,path.parent),sort_keys=True))
+#                      ~~~~~~~~^^^^^^^^^^^^^^^
+#   File "/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-windows/validate_windows.py", line 94, in validate
+#     cmd=install['command'];require(cmd[0].endswith('\\\\.cache\\\\mo1304-windows-cert\\\\runtime\\\\node.exe') and cmd[1]==str(Path(cmd[0]).parent/'node_modules/npm/bin/npm-cli.js'),'INSTALL_TOOLCHAIN')
+#                            ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#   File "/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-windows/package_verify.py", line 27, in require
+#     raise ValueError(message)
+# ValueError: INSTALL_TOOLCHAIN
+# Traceback (most recent call last):
+#   File "/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-windows/validator_tests.py", line 7, in <module>
+#     original=read_json(receipt,canonical_required=True);validate(original,receipt.parent)
+#                                                         ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+#   File "/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-windows/validate_windows.py", line 94, in validate
+#     cmd=install['command'];require(cmd[0].endswith('\\\\.cache\\\\mo1304-windows-cert\\\\runtime\\\\node.exe') and cmd[1]==str(Path(cmd[0]).parent/'node_modules/npm/bin/npm-cli.js'),'INSTALL_TOOLCHAIN')
+#                            ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#   File "/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-windows/package_verify.py", line 27, in require
+#     raise ValueError(message)
+# ValueError: INSTALL_TOOLCHAIN
+# Traceback (most recent call last):
+#   File "/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-platforms/validate_parity.py", line 30, in <module>
+#     if __name__=='__main__':main()
+#                             ~~~~^^
+#   File "/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-platforms/validate_parity.py", line 25, in main
+#     mode,windows,ubuntu,out=sys.argv[1:];expected=canonical(certified_pair(windows,ubuntu));require(len(expected)<=1024*1024,'PARITY_SIZE')
+#                                                             ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+#   File "/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-platforms/validate_parity.py", line 14, in certified_pair
+#     require(r.returncode==0,'INDEPENDENT_VALIDATION_FAILED:'+platform)
+#     ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#   File "/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-phase3/package_verify.py", line 27, in require
+#     raise ValueError(message)
+# ValueError: INDEPENDENT_VALIDATION_FAILED:windows-11
+# Subtest: Windows actual environment and full installed-package receipt validate independently
+not ok 1 - Windows actual environment and full installed-package receipt validate independently
+  ---
+  duration_ms: 67.486842
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tests/mo1304_phase3_windows_conformance_test.mjs:18:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Command failed: python -B /tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-windows/validate_windows.py /tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/evidence/mo1304-phase3-windows/windows-receipt.json
+    Traceback (most recent call last):
+      File "/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-windows/validate_windows.py", line 127, in <module>
+        print(json.dumps(validate(v,path.parent),sort_keys=True))
+                         ~~~~~~~~^^^^^^^^^^^^^^^
+      File "/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-windows/validate_windows.py", line 94, in validate
+        cmd=install['command'];require(cmd[0].endswith('\\.cache\\mo1304-windows-cert\\runtime\\node.exe') and cmd[1]==str(Path(cmd[0]).parent/'node_modules/npm/bin/npm-cli.js'),'INSTALL_TOOLCHAIN')
+                               ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-windows/package_verify.py", line 27, in require
+        raise ValueError(message)
+    ValueError: INSTALL_TOOLCHAIN
+    
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    genericNodeError (node:internal/errors:983:15)
+    wrappedFn (node:internal/errors:537:14)
+    checkExecSyncError (node:child_process:916:11)
+    execFileSync (node:child_process:952:15)
+    py (file:///tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tests/mo1304_phase3_windows_conformance_test.mjs:12:37)
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tests/mo1304_phase3_windows_conformance_test.mjs:19:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: Windows validator rejects fabricated results, altered identities and overstated OS network denial
+not ok 2 - Windows validator rejects fabricated results, altered identities and overstated OS network denial
+  ---
+  duration_ms: 76.243864
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tests/mo1304_phase3_windows_conformance_test.mjs:22:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Command failed: python -B /tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-windows/validator_tests.py /tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/evidence/mo1304-phase3-windows/windows-receipt.json /tmp/mo1309-gate-ybsq9L/base/
+    Traceback (most recent call last):
+      File "/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-windows/validator_tests.py", line 7, in <module>
+        original=read_json(receipt,canonical_required=True);validate(original,receipt.parent)
+                                                            ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-windows/validate_windows.py", line 94, in validate
+        cmd=install['command'];require(cmd[0].endswith('\\.cache\\mo1304-windows-cert\\runtime\\node.exe') and cmd[1]==str(Path(cmd[0]).parent/'node_modules/npm/bin/npm-cli.js'),'INSTALL_TOOLCHAIN')
+                               ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-windows/package_verify.py", line 27, in require
+        raise ValueError(message)
+    ValueError: INSTALL_TOOLCHAIN
+    
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    genericNodeError (node:internal/errors:983:15)
+    wrappedFn (node:internal/errors:537:14)
+    checkExecSyncError (node:child_process:916:11)
+    execFileSync (node:child_process:952:15)
+    py (file:///tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tests/mo1304_phase3_windows_conformance_test.mjs:12:37)
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tests/mo1304_phase3_windows_conformance_test.mjs:23:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+  ...
+# Subtest: two independently validated platforms have exact canonical byte and identity parity
+not ok 3 - two independently validated platforms have exact canonical byte and identity parity
+  ---
+  duration_ms: 127.862331
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tests/mo1304_phase3_windows_conformance_test.mjs:25:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Command failed: python -B /tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-platforms/validate_parity.py validate /tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/evidence/mo1304-phase3-windows/windows-receipt.json /tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/evidence/mo1304-phase3-ubuntu/ubuntu-receipt.json /tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/evidence/mo1304-phase3-parity.json
+    Traceback (most recent call last):
+      File "/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-platforms/validate_parity.py", line 30, in <module>
+        if __name__=='__main__':main()
+                                ~~~~^^
+      File "/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-platforms/validate_parity.py", line 25, in main
+        mode,windows,ubuntu,out=sys.argv[1:];expected=canonical(certified_pair(windows,ubuntu));require(len(expected)<=1024*1024,'PARITY_SIZE')
+                                                                ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+      File "/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-platforms/validate_parity.py", line 14, in certified_pair
+        require(r.returncode==0,'INDEPENDENT_VALIDATION_FAILED:'+platform)
+        ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tools/mo1304-phase3/package_verify.py", line 27, in require
+        raise ValueError(message)
+    ValueError: INDEPENDENT_VALIDATION_FAILED:windows-11
+    
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    genericNodeError (node:internal/errors:983:15)
+    wrappedFn (node:internal/errors:537:14)
+    checkExecSyncError (node:child_process:916:11)
+    execFileSync (node:child_process:952:15)
+    py (file:///tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tests/mo1304_phase3_windows_conformance_test.mjs:12:37)
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tests/mo1304_phase3_windows_conformance_test.mjs:26:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+  ...
+# Subtest: parity rejects missing platforms, forged PASS and changed normative digests
+ok 4 - parity rejects missing platforms, forged PASS and changed normative digests
+  ---
+  duration_ms: 1110.192862
+  type: 'test'
+  ...
+# Subtest: Windows/parity evidence and final binding follow exact existing graph edges without self-reference
+not ok 5 - Windows/parity evidence and final binding follow exact existing graph edges without self-reference
+  ---
+  duration_ms: 66.466246
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tests/mo1304_phase3_windows_conformance_test.mjs:38:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'diff --git a/repositories/memoryos-mcp/tests/integrity.test.mjs b/repositories/memoryos-mcp/tests/integrity.test.mjs\n' +
+    +   'index df2c6524..c28a150a 100644\n' +
+    +   '--- a/repositories/memoryos-mcp/tests/integrity.test.mjs\n' +
+    +   '+++ b/repositories/memoryos-mcp/tests/integrity.test.mjs\n' +
+    +   '@@ -9,8 +9,11 @@ async function sandbox(t) {\n' +
+    +   "   await cp(resolve(PACKAGE_ROOT,'contracts'),resolve(root,'contracts'),{recursive:true});return root;\n" +
+    +   ' }\n' +
+    +   " test('runtime closure is byte-preserved and pinned to exactly the authoritative source files',async()=>{\n" +
+    +   '+  // WORKSPACE_CHECK_CORRECTION (MO-1308 Amendment A9): the vendored closure inside the released package is pinned to its\n' +
+    +   '+  // release (tag memoryos-1.3-mo1304), not to the moving current source it was copied from.\n' +
+    +   '   const manifest=await verifyRuntime();assert.equal(manifest.files.length,25);\n' +
+    +   "-  for(const entry of manifest.files){const source=await readFile(resolve(PACKAGE_ROOT,'../..',entry.source));const copy=await readFile(resolve(PACKAGE_ROOT,'runtime',entry.path));assert.deepEqual(copy,source);assert.equal(sha256(copy),entry.sha256);assert.equal(copy.length,entry.byteLength);assert.ok(!/test|\\.git|memoryos-cli/u.test(entry.path));}\n" +
+    +   "+  const releasedManifest=await readFile(resolve(PACKAGE_ROOT,'runtime/runtime-closure-manifest.json'));assert.equal(releasedManifest.length,5566);assert.equal(sha256(releasedManifest),'0b910e64f40b562d62c9a053c98833b439f78abd195d9604386e74e0d20d961d');\n" +
+    +   "+  for(const entry of manifest.files){const copy=await readFile(resolve(PACKAGE_ROOT,'runtime',entry.path));assert.equal(sha256(copy),entry.sha256);assert.equal(copy.length,entry.byteLength);assert.ok(!/test|\\.git|memoryos-cli/u.test(entry.path));}\n" +
+    +   "   const identity=await readFile(resolve(PACKAGE_ROOT,'contracts/policy-contract-identities-1.0.0.json'));\n" +
+    +   "   assert.deepEqual(identity,await readFile(resolve(PACKAGE_ROOT,'../memoryos-vscode/contracts/policy-contract-identities-1.0.0.json')));assert.equal(identity.at(-1),10);\n" +
+    +   ' });'
+    - ''
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ''
+  actual: |-
+    diff --git a/repositories/memoryos-mcp/tests/integrity.test.mjs b/repositories/memoryos-mcp/tests/integrity.test.mjs
+    index df2c6524..c28a150a 100644
+    --- a/repositories/memoryos-mcp/tests/integrity.test.mjs
+    +++ b/repositories/memoryos-mcp/tests/integrity.test.mjs
+    @@ -9,8 +9,11 @@ async function sandbox(t) {
+       await cp(resolve(PACKAGE_ROOT,'contracts'),resolve(root,'contracts'),{recursive:true});return root;
+     }
+     test('runtime closure is byte-preserved and pinned to exactly the authoritative source files',async()=>{
+    +  // WORKSPACE_CHECK_CORRECTION (MO-1308 Amendment A9): the vendored closure inside the released package is pinned to its
+    +  // release (tag memoryos-1.3-mo1304), not to the moving current source it was copied from.
+       const manifest=await verifyRuntime();assert.equal(manifest.files.length,25);
+    -  for(const entry of manifest.files){const source=await readFile(resolve(PACKAGE_ROOT,'../..',entry.source));const copy=await readFile(resolve(PACKAGE_ROOT,'runtime',entry.path));assert.deepEqual(copy,source);assert.equal(sha256(copy),entry.sha256);assert.equal(copy.length,entry.byteLength);assert.ok(!/test|\.git|memoryos-cli/u.test(entry.path));}
+    +  const releasedManifest=await readFile(resolve(PACKAGE_ROOT,'runtime/runtime-closure-manifest.json'));assert.equal(releasedManifest.length,5566);assert.equal(sha256(releasedManifest),'0b910e64f40b562d62c9a053c98833b439f78abd195d9604386e74e0d20d961d');
+    +  for(const entry of manifest.files){const copy=await readFile(resolve(PACKAGE_ROOT,'runtime',entry.path));assert.equal(sha256(copy),entry.sha256);assert.equal(copy.length,entry.byteLength);assert.ok(!/test|\.git|memoryos-cli/u.test(entry.path));}
+       const identity=await readFile(resolve(PACKAGE_ROOT,'contracts/policy-contract-identities-1.0.0.json'));
+       assert.deepEqual(identity,await readFile(resolve(PACKAGE_ROOT,'../memoryos-vscode/contracts/policy-contract-identities-1.0.0.json')));assert.equal(identity.at(-1),10);
+     });
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tests/mo1304_phase3_windows_conformance_test.mjs:40:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Windows receipt schema and all conformance registrations are valid
+not ok 6 - Windows receipt schema and all conformance registrations are valid
+  ---
+  duration_ms: 1.583087
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tests/mo1304_phase3_windows_conformance_test.mjs:63:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot find module '/tmp/mo1309-gate-ybsq9L/base/repositories/memoryos-mcp/node_modules/@modelcontextprotocol/server/dist/validators/ajv.mjs' imported from /tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tests/mo1304_phase3_windows_conformance_test.mjs"
+  code: 'ERR_MODULE_NOT_FOUND'
+  stack: |-
+    finalizeResolution (node:internal/modules/esm/resolve:274:11)
+    moduleResolve (node:internal/modules/esm/resolve:859:10)
+    defaultResolve (node:internal/modules/esm/resolve:983:11)
+    #cachedDefaultResolve (node:internal/modules/esm/loader:731:20)
+    ModuleLoader.resolve (node:internal/modules/esm/loader:708:38)
+    ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:310:38)
+    onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:664:36)
+    TracingChannel.tracePromise (node:diagnostics_channel:350:14)
+    ModuleLoader.import (node:internal/modules/esm/loader:663:21)
+    defaultImportModuleDynamicallyForModule (node:internal/modules/esm/utils:222:31)
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 1
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1556.158686

@@ -1,0 +1,488 @@
+MEMORYOS 1.3
+MO-1307 PHASE 3A
+
+N17 INTEGRATED PUBLICATION FIXTURE CORRECTION
+THEN COMPLETE VALIDATION AND CERTIFICATION
+
+Current Phase 3A status:
+
+FAILED / INCOMPLETE
+
+Accepted Phase 3B remains:
+
+702c1b6381f6112a50ac844831d195275dac3350
+
+Accepted Phase 3C remains:
+
+b02fc0226a1a2d800185a02071674ca80bdf4a1d
+
+Do not rerun either accepted stream now.
+
+==================================================
+1. CURRENT ESTABLISHED STATE
+==================================================
+
+The previous N15 defect is CLOSED.
+
+N15 cause:
+
+CreateFileW native binding had effective SetLastError=false.
+
+This caused absence detection to read cached error 203 and incorrectly return:
+
+MO1307_FILESYSTEM_BOUNDARY
+
+N15 correction:
+
+CreateFileW emitted with DefineMethod plus complete DllImport metadata.
+
+N15 validation:
+
+PASS exactly once.
+
+Filesystem validation:
+
+35 / 35 PASS
+
+Native invocations:
+
+39
+
+Startup/security matrix:
+
+19 / 19 PASS
+
+Current regression state:
+
+99 PASS
+1 FAIL
+7 NOT_RUN
+
+Current failure:
+
+N17 integrated publication test
+
+expected:
+exit 0
+
+actual:
+exit 21
+MO1307_OUTPUT
+
+Static review indicates:
+
+missing parent-directory setup dependency.
+
+The exact runtime refusal branch was not captured.
+
+==================================================
+2. OBJECTIVE
+==================================================
+
+Repair ONLY the N17 integrated-publication fixture/setup defect if the retained evidence confirms it.
+
+Then:
+
+validate N17
+→ preserve publication semantics
+→ complete all remaining regressions
+→ create new candidate
+→ run full Phase 3A A-O certification.
+
+Do not reopen:
+
+console startup architecture
+N15
+filesystem-boundary semantics
+helper deadlines
+H
+C3S
+Control-E
+historical G/J analysis.
+
+==================================================
+3. N17 AUTHORITY
+==================================================
+
+Recover the exact N17 definition and controlling publication semantics.
+
+Determine:
+
+- required publication root,
+- required parent directory state,
+- required output path,
+- whether parent directories must pre-exist,
+- whether product code is permitted to create them,
+- whether the test fixture is responsible for setup,
+- expected publication/finalization behavior,
+- exact conditions producing MO1307_OUTPUT.
+
+Do not assume that "missing parent directory" is automatically a fixture bug.
+
+Prove the dependency from the frozen authority and implementation contract.
+
+==================================================
+4. STATIC DEPENDENCY REVIEW
+==================================================
+
+Inspect only the N17 dependency path:
+
+N17 fixture/setup
+
+publication request
+
+output destination
+
+parent directory preparation
+
+publication/finalization implementation
+
+MO1307_OUTPUT construction
+
+expected success receipt.
+
+Compare with one passing integrated-publication case using the same production path.
+
+Identify the first concrete setup difference.
+
+==================================================
+5. DEFECT CLASSIFICATION
+==================================================
+
+Classify exactly one:
+
+N17_FIXTURE_SETUP_DEFECT
+
+N17_HARNESS_DEFECT
+
+N17_PRODUCT_PUBLICATION_DEFECT
+
+N17_EXPECTATION_DEFECT
+
+N17_OTHER_CONCRETE_DEFECT
+
+If the evidence establishes N17_FIXTURE_SETUP_DEFECT, correct the fixture only.
+
+If it establishes a product defect, stop before changing product and report the exact defect unless the repair is already explicitly within this task's bounded authority.
+
+==================================================
+6. ALLOWED FIXTURE CORRECTION
+==================================================
+
+If the frozen contract requires the destination parent to exist before publication and N17 omitted that prerequisite:
+
+create the required parent directory during fixture setup.
+
+Do not:
+
+create the final output file
+
+pre-populate the publication result
+
+change output contents
+
+change expected result
+
+change publication logic
+
+change finalization semantics
+
+change deadlines.
+
+Fixture setup must establish only the environmental prerequisite the contract assigns to the caller/test.
+
+==================================================
+7. N17 VALIDATION
+==================================================
+
+After correction, run N17 exactly once.
+
+Require:
+
+expected exit 0
+
+expected publication result
+
+correct output bytes
+
+correct finalization state
+
+correct cleanup
+
+no unexpected artifact
+
+correct process/stream settlement.
+
+If N17 fails:
+
+STOP.
+
+Return PHASE3A_CONCRETE_IMPLEMENTATION_BLOCKER.
+
+Do not retry.
+
+==================================================
+8. PUBLICATION NEGATIVE PRESERVATION
+==================================================
+
+If N17 passes, run the finite publication preservation set needed to prove the fixture correction did not weaken publication behavior.
+
+At minimum include:
+
+valid publication with existing required parent
+
+missing required parent where contract expects refusal
+
+wrong output type
+
+unsafe output path
+
+existing conflicting output where applicable
+
+finalization refusal cases
+
+publication cleanup/error mapping.
+
+All genuine publication-invalid cases must continue to refuse correctly.
+
+==================================================
+9. COMPLETE REMAINING REGRESSIONS
+==================================================
+
+If N17 and publication preservation pass:
+
+start a NEW sealed regression validation generation for the corrected candidate.
+
+Run the complete required regression inventory.
+
+Do not treat the historical 99 PASS rows as current candidate acceptance.
+
+Execute:
+
+all previously NOT_RUN regressions
+
+native filesystem regressions
+
+TOCTOU controls
+
+protocol controls
+
+deadline/cancellation controls
+
+cleanup/topology controls
+
+publication/finalization controls
+
+package integrity.
+
+At first mandatory failure:
+
+STOP.
+
+==================================================
+10. CURRENT CORRECTIONS TO PRESERVE
+==================================================
+
+Preserve all validated corrections:
+
+headless cleanup authority correction
+
+initial-zero fail-closed behavior
+
+no post-detach GetConsoleProcessList
+
+N15 CreateFileW SetLastError correction
+
+J exact forward cleanup relation
+
+all existing resource ceilings.
+
+Do not regress any of them.
+
+==================================================
+11. CREATE NEW CANDIDATE
+==================================================
+
+If all validation and regressions pass:
+
+create a NEW candidate identity.
+
+Do not reuse any prior unaccepted candidate identity.
+
+Bind exact:
+
+production tree
+
+helper
+
+transport
+
+README/spec
+
+publication fixture/harness changes if non-production
+
+distribution manifest
+
+SBOM
+
+all 89 production members
+
+headless authority
+
+N15 correction
+
+N17 correction
+
+security validation
+
+regression validation.
+
+==================================================
+12. PHASE 3A CERTIFICATION
+==================================================
+
+Immediately run a fresh complete Phase 3A generation.
+
+Fresh isolated worktree.
+
+Fresh package.
+
+Fresh offline installation.
+
+Verify exact installed members.
+
+Seal full A-O inventory.
+
+Execute once from A through O.
+
+No historical PASS promotion.
+
+No retries.
+
+At first mandatory failure:
+
+STOP.
+
+==================================================
+13. A-O
+==================================================
+
+A
+MO-1306 evaluate / verify / API
+
+B
+READY
+
+C
+NOT_READY
+
+D
+COULD_NOT_EVALUATE
+
+E
+REST
+
+F
+seven human decisions
+
+G
+complete supplied-tag inventory
+
+H
+helper deadline/cancellation
+
+I
+worker deadline/cancellation
+
+J
+cleanup/process topology
+
+K
+finalization
+
+L
+filesystem/native controls
+
+M
+environment isolation
+
+N
+byte determinism
+
+O
+final MO-1306 confirmation
+
+==================================================
+14. SUCCESS
+==================================================
+
+If all mandatory A-O cases pass:
+
+PHASE3A_ACCEPTED_NEW_CANDIDATE
+
+Create:
+
+accepted Phase 3A receipt
+
+accepted evidence commit
+
+candidate binding
+
+Phase 3D handoff input.
+
+Do not start Phase 3D.
+
+==================================================
+15. AFTER 3A ACCEPTANCE
+==================================================
+
+Return the exact final candidate.
+
+Then run in parallel:
+
+Phase 3B scoped refresh
+
+Phase 3C scoped refresh.
+
+Existing accepted C3RB 3B/3C remain historical accepted evidence.
+
+==================================================
+16. FINAL OUTCOME
+==================================================
+
+Return only:
+
+PHASE3A_ACCEPTED_NEW_CANDIDATE
+
+or
+
+PHASE3A_CONCRETE_IMPLEMENTATION_BLOCKER
+
+No broad architecture response.
+
+==================================================
+17. FINAL REPORT
+==================================================
+
+Report:
+
+1. exact N17 cause,
+2. defect classification,
+3. exact fixture/product correction,
+4. N17 validation result,
+5. publication preservation results,
+6. complete regression result,
+7. new candidate identity,
+8. package/install identity,
+9. A-O results,
+10. Phase 3A receipt,
+11. Phase 3A status,
+12. commits/bindings,
+13. exact 3B refresh scope,
+14. exact 3C refresh scope,
+15. repository status,
+16. next action.
+
+No push.
+No tag.
+No Phase 3D.

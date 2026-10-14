@@ -1,0 +1,62 @@
+{
+  "kind": "MO1307GuardCharacterizationSourceDisposition",
+  "version": "1.0.0",
+  "result": "PASS",
+  "classification": "UNCHANGED_MEASURED_GUARD_PATH",
+  "currentSourceBinding": {
+    "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+    "byteLength": 17308,
+    "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+  },
+  "measuredSourceBinding": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase2c-correction/guard-characterization/attempt2/measured-helper-protocol.mjs.data",
+    "byteLength": 17292,
+    "sha256": "sha256:c9ded466469d1291327a79071ec46dd199a9a9e6d1fe8af2f0dcbd449df5926e"
+  },
+  "measurementReceipt": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase2c-correction/guard-characterization/attempt2/receipt.json",
+    "byteLength": 15237,
+    "sha256": "sha256:19be7ec4580df60f7e06a599220f99430b96bc8c96cbe76a1cf29ed097d2b8b6"
+  },
+  "unchangedExercisedSegments": [
+    {
+      "id": "request-validation-framing-and-error-response",
+      "startMarker": "import { randomBytes }",
+      "endMarkerExclusive": "  const status = request.operation",
+      "byteLength": 6977,
+      "measuredSha256": "sha256:6a04566248d4dd117b3322afdcef93e95e2d688edbb9500627e9d50fd6b9f426",
+      "currentSha256": "sha256:6a04566248d4dd117b3322afdcef93e95e2d688edbb9500627e9d50fd6b9f426",
+      "result": "PASS"
+    },
+    {
+      "id": "response-frame-entry-points",
+      "startMarker": "export function encodeHelperResponse",
+      "endMarkerExclusive": "// Admission and bounded clocks only;",
+      "byteLength": 287,
+      "measuredSha256": "sha256:4ef02b2a66279629e564f983689ff7ae0d6349978e12ad5e908a4d3b61452d26",
+      "currentSha256": "sha256:4ef02b2a66279629e564f983689ff7ae0d6349978e12ad5e908a4d3b61452d26",
+      "result": "PASS"
+    }
+  ],
+  "recovery": {
+    "method": "Inverse of the known later non-array-chain conditional split, followed by exact measured SHA-256 and byte-length verification",
+    "measuredSha256": "sha256:c9ded466469d1291327a79071ec46dd199a9a9e6d1fe8af2f0dcbd449df5926e",
+    "measuredByteLength": 17292,
+    "recoveredAfterMeasurement": true,
+    "originalMeasurementUnmodified": true
+  },
+  "laterChange": {
+    "description": "Non-array publication chain now rejects INPUT before the separate maximum-chain-count RESOURCE_LIMIT check",
+    "reachableFromMeasuredErrorResponses": false,
+    "reason": "validateHelperResponse returns from the closed ERROR branch before accessing publication roots or chain data",
+    "factoryAndCapabilityAbortFixesAlreadyInMeasuredSource": true
+  },
+  "scope": "Nine independent valid framed requests, each closed ERROR/MO1307_INTERNAL, confirmed process exit; startup and framing only",
+  "guardScriptUnchanged": true,
+  "semanticCharacterizationRerun": false,
+  "nativeAcquisition": false,
+  "nativeIdentityCertification": false,
+  "processTopologyCertified": false,
+  "successfulNineStateAssessment": false,
+  "measurementRerun": false
+}

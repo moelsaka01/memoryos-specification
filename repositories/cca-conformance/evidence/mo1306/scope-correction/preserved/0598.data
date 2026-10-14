@@ -1,0 +1,7 @@
+$status = 16
+try {
+  & (Join-Path $env:MEMORYOS_CI_HOME 'scripts/Invoke-MemoryOSCI.ps1') -Provider 'gitlab' -Workspace $env:CI_PROJECT_DIR -ConfigurationDigest 'sha256:12ddefe6af24e3364dfee0c081ad4a41061bcf8aa4804716bb6ee65aa5483afb' -DistributionDigest 'sha256:311927a980bd397ab70b95da77d546e4b212968d05973ecf998817764431d773'
+  $status = $LASTEXITCODE
+} finally {
+  exit $status
+}

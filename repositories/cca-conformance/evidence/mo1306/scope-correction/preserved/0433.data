@@ -1,0 +1,63 @@
+"""Read-only causal review of retained GitHub failure; no product execution."""
+import hashlib,json,ntpath,re,subprocess,sys,zipfile
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[4];OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-hosted-resolution';OLD=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-certification';RUN=OLD/'github/campaign-20260927T230612Z/runs/36357568243';C3CB='701d48ee2012675966360dda775ab13013c09ab9';SCAFFOLD='451599e7b95a537ebc2daac627b061fd88791dea'
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def row(p):
+ b=p.read_bytes();return {'path':p.relative_to(ROOT).as_posix(),'byteLength':len(b),'sha256':sha(b)}
+def git(*args):return subprocess.check_output(['git',*args],cwd=ROOT)
+def load(p):return json.loads(p.read_bytes())
+def enc(v):return (json.dumps(v,sort_keys=True,separators=(',',':'))+'\n').encode()
+def main():
+ pre=load(OUT/'remote-preflight.json');assert pre['status']=='PASS'
+ run=load(RUN/'run.json');jobs=load(RUN/'jobs.json');assert run['id']==36357568243 and run['head_sha']==SCAFFOLD and run['run_attempt']==1 and run['conclusion']=='failure';assert jobs['jobs'][0]['id']==108728221298
+ archive=RUN/'logs.zip'
+ with zipfile.ZipFile(archive) as z:
+  names=z.namelist();assert len(names)==len(set(names))==11
+  raw={n:z.read(n) for n in names};text={n:b.decode('utf-8-sig','strict') for n,b in raw.items()}
+ logrows=[{'member':n,'byteLength':len(raw[n]),'sha256':sha(raw[n]),'lineCount':len(text[n].splitlines()),'review':'COMPLETE_BYTES_DECODED_AND_SCANNED'} for n in names]
+ combined=text['0_MemoryOS CI.txt'];assert 'MO1306_FILESYSTEM_BOUNDARY' in combined and '"stage":"ACQUISITION"' in combined
+ sources={}
+ def source(path):
+  b=git('show',C3CB+':'+path);sources[path]={'revision':C3CB,'repositoryPath':path,'byteLength':len(b),'sha256':sha(b)};return b.decode()
+ paths=['scripts/Initialize-GitHubCI.ps1','scripts/github-transport.mjs','src/github-transport.mjs','src/integrity.mjs','src/filesystem.mjs','scripts/check-paths.ps1','src/errors.mjs','contracts/errors.json','contracts/projection.json','distribution-manifest.json','src/worker-boundary.mjs']
+ code={p:source('repositories/memoryos-ci/'+p) for p in paths};freeze=source('docs/mo1306-contract-freeze-1.md')
+ workflow=git('show',SCAFFOLD+':.github/workflows/mo1306-certification-pass.yml');assert workflow==(ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-final/github/workflows/mo1306-certification-pass.yml').read_bytes()
+ root=r'D:\a\memoryos-specification\memoryos-specification';tool=ntpath.join(root,r'_memoryos\tool');data=ntpath.join(root,r'_memoryos\data');home=ntpath.join(tool,r'repositories\memoryos-ci');config=ntpath.join(tool,r'repositories\cca-conformance\fixtures\mo1306\evaluate-policy-pass\memoryos-ci.json');runtime=ntpath.join(root,r'_memoryos\runtime');node=ntpath.join(runtime,'node.exe')
+ assert "Working directory is '"+tool+"'" in combined and "Working directory is '"+data+"'" in combined
+ env=[]
+ for name in ['GITHUB_WORKSPACE','RUNNER_TEMP','RUNNER_TOOL_CACHE','RUNNER_WORKSPACE','HOME','USERPROFILE','TEMP','TMP','MEMORYOS_CI_HOME','MEMORYOS_CI_CONFIG','SystemRoot','WINDIR']:
+  found=[{'member':n,'line':i,'text':line} for n,t in text.items() for i,line in enumerate(t.splitlines(),1) if re.search(r'(?<![A-Z_])'+name+r'(?![A-Z_])',line)]
+  if name=='GITHUB_WORKSPACE':state='DERIVED_FROM_TWO_CHECKOUT_PATHS_AND_WORKFLOW_PATH_OPTIONS';value=root;scope='Not directly printed as an environment assignment.'
+  elif name=='MEMORYOS_CI_HOME':state='DERIVED_FROM_LITERAL_WORKFLOW_ASSIGNMENT';value=home;scope='Assignment expression printed; expanded value not printed.'
+  elif name=='MEMORYOS_CI_CONFIG':state='DERIVED_FROM_LITERAL_WORKFLOW_ASSIGNMENT';value=config;scope='Assignment expression printed; expanded value not printed.'
+  elif name=='HOME':state='CHECKOUT_TEMPORARY_OVERRIDES_ONLY';value=sorted(set(re.findall(r"Temporarily overriding HOME='([^']+)'",combined)));scope='These action-local values do not establish bootstrap HOME.'
+  else:state='UNOBSERVED';value=None;scope='No variable value in any retained ZIP member; do not substitute a typical runner value.'
+  env.append({'variable':name,'status':state,'value':value,'scope':scope,'occurrences':found})
+ manifest=json.loads(code['distribution-manifest.json']);entries=[{'path':node,'allowMissingLeaf':False},{'path':home,'allowMissingLeaf':False}]+[{'path':ntpath.join(home,r['path'].replace('/','\\')),'allowMissingLeaf':False} for r in manifest['files']]
+ assert len(entries)==95
+ batches=[{'number':i//48+1,'entryCount':len(entries[i:i+48]),'serializedRequestBytes':len(enc({'kind':'MemoryOSCICDPathCheckRequest','version':'1.0.0','paths':entries[i:i+48]})),'paths':entries[i:i+48]} for i in range(0,len(entries),48)]
+ configbytes=len(enc({'kind':'MemoryOSCICDPathCheckRequest','version':'1.0.0','paths':[{'path':config,'allowMissingLeaf':False}]}))
+ modelpaths=[root,tool,data,home,config,runtime,node,*[e['path'] for e in entries]];reserved=re.compile(r'^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)',re.I)
+ for full in modelpaths:
+  assert ntpath.normpath(full)==full and len(full)<=240 and re.match(r'^[A-Za-z]:\\',full)
+  assert not re.search(r'''[:\x00-\x1f\x7f"'`$;|&<>{}\[\]()!*?]''',full[2:])
+  assert all(part not in ['','.','..'] and not re.search(r'^[ ]|[ .]$',part) and not reserved.search(part) for part in full[3:].split('\\'))
+ assert [b['serializedRequestBytes'] for b in batches]==[8555,7623] and max(len(e['path']) for e in entries)==159
+ output=ntpath.join(data,'.memoryos-ci');assert all(ntpath.commonpath([output,p]).lower()!=output.lower() for p in [tool,home,config,runtime,node])
+ def loc(path,start,end):return {'source':sources['repositories/memoryos-ci/'+path],'startLine':start,'endLine':end,'excerpt':'\n'.join(code[path].splitlines()[start-1:end])}
+ ordered=[
+ {'order':1,'operation':'verifyNode -> nodePathCheck(process.execPath)','site':loc('src/integrity.mjs',11,21),'path':node,'firstPossibleFailureNotEstablished':True,'unobserved':'Node lstat/realpath return values; no failing primitive or error detail.'},
+ {'order':2,'operation':'verifyDistribution(packageRoot,github)','site':loc('src/integrity.mjs',86,94),'path':home,'excludedAsDirectOriginOfObservedCode':True,'reason':'Its catch remaps all thrown path errors to RUNTIME_INTEGRITY15; observed code was FILESYSTEM_BOUNDARY.'},
+ {'order':3,'operation':'checkPaths installation: first batch48, then batch47','site':loc('src/integrity.mjs',90,95),'paths':entries,'unobserved':'Whether either helper launched/completed; rejected entry; DriveFormat; attributes; helper stdin/stdout/stderr/exit; deadline and reap events.'},
+ {'order':4,'operation':'absolutePath(config), checkPaths(config), readChecked(config)','site':loc('src/github-transport.mjs',32,39),'path':config,'unobserved':'Whether installation checking completed and config was reached; config helper or file identity results.'}]
+ collapse=[
+ {'hypothesis':'HELPER_REJECTED_NON_NTFS_OR_REPARSE','sourceSites':[loc('scripts/check-paths.ps1',18,42),loc('src/filesystem.mjs',108,113)],'mapping':'Helper catch emits only safe:false and exit1; parent converts response to FILESYSTEM_BOUNDARY.'},
+ {'hypothesis':'HELPER_DEADLINE_OR_LATE_CLOSE','sourceSites':[loc('src/filesystem.mjs',87,111)],'mapping':'Own 2000ms timeout or late-close deadline rejects FILESYSTEM_BOUNDARY. No helper-local timer measurements exist.'},
+ {'hypothesis':'HELPER_SPAWN_STDERR_OR_PROTOCOL_FAILURE','sourceSites':[loc('src/filesystem.mjs',93,113)],'mapping':'Spawn error, any stderr, output bounds, parse/canonical/version/exit failure converge on FILESYSTEM_BOUNDARY.'},
+ {'hypothesis':'NODE_PATH_CHECK_REJECTION','sourceSites':[loc('src/filesystem.mjs',45,57)],'mapping':'Ancestor link/kind or realpath mismatch throws the same CIError before helper startup.'}]
+ result={'kind':'MemoryOSHostedBootstrapIndependentCausalReview','status':'PASS','classification':'UNRESOLVED','diagnosticScope':'Read-only preserved evidence and pure Windows path/string reconstruction; no product execution, M3 revalidation, native case rerun, hosted dispatch or remote mutation.','remotePreflight':row(OUT/'remote-preflight.json'),'failedRun':{'runId':36357568243,'attempt':1,'workflowId':368631903,'jobId':108728221298,'status':'FAIL','preservedDisposition':'BOOTSTRAP_FAILURE','policyEvaluation':'NOT_STARTED','artifacts':0,'evidence':[row(RUN/n) for n in ['run.json','jobs.json','artifacts.json','case-receipt.json','logs.zip']]},'archiveCoverage':{'memberCount':11,'members':logrows,'allMembersDecodedFully':True,'nativeHelperTelemetryPresent':False},'sourceBindings':list(sources.values()),'workflowBinding':{'revision':SCAFFOLD,'repositoryPath':'.github/workflows/mo1306-certification-pass.yml','byteLength':len(workflow),'sha256':sha(workflow)},'environment':env,'layout':{'workspace':root,'trustedCheckout':tool,'candidateCheckout':data,'packageRoot':home,'config':config,'runtime':runtime,'node':node,'dataOutput':output,'checkoutTemporaryBaseObserved':r'D:\a\_temp','bootstrapTemporaryRoot':None,'drive':'D:','filesystemDriveFormat':'UNOBSERVED','actualRejectedPath':None,'actualResolvedRejectedPath':None,'resolutionStatus':'LEXICAL_NORMALIZATION_ONLY; NO_HOSTED_NODE_REALPATH_RESULT_RETAINED','containment':'Tool/config/runtime outside candidate writable .memoryos-ci tree; trusted config under tool; separate installation capabilities need not be below data root.','reparseState':'Prior PowerShell Assert-GitHubPath and fixture checks succeeded by verified control flow for their checked paths. No contemporaneous helper attributes, all installation components or rejected-entry state were retained.'},'staticPathModel':{'status':'PASS','localSimulationIsHostedCertification':False,'filesystemObjectsCreated':0,'productFunctionsExecuted':0,'installationEntries':95,'maximumInstallPathUnits':159,'configPathUnits':len(config),'fullPathLimit':240,'batches':batches,'configRequestBytes':configbytes,'requestLimit':16384,'lexicalPathsValid':True,'forbiddenContainmentFound':False},'firstObservedFailure':{'step':5,'workflowInvocation':'Initialize-GitHubCI.ps1 -WorkspaceRoot $env:GITHUB_WORKSPACE -ConfigurationDigest sha256:12ddefe6af24e3364dfee0c081ad4a41061bcf8aa4804716bb6ee65aa5483afb -DistributionDigest sha256:b41d024d8ec1c588ca3fc919f8e3ac59a622aebc7cff3377f6a20ce7fc2ca4f3','nodeInvocation':[node,'--max-old-space-size=128',ntpath.join(home,r'scripts\github-transport.mjs'),'bootstrap',root,'sha256:12ddefe6af24e3364dfee0c081ad4a41061bcf8aa4804716bb6ee65aa5483afb','sha256:b41d024d8ec1c588ca3fc919f8e3ac59a622aebc7cff3377f6a20ce7fc2ca4f3'],'firstFailingPrimitive':None,'machineCode':'MO1306_FILESYSTEM_BOUNDARY','machineStage':'ACQUISITION','catalogExit':11,'githubStepExit':1,'stepExitNotHelperExit':True,'diagnosticTimestamp':'2026-09-27T23:07:03.6720266Z','producer':loc('scripts/github-transport.mjs',31,35),'initializationReachability':loc('scripts/Initialize-GitHubCI.ps1',95,109)},'orderedCausalCandidates':ordered,'observationalNonIdentifiability':{'established':True,'distinctCompatibleSourceBranches':collapse,'informationLossSite':loc('src/errors.mjs',24,40),'missingDiscriminators':['First failing operation/site','Rejected path/entry/batch','Resolved path','Windows errno/native exception','Drive format','Reparse/component attributes at failure','Helper response/stdout/stderr/exit','Helper deadline/close/spawn event timestamps'],'stepDurationCannotProveHelperTimeout':'Step timestamps include PowerShell startup, download/extraction/hash/version and unknown internal progress. There is no justified overhead subtraction or mapping to the helper monotonic clock.'},'frozenContract':{'source':sources['docs/mo1306-contract-freeze-1.md'],'filesystemLines':[496,545],'githubLayoutLines':[978,986],'errorMappingLines':[1156,1164],'legitimateLexicalLayout':True,'provenHostedContractConflict':False},'ownershipAssessment':{'PRODUCTION_DEFECT':'NOT_ESTABLISHED','CERTIFICATION_WORKFLOW_DEFECT':'NOT_ESTABLISHED','CERTIFICATION_SCAFFOLD_DEFECT':'NOT_ESTABLISHED','HOSTED_ENVIRONMENT_INCOMPATIBILITY':'NOT_ESTABLISHED','GITHUB_TRANSIENT':'NOT_ESTABLISHED','selected':'UNRESOLVED'},'correctionAuthorizedByEvidence':False,'retryAuthorizedByEvidence':False,'nativeCertificationRetained':True,'historicalPublicationCauseResolved':False,'tool':row(Path(__file__))}
+ target=OUT/'independent-causal-review.json'
+ with target.open('xb') as f:f.write(enc(result))
+ print(json.dumps({'status':'PASS','classification':'UNRESOLVED','artifact':row(target),'logMembers':11,'installationEntries':95,'maxPath':159,'requestBytes':[8555,7623],'productExecutions':0}))
+if __name__=='__main__':main()

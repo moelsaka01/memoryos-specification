@@ -1,0 +1,355 @@
+MEMORYOS 1.3
+MO-1307 PHASE 3AR2
+
+FINAL H HARNESS CORRECTION
+THEN FRESH A-O CERTIFICATION
+
+Current status:
+
+A-G PASS
+H FAIL
+I-O NOT_RUN
+
+Current candidate:
+
+C3VB
+17fa84efe46d30e6f4be85fd2427485677a222a3
+
+Production:
+
+C3V
+98b766f9218b209f52251147213839b9775f6da3
+
+Current resource authority remains:
+
+helper:
+9000 ms
+
+aggregate helper:
+28000 ms
+
+CLI:
+30000 ms
+
+API/worker:
+10000 ms
+
+cleanup:
+2000 ms
+
+H historical characterization:
+NOT_ESTABLISHED
+
+DO NOT change any resource limit.
+
+==================================================
+1. EXACT H FAILURE
+==================================================
+
+The final A-O campaign passed A-G.
+
+H failed on the first:
+
+timely-helper
+
+case.
+
+The harness expected an OK helper lifecycle inside:
+
+[8000, 9000)
+
+Observed:
+
+9036.9764 ms
+
+Result:
+
+MO1307_TIMEOUT
+
+The product therefore enforced the current strict 9000-ms deadline.
+
+Independent H boundary checks already passed:
+
+8000 -> PASS
+
+8999 -> PASS
+
+9000 -> TIMEOUT
+
+Therefore do NOT treat the failed timely-helper case as evidence that the 9000-ms product deadline is wrong.
+
+==================================================
+2. OBJECTIVE
+==================================================
+
+Determine whether the H timely-helper control contains a real-time scheduling assumption that provides insufficient margin below the 9000-ms product deadline.
+
+Correct ONLY that certification harness control if established.
+
+Do not modify:
+
+production
+
+helper
+
+transport
+
+deadline constants
+
+aggregate constants
+
+cleanup semantics
+
+wire protocol
+
+security behavior.
+
+==================================================
+3. PRESERVE FAILED GENERATION
+==================================================
+
+Preserve the existing failed generation exactly:
+
+A-G PASS
+H FAIL
+I-O NOT_RUN
+
+Do not rewrite it.
+
+Do not resume it.
+
+A corrected campaign must be a new certification generation.
+
+==================================================
+4. REVIEW THE H CONTROL
+==================================================
+
+Inspect the exact implementation of:
+
+timely-helper
+
+Determine:
+
+1. requested/artificial delay,
+2. expected completion interval,
+3. process startup allowance,
+4. PowerShell startup allowance,
+5. harness scheduling overhead,
+6. transport/write/exit settlement overhead,
+7. why the test expected runtime within [8000,9000),
+8. whether that expectation was inherited from the former 8000-ms authority.
+
+Explicitly determine whether the control was adapted correctly when the helper deadline changed:
+
+8000 -> 9000.
+
+==================================================
+5. REQUIRED CLASSIFICATION
+==================================================
+
+Return internally exactly one:
+
+H_HARNESS_MARGIN_DEFECT
+
+H_PRODUCT_DEADLINE_DEFECT
+
+H_EXPECTATION_AUTHORITY_CONFLICT
+
+If product boundary semantics remain:
+
+8000 PASS
+8999 PASS
+9000 TIMEOUT
+
+and the only failure is real execution overshooting the intended pre-9000 timing window, classify:
+
+H_HARNESS_MARGIN_DEFECT
+
+unless repository authority proves otherwise.
+
+==================================================
+6. HARNESS CORRECTION RULE
+==================================================
+
+If H_HARNESS_MARGIN_DEFECT is established:
+
+change only the timely-helper control so that its intended successful lifecycle has a robust deterministic margin below 9000 ms.
+
+Do NOT target another near-boundary real-time interval such as:
+
+[8500,9000)
+
+or:
+
+[8800,9000)
+
+The successful control must not depend on ordinary Windows scheduling overhead being less than a few tens of milliseconds.
+
+Use the existing authority to choose a clearly sub-deadline target with sufficient engineering margin.
+
+Preserve separate exact boundary controls for:
+
+8999 PASS
+
+9000 TIMEOUT
+
+Those controls are the authoritative deadline-edge tests.
+
+The timely-helper control should prove:
+
+a bounded helper below the deadline succeeds,
+
+not:
+
+Windows happens to schedule a process inside an extremely narrow wall-clock interval.
+
+==================================================
+7. DO NOT WEAKEN BOUNDARY TESTING
+==================================================
+
+The corrected H suite must still independently prove:
+
+sub-deadline helper succeeds
+
+8999 boundary case succeeds according to existing deterministic mechanism
+
+9000 equality times out
+
+over-deadline helper times out
+
+late success rejected
+
+cancellation works
+
+cleanup works
+
+no overlap
+
+no retry.
+
+Do not remove any actual boundary requirement.
+
+==================================================
+8. ZERO-PRODUCT HARNESS VALIDATION
+==================================================
+
+Before another certification execution, validate the corrected H harness structurally with zero production/helper executions.
+
+Require:
+
+timely-helper target is safely below 9000
+
+8999 test remains exact
+
+9000 timeout test remains exact
+
+over-deadline case remains exact
+
+expected results unchanged except the corrected timely-helper timing envelope
+
+no production source changes.
+
+==================================================
+9. FRESH FINAL A-O
+==================================================
+
+If harness validation passes:
+
+run a completely NEW full Phase 3A certification generation against exact C3VB.
+
+Fresh package.
+
+Fresh offline installation.
+
+Verify all 89 members.
+
+Seal complete A-O inventory.
+
+Execute once from A through O.
+
+No historical PASS promotion.
+
+No retry.
+
+At first mandatory failure:
+
+STOP.
+
+==================================================
+10. ACCEPTANCE
+==================================================
+
+If A-O all pass:
+
+return:
+
+PHASE3AR2_ACCEPTED_FINAL_CANDIDATE
+
+Create:
+
+accepted Phase 3A receipt
+
+accepted evidence commit
+
+exact C3VB binding
+
+Phase 3D handoff.
+
+==================================================
+11. PRESERVE 3BR2
+==================================================
+
+Accepted Phase 3BR2 remains:
+
+4d92f0f21c9c3aad8202f4558d61b9229c7214fc
+
+Do not rerun the complete 3BR2 campaign.
+
+After 3A acceptance, only the final C3TB -> C3VB resource/candidate binding delta may require refresh.
+
+==================================================
+12. PRESERVE 3CR2
+==================================================
+
+Accepted Phase 3CR2 remains:
+
+7d2006c6e19bb50bffb6c710672be996e3c3590b
+
+Do not rerun the complete 3CR2 campaign.
+
+After 3A acceptance, refresh only the exact C3TB -> C3VB changed dependency set:
+
+helper deadline 8000 -> 9000
+
+aggregate helper 20000 -> 28000
+
+generated contract/constants/manifest/SBOM bindings
+
+candidate identity
+
+affected deadline/resource controls.
+
+Do not rerun unrelated security controls.
+
+==================================================
+13. FINAL REPORT
+==================================================
+
+Report:
+
+1. exact H failure cause
+2. classification
+3. exact harness correction
+4. zero-execution harness validation
+5. fresh A-O results
+6. Phase 3A status
+7. accepted receipt/commit if successful
+8. exact 3BR2 final delta
+9. exact 3CR2 final delta
+10. repository status
+11. Phase 3D handoff if accepted
+
+No production modification.
+No push.
+No tag.
+No Phase 3D.

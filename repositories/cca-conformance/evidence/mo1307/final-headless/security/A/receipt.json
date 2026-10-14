@@ -1,0 +1,167 @@
+{
+  "id": "A",
+  "name": "normal-headless-startup",
+  "kind": "ONE_PRIOR_REAL_SMOKE",
+  "result": "PASS",
+  "startedAt": "2026-09-30T15:40:14.788Z",
+  "smoke": {
+    "path": "repositories/cca-conformance/evidence/mo1307/final-headless/minimum-wire-smoke/receipt.json",
+    "byteLength": 23968,
+    "sha256": "sha256:04992c83c3b1823e76f96e0886967836d33c4a1507742fbaefc1eb068e636ca5"
+  },
+  "native": {
+    "name": "minimum-wire-smoke",
+    "kind": "ONE_REAL_FIXED_PRODUCTION_HELPER",
+    "result": "PASS",
+    "startedAt": "2026-09-30T15:39:42.026Z",
+    "helperInvocations": 1,
+    "events": [
+      {
+        "event": "spawn",
+        "at": 990.1164,
+        "elapsedMs": 18.90070000000003
+      },
+      {
+        "event": "stdin-finish",
+        "at": 2003.8586,
+        "elapsedMs": 1032.6352
+      },
+      {
+        "event": "stdin-close",
+        "at": 2004.2843,
+        "elapsedMs": 1033.0606
+      },
+      {
+        "event": "stderr-end",
+        "at": 2754.4028,
+        "elapsedMs": 1783.1834999999999
+      },
+      {
+        "event": "stdout-end",
+        "at": 2754.7967,
+        "elapsedMs": 1783.5736
+      },
+      {
+        "event": "stdout-close",
+        "at": 2755.1425,
+        "elapsedMs": 1783.9192
+      },
+      {
+        "event": "stderr-close",
+        "at": 2755.1961,
+        "elapsedMs": 1783.9728000000002
+      },
+      {
+        "event": "process-exit",
+        "at": 2764.9076,
+        "elapsedMs": 1793.6838,
+        "code": 0,
+        "signal": null
+      },
+      {
+        "event": "process-close",
+        "at": 2764.9606,
+        "elapsedMs": 1793.7366,
+        "code": 0,
+        "signal": null
+      }
+    ],
+    "startupGate": {
+      "basis": "EXACT_SOURCE_AND_VALID_MATCHING_FRAME",
+      "functionSha256": "sha256:196677177a87f216fc07d43694480db54b2189cd35ce0e37ed65ddae6947c38d",
+      "sourceMembershipCallSites": 1,
+      "postDetachMembershipQuery": false,
+      "initialZeroSuccess": false,
+      "unidentifiedHostExitClaim": false,
+      "positiveSoleHelperMembership": true,
+      "selfFreeConsoleSucceeded": true,
+      "firstRequestReadAndConsumption": true
+    },
+    "candidate": null,
+    "packageTree": null,
+    "candidateStatus": "NOT_YET_CANDIDATE",
+    "sourceBaseHead": "cb1e1428e40b99312cc167096d890285f5b9b220",
+    "sourceBasePackageTree": "cfb12bad6bea4dbfa0ef6570e2a8696ba66dc33f",
+    "request": {
+      "path": "repositories/cca-conformance/evidence/mo1307/final-headless/minimum-wire-smoke/request.bin",
+      "byteLength": 356,
+      "sha256": "sha256:9013dab4eef1685fce8bd946acf84275fefdd949ccfc8fbfc2bf144a9d3a9cef"
+    },
+    "seal": {
+      "path": "repositories/cca-conformance/evidence/mo1307/final-headless/minimum-wire-smoke/seal.json",
+      "byteLength": 163748,
+      "sha256": "sha256:6ddaa9b8f195eb59c78d3ba4766ef09d1154931bd4c421c36eb36deeae1da2d0"
+    },
+    "pid": 32280,
+    "elapsedProductMs": 1795.6456999999998,
+    "snapshot": {
+      "kind": "cli",
+      "deadline": 30971.6321,
+      "helpers": 1,
+      "workers": 0,
+      "helperUsedMs": 1792.4250000000002,
+      "activeRole": null,
+      "cleanupConfirmed": true,
+      "publication": null,
+      "terminalCode": null,
+      "terminalAt": null,
+      "cleanupDeadline": null,
+      "events": [
+        {
+          "type": "start",
+          "at": 974.4068,
+          "role": "helper",
+          "deadline": 5974.3379,
+          "ordinal": 1
+        },
+        {
+          "type": "observation",
+          "at": 988.3504,
+          "role": "helper",
+          "pid": 32280,
+          "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+        },
+        {
+          "type": "quiescent",
+          "at": 2766.7724,
+          "role": "helper",
+          "ordinal": 1
+        }
+      ]
+    },
+    "streams": {
+      "stdinFinished": true,
+      "stdinClosed": true,
+      "stdoutEnded": true,
+      "stdoutClosed": true,
+      "stderrEnded": true,
+      "stderrClosed": true,
+      "processExited": true,
+      "processClosed": true
+    },
+    "exitCode": 0,
+    "exitSignal": null,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/final-headless/minimum-wire-smoke/stdout.data",
+      "byteLength": 707,
+      "sha256": "sha256:8540635a76f65033cbcf4f67fbe67077fb1e313e3d587ce402c892bfa0efc6f2"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/final-headless/minimum-wire-smoke/stderr.data",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdoutTotalBytes": 707,
+    "stderrTotalBytes": 0,
+    "captureTruncated": false,
+    "response": {
+      "status": "OK",
+      "version": "2.0.0",
+      "sequence": 3,
+      "operation": "READ_SET",
+      "fileCount": 1,
+      "sha256": "sha256:8540635a76f65033cbcf4f67fbe67077fb1e313e3d587ce402c892bfa0efc6f2",
+      "byteLength": 707
+    }
+  }
+}

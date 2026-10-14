@@ -1,0 +1,146 @@
+{
+  "kind": "MO1307IntegratedPureSecurityMatrix",
+  "version": "1.0.0",
+  "result": "PASS",
+  "controls": [
+    {
+      "name": "D06 MO1306 raw configuration lineage survives integration and original omission still rejects",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D10 mismatched human decision rejects: candidateDigest",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D10 mismatched human decision rejects: readinessDigest",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D10 mismatched human decision rejects: proofBindingDigest",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D12 integrated operational failure remains an error: candidate substitution",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D12 integrated operational failure remains an error: trust-root mismatch",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D12 integrated operational failure remains an error: raw-source tamper",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D12 integrated operational failure remains an error: claim tamper under an old grant",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D12 integrated operational failure remains an error: grant substitution",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D12 integrated operational failure remains an error: stale dependency",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D12 integrated operational failure remains an error: history rewrite with intact grant",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D12 integrated operational failure remains an error: history PASS fabrication",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D12 integrated operational failure remains an error: qualification omission",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D12 integrated operational failure remains an error: provider false hosted promotion",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D12 integrated operational failure remains an error: dangling authority reference",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D12 integrated operational failure remains an error: profile substitution",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D12 integrated operational failure remains an error: path traversal rejected by the frozen manifest schema",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D13 result verification independently rechecks original raw bytes before trusting a valid result",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D14 self-consistent changed readiness passes evidence-only support but fails integrated recomputation",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D15 supplied result digest tamper rejects: readinessDigest",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D15 supplied result digest tamper rejects: proofBindingDigest",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D16 self-consistent result history or qualification omission cannot hide behind repaired hashes",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D18 no supplied cyclic or dangling graph can replace independently derived evidence",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D20 signed set ordering is preserved rather than silently normalized during integration",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D22 selective reuse stays explicit and relevant changes fail before readiness computation",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    },
+    {
+      "name": "D24 integrated preflight preserves accepted authority-before-semantic error priority",
+      "result": "PASS",
+      "observedBy": "Exact named assertion in retained stdout TAP"
+    }
+  ],
+  "provenance": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/stdout.txt",
+    "byteLength": 13368,
+    "sha256": "sha256:06060444f563ec316c42f2759cb29decb53b923c9174c9dca08e59826719b702"
+  },
+  "acceptedProductionPath": "Actual assessInWorker -> verifyEvidence/verifyResultEvidence -> adaptVerifiedEvidence -> computeReadiness",
+  "operationalErrorsNotReadiness": true,
+  "selfConsistentReadinessTamperRequiresFullRecomputation": true,
+  "noNativeFilesystemOrHelperClaim": true
+}

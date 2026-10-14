@@ -1,0 +1,88 @@
+{
+  "name": "stdin-invalid",
+  "kind": "EXACT_EXTRACTED_FUNCTION_WITH_NATIVE_DOUBLE",
+  "expectedExit": 22,
+  "accepted": false,
+  "result": "PASS",
+  "nativeProductHelper": false,
+  "realHostProof": false,
+  "events": [
+    {
+      "event": "stdin-finish",
+      "elapsedMs": 17.479899999999816
+    },
+    {
+      "event": "stdin-close",
+      "elapsedMs": 17.583999999999833
+    },
+    {
+      "event": "stderr-end",
+      "elapsedMs": 694.4375999999997
+    },
+    {
+      "event": "stdout-end",
+      "elapsedMs": 694.5728999999997
+    },
+    {
+      "event": "stdout-close",
+      "elapsedMs": 694.7802999999999
+    },
+    {
+      "event": "stderr-close",
+      "elapsedMs": 694.7940000000003
+    },
+    {
+      "event": "exit",
+      "elapsedMs": 709.4821999999999,
+      "code": 22,
+      "signal": null
+    }
+  ],
+  "pid": 29108,
+  "exitCode": 22,
+  "exitSignal": null,
+  "elapsedMs": 709.5383999999999,
+  "proof": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/security/startup/stdin-invalid/proof.json",
+    "byteLength": 449,
+    "sha256": "sha256:317f59602121bbf035ea00d11e63e98847db7203730ea603a7893a480df25a1b"
+  },
+  "observed": {
+    "configuredErrorContext": null,
+    "nativeLastErrorSet": false,
+    "membershipCalls": 0,
+    "freeConsoleCalls": 0,
+    "kind": "MO1307ExtractedHeadlessStartupSimulation",
+    "scenario": "stdin-invalid",
+    "accepted": false,
+    "failure": "MO1307_INTERNAL",
+    "failureType": "System.InvalidOperationException",
+    "events": [
+      {
+        "name": "GetStdHandle",
+        "arguments": [
+          -10
+        ]
+      }
+    ],
+    "detached": false,
+    "productionFunctionUnmodified": true,
+    "nativeProcessOperationsPerformed": false,
+    "realHostIdentityProof": false
+  },
+  "closed": true,
+  "timedOut": false,
+  "cleanupExpired": false,
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/security/startup/stdin-invalid/stdout.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/security/startup/stdin-invalid/stderr.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stdoutBytes": 0,
+  "stderrBytes": 0
+}

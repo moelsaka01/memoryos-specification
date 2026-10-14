@@ -1,0 +1,182 @@
+"""Independent offline environment-capture validator; no product or network execution."""
+import argparse,datetime,hashlib,importlib.util,json,math,os,re,subprocess,sys
+from pathlib import Path
+sys.dont_write_bytecode=True
+HERE=Path(__file__).resolve().parent;ROOT=HERE.parents[3];OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-environment-capture';MAIN=Path(r'C:\Users\melsa\Documents\Codex\cca-workspace')
+AUTH='701d48ee2012675966360dda775ab13013c09ab9';HEAD='f236c4a2f94d8cd8e763aaa4bd6c52d703429692'
+spec=importlib.util.spec_from_file_location('prior_diagnostic_validator',HERE.parent/'mo1306-phase3a-publication-diagnostic/validate.py');prior=importlib.util.module_from_spec(spec);spec.loader.exec_module(prior)
+def need(v,c):
+ if not v:raise AssertionError(c)
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def enc(v):return (json.dumps(v,sort_keys=True,separators=(',',':'))+'\n').encode()
+def git(root,*args):return subprocess.run(['git','-C',str(root),*args],capture_output=True,check=True,env={**os.environ,'GIT_OPTIONAL_LOCKS':'0'},timeout=30).stdout
+
+def claims(v):
+ need(v['status']=='ENVIRONMENT_BLOCKED' and v['classification']=='UNRESOLVED','UNSUPPORTED_CAUSAL_DISPOSITION')
+ for k in ['nativeCertified','githubHostedCertified','completionCommitCreated','resolvedMissingInputGate','productionChanges','acceptedGroupsRerun','remoteMutated','labelsPromoted','phase3DReady','allCertificationGatesPassed','rootCauseProven']:
+  need(v.get(k) is False,'FALSE_GATE_OR_SCOPE: '+k)
+ for k in ['historicalCauseProven','environmentTransientProven','productDefectProven','harnessDefectProven','stableFreshSupersessionUsed','exactKernelExitClaimed','systemWideHandleEnumeration']:
+  if k in v:need(v[k] is False,'UNSUPPORTED_CAUSE_OR_OBSERVATION: '+k)
+ for k in ['finalCommit','finalParent','commit','parent']:
+  if k in v:need(v[k] is None,'COMMIT_ON_BLOCKED_GATE')
+
+class Audit(prior.Audit):
+ def load(self,name):return json.loads(self.raw(OUT/name))
+ def preservation(self):
+  v=self.load('preservation-audit.json');need(v['historicalFileCount']==len(v['files'])==698,'HISTORY_COUNT');self.walk(v);need(len({r['path'] for r in v['files']})==698,'HISTORY_DUPLICATE')
+  need(git(ROOT,'rev-parse','HEAD').decode().strip()==v['head']==HEAD and git(ROOT,'branch','--show-current').decode().strip()==v['branch']=='mo1306/phase3a-refresh','HISTORICAL_CHECKOUT_CHANGED')
+  need(git(ROOT,'for-each-ref','--format=%(refname) %(objectname)').decode().strip()==v['protectedRefs'],'PROTECTED_REFS_CHANGED')
+  idx=Path(git(ROOT,'rev-parse','--git-path','index').decode().strip());idx=idx if idx.is_absolute() else ROOT/idx;need(sha(idx.read_bytes())==v['realIndexSha256'],'REAL_INDEX_CHANGED')
+  m=v['mainReadOnly'];idx=Path(git(MAIN,'rev-parse','--git-path','index').decode().strip());idx=idx if idx.is_absolute() else MAIN/idx
+  need(git(MAIN,'rev-parse','HEAD').decode().strip()==m['head']==AUTH and git(MAIN,'status','--porcelain=v1','--untracked-files=all').decode()==m['statusPorcelain']=='' and sha(idx.read_bytes())==m['indexSha256'],'MAIN_READONLY_DRIFT')
+  root=self.load('preservation-before.json');self.walk(root['files']);need(len(root['files'])==698 and {r['path']:(r['byteLength'],r['sha256']) for r in root['files']}=={r['path']:(r['byteLength'],r['sha256']) for r in v['files']},'INDEPENDENT_PRESERVATION_DISAGREEMENT')
+  return {'status':'PASS','historicalFiles':698,'head':HEAD,'indexRefsMainUnchanged':True}
+ def methodology(self):
+  v=self.load('methodology-audit.json');self.walk(v);need(v['authority']==AUTH and v['methodologyCriterion10']=='NOT_ESTABLISHED' and v['boundedFreshSupersessionPermitted'] is False and v['unrecoverableStableClassificationPermitted'] is False,'INVENTED_METHODOLOGY_PERMISSION')
+  need(sha(self.raw(OUT/'task-request.txt'))==v['requestAuthority']['sha256'],'USER_AUTHORITY_MISMATCH')
+  for row in v['authoritativeCitations']:
+   p=Path(row['path']);b=self.ref(row);need(git(MAIN,'show',AUTH+':'+p.relative_to(MAIN).as_posix())==b,'METHODOLOGY_SOURCE_CHANGED');a,z=row['lines'];need('\n'.join(b.decode().splitlines()[a-1:z])==row['excerpt'],'FALSE_AUTHORITY_QUOTE')
+  before=self.load('section20-assessment-before.json');self.walk(before);need([c['number'] for c in before['criteria']]==list(range(1,11)) and before['criteria'][-1]['status']=='NOT_ESTABLISHED' and before['allCriteriaSatisfied'] is False,'SECTION20_FORGED_CLOSURE')
+  return {'criterion10':'NOT_ESTABLISHED','freshPassOnlyClosurePermitted':False}
+ def qpc(self,v,freq):
+  if isinstance(v,dict):
+   if {'qpcTicks','qpcNs'}<=v.keys():need(isinstance(v['qpcTicks'],int) and v['qpcNs']==v['qpcTicks']*1000000000//freq,'QPC_CONVERSION')
+   for x in v.values():self.qpc(x,freq)
+  elif isinstance(v,list):
+   for x in v:self.qpc(x,freq)
+ def windows(self,summary):
+  raw=self.value(summary['events']);v=self.value(summary['windowsCapture']);self.ref(summary['windowsObserver']);plan=self.value(summary['observationPlan'])
+  freq=v['qpcFrequency'];need(isinstance(freq,int) and freq>0,'QPC_FREQUENCY');self.qpc(v,freq);tick=1000000000/freq;need(v['qpcResolutionNs']==tick,'QPC_RESOLUTION')
+  need(v['utcNotUsedForCausality'] is True and v['requestedProcessSampleMs']==20,'CLOCK_OR_CADENCE_CLAIM')
+  start=v['captureStart']['qpcNs'];end=v['captureEnd']['qpcNs'];need(start<end,'CAPTURE_WINDOW')
+  need(len(v['calibrations'])==2,'QPC_CALIBRATION_COUNT')
+  for c in v['calibrations']:need(c['before']['qpcNs']<=c['perfCounterNs']<=c['after']['qpcNs']+tick,'PYTHON_QPC_CALIBRATION')
+  lo=-math.inf;hi=math.inf;previous=0
+  for e in raw['events']:
+   before=int(e['qpcBeforeNs']);after=int(e['qpcAfterNs']);need(start-tick<=before<=after<=end+tick and before>=previous,'NODE_QPC_CAPTURE_ORDER');previous=after
+   lo=max(lo,before-e['atMs']*1e6-tick);hi=min(hi,after-e['atMs']*1e6+tick)
+  need(lo<=hi,'NODE_PERFORMANCE_QPC_MAPPING')
+  need(start<=int(raw['captureFinishedHrtimeNs'])<=end+tick,'NODE_FLUSH_WINDOW')
+  samples=[]
+  for row in v['processSampleChunks']:
+   chunk=self.value(row);self.qpc(chunk,freq);samples.extend(chunk['samples'])
+  need(len(samples)==v['processSampleCount'],'PROCESS_SAMPLE_COUNT')
+  need(len(samples)>1 and all(a['time']['qpcNs']<=b['time']['qpcNs'] for a,b in zip(samples,samples[1:])),'PROCESS_SAMPLE_ORDER')
+  gap=max((b['time']['qpcNs']-a['time']['qpcNs'])/1e6 for a,b in zip(samples,samples[1:]));need(math.isclose(gap,v['maximumProcessSampleGapMs'],rel_tol=0,abs_tol=1e-8),'FALSE_PROCESS_PRECISION')
+  trace=self.value(summary['trace']);owned={(p['pid'],p['creationTime100ns']) for p in trace['lifetimes']};processes={(p['pid'],p['creationTime100ns']):p for p in v['processes']};need(set(processes)<=owned,'UNOWNED_PROCESS_CLAIM')
+  seen={};signal_count=0
+  for s in samples:
+   for p in s['processes']:
+    key=(p['pid'],p['creationTime100ns']);need(key in processes and p['before']['qpcNs']<=p['after']['qpcNs'],'PROCESS_IDENTITY_OR_BRACKET');need(p['waitStatus'] in [0,258],'PROCESS_WAIT_ERROR')
+    for name in ['kernelCpu100ns','userCpu100ns','handleCount']:need(p[name] is None or isinstance(p[name],int) and p[name]>=0,'NATIVE_COUNTER_TYPE')
+    if p['io'] is not None:need(all(isinstance(x,int) and x>=0 for x in p['io'].values()),'NATIVE_IO_COUNTER_TYPE')
+    if key in seen:
+     for name in ['kernelCpu100ns','userCpu100ns']:
+      if p[name] is not None and seen[key][name] is not None:need(p[name]>=seen[key][name],'CPU_COUNTER_REGRESSION')
+    seen[key]=p
+  for p in processes.values():
+   need(p['handleClosed'] is True,'OBSERVER_HANDLE_LEAK')
+   if p['firstSignaled'] is not None:
+    signal_count+=1;need(p['final']['waitStatus']==0 and p['exitObservedBetween']['upper']==p['firstSignaled'],'FALSE_EXIT_OBSERVATION')
+    lower=p['exitObservedBetween']['lower'];need(lower is None or lower['qpcNs']<=p['firstSignaled']['qpcNs'],'EXIT_INTERVAL_ORDER')
+  need(signal_count>0,'NO_PROCESS_SIGNAL_CAPTURE')
+  handles=v['handleObservation'];need(handles['ownedProcessQueryHandlesOnly'] and handles['allOwnedObserverHandlesClosed'] and handles['directoryWatchClosed'] and handles['directoryWatchShareMode']==7 and handles['exclusiveOpenProbe'] is False and handles['systemWideHandleEnumeration'] is False,'OVERCLAIMED_HANDLE_OR_WATCH_SCOPE')
+  need(v['threadsStopped'] is True,'OBSERVER_THREADS_REMAIN')
+  for n in v['directoryNotifications']:
+   need(n['submitted']['qpcNs']<=n['lastUnsignaled']['qpcNs']<=n['receiptBefore']['qpcNs']<=n['receiptAfter']['qpcNs'],'NOTIFICATION_RECEIPT_ORDER')
+   for item in n['records']:need(item['action'] in [1,2,3,4,5] and not Path(item['relativePath']).is_absolute() and '..' not in Path(item['relativePath']).parts,'WATCH_RECORD_SCOPE')
+  for snap in v['directorySnapshots']:
+   need(snap['before']['qpcNs']<=snap['after']['qpcNs'],'DIRECTORY_SNAPSHOT_ORDER')
+   for item in snap['rows']:
+    p=Path(item['path']);work=Path(raw['workspace']);need(p==work or work in p.parents,'DIRECTORY_SNAPSHOT_SCOPE')
+  need(not v['errors'],'OBSERVER_ERROR_NEEDS_DISPOSITION')
+  need(v['directorySubscriptions'] and v['directoryWatchReadyAt']==v['directorySubscriptions'][0]['after'] and v['directoryWatchReadyAt']['qpcNs']<int(raw['events'][0]['qpcBeforeNs']),'WATCH_NOT_ARMED_BEFORE_PRODUCT')
+  for snap in v['directorySnapshots']:
+   if snap['reason']=='manifest-or-complete-notification':need(all(x.get('acl')=='Initial/post-capture only to avoid security-query latency at rename.' for x in snap['rows']),'INFLIGHT_ACL_QUERY')
+  return {'status':'PASS','windowsCapture':summary['windowsCapture'],'qpcFrequency':freq,'qpcTickNs':tick,'performanceQpcOffsetIntersectionNs':[lo,hi],'requestedSampleMs':20,'observedMaxSampleGapMs':gap,'processIdentityCount':len(processes),'signalObservedCount':signal_count,'directoryNotificationBatches':len(v['directoryNotifications']),'exactKernelExitClaimed':False,'systemWideHandleEnumeration':False,'precision':'API/event brackets and signal/poll intervals; no exact kernel event timestamp from polling or directory notification delivery.'}
+ def observations(self):
+  plan=self.load('observation-plan.json');need(plan['authority']==AUTH and plan['maximumNewExecutions']==3 and plan['initialExecutions']==1 and plan['noArtificialInjection'] is True,'OBSERVATION_PLAN_SCOPE')
+  starts=sorted((OUT/'runs').glob('*/started.json'));need(1<=len(starts)<=3,'NEW_RUN_CAP');rows=[]
+  plan_time=datetime.datetime.fromisoformat(plan['recordedUtc']);prior_end=None
+  for p in starts:
+   start=json.loads(self.raw(p));s=json.loads(self.raw(p.parent/'summary.json'));self.walk(s);need(plan_time<datetime.datetime.fromisoformat(start['utc']),'PLAN_NOT_PRIOR_TO_EXECUTION')
+   beginning=datetime.datetime.fromisoformat(s['startedUtc']);ending=datetime.datetime.fromisoformat(s['endedUtc']);need(beginning<ending and (prior_end is None or prior_end<=beginning),'PARALLEL_OR_REORDERED_RUN');prior_end=ending
+   outcome=prior.Audit.reproduction(self,p.parent);windows=self.windows(s);rows.append({'outcome':outcome,'nativeObservation':windows})
+   need(s['actual']['classification']=='INPUT_ERROR' and s['actual']['publication']=='COMPLETE' and s['actual']['exitCode']==11,'NEW_FAILURE_REQUIRES_CAUSAL_REVIEW')
+  return rows
+ def aggregate_current(self,observed):
+  v=self.load('capture-summary.json');self.walk(v);need(v['authority']==AUTH and v['status']=='ENVIRONMENT_BLOCKED' and v['classification']=='UNRESOLVED' and v['methodologyCriterion10']=='NOT_ESTABLISHED','CAPTURE_FALSE_DISPOSITION')
+  need(v['newRunCount']==len(observed)==1 and v['maximumPermitted']==3,'CAPTURE_COUNT')
+  for k in ['additionalRunsExecuted','historicalCauseEstablished','hostedCertified','hypothesisWitnessUsed','nativeCertified','stableUnrecoverableClassificationUsed']:need(v[k] is False,'CAPTURE_FALSE_CLAIM '+k)
+  actual=observed[0]['outcome'];need(v['run']['summary']==actual['summary'] and v['run']['actual']==actual['actual'],'CAPTURE_RAW_MISMATCH')
+  raw=self.value(v['run']['nodeEvents']);win=self.value(v['run']['windowsCapture']);events={x['sequence']:x for x in raw['events']};origin=win['captureStart']['qpcNs']
+  def review(x):
+   if isinstance(x,dict):
+    if {'sequence','nodeRelativeMs','qpcBeforeNs','qpcAfterNs'}<=x.keys():
+     e=events[x['sequence']];need(x['event']==e['event'] and x['nodeRelativeMs']==e['atMs'] and x['qpcBeforeNs']==e['qpcBeforeNs'] and x['qpcAfterNs']==e['qpcAfterNs'],'SUMMARY_EVENT_DRIFT')
+     for k,source in [('observerRelativeBeforeMs','qpcBeforeNs'),('observerRelativeAfterMs','qpcAfterNs')]:need(math.isclose(x[k],(int(e[source])-origin)/1e6,abs_tol=1e-8),'SUMMARY_CLOCK_MIX')
+    for y in x.values():review(y)
+   elif isinstance(x,list):
+    for y in x:review(y)
+  review(v);need(v['clock']['actualMaximumGapMs']==observed[0]['nativeObservation']['observedMaxSampleGapMs'] and v['clock']['processSampleCount']==win['processSampleCount'],'SUMMARY_FALSE_PRECISION')
+  owned={(x['pid'],x['creationTime100ns']):x for x in win['processes']};need([x['ordinal'] for x in v['helpers']]==list(range(1,21)),'SUMMARY_HELPER_SET')
+  for h in v['helpers']:
+   p=owned[(h['pid'],h['creationTime100ns'])];f=p['final'];need(h['observedExitSignalInterval']==p['exitObservedBetween'] and h['finalCpu100ns']=={'kernel':f['kernelCpu100ns'],'user':f['userCpu100ns']} and h['finalIoCounters']==f['io'] and h['handleCountAtExitObservation']==f['handleCount'],'SUMMARY_PROCESS_COUNTER_DRIFT')
+   arm=next(e for e in raw['events'] if e['event']=='timerArmed' and e['ordinal']==h['ordinal']);need(h['timerRequestedDelayMs']==arm['requestedDelayMs'] and math.isclose(h['beforeProductDeadlineByMs'],arm['dueLowerMs']-h['nodeClose']['nodeRelativeMs'],abs_tol=1e-7),'SUMMARY_DEADLINE_MIX')
+  m=v['manifestFinalization'];need(m['helper18']==v['helpers'][17] and m['helperCloseBeforeRename'] and int(m['helper18']['nodeClose']['qpcAfterNs'])<int(m['renameBefore']['qpcBeforeNs'])<int(m['renameAfter']['qpcAfterNs'])<int(m['completeWriteBefore']['qpcBeforeNs']),'SUMMARY_MANIFEST_ORDER')
+  for k in ['actualPublicationNodeError','actualPublicationWindowsError','firstUnexpectedOperation']:need(m[k] is None,'SUMMARY_FAILURE_OMISSION')
+  need(m['sameHistoricalCauseProven'] is False,'SUMMARY_HISTORICAL_CAUSE')
+  need(v['observerErrors']==win['errors']==[] and v['directorySnapshots']==win['directorySnapshots'],'SUMMARY_OBSERVER_MISMATCH')
+  bundle=self.value(v['offlineBundleValidation']);need(bundle['actual']==actual['actual'] and bundle['certificationAcceptance'] is False and bundle['noProductOrCliVerifyExecuted'] is True,'BUNDLE_FALSE_SCOPE')
+  source=self.load('source-handle-audit.json');self.walk(source);need(source['authority']==AUTH and source['historicalDisposition']['causeProven'] is False,'SOURCE_FALSE_CAUSE')
+  for b in source['productBindings']:
+   byte=self.ref(b['installed']);need(git(MAIN,'show',AUTH+':'+b['repositoryPath'])==byte and sha(byte)==b['authoritySha256'] and len(byte)==b['authorityByteLength'],'SOURCE_CALLCHAIN_DRIFT')
+  section=self.load('section20-assessment.json');self.walk(section);need(section['classification']=='UNRESOLVED' and section['allCriteriaSatisfied'] is False and section['classificationCurrentlyPermitted'] is False and [c['number'] for c in section['criteria']]==list(range(1,11)) and section['criteria'][-1]['status']=='NOT_ESTABLISHED','SECTION20_FALSE_CLOSURE')
+  need(section['newObservedRunCount']==1 and section['priorReproductionsReadOnly']==3 and section['hypothesisWitnessCount']==0 and section['rootCauseProven'] is False and section['resolvedMissingInputGate'] is False,'SECTION20_FALSE_SCOPE')
+  return {'status':'PASS','observedCurrentContractSatisfied':True,'historicalCauseEstablished':False,'manifestCallbackOrderVerified':True,'methodologyCriterion10':'NOT_ESTABLISHED'}
+ def optional(self,final):
+  receipt=OUT/'execution-receipt.json';index=OUT/'evidence-index.json'
+  if receipt.exists():v=json.loads(self.raw(receipt));self.walk(v);claims(v);need(v['authority']==AUTH,'FINAL_OLD_AUTHORITY');need(v['newObservedRunCount']==len(self.repro_reports)==1 and v['hypothesisWitnessCount']==0 and v['priorReproductionsReadOnly']==3,'FINAL_OBSERVATION_COUNTS')
+  if (OUT/'REPORT.md').exists():
+   report=self.raw(OUT/'REPORT.md').decode('utf-8-sig');fields=[]
+   for line in report.splitlines():
+    m=re.match(r'^\|\s*(\d+)\s*\|\s*(.*?)\s*\|\s*(.*?)\s*\|$',line)
+    if m:fields.append({'number':int(m.group(1)),'name':m.group(2),'result':m.group(3)})
+   need([x['number'] for x in fields]==list(range(1,59)) and report.rstrip().endswith('MO-1306 PHASE 3A PUBLICATION ENVIRONMENT BLOCKED'),'REPORT_FIELDS_58')
+   if receipt.exists():
+    need(v['requestedReportFields']==fields,'RECEIPT_REPORT_FIELD_DRIFT');old=json.loads(self.raw(ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-publication-diagnostic/execution-receipt.json'));need(v['labels']==old['labels'],'HISTORICAL_LABEL_PROMOTION');need(v['additionalProductExecutionsPermittedInThisTask'] is False,'UNAUTHORIZED_FOLLOWON')
+  if index.exists():
+   v=json.loads(self.raw(index));rows=v.get('files',v.get('artifacts'));need(isinstance(rows,list),'INDEX_SCHEMA');self.walk(rows);names=[r['path'] for r in rows];expected={p.relative_to(ROOT).as_posix() for base in [HERE,OUT] for p in base.rglob('*') if p.is_file() and p!=index};need(len(names)==len(set(names)) and set(names)==expected,'INDEX_SET')
+  if final:need(receipt.exists() and index.exists(),'FINAL_ARTIFACTS_REQUIRED')
+ def run(self,final):
+  prior_audit=prior.Audit();retained=prior_audit.run(True);self.bound.update(prior_audit.bound)
+  preserved=self.preservation();method=self.methodology();observed=self.observations();aggregate=self.aggregate_current(observed)
+  for name in ['source-handle-audit.json','capture-summary.json','observed-bundle-validation.json','section20-assessment.json','environment-summary.json','observation-summary.json','windows-events.json','windows-eventlog.json','workspace-verification.json','scaffold-verification.json']:
+   p=OUT/name
+   if p.exists():self.walk(json.loads(self.raw(p)))
+  prior.Audit.remote(self);self.optional(final)
+  return {'kind':'MemoryOSPhase3AEnvironmentCaptureIndependentValidation','version':'1.0.0','status':'PASS','scope':'Offline evidence/source/clock/preservation validation only; no product/network execution; successful capture does not prove historical cause.','authority':AUTH,'preservation':preserved,'methodology':method,'priorReproductionsReadOnly':len(retained['reproductions']),'retainedAcceptedGroups':retained['retainedAcceptedGates']['passedGroupsRetained'],'newObservations':observed,'captureAggregate':aggregate,'classification':'UNRESOLVED','nativeCertified':False,'githubHostedCertified':False,'resolvedMissingInputGate':False,'boundFiles':len(self.bound),'validator':self.row(Path(__file__)),'priorValidator':self.row(HERE.parent/'mo1306-phase3a-publication-diagnostic/validate.py')}
+
+def negatives(audit):
+ result=[]
+ def reject(name,fn):
+  try:fn()
+  except (AssertionError,KeyError,ValueError) as e:result.append({'id':name,'status':'REJECTED','reason':str(e)});return
+  raise AssertionError('NEGATIVE_ACCEPTED '+name)
+ stale=audit.row(OUT/'methodology-audit.json');stale['sha256']='sha256:'+'0'*64;reject('stale-methodology-evidence',lambda:audit.ref(stale))
+ value={'status':'ENVIRONMENT_BLOCKED','classification':'UNRESOLVED',**{k:False for k in ['nativeCertified','githubHostedCertified','completionCommitCreated','resolvedMissingInputGate','productionChanges','acceptedGroupsRerun','remoteMutated','labelsPromoted','phase3DReady','allCertificationGatesPassed','rootCauseProven']}}
+ for name,key in [('false-native-certification','nativeCertified'),('false-hosted-certification','githubHostedCertified'),('resolved-from-passes-alone','resolvedMissingInputGate'),('unproved-historical-cause','historicalCauseProven'),('false-exact-kernel-exit','exactKernelExitClaimed'),('false-systemwide-handles','systemWideHandleEnumeration'),('prior-groups-rerun','acceptedGroupsRerun'),('false-root-cause','rootCauseProven')]:
+  mutation={**value,key:True};reject(name,lambda mutation=mutation:claims(mutation))
+ bad={**value,'classification':'HISTORICAL_CAUSE_UNRECOVERABLE_CURRENT_BEHAVIOR_STABLE'};reject('criterion10-bypass',lambda:claims(bad))
+ reject('clock-domain-or-scale-mix',lambda:audit.qpc({'qpcTicks':123,'qpcNs':123000000000},10000000))
+ sample=audit.repro_reports[0];summary=audit.value(sample['summary']);contents={Path(r['path']).name:audit.ref(r) for r in summary['bundleFiles']}
+ reject('partial-without-completion-marker',lambda:prior.old.bundle.bundle_valid({k:v for k,v in contents.items() if k!='memoryos-ci-complete.json'},summary['actual']['runId'],'generic',11))
+ reject('extra-observed-bundle-artifact',lambda:prior.old.bundle.bundle_valid({**contents,'extra.txt':b'x'},summary['actual']['runId'],'generic',11))
+ return {'kind':'MemoryOSPhase3AEnvironmentCaptureValidationNegatives','status':'PASS','count':len(result),'controls':result,'method':'In-memory mutated copies only; no product or historical file changes.'}
+def main():
+ parser=argparse.ArgumentParser();parser.add_argument('--check',action='store_true');parser.add_argument('--final',action='store_true');args=parser.parse_args();audit=Audit();report=audit.run(args.final);controls=negatives(audit)
+ if not args.check:
+  for name,v in [('validation.json',report),('validation-negatives.json',controls)]:
+   p=OUT/name;need(not p.exists(),'IMMUTABLE_OUTPUT_EXISTS '+name);p.write_bytes(enc(v))
+ print(json.dumps({'status':'PASS','historicalFiles':698,'priorReproductionsReadOnly':3,'newObservedRuns':len(report['newObservations']),'boundFiles':report['boundFiles'],'negativeControls':controls['count'],'classification':'UNRESOLVED','readOnlyCheck':args.check,'final':args.final}))
+if __name__=='__main__':main()

@@ -1,0 +1,100 @@
+{
+  "kind": "MO1307IntegratedDecisionBinding",
+  "version": "1.0.0",
+  "result": "PASS",
+  "cases": [
+    {
+      "name": "ready",
+      "decision": "APPROVE",
+      "projection": {
+        "decision": "APPROVE",
+        "consistency": "CONSISTENT",
+        "authenticity": "NOT_VERIFIED_BY_MEMORYOS"
+      },
+      "readiness": "READY",
+      "candidateDigest": "sha256:92f382b3d598cccef126f5a59e29face33c040d952edfa034eec626201678b05",
+      "readinessDigest": "sha256:7dc59aef2472df2959b88aa6532740bc03c7dacd4c5b8763c9a1306d80ac4532",
+      "proofBindingDigest": "sha256:397770af834aa5fe0fe0958075e059a03f2f7fdd383a66ed7027dd5c19a8f157",
+      "readinessUnaffected": true,
+      "result": "PASS"
+    },
+    {
+      "name": "ready",
+      "decision": "REJECT",
+      "projection": {
+        "decision": "REJECT",
+        "consistency": "CONSISTENT",
+        "authenticity": "NOT_VERIFIED_BY_MEMORYOS"
+      },
+      "readiness": "READY",
+      "candidateDigest": "sha256:92f382b3d598cccef126f5a59e29face33c040d952edfa034eec626201678b05",
+      "readinessDigest": "sha256:7dc59aef2472df2959b88aa6532740bc03c7dacd4c5b8763c9a1306d80ac4532",
+      "proofBindingDigest": "sha256:397770af834aa5fe0fe0958075e059a03f2f7fdd383a66ed7027dd5c19a8f157",
+      "readinessUnaffected": true,
+      "result": "PASS"
+    },
+    {
+      "name": "ready",
+      "decision": "DEFER",
+      "projection": {
+        "decision": "DEFER",
+        "consistency": "CONSISTENT",
+        "authenticity": "NOT_VERIFIED_BY_MEMORYOS"
+      },
+      "readiness": "READY",
+      "candidateDigest": "sha256:92f382b3d598cccef126f5a59e29face33c040d952edfa034eec626201678b05",
+      "readinessDigest": "sha256:7dc59aef2472df2959b88aa6532740bc03c7dacd4c5b8763c9a1306d80ac4532",
+      "proofBindingDigest": "sha256:397770af834aa5fe0fe0958075e059a03f2f7fdd383a66ed7027dd5c19a8f157",
+      "readinessUnaffected": true,
+      "result": "PASS"
+    },
+    {
+      "name": "qualified",
+      "decision": "APPROVE",
+      "projection": {
+        "decision": "APPROVE",
+        "consistency": "CONSISTENT",
+        "authenticity": "NOT_VERIFIED_BY_MEMORYOS"
+      },
+      "readiness": "READY_WITH_QUALIFICATIONS",
+      "candidateDigest": "sha256:92f382b3d598cccef126f5a59e29face33c040d952edfa034eec626201678b05",
+      "readinessDigest": "sha256:f8ba02c1f86cd807f453af8833b3dc03a8f9bdf168cae246b508e5f54aa28040",
+      "proofBindingDigest": "sha256:ec7e924d988670a9b98884c7255af4f424d75e0d46a5fd850c381bcc2719a0fe",
+      "readinessUnaffected": true,
+      "result": "PASS"
+    },
+    {
+      "name": "not-ready",
+      "decision": "APPROVE",
+      "projection": {
+        "decision": "APPROVE",
+        "consistency": "CONTRARY_TO_READINESS",
+        "authenticity": "NOT_VERIFIED_BY_MEMORYOS"
+      },
+      "readiness": "NOT_READY",
+      "candidateDigest": "sha256:92f382b3d598cccef126f5a59e29face33c040d952edfa034eec626201678b05",
+      "readinessDigest": "sha256:a306e1aef26ce5415918e191bb0a4e6c4c1bd77d9de8ebb707e943cab64f4f4b",
+      "proofBindingDigest": "sha256:264f7c6e2cbfcea2c99183cb07a3b67d9b74baa22b030342a2cf5bd52e72ec2e",
+      "readinessUnaffected": true,
+      "result": "PASS"
+    },
+    {
+      "name": "ready",
+      "mismatchedField": "candidateDigest",
+      "observedError": "MO1307_DECISION_MISMATCH",
+      "result": "PASS"
+    },
+    {
+      "name": "ready",
+      "mismatchedField": "readinessDigest",
+      "observedError": "MO1307_DECISION_MISMATCH",
+      "result": "PASS"
+    },
+    {
+      "name": "ready",
+      "mismatchedField": "proofBindingDigest",
+      "observedError": "MO1307_DECISION_MISMATCH",
+      "result": "PASS"
+    }
+  ]
+}

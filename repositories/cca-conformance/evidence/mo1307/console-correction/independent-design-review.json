@@ -1,0 +1,204 @@
+{
+  "kind": "MO1307ConsoleCorrectionIndependentDesignReview",
+  "version": "1.0.0",
+  "reviewedAtUtc": "2026-09-30T11:24:23.870815+00:00",
+  "reviewer": "inventory_authority independent source review",
+  "baselineCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+  "status": "STATIC_DESIGN_ACCEPTABLE_PENDING_NATIVE_VALIDATION",
+  "semanticPassClaimed": false,
+  "certificationClaimed": false,
+  "productHelperOrTestExecutionByReviewer": false,
+  "scope": "Static review of exactly the two bound edited source files, their C3RB diff, applicable frozen authority, and primary native/Node source semantics. This is not native execution, proof of timing feasibility, regression acceptance, or Phase 3A acceptance.",
+  "sourceBindings": [
+    {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "byteLength": 29812,
+      "sha256": "sha256:658db95495072c003a849941af5d92c0761b6aa0f6f08b4911f5022a80da2688"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-transport.mjs",
+      "byteLength": 6274,
+      "sha256": "sha256:2de2ddb25a072ac6f2bf2873a6bdc9f172e41f342f5ba16127c7291906a7cd68"
+    }
+  ],
+  "blockingCodeFindings": [],
+  "decision": {
+    "mechanism": "Current console window association with a retained live system-conhost process handle; detach self and require natural exit, never forcibly terminate the host.",
+    "claim": "The current console window and its owner PID are reobserved while the retained process object remains alive, with exact system image and sole helper membership. The same held object must exit before success.",
+    "notClaimed": "Historical creation parentage, global hostile-host isolation, permanent absence of console allocation solely from process creation flags, or acceptance of a windowless attached console."
+  },
+  "reviewedProperties": [
+    {
+      "id": "DLL_SELECTION",
+      "source": "helpers/windows-inspect.ps1:101-125",
+      "finding": "GetWindowThreadProcessId alone explicitly selects user32.dll. Both DefinePInvokeMethod and DllImportAttribute use that selected fixed library. Other definitions use kernel32.dll. No caller-controlled DLL, symbol or expression is introduced. UInt32 by-reference owner output and nonzero returned thread-ID checks match the declaration."
+    },
+    {
+      "id": "FIXED_LAUNCH",
+      "source": "src/helper-transport.mjs:15-20",
+      "finding": "Executable, arguments, explicit environment, installation cwd, shell:false and three pipes stay fixed. windowsHide:true remains; detached changes to true. Node child is referenced during ordinary operation and original supervisor shutdown/EOF checks remain."
+    },
+    {
+      "id": "NO_CONSOLE_BRANCH",
+      "source": "helpers/windows-inspect.ps1:134-137",
+      "finding": "Early success requires zero process-list result and ERROR_INVALID_HANDLE. Other failures, nonsole membership and a nonself sole member reject. Initial buffer allocation is only four bytes for capacity one; oversized membership count rejects without reading a larger list."
+    },
+    {
+      "id": "CURRENT_HOST_BINDING",
+      "source": "helpers/windows-inspect.ps1:140-162",
+      "finding": "Require nonzero current console HWND, successful owner query, positive nonself PID, one OpenProcess handle with 0x101000, matching GetProcessId, and QueryFullProcessImageNameW equality to system conhost.exe. Repeat current HWND/owner and sole membership, then check GetProcessId and WAIT_TIMEOUT on the retained process. No Toolhelp PPID authority or PID reopen remains."
+    },
+    {
+      "id": "LIVE_OBJECT_ORDER",
+      "source": "helpers/windows-inspect.ps1:153-162",
+      "finding": "Final zero-time live-process wait occurs after repeated console/window/PID observations. GetProcessId documents uniqueness until process termination; a signaled/dead or invalid object cannot pass this checkpoint. This supports current association, not historical ancestry."
+    },
+    {
+      "id": "NO_HOST_TERMINATION_AUTHORITY",
+      "source": "helpers/windows-inspect.ps1:145-167",
+      "finding": "OpenProcess requests PROCESS_QUERY_LIMITED_INFORMATION|SYNCHRONIZE (0x101000), excluding PROCESS_TERMINATE. TerminateProcess declaration and invocation are removed. A late external client attaching between membership and detach cannot authorize killing its host; natural exit must occur or the helper refuses."
+    },
+    {
+      "id": "NATURAL_EXIT_AND_ABSENCE",
+      "source": "helpers/windows-inspect.ps1:163-171",
+      "finding": "Require FreeConsole success, WAIT_OBJECT_0 from the same process handle with 1000ms wait, and final GetConsoleProcessList zero/ERROR_INVALID_HANDLE. Timeout, wait failure or other result rejects; no retry or second host is created."
+    },
+    {
+      "id": "CLEANUP_AND_STARTUP_FAILURE",
+      "source": "helpers/windows-inspect.ps1:172-175,340-349",
+      "finding": "finally closes any acquired process handle and frees the native buffer. Existing outer initialization catch exits22 without a frame or diagnostic. Missing library/entry point, access denial, invalid HWND, wrong image, process mismatch, failed detach and unconfirmed exit fail closed. Failure cannot acknowledge console quiescence through the unchanged transport."
+    },
+    {
+      "id": "UNCHANGED_ACQUISITION_SUFFIX",
+      "source": "helpers/windows-inspect.ps1:function Open-Native onward",
+      "finding": "Read-only comparison found the entire suffix from Open-Native onward text-identical to C3RB after CRLF/LF normalization, including native file acquisition, identity reinspection, wire parsing/serialization and startup error wrapper. This source comparison is not semantic or regression execution."
+    },
+    {
+      "id": "SUPERVISOR_CONFIRMATION",
+      "source": "src/helper-transport.mjs:42-69,87-105",
+      "finding": "Process close, all pipe close/end/finish conditions, response validation and supervisor checkpoints remain mandatory. Malformed/partial startup transport cannot establish consoleQuiescent. Helper termination remains Node-owned ChildProcess termination, separate from removed host termination."
+    }
+  ],
+  "bounds": {
+    "processEnumerationRecords": 0,
+    "candidateHostProcessesOpenedMaximum": 1,
+    "simultaneouslyRetainedNativeProcessHandlesInConsoleRoutineMaximum": 1,
+    "membershipObservationCapacity": 1,
+    "membershipCallsSuccessfulAttachedPath": 3,
+    "currentWindowQueriesMaximum": 2,
+    "windowOwnerQueriesMaximum": 2,
+    "processIdQueriesMaximum": 2,
+    "imageQueriesMaximum": 1,
+    "waitCallsMaximum": 2,
+    "nativeMembershipBufferBytes": 4,
+    "imageBufferCharacters": 512,
+    "naturalHostWaitMs": 1000,
+    "helperLifecycleMs": 5000,
+    "aggregateHelperMs": 20000,
+    "cliMs": 30000,
+    "workerApiMs": 10000,
+    "cleanupMs": 2000,
+    "claim": "Bounds describe this routine, not all CLR/PowerShell allocations or OS scheduling guarantees. Existing absolute supervisor deadlines still include startup and cleanup boundaries. H remains NOT_ESTABLISHED."
+  },
+  "materialLaunchChange": {
+    "detached": true,
+    "effect": "Pinned libuv sets DETACHED_PROCESS|CREATE_NEW_PROCESS_GROUP and SW_HIDE; CREATE_NO_WINDOW is ignored by Windows when DETACHED_PROCESS is present. Later AllocConsole is permitted and STARTUPINFO display settings apply to it. Actual PowerShell behavior must be measured by the finite validation, not inferred from these flags.",
+    "lostCoupling": "Pinned libuv skips its global job assignment for detached children. Existing automatic kill-on-parent-exit coupling must not be claimed preserved. Parent interruption/termination and surviving helper/host behavior require explicit finite validation and disposition before certification. The unchanged referenced ChildProcess and supervisor kill path do not independently prove cleanup after an abruptly killed supervisor."
+  },
+  "preconditionsAndLimitations": [
+    "Trusted fixed Windows PowerShell5.1 x64/system installation and pinned Node runtime; no arbitrary executable/script/native symbol selection.",
+    "GetConsoleWindow must yield a nonzero current HWND for an attached console; headless/unsupported/ambiguous console modes refuse rather than infer ownership.",
+    "The startup proof is not a security boundary against privileged process injection or a hostile replacement system binary; it does not expand the frozen threat model or exclude ordinary PID/client races.",
+    "Runtime success depends on natural conhost termination within the unchanged1000ms wait. Historical forced termination is not silently reproduced. No native success has been observed by this reviewer.",
+    "Zero HWND, null handles, wrong image, changed owner/window/member, dead candidate, unsupported APIs, API failures and wait failures never become success.",
+    "Safe refusal may leave cleanup unconfirmed. Later absence observations cannot rewrite a failed current receipt or authorize a next product role.",
+    "Review does not assert that a valid frame alone proves full helper termination; transport and supervisor still own actual helper/EOF confirmation.",
+    "All accepted C3RB Phase3B/Phase3C evidence remains unchanged historical authority and does not certify these changed bytes."
+  ],
+  "requiredBeforeCertification": [
+    "Finite actual fixed-PowerShell normal/no-console/optional-host startup validation, with source and launch bindings and observed natural host exit; stop on mandatory failure.",
+    "Finite applicable refusal controls: missing HWND, owner query failure, wrong image, access denied, extra/changed client membership, PID/window replacement, process exit around acquisition, detach failure, wait failure/timeout and final absence failure; preserve silent exit22 and no host termination.",
+    "Include late client attachment between last membership observation and detach; it must never trigger host termination and cannot pass without the retained host actually exiting.",
+    "Validate parent interruption and helper/host cleanup explicitly because detached removes libuv job association; do not infer it from ordinary completion.",
+    "Validate unchanged supervisor deadline/cancellation precedence and helper/worker serialization under the corrected startup boundary.",
+    "Run required affected protocol, filesystem/TOCTOU, native acquisition, publication/cleanup and package-integrity regressions; this review does not substitute for them.",
+    "After correction validation passes, create new immutable candidate identity and fresh installed Phase3A A-O certification with no historical PASS reuse or retry-until-pass."
+  ],
+  "primarySources": [
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.21.0/lib/internal/child_process.js",
+      "relevantLines": "378-383",
+      "supports": "Spawn option flags mapping."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.21.0/src/process_wrap.cc",
+      "relevantLines": "144-173,283-290",
+      "supports": "Pipe descriptors and native flags."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.21.0/deps/uv/src/win/process.c",
+      "relevantLines": "65-91,971-1034",
+      "supports": "Hidden/detached creation flags, SW_HIDE, and skipped job assignment for detached children."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/procthread/process-creation-flags",
+      "supports": "DETACHED_PROCESS prevents inherited console; later allocation allowed; CREATE_NO_WINDOW ignored with DETACHED_PROCESS."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/console/creation-of-a-console",
+      "supports": "STARTUPINFO settings apply to a subsequently allocated console; creation flags alone are not a permanent no-console guarantee."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/console/getconsolewindow",
+      "supports": "Current associated console HWND; pseudoconsole limitations."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowthreadprocessid",
+      "supports": "Current window creator thread/process identifiers; zero return on invalid HWND; user32.dll."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocessid",
+      "supports": "Retained-handle PID query rights and PID uniqueness until process termination."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-queryfullprocessimagenamew",
+      "supports": "Held-process image query, limited query rights and bounded character buffer."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject",
+      "supports": "SYNCHRONIZE, zero-time liveness result and bounded process wait result."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/console/freeconsole",
+      "supports": "Detaches caller only; console survives other attached clients; closes when last client leaves."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/console/attachconsole",
+      "supports": "Another process can attach as a console client; membership checking does not lock membership."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/procthread/job-objects",
+      "supports": "SILENT_BREAKAWAY excludes child processes, so existing global libuv job is not console-host attribution."
+    }
+  ],
+  "authorityReferences": [
+    {
+      "commit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "path": "docs/mo1307-contract-freeze-1.md",
+      "lines": "1082-1106,1161-1169,1181-1206",
+      "scope": "Fixed helper/trust, private-root threat scope, attributable roles and confirmed quiescence, unchanged ceilings."
+    },
+    {
+      "commit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2c-resumed/console-cleanup-authorization.json",
+      "lines": "3-12",
+      "scope": "Historical exact parent/self held-host forced-cleanup authority; this candidate explicitly replaces that mechanism without acquiring host termination rights."
+    },
+    {
+      "commit": "b02fc0226a1a2d800185a02071674ca80bdf4a1d",
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/helper-delta-review.json",
+      "lines": "241-250",
+      "scope": "Historical unchanged-source review; not new-candidate authority and not native race proof."
+    }
+  ]
+}

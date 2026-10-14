@@ -1,0 +1,117 @@
+{
+  "scriptEntryOccurred": true,
+  "lastSuccessfulId": "S08.01",
+  "firstFailure": {
+    "id": "S12.01",
+    "operation": "Current console HWND/nonzero guard",
+    "lastSuccessfulId": "S08.01",
+    "nativeReturn": 0,
+    "win32Error": 203,
+    "win32ErrorMeaningful": false,
+    "details": null,
+    "selfPid": 5556,
+    "exceptionType": "System.InvalidOperationException",
+    "hresult": -2146233079,
+    "message": "MO1307_INTERNAL",
+    "elapsedMs": 166.91920000000002
+  },
+  "classification": "STARTUP_HOST_ATTRIBUTION_FAILURE",
+  "records": [
+    {
+      "kind": "MO1307StartupDiagnostic",
+      "event": "ENTRY"
+    },
+    {
+      "kind": "MO1307StartupDiagnostic",
+      "event": "FAILURE",
+      "outerId": "S23",
+      "activeId": "S22",
+      "lastSuccessfulId": "S08.01",
+      "cleanupLastSuccessfulId": "S22",
+      "firstFailure": {
+        "id": "S12.01",
+        "operation": "Current console HWND/nonzero guard",
+        "lastSuccessfulId": "S08.01",
+        "nativeReturn": 0,
+        "win32Error": 203,
+        "win32ErrorMeaningful": false,
+        "details": null,
+        "selfPid": 5556,
+        "exceptionType": "System.InvalidOperationException",
+        "hresult": -2146233079,
+        "message": "MO1307_INTERNAL",
+        "elapsedMs": 166.91920000000002
+      },
+      "outerException": {
+        "exceptionType": "System.InvalidOperationException",
+        "hresult": -2146233079,
+        "message": "MO1307_INTERNAL"
+      },
+      "recent": [
+        {
+          "id": "S01.01",
+          "operation": "PowerShell major version",
+          "nativeReturn": 5,
+          "win32Error": null,
+          "win32ErrorMeaningful": false,
+          "details": null,
+          "elapsedMs": 26.863200000000003
+        },
+        {
+          "id": "S01.02",
+          "operation": "PowerShell minor version",
+          "nativeReturn": 1,
+          "win32Error": null,
+          "win32ErrorMeaningful": false,
+          "details": null,
+          "elapsedMs": 38.8723
+        },
+        {
+          "id": "S02",
+          "operation": "64-bit architecture",
+          "nativeReturn": true,
+          "win32Error": null,
+          "win32ErrorMeaningful": false,
+          "details": null,
+          "elapsedMs": 39.6134
+        },
+        {
+          "id": "S08",
+          "operation": "Initial console membership",
+          "nativeReturn": 1,
+          "win32Error": 203,
+          "win32ErrorMeaningful": false,
+          "details": null,
+          "elapsedMs": 119.7527
+        },
+        {
+          "id": "S08.01",
+          "operation": "Initial sole-client PID read",
+          "nativeReturn": 5556,
+          "win32Error": null,
+          "win32ErrorMeaningful": false,
+          "details": null,
+          "elapsedMs": 122.31660000000001
+        },
+        {
+          "id": "S12.01",
+          "operation": "Current console HWND/nonzero guard",
+          "nativeReturn": 0,
+          "win32Error": 203,
+          "win32ErrorMeaningful": false,
+          "details": null,
+          "elapsedMs": 125.6618
+        }
+      ],
+      "elapsedMs": 177.48440000000002
+    }
+  ],
+  "outerException": {
+    "exceptionType": "System.InvalidOperationException",
+    "hresult": -2146233079,
+    "message": "MO1307_INTERNAL"
+  },
+  "firstFailureBaseId": "S12",
+  "cleanupLastSuccessfulId": "S22",
+  "activeIdAtOuterCatch": "S22"
+}

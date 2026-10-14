@@ -1,0 +1,2 @@
+"""Exact independently bound Windows runtime harness file set."""
+REQUIRED=['allocation_worker.mjs', 'boundary_guard.mjs', 'boundary_process.mjs', 'boundary_worker.mjs', 'certify_windows.py', 'external_network_probe.mjs', 'idle_worker.mjs', 'installed_boundaries.mjs', 'manifest_files.py', 'network_guard_probe.mjs', 'package_adversarial.py', 'package_verify.py', 'process_metrics.py', 'receipt.schema.json', 'test-catalog.json', 'validate_windows.py', 'windows_driver.mjs', 'windows_package.py']

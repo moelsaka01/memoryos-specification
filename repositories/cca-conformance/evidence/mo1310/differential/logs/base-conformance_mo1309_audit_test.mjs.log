@@ -1,0 +1,956 @@
+TAP version 13
+# Subtest: DB26 DB27 classifyDiff accepts MO-1309 additions and the three documents, and refuses everything else (negative controls)
+ok 1 - DB26 DB27 classifyDiff accepts MO-1309 additions and the three documents, and refuses everything else (negative controls)
+  ---
+  duration_ms: 2.9146
+  type: 'test'
+  ...
+# Subtest: DB27 import scan: relative and node: specifiers pass, a package or URL specifier is an offender (negative control)
+ok 2 - DB27 import scan: relative and node: specifiers pass, a package or URL specifier is an offender (negative control)
+  ---
+  duration_ms: 1.0597
+  type: 'test'
+  ...
+# Subtest: DB26 DB27 the whole milestone against BF bf2fdc87: only MO-1309 additions and three documents; every MO-1308 production blob is unchanged; no new import
+not ok 3 - DB26 DB27 the whole milestone against BF bf2fdc87: only MO-1309 additions and three documents; every MO-1308 production blob is unchanged; no new import
+  ---
+  duration_ms: 27708.8572
+  type: 'test'
+  location: 'C:\\t131b\\repositories\\cca-conformance\\tests\\mo1309_audit_test.mjs:34:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     path: '.github/workflows/ci.yml',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'KNOWN_ISSUES.md',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'README.md',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'RELEASE_NOTES.md',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'cmake/CCACoverage.cmake',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'docs/build-instructions.md',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'docs/maint-pre-1.3-release.md',
+    +     reason: 'an addition outside the MO-1309 paths'
+    +   },
+    +   {
+    +     path: 'repositories/cca-compiler/CMakeLists.txt',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-compiler/src/parser.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-conformance/CMakeLists.txt',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-conformance/tests/mo1304_phase3_ubuntu_conformance_test.mjs',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-conformance/tests/mo1304_phase3_windows_conformance_test.mjs',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-conformance/tests/mo1304_platform_support_conformance_test.mjs',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-conformance/tests/specification_conformance_test.mjs',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-conformance/tests/support/conformance-support.mjs',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-conformance/tests/test_mo1305_workspace_root.py',
+    +     reason: 'an addition outside the MO-1309 paths'
+    +   },
+    +   {
+    +     path: 'repositories/cca-conformance/tools/mo1305-phase3d/common.py',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/examples/episodic_memory_usage.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/examples/knowledge_retrieval_usage.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/examples/long_term_memory_usage.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/examples/memory_consolidation_usage.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/examples/memory_provider_usage.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/examples/memory_reflection_usage.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/examples/memory_usage.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/examples/procedural_memory_usage.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/examples/process_runtime_usage.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/examples/representation_usage.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/examples/semantic_memory_usage.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/examples/working_memory_usage.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/include/cca/memory/episodic_memory.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/include/cca/memory/knowledge_retrieval.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/include/cca/memory/long_term_memory.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/include/cca/memory/memory.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/include/cca/memory/memory_consolidation.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/include/cca/memory/memory_provider.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/include/cca/memory/memory_reflection.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/include/cca/memory/procedural_memory.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/include/cca/memory/semantic_memory.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/include/cca/memory/working_memory.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/include/cca/persistence/persistence.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/include/cca/process/execution_context.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/include/cca/process/execution_result.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/include/cca/process/execution_state.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/include/cca/process/process_definition.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/include/cca/process/process_engine.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/include/cca/representation/representation.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/include/cca/runtime/service_registry.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/memory/episodic_memory.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/memory/episodic_memory_persistence.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/memory/episodic_memory_persistence.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/memory/knowledge_retrieval.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/memory/long_term_memory.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/memory/long_term_memory_persistence.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/memory/long_term_memory_persistence.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/memory/memory.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/memory/memory_consolidation.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/memory/memory_provider.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/memory/memory_reflection.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/memory/procedural_memory.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/memory/procedural_memory_persistence.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/memory/procedural_memory_persistence.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/memory/semantic_memory.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/memory/semantic_memory_persistence.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/memory/semantic_memory_persistence.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/memory/working_memory.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/persistence/persistence.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/process/process.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/process/process_test_access.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/representation/representation.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/representation/representation_test_access.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/src/runtime/service_registry.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/CMakeLists.txt',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/compile_fail/observability_metric_mutation.cpp',
+    +     reason: 'an addition outside the MO-1309 paths'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/compile_fail/observability_metric_read.cpp',
+    +     reason: 'an addition outside the MO-1309 paths'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/episodic_memory_allocation_failure_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/episodic_memory_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/knowledge_retrieval_allocation_failure_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/knowledge_retrieval_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/long_term_memory_allocation_failure_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/long_term_memory_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/memory_allocation_failure_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/memory_consolidation_allocation_failure_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/memory_consolidation_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/memory_provider_allocation_failure_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/memory_provider_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/memory_reflection_allocation_failure_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/memory_reflection_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/memory_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/observability_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/persistence_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/procedural_memory_allocation_failure_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/procedural_memory_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/process_allocation_failure_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/process_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/representation_internal_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/representation_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/semantic_memory_allocation_failure_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/semantic_memory_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/working_memory_allocation_failure_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-core/tests/working_memory_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-sdk/CMakeLists.txt',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-sdk/examples/cpp_investigate.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-sdk/examples/cpp_policy.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-sdk/examples/cpp_quickstart.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-sdk/examples/cpp_regression.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-sdk/include/memoryos/memoryos.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-sdk/src/client.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-sdk/src/client.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-sdk/src/core_process.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-sdk/src/core_process.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-sdk/src/json.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-sdk/src/memoryos.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-sdk/src/policy.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-sdk/tests/memoryos_sdk_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-studio/examples/memory_studio_usage.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-studio/include/cca/memory/memory_studio.hpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-studio/src/memory_studio.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-studio/tests/memory_studio_allocation_failure_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/cca-studio/tests/memory_studio_test.cpp',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/memoryos-mcp/CMakeLists.txt',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'repositories/memoryos-mcp/scripts/run-isolated-tests.mjs',
+    +     reason: 'an addition outside the MO-1309 paths'
+    +   },
+    +   {
+    +     path: 'repositories/memoryos-vscode/CMakeLists.txt',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'scripts/coverage.sh',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'tests/CMakeLists.txt',
+    +     reason: 'status M on a released path'
+    +   },
+    +   {
+    +     path: 'tools/verify_workspace.py',
+    +     reason: 'status M on a released path'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      path: '.github/workflows/ci.yml'
+      reason: 'status M on a released path'
+    1:
+      path: 'KNOWN_ISSUES.md'
+      reason: 'status M on a released path'
+    2:
+      path: 'README.md'
+      reason: 'status M on a released path'
+    3:
+      path: 'RELEASE_NOTES.md'
+      reason: 'status M on a released path'
+    4:
+      path: 'cmake/CCACoverage.cmake'
+      reason: 'status M on a released path'
+    5:
+      path: 'docs/build-instructions.md'
+      reason: 'status M on a released path'
+    6:
+      path: 'docs/maint-pre-1.3-release.md'
+      reason: 'an addition outside the MO-1309 paths'
+    7:
+      path: 'repositories/cca-compiler/CMakeLists.txt'
+      reason: 'status M on a released path'
+    8:
+      path: 'repositories/cca-compiler/src/parser.cpp'
+      reason: 'status M on a released path'
+    9:
+      path: 'repositories/cca-conformance/CMakeLists.txt'
+      reason: 'status M on a released path'
+    10:
+      path: 'repositories/cca-conformance/tests/mo1304_phase3_ubuntu_conformance_test.mjs'
+      reason: 'status M on a released path'
+    11:
+      path: 'repositories/cca-conformance/tests/mo1304_phase3_windows_conformance_test.mjs'
+      reason: 'status M on a released path'
+    12:
+      path: 'repositories/cca-conformance/tests/mo1304_platform_support_conformance_test.mjs'
+      reason: 'status M on a released path'
+    13:
+      path: 'repositories/cca-conformance/tests/specification_conformance_test.mjs'
+      reason: 'status M on a released path'
+    14:
+      path: 'repositories/cca-conformance/tests/support/conformance-support.mjs'
+      reason: 'status M on a released path'
+    15:
+      path: 'repositories/cca-conformance/tests/test_mo1305_workspace_root.py'
+      reason: 'an addition outside the MO-1309 paths'
+    16:
+      path: 'repositories/cca-conformance/tools/mo1305-phase3d/common.py'
+      reason: 'status M on a released path'
+    17:
+      path: 'repositories/cca-core/examples/episodic_memory_usage.cpp'
+      reason: 'status M on a released path'
+    18:
+      path: 'repositories/cca-core/examples/knowledge_retrieval_usage.cpp'
+      reason: 'status M on a released path'
+    19:
+      path: 'repositories/cca-core/examples/long_term_memory_usage.cpp'
+      reason: 'status M on a released path'
+    20:
+      path: 'repositories/cca-core/examples/memory_consolidation_usage.cpp'
+      reason: 'status M on a released path'
+    21:
+      path: 'repositories/cca-core/examples/memory_provider_usage.cpp'
+      reason: 'status M on a released path'
+    22:
+      path: 'repositories/cca-core/examples/memory_reflection_usage.cpp'
+      reason: 'status M on a released path'
+    23:
+      path: 'repositories/cca-core/examples/memory_usage.cpp'
+      reason: 'status M on a released path'
+    24:
+      path: 'repositories/cca-core/examples/procedural_memory_usage.cpp'
+      reason: 'status M on a released path'
+    25:
+      path: 'repositories/cca-core/examples/process_runtime_usage.cpp'
+      reason: 'status M on a released path'
+    26:
+      path: 'repositories/cca-core/examples/representation_usage.cpp'
+      reason: 'status M on a released path'
+    27:
+      path: 'repositories/cca-core/examples/semantic_memory_usage.cpp'
+      reason: 'status M on a released path'
+    28:
+      path: 'repositories/cca-core/examples/working_memory_usage.cpp'
+      reason: 'status M on a released path'
+    29:
+      path: 'repositories/cca-core/include/cca/memory/episodic_memory.hpp'
+      reason: 'status M on a released path'
+    30:
+      path: 'repositories/cca-core/include/cca/memory/knowledge_retrieval.hpp'
+      reason: 'status M on a released path'
+    31:
+      path: 'repositories/cca-core/include/cca/memory/long_term_memory.hpp'
+      reason: 'status M on a released path'
+    32:
+      path: 'repositories/cca-core/include/cca/memory/memory.hpp'
+      reason: 'status M on a released path'
+    33:
+      path: 'repositories/cca-core/include/cca/memory/memory_consolidation.hpp'
+      reason: 'status M on a released path'
+    34:
+      path: 'repositories/cca-core/include/cca/memory/memory_provider.hpp'
+      reason: 'status M on a released path'
+    35:
+      path: 'repositories/cca-core/include/cca/memory/memory_reflection.hpp'
+      reason: 'status M on a released path'
+    36:
+      path: 'repositories/cca-core/include/cca/memory/procedural_memory.hpp'
+      reason: 'status M on a released path'
+    37:
+      path: 'repositories/cca-core/include/cca/memory/semantic_memory.hpp'
+      reason: 'status M on a released path'
+    38:
+      path: 'repositories/cca-core/include/cca/memory/working_memory.hpp'
+      reason: 'status M on a released path'
+    39:
+      path: 'repositories/cca-core/include/cca/persistence/persistence.hpp'
+      reason: 'status M on a released path'
+    40:
+      path: 'repositories/cca-core/include/cca/process/execution_context.hpp'
+      reason: 'status M on a released path'
+    41:
+      path: 'repositories/cca-core/include/cca/process/execution_result.hpp'
+      reason: 'status M on a released path'
+    42:
+      path: 'repositories/cca-core/include/cca/process/execution_state.hpp'
+      reason: 'status M on a released path'
+    43:
+      path: 'repositories/cca-core/include/cca/process/process_definition.hpp'
+      reason: 'status M on a released path'
+    44:
+      path: 'repositories/cca-core/include/cca/process/process_engine.hpp'
+      reason: 'status M on a released path'
+    45:
+      path: 'repositories/cca-core/include/cca/representation/representation.hpp'
+      reason: 'status M on a released path'
+    46:
+      path: 'repositories/cca-core/include/cca/runtime/service_registry.hpp'
+      reason: 'status M on a released path'
+    47:
+      path: 'repositories/cca-core/src/memory/episodic_memory.cpp'
+      reason: 'status M on a released path'
+    48:
+      path: 'repositories/cca-core/src/memory/episodic_memory_persistence.cpp'
+      reason: 'status M on a released path'
+    49:
+      path: 'repositories/cca-core/src/memory/episodic_memory_persistence.hpp'
+      reason: 'status M on a released path'
+    50:
+      path: 'repositories/cca-core/src/memory/knowledge_retrieval.cpp'
+      reason: 'status M on a released path'
+    51:
+      path: 'repositories/cca-core/src/memory/long_term_memory.cpp'
+      reason: 'status M on a released path'
+    52:
+      path: 'repositories/cca-core/src/memory/long_term_memory_persistence.cpp'
+      reason: 'status M on a released path'
+    53:
+      path: 'repositories/cca-core/src/memory/long_term_memory_persistence.hpp'
+      reason: 'status M on a released path'
+    54:
+      path: 'repositories/cca-core/src/memory/memory.cpp'
+      reason: 'status M on a released path'
+    55:
+      path: 'repositories/cca-core/src/memory/memory_consolidation.cpp'
+      reason: 'status M on a released path'
+    56:
+      path: 'repositories/cca-core/src/memory/memory_provider.cpp'
+      reason: 'status M on a released path'
+    57:
+      path: 'repositories/cca-core/src/memory/memory_reflection.cpp'
+      reason: 'status M on a released path'
+    58:
+      path: 'repositories/cca-core/src/memory/procedural_memory.cpp'
+      reason: 'status M on a released path'
+    59:
+      path: 'repositories/cca-core/src/memory/procedural_memory_persistence.cpp'
+      reason: 'status M on a released path'
+    60:
+      path: 'repositories/cca-core/src/memory/procedural_memory_persistence.hpp'
+      reason: 'status M on a released path'
+    61:
+      path: 'repositories/cca-core/src/memory/semantic_memory.cpp'
+      reason: 'status M on a released path'
+    62:
+      path: 'repositories/cca-core/src/memory/semantic_memory_persistence.cpp'
+      reason: 'status M on a released path'
+    63:
+      path: 'repositories/cca-core/src/memory/semantic_memory_persistence.hpp'
+      reason: 'status M on a released path'
+    64:
+      path: 'repositories/cca-core/src/memory/working_memory.cpp'
+      reason: 'status M on a released path'
+    65:
+      path: 'repositories/cca-core/src/persistence/persistence.cpp'
+      reason: 'status M on a released path'
+    66:
+      path: 'repositories/cca-core/src/process/process.cpp'
+      reason: 'status M on a released path'
+    67:
+      path: 'repositories/cca-core/src/process/process_test_access.hpp'
+      reason: 'status M on a released path'
+    68:
+      path: 'repositories/cca-core/src/representation/representation.cpp'
+      reason: 'status M on a released path'
+    69:
+      path: 'repositories/cca-core/src/representation/representation_test_access.hpp'
+      reason: 'status M on a released path'
+    70:
+      path: 'repositories/cca-core/src/runtime/service_registry.cpp'
+      reason: 'status M on a released path'
+    71:
+      path: 'repositories/cca-core/tests/CMakeLists.txt'
+      reason: 'status M on a released path'
+    72:
+      path: 'repositories/cca-core/tests/compile_fail/observability_metric_mutation.cpp'
+      reason: 'an addition outside the MO-1309 paths'
+    73:
+      path: 'repositories/cca-core/tests/compile_fail/observability_metric_read.cpp'
+      reason: 'an addition outside the MO-1309 paths'
+    74:
+      path: 'repositories/cca-core/tests/episodic_memory_allocation_failure_test.cpp'
+      reason: 'status M on a released path'
+    75:
+      path: 'repositories/cca-core/tests/episodic_memory_test.cpp'
+      reason: 'status M on a released path'
+    76:
+      path: 'repositories/cca-core/tests/knowledge_retrieval_allocation_failure_test.cpp'
+      reason: 'status M on a released path'
+    77:
+      path: 'repositories/cca-core/tests/knowledge_retrieval_test.cpp'
+      reason: 'status M on a released path'
+    78:
+      path: 'repositories/cca-core/tests/long_term_memory_allocation_failure_test.cpp'
+      reason: 'status M on a released path'
+    79:
+      path: 'repositories/cca-core/tests/long_term_memory_test.cpp'
+      reason: 'status M on a released path'
+    80:
+      path: 'repositories/cca-core/tests/memory_allocation_failure_test.cpp'
+      reason: 'status M on a released path'
+    81:
+      path: 'repositories/cca-core/tests/memory_consolidation_allocation_failure_test.cpp'
+      reason: 'status M on a released path'
+    82:
+      path: 'repositories/cca-core/tests/memory_consolidation_test.cpp'
+      reason: 'status M on a released path'
+    83:
+      path: 'repositories/cca-core/tests/memory_provider_allocation_failure_test.cpp'
+      reason: 'status M on a released path'
+    84:
+      path: 'repositories/cca-core/tests/memory_provider_test.cpp'
+      reason: 'status M on a released path'
+    85:
+      path: 'repositories/cca-core/tests/memory_reflection_allocation_failure_test.cpp'
+      reason: 'status M on a released path'
+    86:
+      path: 'repositories/cca-core/tests/memory_reflection_test.cpp'
+      reason: 'status M on a released path'
+    87:
+      path: 'repositories/cca-core/tests/memory_test.cpp'
+      reason: 'status M on a released path'
+    88:
+      path: 'repositories/cca-core/tests/observability_test.cpp'
+      reason: 'status M on a released path'
+    89:
+      path: 'repositories/cca-core/tests/persistence_test.cpp'
+      reason: 'status M on a released path'
+    90:
+      path: 'repositories/cca-core/tests/procedural_memory_allocation_failure_test.cpp'
+      reason: 'status M on a released path'
+    91:
+      path: 'repositories/cca-core/tests/procedural_memory_test.cpp'
+      reason: 'status M on a released path'
+    92:
+      path: 'repositories/cca-core/tests/process_allocation_failure_test.cpp'
+      reason: 'status M on a released path'
+    93:
+      path: 'repositories/cca-core/tests/process_test.cpp'
+      reason: 'status M on a released path'
+    94:
+      path: 'repositories/cca-core/tests/representation_internal_test.cpp'
+      reason: 'status M on a released path'
+    95:
+      path: 'repositories/cca-core/tests/representation_test.cpp'
+      reason: 'status M on a released path'
+    96:
+      path: 'repositories/cca-core/tests/semantic_memory_allocation_failure_test.cpp'
+      reason: 'status M on a released path'
+    97:
+      path: 'repositories/cca-core/tests/semantic_memory_test.cpp'
+      reason: 'status M on a released path'
+    98:
+      path: 'repositories/cca-core/tests/working_memory_allocation_failure_test.cpp'
+      reason: 'status M on a released path'
+    99:
+      path: 'repositories/cca-core/tests/working_memory_test.cpp'
+      reason: 'status M on a released path'
+    100:
+      path: 'repositories/cca-sdk/CMakeLists.txt'
+      reason: 'status M on a released path'
+    101:
+      path: 'repositories/cca-sdk/examples/cpp_investigate.cpp'
+      reason: 'status M on a released path'
+    102:
+      path: 'repositories/cca-sdk/examples/cpp_policy.cpp'
+      reason: 'status M on a released path'
+    103:
+      path: 'repositories/cca-sdk/examples/cpp_quickstart.cpp'
+      reason: 'status M on a released path'
+    104:
+      path: 'repositories/cca-sdk/examples/cpp_regression.cpp'
+      reason: 'status M on a released path'
+    105:
+      path: 'repositories/cca-sdk/include/memoryos/memoryos.hpp'
+      reason: 'status M on a released path'
+    106:
+      path: 'repositories/cca-sdk/src/client.cpp'
+      reason: 'status M on a released path'
+    107:
+      path: 'repositories/cca-sdk/src/client.hpp'
+      reason: 'status M on a released path'
+    108:
+      path: 'repositories/cca-sdk/src/core_process.cpp'
+      reason: 'status M on a released path'
+    109:
+      path: 'repositories/cca-sdk/src/core_process.hpp'
+      reason: 'status M on a released path'
+    110:
+      path: 'repositories/cca-sdk/src/json.hpp'
+      reason: 'status M on a released path'
+    111:
+      path: 'repositories/cca-sdk/src/memoryos.cpp'
+      reason: 'status M on a released path'
+    112:
+      path: 'repositories/cca-sdk/src/policy.cpp'
+      reason: 'status M on a released path'
+    113:
+      path: 'repositories/cca-sdk/tests/memoryos_sdk_test.cpp'
+      reason: 'status M on a released path'
+    114:
+      path: 'repositories/cca-studio/examples/memory_studio_usage.cpp'
+      reason: 'status M on a released path'
+    115:
+      path: 'repositories/cca-studio/include/cca/memory/memory_studio.hpp'
+      reason: 'status M on a released path'
+    116:
+      path: 'repositories/cca-studio/src/memory_studio.cpp'
+      reason: 'status M on a released path'
+    117:
+      path: 'repositories/cca-studio/tests/memory_studio_allocation_failure_test.cpp'
+      reason: 'status M on a released path'
+    118:
+      path: 'repositories/cca-studio/tests/memory_studio_test.cpp'
+      reason: 'status M on a released path'
+    119:
+      path: 'repositories/memoryos-mcp/CMakeLists.txt'
+      reason: 'status M on a released path'
+    120:
+      path: 'repositories/memoryos-mcp/scripts/run-isolated-tests.mjs'
+      reason: 'an addition outside the MO-1309 paths'
+    121:
+      path: 'repositories/memoryos-vscode/CMakeLists.txt'
+      reason: 'status M on a released path'
+    122:
+      path: 'scripts/coverage.sh'
+      reason: 'status M on a released path'
+    123:
+      path: 'tests/CMakeLists.txt'
+      reason: 'status M on a released path'
+    124:
+      path: 'tools/verify_workspace.py'
+      reason: 'status M on a released path'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/t131b/repositories/cca-conformance/tests/mo1309_audit_test.mjs:37:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+    Test.postRun (node:internal/test_runner/test:1542:19)
+    Test.run (node:internal/test_runner/test:1467:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: DB27 the studio package manifest is byte-identical to BF and the MO-1309 tests are wired by a separate manifest (no build step, no script change)
+ok 4 - DB27 the studio package manifest is byte-identical to BF and the MO-1309 tests are wired by a separate manifest (no build step, no script change)
+  ---
+  duration_ms: 515.1664
+  type: 'test'
+  ...
+# Subtest: DB31 ARCHITECTURE.md differs from BF by additions only, and they are the two Freeze section 20 clauses
+ok 5 - DB31 ARCHITECTURE.md differs from BF by additions only, and they are the two Freeze section 20 clauses
+  ---
+  duration_ms: 256.5496
+  type: 'test'
+  ...
+# Subtest: DB32 no export-performance work: the MO-1308 exporter and every MO-1308 production path are byte-identical to the released candidate
+ok 6 - DB32 no export-performance work: the MO-1308 exporter and every MO-1308 production path are byte-identical to the released candidate
+  ---
+  duration_ms: 29933.2364
+  type: 'test'
+  ...
+# Subtest: differential gate verdict rules (A3.2 style): a regression, a new failing unit, a changed failure set and an unverified workspace are each caught (negative controls)
+ok 7 - differential gate verdict rules (A3.2 style): a regression, a new failing unit, a changed failure set and an unverified workspace are each caught (negative controls)
+  ---
+  duration_ms: 15.969
+  type: 'test'
+  ...
+# Subtest: differential gate on Windows and Node 24: units ask for the TAP reporter, an unrunnable workspace verifier is never a pass, and a prepared tree at the wrong commit is refused (negative controls)
+ok 8 - differential gate on Windows and Node 24: units ask for the TAP reporter, an unrunnable workspace verifier is never a pass, and a prepared tree at the wrong commit is refused (negative controls)
+  ---
+  duration_ms: 1724.1588
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 7
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 60359.1726

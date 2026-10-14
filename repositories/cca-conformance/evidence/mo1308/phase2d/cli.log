@@ -1,0 +1,128 @@
+✔ package bin resolves to the production executable entry (7.3668ms)
+✔ production CLI depends on the SDK facade and no lower platform layer (5.7575ms)
+✔ CLI output preserves direct SDK transition truth (2998.813ms)
+✔ Regression output is the exact public SDK report (2657.302ms)
+✔ Investigation navigation output is the exact public SDK result (2340.1459ms)
+✔ version and help expose the deterministic supported command surface (13921.2595ms)
+✔ argument failures are stable, non-interactive, and use exit code 1 (31883.0234ms)
+✔ observe requires explicit deterministic files and emits stable summaries (5471.7234ms)
+✔ input validation failures use exit code 2 and deterministic JSON (9730.9702ms)
+✔ all documented exit-code classes are observable (10427.9638ms)
+✔ history grammar enumerations equal the SDK contract and the fixed usage message (1.4132ms)
+✔ every valid history command is accepted by the grammar and answered by the store with a frozen code (20332.6512ms)
+✔ history grammar rejects malformed commands with MO1308_USAGE (55577.3102ms)
+✔ history human errors carry the history code and the fixed message (1180.6031ms)
+✔ history help lists the exact frozen grammar (1243.7313ms)
+✔ non-history error envelopes are unchanged (no historyCode) (1168.0972ms)
+✔ history grammar performs no I/O, starts no process and reads no clock (R35, R37) (3.2712ms)
+✔ W01 junctions and directory symlinks anywhere on the path or inside the ledger fail closed on every operation (R17, H40) (549.8523ms)
+✔ W01b a reparse point that is neither a junction nor a symlink (an app-execution alias) is refused as an input file (H40) (13.2495ms)
+✔ W02 a junction swapped in for a record directory during an append is detected; decoy content survives; the entry is never committed; reads then fail closed (H40) (329.998ms)
+✔ W03 the entries directory swapped for a junction at the commit point is detected after the fact: the real entries stay unchanged, reads fail closed (H40) (339.4663ms)
+✔ W04 NTFS hard links: publication leaves one link per file, never replaces a name, and an unremoved staging link is only an anomaly (R06, section 9.2) (611.6436ms)
+✔ W05 exclusive-create semantics: an existing name is never opened for writing, even one locked by another process or differing only in case (R06) (2422.9919ms)
+✔ W05b a sharing violation (another process holds a ledger file with no sharing) fails closed with a typed IO error and changes nothing; releasing restores service (R17) (2209.3378ms)
+✔ W06 the case-insensitive realpath comparison accepts any casing of the real path and refuses a short (8.3) alias; case-only renames inside a ledger are corruption (R17, H40) (440.8906ms)
+✖ W07 drive-letter, UNC and long-path forms work end to end; the \\?\ and \\.\ forms are refused fail-closed without creating anything (R17) (518.0152ms)
+✖ W08 NTFS concurrency: ten real appender processes with concurrent readers; every append that succeeded is in the ledger exactly once, every record that is not was reported as a typed failure, and no failed writer left a record (R15) (18399.5478ms)
+ℹ W08 attempts=30 succeeded=30 failedByCode={} fsErrorsByCodeErrnoSyscall={}
+✔ W08b concurrent tombstones and appends in separate processes leave one tombstone per target and a verifying chain (R15, section 10.2) (7069.3718ms)
+✔ W08c a junction swapper racing real appender processes: the race is exercised, nothing outside is overwritten, and the ledger only ever verifies or fails closed with a typed error (H40) (7256.2766ms)
+✔ T01 store constants equal the Freeze contract module (layout, limits, member names) (1.947ms)
+✔ T02 init creates exactly the frozen layout once; an existing target or a missing parent is refused (section 9.1) (24.3497ms)
+✔ T03 append publishes members, then the entry; every earlier file is untouched (R06, R15) (214.2212ms)
+✔ T04 rejected appends change nothing: duplicates, wrong members, purged re-supply (R09, R10, R20) (160.4376ms)
+✔ T05 the commit point is exclusive creation of entries/<n>.json: a lost race is LEDGER_CONFLICT and publishes nothing (R15, H41) (425.6048ms)
+✔ T06 interruption at every mutating step before the commit point publishes nothing; after it, a complete entry (R16) (1868.8468ms)
+✔ T07 tombstone commits first, then purges every member; the chain still verifies (R18, R19, section 10.2) (70.3461ms)
+✔ T08 a crash during purge leaves purgePending; re-running the same command finishes it without a new entry (section 10.2) (358.8918ms)
+✔ T09 verify fails closed on every layout defect (section 11.1) (473.0173ms)
+✔ T10 verify reports staging and unreferenced artifacts; tampered bytes fail closed (R21) (221.0552ms)
+✔ T11 filesystem boundary: a link anywhere on the path or inside the ledger fails closed on every operation (R17, H40) (274.8807ms)
+✔ T12 a handle/path identity mismatch fails closed (H40) (18.1674ms)
+✔ T12b a published name whose identity differs from the staged file is detected after the link (H40) (196.2331ms)
+✔ T13 a directory swapped for a link during an append is detected after the fact; no content is overwritten; reads then fail closed (H40 risk acceptance) (413.5535ms)
+✔ T13b the same swap with no decoy is detected after the link: a boundary failure, the entry is never committed (H40) (265.2595ms)
+✔ T14 export is written once, marker last, byte-identical for equal ledgers, and verify-export fails closed (R23, section 12) (924.392ms)
+✔ T15 query and verify-export are read-only; query verifies the chain and never reads member bytes (R22) (237.755ms)
+✔ T16 commands: arguments become store operations, inputs are read through the boundary, errors carry only fixed text (section 13.3, 14.1) (897.391ms)
+✔ T17 concurrent appenders in separate processes: exactly one entry per index, losers get LEDGER_CONFLICT, the chain verifies (R15) (6362.7619ms)
+✔ T18 the store is Node-only, helper-free, timeless and never overwrites (R06, R35, R37, H40) (2.9566ms)
+✔ T19 nothing outside the SDK facade and the contract is imported by the history sources; commands.js stays the only SDK importer (ARCHITECTURE section 5) (0.8234ms)
+✔ T20 a purge committed between the entry listing and the member listing never produces RECORD_BYTES_MISMATCH: the read is repeated on a consistent snapshot (section 10.2, found by W08b) (1059.3202ms)
+✔ T21 when writers overtake every pass the read fails with LEDGER_CONFLICT after exactly the fixed number of passes, never with an integrity code, and publishes nothing (3293.3896ms)
+✔ T22 on a stable snapshot every mismatch is reported exactly as before: corruption of a quiescent ledger is an integrity error found in a single pass (116.4836ms)
+✔ CCA-MOS-CLI-004: every command emits deterministic human output through the production CLI (96925.5528ms)
+✔ investigate delegates raw and enveloped Regression Reports with stable JSON (7451.9115ms)
+✔ investigate selects Evidence, Reflection, Retrieval, and Evolution through the SDK (6695.1004ms)
+✔ investigate selects Replay, Transition, and Verification facts exactly (4510.8115ms)
+✔ investigate rejects invalid grammar, reports, categories, and selector combinations (15941.4718ms)
+✔ investigate remains bounded for a complete deterministic Regression Report (2203.3765ms)
+✔ verify delegates valid and invalid package truth with exit code 3 on failure (6564.7072ms)
+✔ import and inspect expose the same deterministic SDK investigation metadata (3681.0894ms)
+✔ trace requires and preserves one exact package Trace selector (3643.6737ms)
+✔ replay applies repeated SDK actions in caller order and is deterministic (6749.5527ms)
+✔ compare uses one package, completes its Replay, and enters exact Evolution (8085.8986ms)
+✔ regression delegates two packages to the SDK and preserves deterministic report truth (4720.8509ms)
+✔ regression reports identical packages and accepts at most one stdin operand (7648.8198ms)
+✔ export is a byte-for-byte SDK round trip for files and stdout (5479.1494ms)
+✔ package stdin supports non-interactive verification and import (3713.0937ms)
+✔ invalid package import is reported as a package error (2162.5427ms)
+✔ policy namespace exposes exactly the seven frozen commands (11609.0088ms)
+✔ unexpected Policy operational failure maps to exit 5 and the exact JSON semantic projection (1.7509ms)
+✔ validate, digest, identities, and presentation envelopes preserve frozen bytes (9247.1932ms)
+✔ evaluate preserves PASS, FAIL, CNE, exact artifacts, and outcome-last generation (12957.1837ms)
+✔ all detached inspections and both verification modes remain SDK-owned (20186.5975ms)
+✔ policy transport rejects collisions, multiple stdin inputs, URLs, and output-only stdin (9448.8389ms)
+✔ session preserves opaque checkpoints and restores exact SDK state (7495.1142ms)
+✔ checkpoint names cannot restore across live CLI sessions (4068.4321ms)
+✔ session executes Trace, complete Replay, and Compare in one live SDK (7925.5181ms)
+✔ session can verify and byte-preserving export through the SDK (2796.9857ms)
+✔ native observations fail export safely without fabricating a MIP (2556.017ms)
+✔ session accepts a workflow file and fails malformed JSON deterministically (3839.681ms)
+ℹ tests 81
+ℹ suites 0
+ℹ pass 79
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 507599.5322
+
+✖ failing tests:
+
+test at tests\history-store-windows.test.mjs:385:1
+✖ W07 drive-letter, UNC and long-path forms work end to end; the \\?\ and \\.\ forms are refused fail-closed without creating anything (R17) (518.0152ms)
+  Error [MemoryOSHistoryError]: The record Workspace differs from the ledger Workspace.
+      at historyFail (file:///C:/Users/melsa/Documents/Codex/b2d/repositories/cca-studio/web/js/memoryos-history-contract.js:221:9)
+      at Object.admitCheckpoint [as INVESTIGATION_CHECKPOINT] (file:///C:/Users/melsa/Documents/Codex/b2d/repositories/cca-studio/web/js/memoryos-history-admission.js:334:59)
+      at admitHistoryRecord (file:///C:/Users/melsa/Documents/Codex/b2d/repositories/cca-studio/web/js/memoryos-history-admission.js:743:38)
+      at Object.admitHistoryRecord (file:///C:/Users/melsa/Documents/Codex/b2d/repositories/cca-studio/web/js/memoryos-sdk.js:889:21)
+      at Object.append (file:///C:/Users/melsa/Documents/Codex/b2d/repositories/memoryos-cli/src/history-store.js:413:30)
+      at TestContext.<anonymous> (file:///C:/Users/melsa/Documents/Codex/b2d/repositories/memoryos-cli/tests/history-store-windows.test.mjs:396:22)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19) {
+    code: 'MO1308_WORKSPACE_MISMATCH',
+    stage: 'ADMISSION',
+    exitCode: 2
+  }
+
+test at tests\history-store-windows.test.mjs:432:1
+✖ W08 NTFS concurrency: ten real appender processes with concurrent readers; every append that succeeded is in the ledger exactly once, every record that is not was reported as a typed failure, and no failed writer left a record (R15) (18399.5478ms)
+  AssertionError [ERR_ASSERTION]: w0-0 succeeded and must be present exactly once
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///C:/Users/melsa/Documents/Codex/b2d/repositories/memoryos-cli/tests/history-store-windows.test.mjs:464:42)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

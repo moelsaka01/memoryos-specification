@@ -1,0 +1,22 @@
+✔ W01 junctions and directory symlinks anywhere on the path or inside the ledger fail closed on every operation (R17, H40) (550.3558ms)
+✔ W01b a reparse point that is neither a junction nor a symlink (an app-execution alias) is refused as an input file (H40) (19.9023ms)
+✔ W02 a junction swapped in for a record directory during an append is detected; decoy content survives; the entry is never committed; reads then fail closed (H40) (304.398ms)
+✔ W03 the entries directory swapped for a junction at the commit point is detected after the fact: the real entries stay unchanged, reads fail closed (H40) (439.8843ms)
+✔ W04 NTFS hard links: publication leaves one link per file, never replaces a name, and an unremoved staging link is only an anomaly (R06, section 9.2) (568.6784ms)
+✔ W05 exclusive-create semantics: an existing name is never opened for writing, even one locked by another process or differing only in case (R06) (3011.1352ms)
+✔ W05b a sharing violation (another process holds a ledger file with no sharing) fails closed with a typed IO error and changes nothing; releasing restores service (R17) (2747.1035ms)
+✔ W06 the case-insensitive realpath comparison accepts any casing of the real path and refuses a short (8.3) alias; case-only renames inside a ledger are corruption (R17, H40) (255.0233ms)
+✔ W07 drive-letter, UNC and long-path forms work end to end; the \\?\ and \\.\ forms are refused fail-closed without creating anything (R17) (1417.7194ms)
+✔ W07b an export into the ledger is refused under every Windows spelling of the ledger: drive-letter, UNC and differently cased forms (3C-F4, Amendment A9) (146.1057ms)
+✔ W08 NTFS concurrency: ten real appender processes with concurrent readers; every append that succeeded is in the ledger exactly once, every record that is not was reported as a typed failure, and no failed writer left a record (R15) (28228.9554ms)
+ℹ W08 attempts=30 succeeded=30 failedByCode={} fsErrorsByCodeErrnoSyscall={}
+✔ W08b concurrent tombstones and appends in separate processes leave one tombstone per target and a verifying chain (R15, section 10.2) (10962.3109ms)
+✔ W08c a junction swapper racing real appender processes: the race is exercised, nothing outside is overwritten, and the ledger only ever verifies or fails closed with a typed error (H40) (8981.1286ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 59297.9363

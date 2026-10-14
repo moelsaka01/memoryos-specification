@@ -1,0 +1,133 @@
+130498: ;// CONCATENATED MODULE: ./src/upload/input-helper.ts
+130499:
+130500:
+130501: /**
+130502:  * Helper to get all the inputs for the action
+130503:  */
+130504: function getInputs() {
+130505:     const name = getInput(Inputs.Name);
+130506:     const path = getInput(Inputs.Path, { required: true });
+130507:     const overwrite = getBooleanInput(Inputs.Overwrite);
+130508:     const includeHiddenFiles = getBooleanInput(Inputs.IncludeHiddenFiles);
+130509:     const archive = getBooleanInput(Inputs.Archive);
+130510:     const ifNoFilesFound = getInput(Inputs.IfNoFilesFound);
+130511:     const noFileBehavior = NoFileOptions[ifNoFilesFound];
+130512:     if (!noFileBehavior) {
+130513:         setFailed(`Unrecognized ${Inputs.IfNoFilesFound} input. Provided: ${ifNoFilesFound}. Available options: ${Object.keys(NoFileOptions)}`);
+130514:     }
+130515:     const inputs = {
+130516:         artifactName: name,
+130517:         searchPath: path,
+130518:         ifNoFilesFound: noFileBehavior,
+130519:         overwrite: overwrite,
+130520:         includeHiddenFiles: includeHiddenFiles,
+130521:         archive: archive
+130522:     };
+130523:     const retentionDaysStr = getInput(Inputs.RetentionDays);
+130524:     if (retentionDaysStr) {
+130525:         inputs.retentionDays = parseInt(retentionDaysStr);
+130526:         if (isNaN(inputs.retentionDays)) {
+130527:             setFailed('Invalid retention-days');
+130528:         }
+130529:     }
+130530:     const compressionLevelStr = getInput(Inputs.CompressionLevel);
+130531:     if (compressionLevelStr) {
+130532:         inputs.compressionLevel = parseInt(compressionLevelStr);
+130533:         if (isNaN(inputs.compressionLevel)) {
+130534:             setFailed('Invalid compression-level');
+130535:         }
+130536:         if (inputs.compressionLevel < 0 || inputs.compressionLevel > 9) {
+130537:             setFailed('Invalid compression-level. Valid values are 0-9');
+130538:         }
+130539:     }
+130540:     return inputs;
+130541: }
+130542:
+130543: ;// CONCATENATED MODULE: ./src/shared/upload-artifact.ts
+130544:
+130545:
+130546:
+130547: async function upload_artifact_uploadArtifact(artifactName, filesToUpload, rootDirectory, options) {
+130548:     const uploadResponse = await artifact.uploadArtifact(artifactName, filesToUpload, rootDirectory, options);
+130549:     info(`Artifact ${artifactName} has been successfully uploaded! Final size is ${uploadResponse.size} bytes. Artifact ID is ${uploadResponse.id}`);
+130550:     setOutput('artifact-id', uploadResponse.id);
+130551:     setOutput('artifact-digest', uploadResponse.digest);
+130552:     const repository = github_context.repo;
+130553:     const artifactURL = `${github_context.serverUrl}/${repository.owner}/${repository.repo}/actions/runs/${github_context.runId}/artifacts/${uploadResponse.id}`;
+130554:     info(`Artifact download URL: ${artifactURL}`);
+130555:     setOutput('artifact-url', artifactURL);
+130556: }
+130557:
+130558: ;// CONCATENATED MODULE: ./src/upload/upload-artifact.ts
+130559:
+130560:
+130561:
+130562:
+130563:
+130564:
+130565: async function deleteArtifactIfExists(artifactName) {
+130566:     try {
+130567:         await artifact.deleteArtifact(artifactName);
+130568:     }
+130569:     catch (error) {
+130570:         if (error instanceof ArtifactNotFoundError) {
+130571:             core_debug(`Skipping deletion of '${artifactName}', it does not exist`);
+130572:             return;
+130573:         }
+130574:         // Best effort, we don't want to fail the action if this fails
+130575:         core_debug(`Unable to delete artifact: ${error.message}`);
+130576:     }
+130577: }
+130578: async function run() {
+130579:     const inputs = getInputs();
+130580:     const searchResult = await findFilesToUpload(inputs.searchPath, inputs.includeHiddenFiles);
+130581:     if (searchResult.filesToUpload.length === 0) {
+130582:         // No files were found, different use cases warrant different types of behavior if nothing is found
+130583:         switch (inputs.ifNoFilesFound) {
+130584:             case NoFileOptions.warn: {
+130585:                 warning(`No files were found with the provided path: ${inputs.searchPath}. No artifacts will be uploaded.`);
+130586:                 break;
+130587:             }
+130588:             case NoFileOptions.error: {
+130589:                 setFailed(`No files were found with the provided path: ${inputs.searchPath}. No artifacts will be uploaded.`);
+130590:                 break;
+130591:             }
+130592:             case NoFileOptions.ignore: {
+130593:                 info(`No files were found with the provided path: ${inputs.searchPath}. No artifacts will be uploaded.`);
+130594:                 break;
+130595:             }
+130596:         }
+130597:     }
+130598:     else {
+130599:         const s = searchResult.filesToUpload.length === 1 ? '' : 's';
+130600:         info(`With the provided path, there will be ${searchResult.filesToUpload.length} file${s} uploaded`);
+130601:         core_debug(`Root artifact directory is ${searchResult.rootDirectory}`);
+130602:         // Validate that only a single file is uploaded when archive is false
+130603:         if (!inputs.archive && searchResult.filesToUpload.length > 1) {
+130604:             setFailed(`When 'archive' is set to false, only a single file can be uploaded. Found ${searchResult.filesToUpload.length} files to upload.`);
+130605:             return;
+130606:         }
+130607:         if (inputs.overwrite) {
+130608:             await deleteArtifactIfExists(inputs.artifactName);
+130609:         }
+130610:         const options = {};
+130611:         if (inputs.retentionDays) {
+130612:             options.retentionDays = inputs.retentionDays;
+130613:         }
+130614:         if (typeof inputs.compressionLevel !== 'undefined') {
+130615:             options.compressionLevel = inputs.compressionLevel;
+130616:         }
+130617:         if (!inputs.archive) {
+130618:             options.skipArchive = true;
+130619:         }
+130620:         await upload_artifact_uploadArtifact(inputs.artifactName, searchResult.filesToUpload, searchResult.rootDirectory, options);
+130621:     }
+130622: }
+130623:
+130624: ;// CONCATENATED MODULE: ./src/upload/index.ts
+130625:
+130626:
+130627: run().catch(error => {
+130628:     setFailed(error.message);
+130629: });
+130630:

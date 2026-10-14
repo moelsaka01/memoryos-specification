@@ -1,0 +1,492 @@
+cmake_minimum_required(VERSION 3.28)
+
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+  project(memoryos_conformance VERSION 1.0.0 LANGUAGES NONE)
+  include(CTest)
+  option(CCA_BUILD_TESTS "Build MemoryOS conformance tests" "${BUILD_TESTING}")
+endif()
+
+if(NOT DEFINED CMAKE_INSTALL_DATADIR)
+  set(CMAKE_INSTALL_DATADIR "share" CACHE PATH "Read-only architecture-independent data")
+endif()
+
+option(
+  MEMORYOS_ENABLE_CONFORMANCE_SUITE
+  "Enable the deterministic MemoryOS Standard conformance suite"
+  ON
+)
+
+set(memoryos_conformance_sources_list
+    package.json
+    README.md
+    docs/certification-guide.md
+    docs/compatibility-guide.md
+    docs/conformance-report.md
+    docs/mo1301-conformance.md
+    docs/mo1302-handoff.md
+    docs/mo1302-engineering-conformance.md
+    docs/mo1302-github-policy-gate.md
+    docs/reference-implementation-guide.md
+    docs/versioning-guide.md
+    evidence/mo1303-final-conformance-binding-run-35474897159.json
+    evidence/mo1303-hosted-evidence-run-35474897159-ubuntu-24.04-x64.json
+    evidence/mo1303-hosted-evidence-run-35474897159-windows-2022-x64.json
+    mo1301-conformance-inventory.json
+    mo1302-conformance-inventory.json
+    mo1303-conformance-inventory.json
+    mo1304-conformance-inventory.json
+    mo1305-conformance-inventory.json
+    requirements-manifest.json
+    review-outcomes.input.json
+    schema/conformance-evidence-1.0.schema.json
+    schema/conformance-report-1.0.schema.json
+    schema/github-policy-gate-automation-failure-1.0.schema.json
+    schema/github-policy-gate-distribution-manifest-1.0.schema.json
+    schema/github-policy-gate-receipt-1.0.schema.json
+    schema/github-policy-gate-test-vector-1.0.schema.json
+    schema/independent-assessment-1.0.schema.json
+    schema/mo1303-final-conformance-binding-1.0.schema.json
+    schema/requirements-manifest-1.0.schema.json
+    schema/review-attestations-1.0.schema.json
+    schema/mo1303-hosted-evidence-1.0.schema.json
+    tests/boundary_contract_conformance_test.mjs
+    tests/component_evidence_conformance_test.mjs
+    tests/compatibility_conformance_test.mjs
+    tests/coverage_gap_conformance_test.mjs
+    tests/independent_assessment_conformance_test.mjs
+    tests/mo1301_integration_conformance_test.mjs
+    tests/mo1302_action_foundation_conformance_test.mjs
+    tests/mo1302_cross_platform_closure_conformance_test.mjs
+    tests/mo1302_github_product_conformance_test.mjs
+    tests/mo1303_phase1_conformance_test.mjs
+    tests/mo1303_phase2_conformance_test.mjs
+    tests/mo1303_phase3_conformance_test.mjs
+    tests/mo1304_phase1_conformance_test.mjs
+    tests/mo1304_phase2_conformance_test.mjs
+    tests/mo1304_platform_support_conformance_test.mjs
+    tools/mo1304-platforms/support-policy.json
+    tools/mo1304-platforms/support_contract.py
+    tools/mo1304-platforms/support_contract_test.py
+    tests/mo1304_phase3_windows_conformance_test.mjs
+    tools/mo1304-windows/certify_windows.py
+    tools/mo1304-windows/validate_windows.py
+    tools/mo1304-windows/receipt.schema.json
+    tools/mo1304-platforms/validate_parity.py
+    tests/mo1304_phase3_ubuntu_conformance_test.mjs
+    tools/mo1304-phase3/certify_ubuntu.py
+    tools/mo1304-phase3/validate_receipt.py
+    tools/mo1304-phase3/receipt.schema.json
+    tools/mo1304-phase3/test-catalog.json
+    tools/mo1304-phase3/harness-manifest.json
+    evidence/mo1304-phase3-ubuntu/ubuntu-receipt.json
+    docs/mo1304-phase3-ubuntu-certification.md
+    tests/mo1305_phase1_conformance_test.mjs
+    tests/mo1305_phase2_conformance_test.mjs
+    tests/mo1305_phase3_conformance_test.mjs
+    tools/mo1305-phase3d/common.py
+    tools/mo1305-phase3d/correction.py
+    tools/mo1305-phase3d/generate.py
+    tools/mo1305-phase3d/record.py
+    tools/mo1305-phase3d/models.py
+    tools/mo1305-phase3d/source_validation.py
+    tools/mo1305-phase3d/validate.py
+    tools/mo1305-phase3d/README.md
+    tests/mo1305_release_metadata_correction_test.mjs
+    tools/mo1305-phase3-correction/README.md
+    tools/mo1305-phase3-correction/check.py
+    tools/mo1305-phase3-correction/distribution.py
+    tools/mo1305-phase3-correction/execute.mjs
+    tools/mo1305-phase3-correction/install.py
+    tools/mo1305-phase3-correction/installed-probe.mjs
+    tools/mo1305-phase3-correction/metadata_test.py
+    tools/mo1305-phase3-correction/package-allowlist.json
+    tools/mo1305-phase3-correction/reproduce.py
+    tools/mo1305-phase3-correction/schema-runtime.json
+    tools/mo1305-phase3-correction/schema_diagnostic.py
+    tools/mo1305-phase3-correction/schema_validation.py
+    tools/mo1305-phase3-correction/spdx.py
+    evidence/mo1305-phase3-correction/spdx-2.3-schema.json
+    tools/mo1305-phase2d/evidence.mjs
+    tools/mo1305-phase2d/graph.mjs
+    tools/mo1305-phase2d/verify-package.py
+    tools/mo1305-evidence.mjs
+    tools/mo1305-bounded-evidence.mjs
+    tools/mo1305-host-events.ps1
+    tools/mo1305-host-guard-policy.json
+    tools/mo1305-host-guard.mjs
+    tools/mo1305-modular-resource.mjs
+    tools/mo1305-host-resource-resume.mjs
+    tools/mo1305-host-resource-aggregate.mjs
+    tools/mo1305-host-adverse.mjs
+    tools/mo1305-host-functional.mjs
+    tools/mo1305-host-proof.mjs
+    tools/mo1305-host-complete.mjs
+    tools/mo1305-host-report.py
+    tools/mo1305-host-revalidate.mjs
+    tests/mo1305_host_guard_test.mjs
+    tools/mo1305-bounded-run.py
+    tools/mo1305-phase1/bounded-proof.mjs
+    tools/mo1305-platforms/verification-policy.json
+    tools/mo1305-platforms/verification_policy_test.py
+    tools/mo1305-schemas.py
+    tools/mo1305-finalize.py
+    tools/mo1305-final-validation.py
+    tools/mo1305-boundary-matrix.mjs
+    tools/mo1305-receipts.py
+    tools/mo1305-bind.mjs
+    tools/mo1305-report.py
+    tools/mo1305-monitor-tests.mjs
+    tools/mo1305-validate-measurements.mjs
+    tools/mo1305-clock-audit.py
+    tools/mo1305-phase1/preflight_r5.py
+    tools/mo1305-phase1/failure-schema-2.0.0.json
+    tools/mo1305-phase1/clock.mjs
+    tools/mo1305-phase1/clock-fixture.json
+    tools/mo1305-phase1/measurement-protocol-2.0.0.json
+    tools/mo1305-phase1/sample-proof.mjs
+    tools/mo1305-phase1/validate-campaign.mjs
+    schema/mo1305-receipt-1.0.0.json
+    schema/mo1305-inventory-1.0.0.json
+    schema/mo1305-receipt-2.0.0.json
+    schema/mo1305-inventory-2.0.0.json
+    tests/normative_vectors_conformance_test.mjs
+    tests/reference_implementation_conformance_test.mjs
+    tests/report_conformance_test.mjs
+    tests/requirement_selector_catalog_test.mjs
+    tests/schema_validation_conformance_test.mjs
+    tests/specification_conformance_test.mjs
+    tests/support/conformance-support.mjs
+    tests/support/mo1301-conformance-support.mjs
+    tests/support/mo1302-action-foundation-support.mjs
+    tests/support/mo1302-github-product-support.mjs
+    tests/support/mo1303-conformance-support.mjs
+    tests/fixtures/github-policy-gate/1.0.0/mo1302-action-foundation-vectors.json
+    tests/fixtures/github-policy-gate/1.0.0/hosted/cne.memoryos-policy.json
+    tests/fixtures/github-policy-gate/1.0.0/hosted/fail.memoryos-policy.json
+    tests/fixtures/github-policy-gate/1.0.0/hosted/oracle.json
+    tests/fixtures/github-policy-gate/1.0.0/hosted/pass.memoryos-policy.json
+    tests/fixtures/investigation-policy/1.0.0/mo1302-handoff-vectors.json
+    tools/conformance-report.mjs
+    tools/create-review-attestations.mjs
+    tools/independent-assessment.mjs
+    tools/json-schema-validator.mjs
+    tools/build-pinned-manifest.mjs
+    tools/build-mo1302-action-distribution.mjs
+    tools/mo1302-hosted-evidence.mjs
+    tools/mo1302-native-evidence.mjs
+    tools/mo1303-hosted-evidence.mjs
+    tools/mo1303-hosted-suite.mjs
+    tools/portable-report.mjs
+    tools/requirement-selector-catalog.mjs
+    tools/run-js-conformance.mjs
+    tools/run-reference-evidence.mjs
+)
+foreach(generated_source IN ITEMS
+  evidence/reference-implementation-1.2.1.json
+  evidence/reference-implementation-review-1.2.1.json
+  reports/reference-implementation-1.2.1.json
+  reports/reference-implementation-1.2.1.md
+)
+  if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${generated_source}")
+    list(APPEND memoryos_conformance_sources_list "${generated_source}")
+  else()
+    message(STATUS "MemoryOS release evidence is not materialized yet: ${generated_source}")
+  endif()
+endforeach()
+
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/manifests")
+  file(GLOB memoryos_conformance_manifest_sources
+    RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/manifests/*.json"
+  )
+  list(APPEND memoryos_conformance_sources_list ${memoryos_conformance_manifest_sources})
+else()
+  message(STATUS "MemoryOS content-addressed assessment manifests are not materialized yet")
+endif()
+
+add_custom_target(
+  memoryos_conformance_sources
+  SOURCES ${memoryos_conformance_sources_list}
+)
+
+if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
+  find_program(MEMORYOS_CONFORMANCE_NODE_EXECUTABLE NAMES node node.exe REQUIRED)
+  find_package(Python3 3.12 COMPONENTS Interpreter QUIET)
+
+  file(READ "${CMAKE_CURRENT_SOURCE_DIR}/mo1305-conformance-inventory.json" MO1305_INVENTORY_JSON)
+  string(JSON MO1305_INVENTORY_STATE GET "${MO1305_INVENTORY_JSON}" state)
+  foreach(conformance_area IN ITEMS
+    boundary
+    compatibility
+    components
+    coverage-gap
+    independent
+    mo1301
+    mo1302-phase1
+    mo1302-phase2
+    mo1302-phase3
+    mo1303-phase1
+    mo1303-phase2
+    mo1303-phase3
+    mo1304-phase1
+    mo1304-phase2
+    mo1304-phase3-ubuntu
+    mo1305-phase1
+    mo1305-phase2
+    mo1305-phase3
+    mo1305-release-metadata-correction
+    mo1304-phase3-windows
+    mo1304-platform-support
+    normative
+    reference
+    report
+    selectors
+    schema
+    specification
+  )
+    if((conformance_area STREQUAL "mo1305-phase1" OR conformance_area STREQUAL "mo1305-phase2" OR conformance_area STREQUAL "mo1305-release-metadata-correction" OR conformance_area STREQUAL "mo1305-phase3") AND NOT WIN32)
+      continue()
+    endif()
+    if(conformance_area STREQUAL "mo1305-phase1" AND (MO1305_INVENTORY_STATE STREQUAL "PHASE2_BOUND" OR MO1305_INVENTORY_STATE STREQUAL "CERTIFICATION_PENDING" OR MO1305_INVENTORY_STATE STREQUAL "CERTIFIED_READY_TO_TAG"))
+      continue()
+    elseif(conformance_area STREQUAL "mo1305-phase2" AND NOT MO1305_INVENTORY_STATE STREQUAL "PHASE2_BOUND")
+      continue()
+    endif()
+    if(conformance_area STREQUAL "boundary")
+      set(conformance_source tests/boundary_contract_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "compatibility")
+      set(conformance_source tests/compatibility_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "components")
+      set(conformance_source tests/component_evidence_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "coverage-gap")
+      set(conformance_source tests/coverage_gap_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "independent")
+      set(conformance_source tests/independent_assessment_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1301")
+      set(conformance_source tests/mo1301_integration_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1302-phase1")
+      set(conformance_source tests/mo1302_action_foundation_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1302-phase2")
+      set(conformance_source tests/mo1302_github_product_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1302-phase3")
+      set(conformance_source tests/mo1302_cross_platform_closure_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1303-phase1")
+      set(conformance_source tests/mo1303_phase1_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1303-phase2")
+      set(conformance_source tests/mo1303_phase2_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1303-phase3")
+      set(conformance_source tests/mo1303_phase3_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1304-phase1")
+      set(conformance_source tests/mo1304_phase1_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1304-phase2")
+      set(conformance_source tests/mo1304_phase2_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1304-platform-support")
+      set(conformance_source tests/mo1304_platform_support_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1304-phase3-windows")
+      set(conformance_source tests/mo1304_phase3_windows_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1304-phase3-ubuntu")
+      set(conformance_source tests/mo1304_phase3_ubuntu_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1305-phase1")
+      set(conformance_source tests/mo1305_phase1_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1305-phase2")
+      set(conformance_source tests/mo1305_phase2_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1305-phase3")
+      if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/evidence/mo1305-phase3d/phase3-receipt.json")
+        continue()
+      endif()
+      set(conformance_source tests/mo1305_phase3_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1305-release-metadata-correction")
+      if(NOT MO1305_INVENTORY_STATE STREQUAL "CERTIFICATION_PENDING" OR EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/evidence/mo1305-phase3d/phase3-receipt.json")
+        continue()
+      endif()
+      set(conformance_source tests/mo1305_release_metadata_correction_test.mjs)
+    elseif(conformance_area STREQUAL "normative")
+      set(conformance_source tests/normative_vectors_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "reference")
+      set(conformance_source tests/reference_implementation_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "report")
+      set(conformance_source tests/report_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "selectors")
+      set(conformance_source tests/requirement_selector_catalog_test.mjs)
+    elseif(conformance_area STREQUAL "schema")
+      set(conformance_source tests/schema_validation_conformance_test.mjs)
+    else()
+      set(conformance_source tests/specification_conformance_test.mjs)
+    endif()
+
+    if((conformance_area STREQUAL "boundary" OR conformance_area STREQUAL "mo1301")
+       AND NOT Python3_Interpreter_FOUND)
+      message(STATUS
+        "Python 3.12 is unavailable; the explicit C2 runner must supply Python for the SDK boundary test"
+      )
+      continue()
+    endif()
+
+    add_test(
+      NAME memoryos.standard.${conformance_area}
+      COMMAND
+        "${MEMORYOS_CONFORMANCE_NODE_EXECUTABLE}" --test
+        "${CMAKE_CURRENT_SOURCE_DIR}/${conformance_source}"
+    )
+    set_tests_properties(
+      memoryos.standard.${conformance_area}
+      PROPERTIES
+        LABELS "memoryos-standard;memoryos;standard;conformance;${conformance_area}"
+    )
+    if(conformance_area STREQUAL "mo1301")
+      set_tests_properties(
+        memoryos.standard.${conformance_area}
+        PROPERTIES LABELS
+          "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1301;release-readiness"
+      )
+    elseif(conformance_area STREQUAL "mo1302-phase1")
+      set_tests_properties(
+        memoryos.standard.${conformance_area}
+        PROPERTIES LABELS
+          "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1302;phase1;action"
+      )
+    elseif(conformance_area STREQUAL "mo1302-phase2")
+      set_tests_properties(
+        memoryos.standard.${conformance_area}
+        PROPERTIES LABELS
+          "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1302;phase2;github-product;security"
+      )
+    elseif(conformance_area STREQUAL "mo1302-phase3")
+      set_tests_properties(
+        memoryos.standard.${conformance_area}
+        PROPERTIES LABELS
+          "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1302;phase3;cross-platform;native;closure"
+      )
+    elseif(conformance_area STREQUAL "mo1303-phase1")
+      set_tests_properties(
+        memoryos.standard.${conformance_area}
+        PROPERTIES LABELS
+          "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1303;phase1;vscode;adapter"
+      )
+    elseif(conformance_area STREQUAL "mo1303-phase2")
+      set_tests_properties(
+        memoryos.standard.${conformance_area}
+        PROPERTIES LABELS
+          "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1303;phase2;vscode;product;security"
+      )
+    elseif(conformance_area STREQUAL "mo1303-phase3")
+      set_tests_properties(
+        memoryos.standard.${conformance_area}
+        PROPERTIES LABELS
+          "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1303;phase3;vscode;extension-host;vsix;cross-platform"
+      )
+    elseif(conformance_area STREQUAL "mo1304-phase1")
+      set_tests_properties(memoryos.standard.${conformance_area} PROPERTIES LABELS
+        "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1304;phase1;mcp;adapter")
+    elseif(conformance_area STREQUAL "mo1304-phase2")
+      set_tests_properties(memoryos.standard.${conformance_area} PROPERTIES LABELS
+        "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1304;phase2;mcp;adapter")
+    elseif(conformance_area STREQUAL "mo1304-platform-support")
+      set_tests_properties(memoryos.standard.${conformance_area} PROPERTIES LABELS
+        "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1304;phase3;platform-support")
+    elseif(conformance_area STREQUAL "mo1304-phase3-windows")
+      set_tests_properties(memoryos.standard.${conformance_area} PROPERTIES LABELS
+        "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1304;phase3;windows;parity;installed-package")
+    elseif(conformance_area STREQUAL "mo1304-phase3-ubuntu")
+      set_tests_properties(memoryos.standard.${conformance_area} PROPERTIES LABELS
+        "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1304;phase3;ubuntu;mcp;installed-package")
+    endif()
+  endforeach()
+
+  # These suites verify evidence that is bound to the reference host's frozen
+  # setup (exact bytes of the author's tool installation and git history); a
+  # hosted runner cannot reproduce it. They run unchanged on the reference host;
+  # hosted CI excludes them by exact name (.github/workflows/ci.yml).
+  foreach(reference_host_test IN ITEMS
+    memoryos.standard.mo1304-phase2
+    memoryos.standard.mo1304-phase3-windows
+    memoryos.standard.mo1305-phase3
+  )
+    if(TEST ${reference_host_test})
+      set_property(TEST ${reference_host_test} APPEND PROPERTY LABELS "reference-host-only")
+    endif()
+  endforeach()
+
+  if(Python3_Interpreter_FOUND)
+    set_tests_properties(
+      memoryos.standard.boundary memoryos.standard.mo1301
+      PROPERTIES ENVIRONMENT "MEMORYOS_CONFORMANCE_PYTHON=${Python3_EXECUTABLE}"
+    )
+  endif()
+
+  # The Runtime Foundation precedes this repository in the workspace build.
+  # Reuse its already-built public-behavior test executable instead of creating
+  # a second Runtime implementation or private conformance seam.
+  if(TARGET cca_core_tests)
+    add_test(
+      NAME memoryos.standard.runtime.reference
+      COMMAND
+        "$<TARGET_FILE:cca_core_tests>"
+    )
+    set_tests_properties(
+      memoryos.standard.runtime.reference
+      PROPERTIES LABELS "memoryos-standard;memoryos;standard;conformance;runtime;reference"
+    )
+  else()
+    message(STATUS
+      "cca_core_tests is unavailable; Runtime reference verification is not registered in this build"
+    )
+  endif()
+
+  if(TARGET memoryos_sdk_cpp_tests)
+    add_test(
+      NAME memoryos.standard.sdk.cpp.reference
+      COMMAND "$<TARGET_FILE:memoryos_sdk_cpp_tests>"
+    )
+    set_tests_properties(
+      memoryos.standard.sdk.cpp.reference
+      PROPERTIES LABELS "memoryos-standard;memoryos;standard;conformance;sdk;cpp;reference"
+    )
+  endif()
+
+  if(Python3_Interpreter_FOUND)
+    add_test(
+      NAME memoryos.standard.sdk.python.reference
+      COMMAND
+        "${Python3_EXECUTABLE}"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../cca-sdk/python/tests/test_memoryos_sdk.py"
+    )
+    set_tests_properties(
+      memoryos.standard.sdk.python.reference
+      PROPERTIES
+        ENVIRONMENT
+          "PYTHONPATH=${CMAKE_CURRENT_SOURCE_DIR}/../cca-sdk/python/src;MEMORYOS_NODE=${MEMORYOS_CONFORMANCE_NODE_EXECUTABLE}"
+        LABELS "memoryos-standard;memoryos;standard;conformance;sdk;python;reference"
+    )
+  endif()
+endif()
+
+install(
+  FILES README.md requirements-manifest.json review-outcomes.input.json package.json
+    mo1301-conformance-inventory.json
+    mo1302-conformance-inventory.json
+    mo1303-conformance-inventory.json
+    mo1304-conformance-inventory.json
+    mo1305-conformance-inventory.json
+  DESTINATION "${CMAKE_INSTALL_DATADIR}/memoryos-conformance"
+)
+install(
+  DIRECTORY docs schema tests tools fixtures
+  DESTINATION "${CMAKE_INSTALL_DATADIR}/memoryos-conformance"
+)
+install(
+  DIRECTORY evidence
+  OPTIONAL
+  DESTINATION "${CMAKE_INSTALL_DATADIR}/memoryos-conformance"
+)
+install(
+  DIRECTORY manifests
+  OPTIONAL
+  DESTINATION "${CMAKE_INSTALL_DATADIR}/memoryos-conformance"
+)
+install(
+  DIRECTORY reports
+  OPTIONAL
+  DESTINATION "${CMAKE_INSTALL_DATADIR}/memoryos-conformance"
+)

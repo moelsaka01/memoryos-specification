@@ -1,0 +1,91 @@
+{
+  "id": "runtime-002",
+  "suite": "runtime",
+  "file": "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs",
+  "testName": "R01 cli exact absolute deadline and equality",
+  "suiteNames": [
+    "R01 api exact absolute deadline and equality",
+    "R01 cli exact absolute deadline and equality",
+    "R02 earlier cancellation stays terminal after deadline",
+    "R03 timeout wins simultaneous first cancellation observation",
+    "R04 preaborted signal prevents any launch",
+    "R05 monotonic decreasing clock rejects",
+    "R06 API cannot launch helper",
+    "R07 helper deadline includes all active time; equality rejects",
+    "R08 aggregate deadline does not reset across helpers",
+    "R09 worker time is excluded from helper aggregate but inside overall",
+    "R10 helper overlap is terminal and cleans prior owned role",
+    "R11 helper and worker cannot overlap",
+    "R12 frame alone cannot advance before actual close",
+    "R13 launch uses only fixed executable/script/environment and no shell",
+    "R14 helper trailing byte fails closed",
+    "R14 helper extra frame fails closed",
+    "R14 helper debug stdout fails closed",
+    "R14 helper truncated frame fails closed",
+    "R14 helper oversized prefix fails closed",
+    "R14 helper stderr overflow fails closed",
+    "R14 helper nonzero exit fails closed",
+    "R15 cancellation in launch terminates and ignores later valid frame",
+    "R16 cancellation during transport cleans child",
+    "R17 fixed actual worker has empty environment and exact heap intent",
+    "R18 successful worker result waits for termination",
+    "R19 actual worker crash fails closed",
+    "R19 actual worker duplicate fails closed",
+    "R19 actual worker stdout fails closed",
+    "R20 cancellation actually terminates CPU-bound worker thread",
+    "R21 production worker executes accepted 2A/2B and confirms quiescence",
+    "R22 adapter matches closed 2A handoff; operational/session fields excluded",
+    "R23 verify evidence seam excludes result and decision bytes",
+    "R24 malformed decision uses dedicated mismatch, cap uses resource",
+    "R25 actual worker policy denies filesystem/network/process/module escape imports",
+    "R26 cancellation preempts pending publication promise without another role",
+    "R27 late publication promise cannot restore terminal success"
+  ],
+  "sourceSuiteTests": 36,
+  "args": [
+    "--test",
+    "--test-reporter=tap",
+    "--test-concurrency=1",
+    "--test-name-pattern=^R01 cli exact absolute deadline and equality$",
+    "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+  ],
+  "expectedTests": 1,
+  "outerGuardMs": 90000,
+  "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+  "pid": 29736,
+  "exitCode": 0,
+  "signal": null,
+  "error": null,
+  "elapsedMs": 2662.6772000000055,
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/regressions/runtime-002.stdout.txt",
+    "byteLength": 275,
+    "sha256": "sha256:93c4d8b0e7af9afb3fdffa6eaf22ccc65421eee9d88982b5f26c6ade58048d7d"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/regressions/runtime-002.stderr.txt",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "result": "PASS",
+  "tests": {
+    "tests": 1,
+    "pass": 1,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "testNames": [
+    "R01 cli exact absolute deadline and equality"
+  ],
+  "selected": [
+    {
+      "status": "ok",
+      "name": "R01 cli exact absolute deadline and equality",
+      "directive": null
+    }
+  ],
+  "excludedRegistrations": [],
+  "passed": true
+}

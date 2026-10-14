@@ -1,0 +1,525 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cca://schemas/canonical-specification/1.0",
+  "title": "CCA Canonical Specification",
+  "description": "Architecture-neutral source contract for the CCA Standards Compiler.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "format_version",
+    "kind",
+    "id",
+    "version",
+    "metadata",
+    "categories",
+    "objects",
+    "relationships",
+    "dependencies",
+    "validation_rules",
+    "artifacts",
+    "annotations",
+    "extensions"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "cca://schemas/canonical-specification/1.0"
+    },
+    "format_version": {
+      "type": "string",
+      "pattern": "^1\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    },
+    "kind": {
+      "const": "canonical_specification"
+    },
+    "id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "version": {
+      "$ref": "#/$defs/semantic_version"
+    },
+    "metadata": {
+      "$ref": "#/$defs/metadata"
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/category"
+      }
+    },
+    "objects": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/specification_object"
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/relationship"
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/dependency"
+      }
+    },
+    "validation_rules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/validation_rule"
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/artifact_request"
+      }
+    },
+    "annotations": {
+      "$ref": "#/$defs/annotations"
+    },
+    "extensions": {
+      "$ref": "#/$defs/extensions"
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)*$"
+    },
+    "semantic_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "version_constraint": {
+      "type": "string",
+      "pattern": "^(?:\\*|[\\^~]?(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?)$"
+    },
+    "string_map": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "authors": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "labels": {
+          "$ref": "#/$defs/string_map"
+        }
+      }
+    },
+    "annotations": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "type": [
+          "null",
+          "boolean",
+          "number",
+          "string"
+        ]
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/identifier"
+      },
+      "additionalProperties": true
+    },
+    "category": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "annotations",
+        "extensions"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "annotations": {
+          "$ref": "#/$defs/annotations"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      }
+    },
+    "specification_object": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/package_object"
+        },
+        {
+          "$ref": "#/$defs/domain_object"
+        },
+        {
+          "$ref": "#/$defs/component_object"
+        },
+        {
+          "$ref": "#/$defs/contract_object"
+        },
+        {
+          "$ref": "#/$defs/requirement_object"
+        }
+      ]
+    },
+    "object_common": {
+      "type": "object",
+      "required": [
+        "type",
+        "id",
+        "version",
+        "category",
+        "metadata",
+        "properties",
+        "annotations",
+        "extensions"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version": {
+          "$ref": "#/$defs/semantic_version"
+        },
+        "category": {
+          "$ref": "#/$defs/identifier"
+        },
+        "metadata": {
+          "$ref": "#/$defs/metadata"
+        },
+        "properties": {
+          "type": "object"
+        },
+        "annotations": {
+          "$ref": "#/$defs/annotations"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      }
+    },
+    "identifier_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/identifier"
+      }
+    },
+    "package_object": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/object_common"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "members"
+          ],
+          "properties": {
+            "type": {
+              "const": "package"
+            },
+            "members": {
+              "$ref": "#/$defs/identifier_array"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "domain_object": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/object_common"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "components"
+          ],
+          "properties": {
+            "type": {
+              "const": "domain"
+            },
+            "components": {
+              "$ref": "#/$defs/identifier_array"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "component_object": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/object_common"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "contracts",
+            "requirements"
+          ],
+          "properties": {
+            "type": {
+              "const": "component"
+            },
+            "contracts": {
+              "$ref": "#/$defs/identifier_array"
+            },
+            "requirements": {
+              "$ref": "#/$defs/identifier_array"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "contract_object": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/object_common"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "const": "contract"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "requirement_object": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/object_common"
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "satisfied_by"
+          ],
+          "properties": {
+            "type": {
+              "const": "requirement"
+            },
+            "satisfied_by": {
+              "$ref": "#/$defs/identifier_array"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "relationship": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "source",
+        "target",
+        "metadata",
+        "annotations",
+        "extensions"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "type": {
+          "$ref": "#/$defs/identifier"
+        },
+        "source": {
+          "$ref": "#/$defs/identifier"
+        },
+        "target": {
+          "$ref": "#/$defs/identifier"
+        },
+        "metadata": {
+          "$ref": "#/$defs/metadata"
+        },
+        "annotations": {
+          "$ref": "#/$defs/annotations"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      }
+    },
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "source",
+        "target",
+        "version",
+        "optional",
+        "metadata",
+        "annotations",
+        "extensions"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "source": {
+          "$ref": "#/$defs/identifier"
+        },
+        "target": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version": {
+          "$ref": "#/$defs/version_constraint"
+        },
+        "optional": {
+          "type": "boolean"
+        },
+        "metadata": {
+          "$ref": "#/$defs/metadata"
+        },
+        "annotations": {
+          "$ref": "#/$defs/annotations"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      }
+    },
+    "validation_rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "category",
+        "severity",
+        "expression",
+        "message",
+        "suggestion",
+        "annotations",
+        "extensions"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "category": {
+          "$ref": "#/$defs/identifier"
+        },
+        "severity": {
+          "enum": [
+            "error",
+            "warning",
+            "note"
+          ]
+        },
+        "expression": {
+          "type": "string",
+          "minLength": 1
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "suggestion": {
+          "type": "string"
+        },
+        "annotations": {
+          "$ref": "#/$defs/annotations"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      }
+    },
+    "artifact_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "output",
+        "options",
+        "annotations",
+        "extensions"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "type": {
+          "enum": [
+            "documentation_index",
+            "dependency_graph",
+            "specification_report",
+            "validation_report",
+            "object_inventory",
+            "architecture_summary",
+            "placeholder_code"
+          ]
+        },
+        "output": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!/)(?![A-Za-z]:)(?!\\.\\.(?:/|$))(?!.*\\/\\.\\.(?:/|$))[^\\\\]+$"
+        },
+        "options": {
+          "type": "object"
+        },
+        "annotations": {
+          "$ref": "#/$defs/annotations"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      }
+    }
+  }
+}

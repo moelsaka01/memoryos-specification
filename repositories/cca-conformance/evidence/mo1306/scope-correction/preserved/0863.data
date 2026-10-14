@@ -1,0 +1,111 @@
+"""Closed Phase 3C-R matrix/evidence validator and adversarial controls."""
+import copy,hashlib,json,os,subprocess,sys,collections,runpy
+from pathlib import Path
+from closure_catalog import catalog,STATES
+ROOT=Path(__file__).resolve().parents[4];OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3cr';TOOLS=Path(__file__).parent
+INV=ROOT/'repositories/cca-conformance/mo1306-phase3cr-inventory.json'
+DOC=ROOT/'docs/mo1306-phase3c-refresh.md';BASE='9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44'
+SUBJECT='cert(memoryos-1.3): audit corrected MO-1306 provider security and release readiness'
+FINAL=OUT/'audit-validation.json'
+LABELS={'generic':['REAL_EXECUTION_VALIDATED','3A_R_FINAL_CERTIFICATION_PENDING_EXTERNAL'],'gitlab':['CONTRACT_VALIDATED','NOT_LIVE_PROVIDER_CERTIFIED'],'jenkins':['CONTRACT_VALIDATED','NOT_LIVE_PROVIDER_CERTIFIED'],'azure':['CONTRACT_VALIDATED','NOT_LIVE_PROVIDER_CERTIFIED'],'github':['HOSTED_EXECUTION_CERTIFICATION_PENDING']}
+MAP={'authority':['authority.json','authority-history.json','authority-mo1302.json','mo1302-preservation.json','correction-validator.json'],'dispatch':['dispatch-audit.json','dispatch-validation.json','public-generate.json'],'provider':['provider-audit.json','provider-results/audit-validator.json'],'security':['security-audit.json','security-validation.json'],'reuse':['original-partial-reuse.json'],'labels':['provider-labels.json'],'external':['external-dependencies.json'],'validation':['precommit-checks.json','dispatch-validation.json','correction-validator.json']}
+def rawj(v):return (json.dumps(v,sort_keys=True,separators=(',',':'))+'\n').encode()
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def row(p):
+ b=p.read_bytes();return {'path':p.relative_to(ROOT).as_posix(),'byteLength':len(b),'sha256':sha(b)}
+def git(*args):return subprocess.check_output(['git','-c','core.longpaths=true',*args],cwd=ROOT,env={**os.environ,'GIT_OPTIONAL_LOCKS':'0'}).decode().strip()
+def read(p):return json.loads(p.read_bytes())
+def artifacts():
+ files=[p for d in (OUT,TOOLS) for p in d.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p!=FINAL]+[DOC,ROOT/'.gitattributes']
+ return sorted((row(p) for p in files),key=lambda r:r['path'])
+def checkrow(r):
+ assert set(r)=={'path','byteLength','sha256'},'ARTIFACT_SHAPE'
+ p=ROOT/r['path'];assert not Path(r['path']).is_absolute() and '..' not in Path(r['path']).parts and p.resolve().is_relative_to(ROOT.resolve()),'ARTIFACT_PATH'
+ assert p.is_file() and row(p)==r,'ARTIFACT_DRIFT'
+def matrix_rows():
+ rows=[]
+ for entry in catalog():
+  r=copy.deepcopy(entry);r['evidence']=[row(OUT/name) for key in entry['evidenceKeys'] for name in MAP[key]];r['owner']='3C-R' if r['status']=='SATISFIED' else {'PENDING_3A_REFRESH':'3A-R','PENDING_3B_REFRESH':'3B-R','PENDING_3D':'3D'}[r['status']];rows.append(r)
+ return rows
+def matrix_expected():
+ rows=matrix_rows();counts={s:sum(r['status']==s for r in rows) for s in sorted(STATES)}
+ return {'kind':'MemoryOSPhase3CRReleaseClosure','version':'1.0.0','baseline':BASE,'scope':'Complete freeze-section, A-AF decision and required-category obligation map; audit acceptance does not close externally owned certification or final release binding.','rows':rows,'counts':counts,'freezeSections':list(range(1,27)),'decisions':[chr(65+i) for i in range(26)]+['AA','AB','AC','AD','AE','AF'],'categories':sorted({c for r in rows for c in r['categories']}),'releaseReady':False,'integrationReviewReady':True}
+def validate_matrix(v):
+ assert v==matrix_expected(),'CLOSURE_MATRIX'
+ assert set(v['categories'])=={r['id'] for r in read(ROOT/'repositories/cca-conformance/mo1306-phase1-required-cases.json')['categories']},'CATEGORY_COVERAGE'
+ assert v['counts']['BLOCKED']==0 and sum(v['counts'].values())==len(v['rows'])==60,'CLOSURE_COUNTS'
+ for r in v['rows']:
+  assert r['evidence'] and r['status'] in STATES and r['requirement'],'ROW_CLOSURE'
+  for e in r['evidence']:checkrow(e)
+ return True
+def validate(inv):
+ assert set(inv)=={'kind','version','baseline','C3A','status','releaseReady','integrationReviewReady','archive','providerLabels','matrix','artifacts','sources','originalBlocker','harnessBinding','exclusions'},'INVENTORY_SHAPE'
+ assert inv['kind']=='MemoryOSPhase3CRAuditInventory' and inv['version']=='1.0.0' and inv['baseline']==BASE and inv['C3A']=='90b9ac914e477fb90fe317d0de9ba310aae37f60','AUTHORITY'
+ assert inv['status']=='PASS' and inv['releaseReady'] is False and inv['integrationReviewReady'] is True,'CLAIMS'
+ assert inv['providerLabels']==LABELS,'PROVIDER_LABELS'
+ assert inv['archive']=={'byteLength':197172,'sha256':'sha256:2f1e9424ce64e44b7b1587ce206fe5f7ae72579652ca1fc891c489bc1a21925d','members':94},'ARCHIVE'
+ assert inv['artifacts']==artifacts(),'CLOSED_ARTIFACTS'
+ assert len(inv['artifacts'])==len({r['path'] for r in inv['artifacts']}),'DUPLICATE_ARTIFACT'
+ for r in inv['artifacts']:checkrow(r)
+ assert inv['matrix']==row(OUT/'release-closure.json'),'MATRIX_BINDING';validate_matrix(read(OUT/'release-closure.json'))
+ a=read(OUT/'authority.json');assert a['status']=='PASS' and a['baseline']==BASE and a['archive']['byteLength']==197172 and a['archive']['sha256']==inv['archive']['sha256'],'AUTHORITY_EVIDENCE'
+ assert inv['sources']==a['productFiles'],'PRODUCT_SOURCE_CLOSURE'
+ for r in inv['sources']:checkrow(r)
+ original=ROOT.parent/'cca-mo1306-3c';assert inv['originalBlocker']==a['originalBlockerFiles'],'ORIGINAL_BLOCKER'
+ for r in inv['originalBlocker']:
+  b=(original/r['path']).read_bytes();assert len(b)==r['byteLength'] and sha(b)==r['sha256'],'ORIGINAL_BLOCKER_DRIFT'
+ assert inv['harnessBinding']=={'executionRevision':None,'basis':'Exact uncommitted harness bytes are in artifacts; the requested audit commit subsequently binds those same bytes. No future commit hash is asserted.','finalValidation':'repositories/cca-conformance/evidence/mo1306/phase3cr/audit-validation.json','acyclic':'Final validation references this inventory after creation and is the single explicitly excluded file from artifacts; both are bound by the actual audit commit.'},'HARNESS_BINDING'
+ assert inv['exclusions']==['No hosted execution certification','No live GitLab/Jenkins/Azure certification','No Linux/Ubuntu/WSL/VM','No OS-wide network/process isolation claim','No final release/tag/push authorization'],'EXCLUSIONS'
+ for name in ['dispatch-audit.json','dispatch-validation.json','provider-audit.json','security-audit.json','original-partial-reuse.json','correction-validator.json']:
+  v=read(OUT/name);assert v['status']=='PASS' and v['baseline']==BASE,('AUDIT_GATE',name)
+ d=read(OUT/'dispatch-audit.json');assert d['counts']['pass']==d['counts']['total']==228 and d['counts']['fail']==0,'DISPATCH_GATE'
+ assert read(OUT/'dispatch-validation.json')['negativeCount']==16,'DISPATCH_NEGATIVES'
+ generate=read(OUT/'public-generate.json');assert generate['baseline']==BASE and generate['status']=='PASS' and generate['exitCode']==0 and generate['stdout']==generate['stderr']=='' and generate['matchesIndependentProviderGeneration'] is True and len(generate['generatedFiles'])==2,'PUBLIC_GENERATE'
+ assert read(OUT/'correction-validator.json')['negativeControls']==8,'CORRECTION_NEGATIVES'
+ p=read(OUT/'provider-audit.json');assert p['currentGeneratedProviders']==5 and p['freshProbeCounts']['equivalence']==55,'PROVIDER_GATE'
+ assert p['nativeWrapperStatus']=='CONTRACT_VALIDATED_VIA_SCOPED_REUSE' and p['freshNativeWrapperStatus']=='FAILED_EXECUTION_PRESERVED','NATIVE_SCOPE'
+ for key in ['nativeLauncherEvidence','nativeTraceEvidence','sourceReviewBinding']:checkrow(p[key])
+ pv=runpy.run_path(str(TOOLS/'provider-validator.py'));assert pv['validate'](p),'PROVIDER_COMPLETENESS'
+ sv=runpy.run_path(str(TOOLS/'security-validate.py'));sv['validate']()
+ sr=read(OUT/'security-validation.json');assert sr['baseline']==BASE and sr['summary']==row(OUT/'security-audit.json') and len(sr['requiredFreshCaseIds'])==101 and len(sr['requiredLogicCaseIds'])==109 and len(sr['negativeWitnesses'])==7,'SECURITY_VALIDATION'
+ pr=read(OUT/'provider-results/audit-validator.json');assert pr['baseline']==BASE and pr['positiveCount']==1 and pr['negativeCount']==8 and len(pr['negatives'])==8,'PROVIDER_VALIDATION'
+ checks=read(OUT/'precommit-checks.json')['checks']
+ expected_checks={'workspace-verification':[sys.executable,'-B','-X','utf8','tools/verify_workspace.py','--root','.'],'git-diff-check':['git','diff','--check'],'production-unchanged':['git','diff','--exit-code',BASE,'--','repositories/memoryos-ci']}
+ assert len(checks)==len(expected_checks) and {c['id'] for c in checks}==set(expected_checks),'PRECOMMIT_CHECK_SET'
+ assert all(c['exitCode']==0 and c['argv']==expected_checks[c['id']] for c in checks),'PRECOMMIT_GATES'
+ product=ROOT/'repositories/memoryos-ci'
+ assert sorted(p.relative_to(ROOT).as_posix() for p in product.rglob('*') if p.is_file())==sorted(r['path'] for r in inv['sources']),'PRODUCT_MEMBERSHIP'
+ allowed=('repositories/cca-conformance/evidence/mo1306/phase3cr/','repositories/cca-conformance/tools/mo1306-phase3cr/')
+ special={'.gitattributes','docs/mo1306-phase3c-refresh.md','repositories/cca-conformance/mo1306-phase3cr-inventory.json'}
+ touched=set(git('diff','--name-only',BASE).splitlines())|set(git('ls-files','--others','--exclude-standard').splitlines())
+ assert all(p in special or p.startswith(allowed) for p in touched),'AUDIT_ONLY_SCOPE'
+ attrbase=subprocess.check_output(['git','show',BASE+':.gitattributes'],cwd=ROOT)
+ addition=b'\n# Preserve exact executed Phase 3C refresh audit harness bytes.\nrepositories/cca-conformance/tools/mo1306-phase3cr/** -text whitespace=trailing-space,space-before-tab,cr-at-eol\n'
+ assert (ROOT/'.gitattributes').read_bytes()==attrbase+addition,'AUDIT_ATTRIBUTE_SCOPE'
+ assert git('diff','--name-only',BASE,'--','repositories/memoryos-ci')=='','PRODUCTION_CHANGED'
+ head=git('rev-parse','HEAD');assert head==BASE or (git('rev-parse','HEAD^')==BASE and git('show','-s','--format=%s','HEAD')==SUBJECT),'COMMIT_PARENT'
+ return True
+
+def negatives(inv):
+ mutations=[('wrong-baseline',lambda v:v.update(baseline='0'*40)),('old-archive',lambda v:v['archive'].update(sha256='sha256:'+'0'*64)),('missing-artifact',lambda v:v['artifacts'].pop()),('extra-artifact',lambda v:v['artifacts'].append(v['artifacts'][0])),('byte-drift',lambda v:v['artifacts'][0].update(byteLength=0)),('digest-drift',lambda v:v['artifacts'][0].update(sha256='sha256:'+'0'*64)),('forged-release-ready',lambda v:v.update(releaseReady=True)),('hosted-relabel',lambda v:v['providerLabels'].update(github=['HOSTED_EXECUTION_CERTIFIED'])),('live-provider-relabel',lambda v:v['providerLabels'].update(gitlab=['LIVE_PROVIDER_CERTIFIED'])),('hidden-original-blocker',lambda v:v.update(originalBlocker=[])),('missing-source',lambda v:v['sources'].pop()),('future-harness-revision',lambda v:v['harnessBinding'].update(executionRevision='0'*40)),('cyclic-matrix',lambda v:v.update(matrix={'path':INV.relative_to(ROOT).as_posix(),'byteLength':0,'sha256':'sha256:'+'0'*64})),('unscoped-claim',lambda v:v.update(exclusions=[])),('unknown-field',lambda v:v.update(futureRevision='0'*40))]
+ rejected=[]
+ for name,mutate in mutations:
+  v=copy.deepcopy(inv);mutate(v)
+  try:validate(v)
+  except (AssertionError,KeyError,ValueError):rejected.append(name)
+  else:raise AssertionError('Accepted '+name)
+ matrix=read(OUT/'release-closure.json')
+ cases=[('omitted-requirement',lambda v:v['rows'].pop()),('duplicate-requirement',lambda v:v['rows'].append(v['rows'][0])),('forged-external-pass',lambda v:next(r for r in v['rows'] if r['status']=='PENDING_3A_REFRESH').update(status='SATISFIED')),('hidden-pending-count',lambda v:v['counts'].update(PENDING_3B_REFRESH=0)),('unknown-status',lambda v:v['rows'][0].update(status='UNRESOLVED')),('missing-row-evidence',lambda v:v['rows'][0].update(evidence=[])),('omitted-contract-section',lambda v:v['freezeSections'].pop()),('omitted-decision',lambda v:v['decisions'].pop()),('omitted-category',lambda v:v['categories'].pop()),('unsafe-ready-claim',lambda v:v.update(releaseReady=True))]
+ for name,mutate in cases:
+  v=copy.deepcopy(matrix);mutate(v)
+  try:validate_matrix(v)
+  except (AssertionError,KeyError,ValueError):rejected.append(name)
+  else:raise AssertionError('Accepted '+name)
+ return rejected
+if __name__=='__main__':
+ inv=read(INV);validate(inv);rejected=negatives(inv)
+ v={'kind':'MemoryOSPhase3CRAuditValidation','version':'1.0.0','status':'PASS','baseline':BASE,'inventory':row(INV),'positive':True,'negativeCount':len(rejected),'rejected':rejected,'matrixCounts':read(OUT/'release-closure.json')['counts'],'originalBlockerFilesUnchanged':4,'productionChanged':False}
+ if len(sys.argv)>1 and sys.argv[1]=='record':
+  assert not FINAL.exists();FINAL.write_bytes(rawj(v))
+ else:assert read(FINAL)==v,'FINAL_VALIDATION_DRIFT'
+ print(json.dumps(v))

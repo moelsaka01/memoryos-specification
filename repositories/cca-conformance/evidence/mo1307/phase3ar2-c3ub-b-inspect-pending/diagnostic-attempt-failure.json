@@ -1,0 +1,81 @@
+{
+  "kind": "MO1307Phase3AR2BInspectPendingDiagnosticAttemptFailure",
+  "version": "1.0.0",
+  "recordedAt": "2026-10-01T17:14:16.7622166Z",
+  "result": "DIAGNOSTIC_INCOMPLETE",
+  "classification": "DIAGNOSTIC_INCOMPLETE",
+  "noRetry": true,
+  "noSecondSample": true,
+  "diagnosticToolchainCommit": "9350831649b90770923eecfa00a757f6d44b632d",
+  "preparation": {
+    "result": "PASS",
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-c3ub-b-inspect-pending/diagnostic-preparation/preparation.json",
+    "sha256": "sha256:e91f46e338e20a697388cb9ae924643b71f49e2b1e6b463175f77c7ff40d08d0",
+    "helperExecutions": 0,
+    "requestBytes": 311,
+    "requestSha256": "sha256:7be1bd00a6f620ddffc43e68a0a314ca20a0a28a8534cb59da6a2cffd9ab12be",
+    "originalRequestSha256": "sha256:9b577cba71ad249f85cc142588f3795f26afbda419cd500c7e9a5883a516c78f",
+    "byteIdenticalReplay": false,
+    "pendingFileBytes": 59987,
+    "pathDepth": 12,
+    "instrumentedHelperSha256": "sha256:1a3f3dcaffc6620cc606f808edfda473e2202b0f2f603e7d819f9f15e96943ee"
+  },
+  "attempt": {
+    "observerProcessExitCode": 1,
+    "observerWallTimeSeconds": 2.8769796,
+    "observationNamespaceCreated": false,
+    "supervisorCreated": false,
+    "helperLaunchAttempts": 0,
+    "helperInvocations": 0,
+    "warmups": 0,
+    "alternateInputs": 0,
+    "retries": 0,
+    "failureStage": "PRE_LAUNCH_REQUEST_CANONICALITY_ASSERTION",
+    "error": {
+      "name": "AssertionError",
+      "code": "ERR_ASSERTION",
+      "file": "repositories/cca-conformance/tools/mo1307-phase3ar2-b-inspect-pending/observe.mjs",
+      "line": 160,
+      "message": "Decoded canonical request uses null-prototype objects; prototype-sensitive deepStrictEqual against the semantically identical plain-object literal failed."
+    }
+  },
+  "captured": {
+    "T0": null,
+    "T1": null,
+    "T2": null,
+    "T3": null,
+    "T4": null,
+    "T5": null,
+    "T6": null,
+    "T7": null,
+    "T8": null,
+    "T9": null,
+    "T10": null,
+    "T11": null,
+    "T12": null,
+    "T13": null,
+    "requestBytes": 311,
+    "pendingFileBytes": 59987,
+    "pathDepth": 12,
+    "helperNativeCalls": 0,
+    "responseBytes": 0,
+    "helperExit": "NOT_LAUNCHED",
+    "helperResult": "NOT_RUN",
+    "cleanup": "NOT_APPLICABLE_NO_CHILD_CREATED"
+  },
+  "preservedFailure": {
+    "priorHelperActiveMs": 19297.744300000002,
+    "remainingAggregateMs": 702.2556999999982,
+    "supervisorLeaseMs": 702.2262999999984,
+    "t0PreSpawnWindowMs": 702.1706999999988,
+    "outcome": "MO1307_TIMEOUT",
+    "responseAccepted": false
+  },
+  "integrity": {
+    "productionModified": false,
+    "productionTree": "302cf1a506e974b2102a78be1b9c920ac80105b2",
+    "fixtureModified": false,
+    "diagnosticObservationNamespaceExists": false
+  },
+  "terminalRule": "The authorized diagnostic stopped before useful T0-T13 timing. The no-retry/no-second-sample rule therefore requires DIAGNOSTIC_INCOMPLETE and prohibits another diagnostic execution."
+}

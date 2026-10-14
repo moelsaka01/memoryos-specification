@@ -1,0 +1,17 @@
+{
+  "kind": "MO1307SecurityExecutionBinding",
+  "candidate": "865978ff56229b60cca77bdb797987fc7d49aa4e",
+  "priorPreflightRecord": "harness-preflight-correction.json",
+  "priorDriverSha256": "6e04a3434aa8ad6d628b628c5964bcdc24e61c63434ebf7e2aaa93dd51be6646",
+  "finalDriverSha256": "e1f0aa1181f8af3ef456c92d6a253b8890e514162b2b652667839bd3f2374b3c",
+  "additionalCallerPreflight": {
+    "exitCode": 1,
+    "reason": "Root supplied alternate evidence directory argument; the frozen driver correctly refused all arguments before creating any directory or starting cases.",
+    "assertion": "3 !== 2",
+    "productCasesExecuted": 0
+  },
+  "change": "Rebind fixed evidence constant to fresh security-execution directory; preserve no-argument and no-overwrite guards unchanged.",
+  "runtimeInvocation": "Pinned Node24.21.0 console-security.mjs with no arguments",
+  "productCasesPreviouslyExecuted": 0,
+  "productionBytesChanged": false
+}

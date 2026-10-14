@@ -1,0 +1,82 @@
+TAP version 13
+# Subtest: L01 authority byte admission includes the exact ceiling and rejects plus one before parse/copy
+ok 1 - L01 authority byte admission includes the exact ceiling and rejects plus one before parse/copy
+  ---
+  duration_ms: 19.643159
+  type: 'test'
+  ...
+# Subtest: L02 envelope byte ceiling is enforced in acquisition before snapshot copying
+ok 2 - L02 envelope byte ceiling is enforced in acquisition before snapshot copying
+  ---
+  duration_ms: 58.870006
+  type: 'test'
+  ...
+# Subtest: L03 manifest claim admission is 64 envelopes, independent of the finite gate authority limit
+ok 3 - L03 manifest claim admission is 64 envelopes, independent of the finite gate authority limit
+  ---
+  duration_ms: 17.471233
+  type: 'test'
+  ...
+# Subtest: L04 grant representation admits 64 and rejects 65 without claiming all grants fit the closed profile
+ok 4 - L04 grant representation admits 64 and rejects 65 without claiming all grants fit the closed profile
+  ---
+  duration_ms: 22.658035
+  type: 'test'
+  ...
+# Subtest: L05 claim dependencies and every explicit dependency reference list admit 1024 and reject 1025
+ok 5 - L05 claim dependencies and every explicit dependency reference list admit 1024 and reject 1025
+  ---
+  duration_ms: 59.652417
+  type: 'test'
+  ...
+# Subtest: L06 root, grant and claim assumption sets admit 32 and reject 33
+ok 6 - L06 root, grant and claim assumption sets admit 32 and reject 33
+  ---
+  duration_ms: 5.359444
+  type: 'test'
+  ...
+# Subtest: L07 history representation admits 128 immutable rows and rejects 129
+ok 7 - L07 history representation admits 128 immutable rows and rejects 129
+  ---
+  duration_ms: 13.868343
+  type: 'test'
+  ...
+# Subtest: L08 qualification representation admits 128 and rejects 129 without truncation
+ok 8 - L08 qualification representation admits 128 and rejects 129 without truncation
+  ---
+  duration_ms: 7.946405
+  type: 'test'
+  ...
+# Subtest: L09 scope qualification/condition reference sets each enforce their exact 128 cap
+ok 9 - L09 scope qualification/condition reference sets each enforce their exact 128 cap
+  ---
+  duration_ms: 3.03536
+  type: 'test'
+  ...
+# Subtest: L10 source references admit 128 and authority source references admit 32 at their declared schemas
+ok 10 - L10 source references admit 128 and authority source references admit 32 at their declared schemas
+  ---
+  duration_ms: 3.271237
+  type: 'test'
+  ...
+# Subtest: L11 normalized authority and audit digest reference capacities are explicit, not generic INPUT errors
+ok 11 - L11 normalized authority and audit digest reference capacities are explicit, not generic INPUT errors
+  ---
+  duration_ms: 63.574874
+  type: 'test'
+  ...
+# Subtest: L12 independent cap failures never fabricate a partial verified projection
+ok 12 - L12 independent cap failures never fabricate a partial verified projection
+  ---
+  duration_ms: 9.11749
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 475.107128

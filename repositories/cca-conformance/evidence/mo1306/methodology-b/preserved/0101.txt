@@ -1,0 +1,384 @@
+"""Targeted corrected installed-package Windows refresh; historical records are read only.
+
+Invoke once from the 3A worktree. Every attempted process gets a unique retained
+record. A failed assertion stops the campaign; fault copies never alter the
+installed candidate. The external observer is sampled, not kernel containment.
+"""
+import base64
+import copy
+import hashlib
+import json
+import os
+from pathlib import Path
+import platform
+import shutil
+import subprocess
+import sys
+import time
+import uuid
+import tarfile
+
+ROOT = Path(__file__).resolve().parents[4]
+HERE = Path(__file__).resolve().parent
+MAIN = Path(r'C:\Users\melsa\Documents\Codex\cca-workspace')
+AUTHORITY = '701d48ee2012675966360dda775ab13013c09ab9'
+CACHE = ROOT / '.cache/mo1306-phase3a-final'
+OUT = ROOT / 'repositories/cca-conformance/evidence/mo1306/phase3a-final'
+NODE = CACHE / 'node-v24.21.0-win-x64/node.exe'
+INSTALLED = CACHE / 'install/node_modules/memoryos-ci'
+SOURCE = MAIN / 'repositories/memoryos-ci'
+FIX = ROOT / 'repositories/cca-conformance/fixtures/mo1306'
+OLD_TOOLS = MAIN / 'repositories/cca-conformance/tools/mo1306'
+NODE_SHA = 'sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32'
+DISTRIBUTION = 'sha256:b41d024d8ec1c588ca3fc919f8e3ac59a622aebc7cff3377f6a20ce7fc2ca4f3'
+JSON_CAP = 2 * 1024 * 1024
+CAMPAIGN_SECONDS = 20 * 60
+# These modules have no evidence-writing imports. Never import phase2d/common.py.
+sys.dont_write_bytecode = True
+sys.path.insert(0, str(HERE.parent / 'mo1306-phase2d'))
+import observer
+from trace_phase2d import validate_trace
+
+
+def j(value):
+    return (json.dumps(value, sort_keys=True, separators=(',', ':'), ensure_ascii=False) + '\n').encode('utf8')
+
+
+def sha(data):
+    return 'sha256:' + hashlib.sha256(data).hexdigest()
+
+
+def ref(path):
+    raw = path.read_bytes()
+    return {'path': path.relative_to(ROOT).as_posix() if path.is_relative_to(ROOT) else str(path), 'byteLength': len(raw), 'sha256': sha(raw)}
+
+
+def put(path, value):
+    raw = j(value)
+    assert len(raw) <= JSON_CAP, ('ENGINEERING_JSON_CAP', str(path), len(raw))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    # Run-local files are immutable after creation.
+    with path.open('xb') as stream:
+        stream.write(raw)
+    return ref(path)
+
+
+def inventory(package):
+    return [ref(p) | {'path': p.relative_to(package).as_posix()}
+            for p in sorted(package.rglob('*')) if p.is_file()]
+
+
+def compact(record):
+    result = copy.deepcopy(record)
+    dictionary = {}
+    rows = result.get('lifetimes', []) + [p for s in result.get('observation', {}).get('samples', []) for p in s['processes']]
+    for entry in rows:
+        if isinstance(entry.get('commandLine'), str):
+            raw = entry['commandLine']; key = sha(raw.encode('utf8'))
+            dictionary[key] = raw; entry['commandLine'] = {'sha256': key}
+    result['traceEncoding'] = {'kind': 'LosslessCommandLineDictionary', 'version': '1.0.0', 'commandLines': dictionary}
+    return result
+
+
+class Campaign:
+    def __init__(self):
+        self.started = time.monotonic()
+        self.id = time.strftime('%Y%m%dT%H%M%S', time.gmtime()) + '-' + uuid.uuid4().hex[:6]
+        self.work = CACHE / ('n-' + self.id)
+        self.output = OUT / 'native' / self.id
+        self.work.mkdir(parents=True, exist_ok=False)
+        self.output.mkdir(parents=True, exist_ok=False)
+        self.env = {k: os.environ[k] for k in ('SystemRoot', 'WINDIR')}
+        self.ids = {'node': str(NODE), 'powershell': str(Path(self.env['SystemRoot']) / 'System32/WindowsPowerShell/v1.0/powershell.exe'), 'conhost': str(Path(self.env['SystemRoot']) / 'System32/conhost.exe')}
+        self.cases = []
+        self.commands = []
+        self.bindings = {'harness': ref(Path(__file__)), 'observer': ref(HERE.parent / 'mo1306-phase2d/observer.py'), 'traceValidator': ref(HERE.parent / 'mo1306-phase2d/trace_phase2d.py'), 'roleValidator': ref(HERE.parent / 'mo1306-correction-a/topology.py'), 'distributionDigest': DISTRIBUTION, 'authority': AUTHORITY, 'correctionC3C': '39d83316f7c72d6cb49f8b6cde36c1bfa833112a', 'archiveSha256': 'sha256:7649f6df77c3f6163eb94b343974abaeccebbd5bcb8a2208cc889128904ce45d'}
+
+    def budget(self):
+        assert time.monotonic() - self.started + 85 < CAMPAIGN_SECONDS, 'BOUNDED_CAMPAIGN_STOP'
+
+    def raw_logs(self, name, record):
+        rows = []
+        for field in ('stdout', 'stderr'):
+            value = record.get(field, '')
+            raw = value if isinstance(value, bytes) else value.encode('utf8')
+            assert len(raw) <= JSON_CAP, 'RAW_LOG_CAP'
+            p = self.output / 'logs' / (name + '.' + field + '.txt')
+            p.parent.mkdir(parents=True, exist_ok=True)
+            with p.open('xb') as stream: stream.write(raw)
+            rows.append(ref(p))
+        return rows
+
+    def preflight(self):
+        snapshot = self.output / 'attempted-native.py'
+        snapshot.write_bytes(Path(__file__).read_bytes())
+        self.bindings['harnessSnapshot'] = ref(snapshot)
+        assert sys.platform == 'win32' and platform.machine().lower() in ('amd64', 'x86_64'), 'WINDOWS_X64_REQUIRED'
+        assert sha(NODE.read_bytes()) == NODE_SHA, 'PINNED_NODE_IDENTITY'
+        archive=CACHE / 'assembly-a/memoryos-ci-0.1.0.tgz'
+        assert archive.stat().st_size==197290 and sha(archive.read_bytes())==self.bindings['archiveSha256'], 'CORRECTED_ARCHIVE_IDENTITY'
+        self.bindings['archive']=ref(archive)
+        manifest = json.loads((INSTALLED / 'distribution-manifest.json').read_bytes())
+        assert sha((INSTALLED / 'distribution-manifest.json').read_bytes()) == DISTRIBUTION
+        expected = {r['path']: r for r in manifest['files']}
+        expected['distribution-manifest.json'] = {'byteLength': (INSTALLED / 'distribution-manifest.json').stat().st_size, 'sha256': DISTRIBUTION}
+        self.before = inventory(INSTALLED)
+        assert {r['path'] for r in self.before} == set(expected), 'INSTALLED_MEMBER_SET'
+        for r in self.before:
+            assert r['byteLength'] == expected[r['path']]['byteLength'] and r['sha256'] == expected[r['path']]['sha256'], r['path']
+            assert (INSTALLED / r['path']).read_bytes() == (SOURCE / r['path']).read_bytes(), ('INSTALLED_SOURCE_DRIFT', r['path'])
+        limits = json.loads((INSTALLED / 'contracts/limits.json').read_bytes())
+        for key, value in {'processCount': 3, 'supervisorOldMiB': 128, 'workerOldMiB': 256, 'workerSemiMiB': 16, 'semanticMinMs': 1000, 'semanticMaxMs': 60000, 'overallAllowanceMs': 15000, 'terminationMs': 2000, 'helperMs': 2000}.items():
+            assert limits['fixed'][key] == value, ('FROZEN_LIMIT_DRIFT', key)
+        assert limits['engineering']['aggregateRssMiB'] == 768
+        self.bindings.update(node=ref(NODE), installedManifest=ref(INSTALLED / 'distribution-manifest.json'), limits=ref(INSTALLED / 'contracts/limits.json'), lifecycleDriver=ref(OLD_TOOLS / 'lifecycle-driver.mjs'), oracleDriver=ref(OLD_TOOLS / 'oracle.mjs'), os=platform.platform(), architecture=platform.machine())
+        self.verify_authority(archive)
+        put(self.output / 'preflight.json', {'status': 'PASS', 'bindings': self.bindings, 'installedMembers': self.before})
+
+    def observed(self, name, args, expected=0, package=INSTALLED, timeout=80):
+        self.budget()
+        argv = list(map(str, args))
+        result = None
+        partial = []
+        original_snapshot = observer.snapshot
+        def capture(*a, **kw):
+            rows = original_snapshot(*a, **kw)
+            partial.append({'elapsedMs': round((time.monotonic() - begun) * 1000), 'processes': copy.deepcopy(rows), 'totalRssBytes': sum(r['rssBytes'] for r in rows)})
+            return rows
+        begun = time.monotonic()
+        observer.snapshot = capture
+        failure = None
+        try:
+            result = observer.execute(argv, INSTALLED.parent, env=self.env, timeout=timeout, interval=.1)
+            assert result['exitCode'] == expected, ('EXIT_MISMATCH', name, expected, result['exitCode'])
+            assert result['lifetimes'], 'NO_OBSERVED_PROCESSES'
+            roots = [r for r in result['lifetimes'] if r['pid'] == result['rootPid']]
+            assert len(roots) == 1 and roots[0]['commandLine'] == subprocess.list2cmdline(argv), 'ROOT_ARGV_IDENTITY'
+            result['topologyValidation'] = validate_trace(result, self.ids, package)
+            assert result['cleanup']['elapsedMs'] <= 2000 and not result['cleanup']['remainingPids'], 'CLEANUP_BOUND'
+            assert result['elapsedMs'] <= (75000 if timeout == 80 else timeout * 1000), 'WALL_CLOCK_LIMIT'
+            result['status'] = 'PASS'
+            return result
+        except BaseException as error:
+            failure = type(error).__name__ + ': ' + str(error)
+            if result is None:
+                lifetimes = {}
+                for sample in partial:
+                    for p in sample['processes']: lifetimes[(p['pid'], p['creationTime100ns'])] = p
+                remaining = []
+                for (pid, born), p in lifetimes.items():
+                    current = observer.details(pid)
+                    if current and current['creationTime100ns'] == born: remaining.append({'pid': pid, 'creationTime100ns': born})
+                result = {'command': argv, 'elapsedMs': round((time.monotonic() - begun) * 1000), 'lifetimes': list(lifetimes.values()), 'observation': {'samples': partial}, 'cleanup': {'remainingIdentities': remaining}, 'stdout': '', 'stderr': '', 'limitation': 'Observer failed before returning complete streams; partial samples and remaining observed identities retained.'}
+            result.update(status='FAIL', validationError=failure)
+            raise
+        finally:
+            observer.snapshot = original_snapshot
+            result.update(id=name, expectedExitCode=expected, bindings=self.bindings)
+            result['rawLogs'] = self.raw_logs(name, result)
+            reference = put(self.output / 'traces' / (name + '.json'), compact(result))
+            self.commands.append({'id': name, 'status': result['status'], 'trace': reference})
+            print(name, result['status'], result.get('elapsedMs'), 'ms', flush=True)
+
+    def oracle(self, name, work, expected):
+        self.budget()
+        argv = [str(NODE), '--max-old-space-size=128', str(OLD_TOOLS / 'oracle.mjs'), str(work)]
+        started = time.monotonic()
+        record = {'id': 'sdk-' + name, 'command': argv, 'status': 'FAIL', 'bindings': self.bindings}
+        try:
+            p = subprocess.run(argv, cwd=ROOT, env=self.env, stdin=subprocess.DEVNULL, capture_output=True, timeout=15, creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP)
+            record.update(exitCode=p.returncode, stdout=p.stdout.decode('utf8'), stderr=p.stderr.decode('utf8'))
+            assert p.returncode == 0, 'SDK_ORACLE_EXIT'
+            decision = json.loads(p.stdout)['decision']
+            assert decision == {0: 'PASS', 6: 'FAIL', 7: 'COULD_NOT_EVALUATE'}[expected], ('SDK_ORACLE_EXPECTATION', name, decision)
+            record.update(status='PASS', decision=decision)
+            record['normativeOracleFiles'] = []
+            for normative_name in ('oracle-identity.json', 'oracle-outcome.json'):
+                dest = self.output / 'oracles' / (record['id'] + '-' + normative_name)
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(work / normative_name, dest)
+                record['normativeOracleFiles'].append(ref(dest))
+        except BaseException as error:
+            record['failure'] = type(error).__name__ + ': ' + str(error)
+            if isinstance(error, subprocess.TimeoutExpired): record.update(stdout=error.stdout or b'', stderr=error.stderr or b'')
+            raise
+        finally:
+            record['elapsedMs'] = round((time.monotonic() - started) * 1000)
+            record['rawLogs'] = self.raw_logs('sdk-' + name, record)
+            record.pop('stdout', None); record.pop('stderr', None)
+            put(self.output / 'oracles' / (name + '.json'), record)
+
+    def functional(self, name, vector, expected, regression=False, mutation=None, golden=True):
+        work = self.work / name; work.mkdir()
+        for filename in ('policy.json', 'candidate.mip', 'memoryos-ci.json'):
+            shutil.copyfile(FIX / vector / filename, work / filename)
+        config = json.loads((work / 'memoryos-ci.json').read_bytes())
+        if regression:
+            shutil.copyfile(work / 'candidate.mip', work / 'baseline.mip'); config['context']['baselineMip'] = 'baseline.mip'
+        if mutation == 'configuration': config['unexpected'] = True
+        elif mutation == 'input': config['context']['candidateMip'] = 'missing.mip'
+        elif mutation == 'integrity': config['policy']['expectedSemanticDigest'] = 'sha256:' + '0' * 64
+        elif mutation == 'maximum':
+            raw = (work / 'policy.json').read_bytes(); assert len(raw) <= 2048
+            (work / 'policy.json').write_bytes(raw + b' ' * (2048 - len(raw)))
+            assert (work / 'candidate.mip').stat().st_size == (work / 'baseline.mip').stat().st_size == 524288
+        (work / 'memoryos-ci.json').write_bytes(j(config))
+        case = {'id': name, 'status': 'FAIL', 'expectedExitCode': expected, 'sourceFixture': vector, 'regressionContext': regression, 'mutation': mutation, 'inputFiles': [ref(p) for p in sorted(work.iterdir()) if p.is_file()]}
+        try:
+            if expected in (0, 6, 7): self.oracle(name, work, expected)
+            result = self.observed(name, [NODE, '--max-old-space-size=128', INSTALLED / 'bin/memoryos-ci.mjs', 'run', '--workspace', work, '--config', work / 'memoryos-ci.json', '--provider', 'generic'], expected)
+            summary = json.loads(result['stdout'])
+            assert result['stdout'].encode('utf8') == j(summary), 'SUMMARY_CANONICAL_BYTES'
+            assert summary['exitCode'] == expected and summary['publication'] == 'COMPLETE'
+            bundle = work / '.memoryos-ci/out' / summary['runId']
+            self.observed('verify-' + name, [NODE, '--max-old-space-size=128', INSTALLED / 'bin/memoryos-ci.mjs', 'verify', '--bundle', bundle])
+            common = json.loads((bundle / 'memoryos-ci-result.json').read_bytes())
+            evidence = json.loads((bundle / 'memoryos-ci-evidence.json').read_bytes())
+            assert common['provider'] == 'generic' and common['process']['exitCode'] == expected
+            assert evidence['distributionSha256'] == DISTRIBUTION and evidence['runtime']['nodeSha256'] == NODE_SHA
+            assert evidence['metadata']['provider'] == 'generic' and all(v is None for k, v in evidence['metadata'].items() if k != 'provider')
+            allowed = {'memoryos-ci-result.json', 'memoryos-ci-evidence.json', 'memoryos-ci-artifacts.json', 'memoryos-ci-complete.json'}
+            if expected in (0, 6, 7):
+                allowed |= {'evaluation-identity.json', 'policy-outcome.json'}
+                for actual, oracle in [('evaluation-identity.json', 'oracle-identity.json'), ('policy-outcome.json', 'oracle-outcome.json')]:
+                    assert (bundle / actual).read_bytes() == (work / oracle).read_bytes(), ('SDK_BYTE_PARITY', name, actual)
+                    if golden: assert (bundle / actual).read_bytes() == (FIX / vector / actual).read_bytes(), ('FIXTURE_BYTE_PARITY', name, actual)
+            assert {p.name for p in bundle.iterdir()} == allowed, 'EXACT_BUNDLE_MEMBERS'
+            target = self.output / 'bundles' / name / summary['runId']; target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copytree(bundle, target)
+            case.update(normativeDigests={n: sha((target / n).read_bytes()) for n in ('evaluation-identity.json', 'policy-outcome.json')} if expected in (0,6,7) else {})
+            case.update(status='PASS', runId=summary['runId'], classification=common['classification'], bundle=target.relative_to(ROOT).as_posix(), bundleFiles=[ref(p) for p in sorted(target.iterdir())], semanticByteParity=expected in (0, 6, 7), trace=ref(self.output / 'traces' / (name + '.json')))
+            if name == 'regression-fail': case['qualification'] = 'Actual baseline/candidate regression fact context; FAIL comes from require-verification-completed, not an invented regression finding.'
+            if name == 'regression-cne': case['qualification'] = 'Regression-specific rule has no required baseline fact context; exact authoritative SDK result is CNE.'
+        except BaseException as error:
+            case['failure'] = type(error).__name__ + ': ' + str(error)
+            raise
+        finally:
+            self.cases.append(case); put(self.output / 'cases' / (name + '.json'), case)
+
+
+
+    def generation(self):
+        case = {'id': 'valid-generate', 'status': 'FAIL'}
+        try:
+            deploy = self.work / 'deployment.json'
+            deploy.write_bytes(j({'kind': 'MemoryOSCICDDeployment', 'version': '1.0.0', 'provider': 'generic', 'distributionDigest': DISTRIBUTION, 'options': {}}))
+            target = self.work / 'generated'
+            self.observed('valid-generate', [NODE, '--max-old-space-size=128', INSTALLED / 'bin/memoryos-ci.mjs', 'generate', '--config', FIX / 'evaluate-policy-pass/memoryos-ci.json', '--deployment', deploy, '--output', target])
+            manifest = json.loads((target / 'memoryos-ci-generation.json').read_bytes())
+            assert manifest['provider'] == 'generic'
+            assert {p.name for p in target.iterdir()} == {'memoryos-ci.json', 'memoryos-ci-generation.json'}
+            for entry in manifest['files']:
+                raw=(target / entry['path']).read_bytes()
+                assert len(raw)==entry['byteLength'] and sha(raw)==entry['sha256']
+            retained=self.output/'generated'; shutil.copytree(target,retained)
+            case.update(status='PASS', files=[ref(p) for p in sorted(retained.iterdir())], deployment=ref(deploy))
+        except BaseException as error:
+            case['failure'] = type(error).__name__ + ': ' + str(error)
+            raise
+        finally:
+            self.cases.append(case); put(self.output / 'cases' / (case['id'] + '.json'), case)
+
+
+
+
+
+
+    def verify_authority(self, archive):
+        raw = subprocess.run(['git','-C',str(MAIN),'ls-tree','-rz',AUTHORITY],check=True,capture_output=True).stdout
+        tree = {}
+        for entry in raw.split(b'\0'):
+            if not entry: continue
+            meta,name=entry.split(b'\t',1);tree[name.decode()]=meta.decode().split()[2]
+        def bound(path):
+            rel=path.relative_to(MAIN).as_posix();data=path.read_bytes()
+            blob=hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()
+            assert tree[rel]==blob,('C3CB_SOURCE_DRIFT',rel)
+            return {'source':rel,'gitBlob':blob,'byteLength':len(data),'sha256':sha(data)}
+        self.sourceBindings=[bound(SOURCE / row['path']) for row in self.before]
+        with tarfile.open(archive) as tar:
+            members=tar.getmembers();assert len(members)==94
+            assert len({m.name.casefold() for m in members})==94
+            for m in members:
+                assert m.isfile() and m.name.startswith('package/') and '..' not in m.name.split('/')
+                assert tar.extractfile(m).read()==(INSTALLED/m.name[8:]).read_bytes()
+        package=json.loads((INSTALLED/'package.json').read_bytes())
+        assert package['name']=='memoryos-ci' and package['version']=='0.1.0'
+        assert not package.get('dependencies') and not package.get('optionalDependencies')
+        closure=json.loads((INSTALLED/'runtime/runtime-closure-manifest.json').read_bytes())['files'];assert len(closure)==25
+        for row in closure:
+            source=MAIN/row['source'];data=source.read_bytes();assert len(data)==row['byteLength'] and sha(data)=='sha256:'+row['sha256']
+            assert data==(INSTALLED/'runtime'/row['path']).read_bytes();self.sourceBindings.append(bound(source))
+        for path in [OLD_TOOLS/'oracle.mjs', MAIN/'repositories/cca-conformance/tools/mo1306-phase3-helper-correction/helper-observe.mjs']:
+            self.sourceBindings.append(bound(path))
+        assert (HERE/'helper-observe.mjs').read_bytes()==(MAIN/'repositories/cca-conformance/tools/mo1306-phase3-helper-correction/helper-observe.mjs').read_bytes()
+        self.bindings.update(sourceBindings=self.sourceBindings,helperObserver=ref(HERE/'helper-observe.mjs'),archiveMemberCount=94,productionDependencies=0,sdkRuntimeClosureCount=25,sdkVersion='1.1.0',installBasis='Exact preserved copy of Correction B offline-installed tree, independently checked against every archive member, distribution entry, and C3CB Git blob; no new install claimed.')
+        print('preflight PASS; C3CB archive/install/source/SDK closure bound',flush=True)
+
+    def deadlines(self):
+        for name,mode in [('timely-helper','installation-first48'),('late-helper','late'),('late-terminal','core-late')]:
+            workspace=self.work/name;workspace.mkdir()
+            case={'id':name,'status':'FAIL','mode':mode}
+            try:
+                result=self.observed(name,[NODE,'--max-old-space-size=128',HERE/'helper-observe.mjs',INSTALLED,NODE,FIX/'evaluate-policy-pass/memoryos-ci.json',mode,workspace],timeout=12)
+                report=json.loads(result['stdout']);reference=put(self.output/'timing'/(name+'.json'),report)
+                events=report['events'];arm=next(e for e in events if e['event']=='timerArmed')
+                assert 0<arm['requestedDelayMs']<=2000 and report['filesystem']['unchanged'] and not report['lateAccepted']
+                exit_event=next(e for e in events if e['event']=='childEventBefore' and e['name']=='exit')
+                assert exit_event['args']==[0,None] and exit_event['atMs']<arm['dueLowerMs']
+                if name=='timely-helper':
+                    assert report['result']=={'accepted':True,'code':None} and report['terminalAtMs']<arm['dueLowerMs']
+                else:
+                    assert report['result']=={'accepted':False,'code':'MO1306_FILESYSTEM_BOUNDARY'}
+                    assert report['terminalAtMs']>arm['dueUpperMs'] and not any(e['event']=='timerFire' for e in events)
+                    assert any(e['event']=='boundaryCloseForwardedToProduct' and e['atMs']>arm['dueUpperMs'] for e in events)
+                if name=='late-terminal':
+                    value=next(e for e in events if e['event']=='coreResult')['summary']
+                    assert value['publication']=='NONE' and value['exitCode']==11 and value['resultSha256'] is None
+                    assert not list(workspace.rglob('memoryos-ci-complete.json'))
+                case.update(status='PASS',report=reference,trace=ref(self.output/'traces'/(name+'.json')),frozenHelperMs=2000,noGrace=True,lateSuccessAccepted=False)
+            except BaseException as error:
+                case['failure']=type(error).__name__+': '+str(error);raise
+            finally:
+                self.cases.append(case);put(self.output/'cases'/(name+'.json'),case)
+
+    def tiny_dispatch(self):
+        case={'id':'corrected-cli-dispatch','status':'FAIL','results':[]}
+        try:
+            for command in ['constructor','toString','__proto__']:
+                name='dispatch-'+command
+                result=self.observed(name,[NODE,'--max-old-space-size=128',INSTALLED/'bin/memoryos-ci.mjs',command],expected=10,timeout=10)
+                diag=[json.loads(row) for row in result['stderr'].splitlines()]
+                assert len(diag)==1 and diag[0]['code']=='MO1306_USAGE' and result['stdout']==''
+                assert all(p['pid']==result['rootPid'] for p in result['lifetimes'])
+                case['results'].append({'command':command,'exitCode':10,'code':'MO1306_USAGE','noObservedDescendant':True,'trace':ref(self.output/'traces'/(name+'.json'))})
+            case['status']='PASS'
+        except BaseException as error:
+            case['failure']=type(error).__name__+': '+str(error);raise
+        finally:
+            self.cases.append(case);put(self.output/'cases'/(case['id']+'.json'),case)
+
+    def run(self):
+        status='FAIL';failure=None
+        print('native output '+str(self.output),flush=True)
+        try:
+            self.preflight()
+            self.deadlines()
+            for suffix,code in [('pass',0),('fail',6),('cne',7)]:
+                self.functional('policy-'+suffix,'evaluate-policy-'+suffix,code)
+            self.generation()
+            self.tiny_dispatch()
+            self.functional('error-input','evaluate-policy-pass',11,mutation='input',golden=False)
+            self.after=inventory(INSTALLED);assert self.after==self.before,'INSTALLED_CANDIDATE_CHANGED'
+            put(self.output/'installed-integrity-after.json',{'status':'PASS','count':len(self.after),'members':self.after,'before':ref(self.output/'preflight.json')})
+            assert len(self.cases)==9 and all(c['status']=='PASS' for c in self.cases)
+            status='PASS'
+        except BaseException as error:
+            failure=type(error).__name__+': '+str(error);raise
+        finally:
+            summary={'kind':'MemoryOSPhase3AFinalTargetedNativeConfirmation','version':'1.0.0','status':status,'failure':failure,'run':self.id,'elapsedMs':round((time.monotonic()-self.started)*1000),'campaignLimitMs':CAMPAIGN_SECONDS*1000,'bindings':self.bindings,'caseCount':len(self.cases),'cases':self.cases,'commands':self.commands,'installedIntegrity':ref(self.output/'installed-integrity-after.json') if (self.output/'installed-integrity-after.json').exists() else None,'limitations':['External Windows process/RSS observation is sampled, with exact argv, process birth identity, <=3 roles and no observed orphan validation. No kernel containment claim.','Late controls impose supervisor close delivery pause on a genuine early safe:true/exit0 helper; they test absolute late acceptance, not an alleged helper kernel-runtime overrun.','Three compact semantic cases invoke independent C3CB SDK 1.1.0 source and compare exact normative bytes with installed CLI and frozen fixtures. Full historical campaigns are not repeated.']}
+            put(self.output/'summary.json',summary)
+            print(json.dumps({'status':status,'caseCount':len(self.cases),'summary':str(self.output/'summary.json'),'failure':failure}),flush=True)
+
+if __name__=='__main__':
+    Campaign().run()

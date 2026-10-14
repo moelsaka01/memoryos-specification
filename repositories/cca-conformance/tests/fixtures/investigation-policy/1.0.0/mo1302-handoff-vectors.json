@@ -1,0 +1,131 @@
+{
+  "artifactRetention": {
+    "required": [
+      "canonicalEvaluationIdentity",
+      "canonicalOutcome",
+      "evaluationIdentityDigest",
+      "outcomeDigest",
+      "policyOrSetSemanticDigest",
+      "policyFactContextDigest"
+    ],
+    "sourceConditional": [
+      "regressionPolicyFactSourceDigest"
+    ],
+    "sensitiveInvestigationBodiesRequired": false
+  },
+  "contractIdentityPin": {
+    "deterministicFactSourceRegistry": {
+      "registryDigest": "sha256:392d688acb866753c6ff85b7030131b38990b27d8a2a0ef6e8e052c8c4e048de",
+      "registryVersion": "1.0.0",
+      "sources": [
+        {
+          "domain": "cognitiveRegression",
+          "sourceModelDigest": "sha256:e7d1fdf24758f2a0ac9ad609df578f95c058bf3cbab9f02a650f9cc12dab1c0d",
+          "sourceModelVersion": "1.0.0",
+          "wireVersion": "1.0.0"
+        }
+      ]
+    },
+    "evaluatorVersion": "1.0.0",
+    "factModel": {
+      "factModelDigest": "sha256:b36b9488161cb67d8e971e802d15ad76d662d46f96e1304182de343ba69ef7a8",
+      "factModelVersion": "1.0.0"
+    },
+    "kind": "MemoryOSPolicyContractIdentities",
+    "outcomeContractVersion": "1.0.0",
+    "resourceProfile": {
+      "identifier": "memoryos.policy.resource-profile.standard",
+      "resourceProfileDigest": "sha256:c091573dfd05481f5759ef077e15af16689382a7432fa546c6630c4caeaa5239",
+      "version": "1.0.0"
+    },
+    "ruleRegistry": {
+      "ruleRegistryDigest": "sha256:aaa19116563d209f680b063cdccf49d899069683f9778271c4ca2c4559b94fd7",
+      "ruleRegistryVersion": "1.0.0"
+    },
+    "version": "1.0.0"
+  },
+  "decisionMapping": [
+    {
+      "cliExitCode": 0,
+      "decision": "PASS",
+      "workflowGate": "success"
+    },
+    {
+      "cliExitCode": 6,
+      "decision": "FAIL",
+      "workflowGate": "failure"
+    },
+    {
+      "cliExitCode": 7,
+      "decision": "COULD_NOT_EVALUATE",
+      "workflowGate": "failure"
+    }
+  ],
+  "distributionPin": {
+    "allowedIdentityKinds": [
+      "immutableRevision",
+      "sha256"
+    ],
+    "required": true,
+    "substitutesForContractIdentityPin": false
+  },
+  "failureMapping": [
+    {
+      "cliExitCode": 1,
+      "failureClass": "usage",
+      "workflowGate": "tool-failure"
+    },
+    {
+      "cliExitCode": 2,
+      "failureClass": "preparation",
+      "workflowGate": "tool-failure"
+    },
+    {
+      "cliExitCode": 3,
+      "failureClass": "operational",
+      "workflowGate": "tool-failure"
+    },
+    {
+      "cliExitCode": 4,
+      "failureClass": "operational",
+      "workflowGate": "tool-failure"
+    },
+    {
+      "cliExitCode": 5,
+      "failureClass": "operational",
+      "workflowGate": "tool-failure"
+    }
+  ],
+  "kind": "MemoryOSMO1302HandoffVectors",
+  "policyPin": {
+    "artifactKind": "MemoryOSInvestigationPolicy",
+    "semanticDigest": "sha256:6193d3aebc745f2f2724233a5bfd74bcad088209d59aa24678662b8194afcf42"
+  },
+  "policySetPin": {
+    "artifactKind": "MemoryOSInvestigationPolicySet",
+    "semanticDigest": "sha256:9b32da8ceb8c3759e056a4a2c9bac7c692b653093cef6bac26295ac54c50b243"
+  },
+  "publicationGeneration": {
+    "auxiliaryArtifactsRequireOutcomeCrossVerification": true,
+    "finalCommitMarker": "canonicalOutcome",
+    "mixedGenerationAccepted": false,
+    "requestedArtifacts": [
+      "canonicalEvaluationIdentity",
+      "canonicalOutcome",
+      "evaluationIdentityDigest",
+      "outcomeDigest"
+    ]
+  },
+  "summaryProjection": {
+    "allowed": [
+      "decision",
+      "digests",
+      "evidenceReferences",
+      "ruleDecisions",
+      "stableCodes"
+    ],
+    "normative": false,
+    "replacesCanonicalOutcome": false
+  },
+  "version": "1.0.0"
+}

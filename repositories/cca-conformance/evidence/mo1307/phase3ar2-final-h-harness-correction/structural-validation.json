@@ -1,0 +1,112 @@
+{
+  "kind": "MO1307Phase3AR2FinalHHarnessStructuralValidation",
+  "version": "1.0.0",
+  "createdAt": "2026-10-02T14:23:12.464Z",
+  "result": "PASS",
+  "classification": "H_HARNESS_MARGIN_DEFECT",
+  "correction": {
+    "eofDelayMs": 0,
+    "minMs": null,
+    "maxMs": 5000
+  },
+  "immutableProductDeadlineMs": 9000,
+  "maximumCorrectedEnvelopeMs": 5000,
+  "minimumDeadlineHeadroomMs": 4000,
+  "nearBoundaryIntervalRemoved": true,
+  "requiredNewToken": "'timely-helper',{eofDelayMs:0,maxMs:5000}",
+  "forbiddenOldToken": "'timely-helper',{eofDelayMs:8200,minMs:8000,maxMs:9000}",
+  "requiredNewTokenOccurrences": 1,
+  "forbiddenOldTokenOccurrences": 0,
+  "normalizedOldRuntimeSha256": "sha256:368ccbf32c55909f335127fb530ade3dc8e2c86fbe5aac3f1ea4c5e1a0da3afb",
+  "normalizedFreshRuntimeSha256": "sha256:368ccbf32c55909f335127fb530ade3dc8e2c86fbe5aac3f1ea4c5e1a0da3afb",
+  "normalizedSourcesEqual": true,
+  "allowedDifferences": [
+    "fresh cache namespace",
+    "fresh evidence namespace",
+    "timely-helper engineering tuple"
+  ],
+  "unchangedControls": [
+    {
+      "name": "deterministic-boundary",
+      "lines": 6,
+      "sha256": "sha256:d18cb3925c3b864f65ef88575466ba69ef8525ce4d0b2c8faa00f5c6f42b80b8"
+    },
+    {
+      "name": "boundary-receipt",
+      "lines": 1,
+      "sha256": "sha256:703a696baad0ce82dc4f1941691495a738f28b7cc8c915fd637ccd5958979599"
+    },
+    {
+      "name": "cleanup-finalization",
+      "lines": 1,
+      "sha256": "sha256:92c36315e62fe8bc5c32ba85ad4f47e52cd7b94d5f4ca59033ce75d0ea4935ad"
+    },
+    {
+      "name": "cancel-before-helper",
+      "lines": 1,
+      "sha256": "sha256:b20a707cce318f0cba993e3d6ea2723d8421f2a8262c86f382a04499bc7f4684"
+    },
+    {
+      "name": "helper-timeout",
+      "lines": 1,
+      "sha256": "sha256:6987339555d01ac22cff019a817c17be62d3c1f202f1bf9e2fb2582dda4c5119"
+    },
+    {
+      "name": "late-helper-success-rejected",
+      "lines": 1,
+      "sha256": "sha256:8203dac695f48309b203a891c6f410b80e2c9da7afc1f1aec8c9793addaf2946"
+    },
+    {
+      "name": "cancel-during-helper",
+      "lines": 1,
+      "sha256": "sha256:62dd1c8541f8e2d53ac51d3f8c9a564ba640b20a2ff36a3db2123337336aceb7"
+    },
+    {
+      "name": "cancel-between-helper-worker",
+      "lines": 1,
+      "sha256": "sha256:83e844f932dd5838647a70b8db590290419cdc01fb3b434283a2b11e62ec2aa3"
+    },
+    {
+      "name": "aggregate-helper-exhaustion",
+      "lines": 7,
+      "sha256": "sha256:62b1ddde4ca15e360b4b6c26dff5e7f2cb8c27f32db53f9fa32780c31a5a4b70"
+    },
+    {
+      "name": "case-set-and-no-overlap-sequence",
+      "lines": 3,
+      "sha256": "sha256:7aed15f92e5a251c1cb7585c162f90bbbd7d555d9560d1e9a14b9381f8a8351a"
+    }
+  ],
+  "deterministicBoundaries": [
+    {
+      "name": "former-equality-8000-now-success",
+      "elapsedMs": 8000,
+      "expected": "PASS",
+      "actual": "PASS",
+      "result": "PASS",
+      "installedRuntime": true
+    },
+    {
+      "name": "strict-before-9000",
+      "elapsedMs": 8999,
+      "expected": "PASS",
+      "actual": "PASS",
+      "result": "PASS",
+      "installedRuntime": true
+    },
+    {
+      "name": "equality-9000-timeout",
+      "elapsedMs": 9000,
+      "expected": "MO1307_TIMEOUT",
+      "actual": "MO1307_TIMEOUT",
+      "result": "PASS",
+      "installedRuntime": true
+    }
+  ],
+  "timeoutLateCancelCleanupAggregateAndNoOverlapControlsUnchanged": true,
+  "productionSourceUnchanged": true,
+  "helperSourceUnchanged": true,
+  "packageIdentityUnchanged": true,
+  "productLimitsUnchanged": true,
+  "noProductOrHelperExecution": true
+}

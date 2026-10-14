@@ -1,0 +1,56 @@
+TAP version 13
+# \# QUEUED_CLI {"mode":"deadline","scope":"ACTUAL_QUEUED_RENAME_AND_CLI_WITH_SYNTHETIC_IDENTITY_FRAMES","requests":1,"engineeringClock":"Monotonic elapsed-time offset at slot 8; original CLI absolute deadline has 100ms remaining, no budget restart.","finiteJobs":4,"observation":{"elapsedMs":669.3353999999999,"settled":false,"snapshot":{"kind":"cli","deadline":30235.4781,"helpers":0,"workers":1,"helperUsedMs":0,"activeRole":null,"cleanupConfirmed":false,"publication":{"phase":"COMMIT_IN_PROGRESS","admitted":true,"deadlineExpiredAfterAdmission":true,"cancelledAfterAdmission":true,"namespaceVerified":false,"dispositionDeadline":null},"terminalCode":null,"terminalAt":null,"cleanupDeadline":null,"events":[{"type":"start","at":379.9357,"role":"worker","deadline":10379.7378,"ordinal":1},{"type":"observation","at":384.1529,"role":"worker","threadId":1,"resourceLimits":{"maxYoungGenerationSizeMb":16,"maxOldGenerationSizeMb":128,"codeRangeSizeMb":0,"stackSizeMb":4}},{"type":"quiescent","at":677.1349,"role":"worker","ordinal":1},{"type":"publication-interruption","at":30245.771399999998,"code":"MO1307_TIMEOUT","phase":"COMMIT_IN_PROGRESS"},{"type":"publication-interruption","at":30312.6727,"code":"MO1307_CANCELLED","phase":"COMMIT_IN_PROGRESS"}]},"finalPresent":false,"pendingPresent":true,"stdoutBytes":0},"elapsedMs":3201.9224999999997,"snapshot":{"kind":"cli","deadline":30235.4781,"helpers":0,"workers":1,"helperUsedMs":0,"activeRole":null,"cleanupConfirmed":true,"publication":{"phase":"COMMITTED","admitted":true,"deadlineExpiredAfterAdmission":true,"cancelledAfterAdmission":true,"namespaceVerified":true,"dispositionDeadline":5375.641},"terminalCode":"MO1307_OUTPUT","terminalAt":32786.5937,"cleanupDeadline":5375.641,"events":[{"type":"start","at":379.9357,"role":"worker","deadline":10379.7378,"ordinal":1},{"type":"observation","at":384.1529,"role":"worker","threadId":1,"resourceLimits":{"maxYoungGenerationSizeMb":16,"maxOldGenerationSizeMb":128,"codeRangeSizeMb":0,"stackSizeMb":4}},{"type":"quiescent","at":677.1349,"role":"worker","ordinal":1},{"type":"publication-interruption","at":30245.771399999998,"code":"MO1307_TIMEOUT","phase":"COMMIT_IN_PROGRESS"},{"type":"publication-interruption","at":30312.6727,"code":"MO1307_CANCELLED","phase":"COMMIT_IN_PROGRESS"},{"type":"terminal","at":32786.6951,"code":"MO1307_OUTPUT","stage":"PUBLICATION"}]},"failure":"MO1307_OUTPUT","exitCode":21,"stdoutBytes":0,"failureCleanupDeadline":5375.641}
+# Subtest: FCLI actual queued rename awaits settlement after deadline
+ok 1 - FCLI actual queued rename awaits settlement after deadline
+  ---
+  duration_ms: 3232.4369
+  type: 'test'
+  ...
+# \# QUEUED_CLI {"mode":"cancellation","scope":"ACTUAL_QUEUED_RENAME_AND_CLI_WITH_SYNTHETIC_IDENTITY_FRAMES","requests":1,"engineeringClock":"Real monotonic clock","finiteJobs":4,"observation":{"elapsedMs":444.6351999999997,"settled":false,"snapshot":{"kind":"cli","deadline":33457.0785,"helpers":0,"workers":1,"helperUsedMs":0,"activeRole":null,"cleanupConfirmed":false,"publication":{"phase":"COMMIT_IN_PROGRESS","admitted":true,"deadlineExpiredAfterAdmission":false,"cancelledAfterAdmission":true,"namespaceVerified":false,"dispositionDeadline":null},"terminalCode":null,"terminalAt":null,"cleanupDeadline":null,"events":[{"type":"start","at":3559.1421,"role":"worker","deadline":13559.0919,"ordinal":1},{"type":"observation","at":3560.5052,"role":"worker","threadId":2,"resourceLimits":{"maxYoungGenerationSizeMb":16,"maxOldGenerationSizeMb":128,"codeRangeSizeMb":-1,"stackSizeMb":4}},{"type":"quiescent","at":3834.0361,"role":"worker","ordinal":1},{"type":"publication-interruption","at":3901.832,"code":"MO1307_CANCELLED","phase":"COMMIT_IN_PROGRESS"}]},"finalPresent":false,"pendingPresent":true,"stdoutBytes":0},"elapsedMs":2992.1077,"snapshot":{"kind":"cli","deadline":33457.0785,"helpers":0,"workers":1,"helperUsedMs":0,"activeRole":null,"cleanupConfirmed":true,"publication":{"phase":"COMMITTED","admitted":true,"deadlineExpiredAfterAdmission":false,"cancelledAfterAdmission":true,"namespaceVerified":true,"dispositionDeadline":8298.6816},"terminalCode":"MO1307_OUTPUT","terminalAt":6300.4187,"cleanupDeadline":8298.6816,"events":[{"type":"start","at":3559.1421,"role":"worker","deadline":13559.0919,"ordinal":1},{"type":"observation","at":3560.5052,"role":"worker","threadId":2,"resourceLimits":{"maxYoungGenerationSizeMb":16,"maxOldGenerationSizeMb":128,"codeRangeSizeMb":-1,"stackSizeMb":4}},{"type":"quiescent","at":3834.0361,"role":"worker","ordinal":1},{"type":"publication-interruption","at":3901.832,"code":"MO1307_CANCELLED","phase":"COMMIT_IN_PROGRESS"},{"type":"terminal","at":6300.4506,"code":"MO1307_OUTPUT","stage":"PUBLICATION"}]},"failure":"MO1307_OUTPUT","exitCode":21,"stdoutBytes":0,"failureCleanupDeadline":8298.6816}
+# Subtest: FCLI actual queued rename awaits settlement after cancellation
+ok 2 - FCLI actual queued rename awaits settlement after cancellation
+  ---
+  duration_ms: 3006.6671
+  type: 'test'
+  ...
+# Subtest: PWAIT terminal cancellation prevents late advancement after mkdir
+ok 3 - PWAIT terminal cancellation prevents late advancement after mkdir
+  ---
+  duration_ms: 70.2721
+  type: 'test'
+  ...
+# Subtest: PWAIT terminal cancellation prevents late advancement after sync
+ok 4 - PWAIT terminal cancellation prevents late advancement after sync
+  ---
+  duration_ms: 83.321
+  type: 'test'
+  ...
+# Subtest: PWAIT terminal cancellation prevents late advancement after final-open
+ok 5 - PWAIT terminal cancellation prevents late advancement after final-open
+  ---
+  duration_ms: 99.267
+  type: 'test'
+  ...
+# \# STDOUT_DISPOSITION {"mode":"timeout","delivered":353,"snapshot":{"kind":"cli","deadline":36714.6551,"helpers":0,"workers":1,"helperUsedMs":0,"activeRole":null,"cleanupConfirmed":true,"publication":{"phase":"COMMITTED","admitted":true,"deadlineExpiredAfterAdmission":true,"cancelledAfterAdmission":false,"namespaceVerified":true,"dispositionDeadline":9158.2971},"terminalCode":"MO1307_OUTPUT","terminalAt":36715.893800000005,"cleanupDeadline":38715.893800000005,"events":[{"type":"start","at":6806.3917,"role":"worker","deadline":16806.315300000002,"ordinal":1},{"type":"observation","at":6808.3976,"role":"worker","threadId":3,"resourceLimits":{"maxYoungGenerationSizeMb":16,"maxOldGenerationSizeMb":128,"codeRangeSizeMb":-1,"stackSizeMb":4}},{"type":"quiescent","at":7109.612,"role":"worker","ordinal":1},{"type":"publication-transport","at":7159.9573},{"type":"publication-interruption","at":36715.77250000001,"code":"MO1307_TIMEOUT","phase":"COMMITTED"},{"type":"terminal","at":36715.9299,"code":"MO1307_OUTPUT","stage":"PUBLICATION"}]}}
+# Subtest: FCLI post-commit stalled stdout timeout retains final and one transport allowance
+ok 6 - FCLI post-commit stalled stdout timeout retains final and one transport allowance
+  ---
+  duration_ms: 501.0953
+  type: 'test'
+  ...
+# \# STDOUT_DISPOSITION {"mode":"cancellation","delivered":353,"snapshot":{"kind":"cli","deadline":37219.3736,"helpers":0,"workers":1,"helperUsedMs":0,"activeRole":null,"cleanupConfirmed":true,"publication":{"phase":"COMMITTED","admitted":true,"deadlineExpiredAfterAdmission":false,"cancelledAfterAdmission":true,"namespaceVerified":true,"dispositionDeadline":9622.1939},"terminalCode":"MO1307_OUTPUT","terminalAt":7666.0306,"cleanupDeadline":9666.0306,"events":[{"type":"start","at":7311.0942,"role":"worker","deadline":17311.047599999998,"ordinal":1},{"type":"observation","at":7312.3372,"role":"worker","threadId":4,"resourceLimits":{"maxYoungGenerationSizeMb":16,"maxOldGenerationSizeMb":128,"codeRangeSizeMb":-1,"stackSizeMb":4}},{"type":"quiescent","at":7580.4507,"role":"worker","ordinal":1},{"type":"publication-transport","at":7623.6955},{"type":"publication-interruption","at":7665.8473,"code":"MO1307_CANCELLED","phase":"COMMITTED"},{"type":"terminal","at":7666.0687,"code":"MO1307_OUTPUT","stage":"PUBLICATION"}]}}
+# Subtest: FCLI post-commit stalled stdout cancellation retains final and one transport allowance
+ok 7 - FCLI post-commit stalled stdout cancellation retains final and one transport allowance
+  ---
+  duration_ms: 460.4893
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9620.14

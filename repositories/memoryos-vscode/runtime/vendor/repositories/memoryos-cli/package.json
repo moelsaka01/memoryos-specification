@@ -1,0 +1,17 @@
+{
+  "name": "@cca/memoryos-cli",
+  "version": "1.1.0",
+  "description": "Official deterministic command-line client for the MemoryOS SDK",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "memoryos": "./bin/memoryos.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "test:examples": "node examples/run-cli-examples.mjs"
+  }
+}

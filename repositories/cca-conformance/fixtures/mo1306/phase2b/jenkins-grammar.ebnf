@@ -1,0 +1,51 @@
+(* memoryos.conformance.jenkins.restricted-parser 1.0.0
+   Authority: docs/mo1306-contract-freeze-1.md sections 15, 16.1, 16.3, 17.
+   Engineering-only recognizer; no Groovy evaluation or Jenkins/plugin simulation.
+   UTF-8 without BOM; <=32768 bytes; LF only; exactly one final LF; no controls.
+   SPACE separates outer tokens; LF terminates statements as shown.
+   Semicolons/comments are not accepted.
+   Productions recognize structure; semantic constraints below close all slots. *)
+
+pipeline = "pipeline", "{", LF, agent, options, stages, "}", LF, EOF ;
+agent = "agent", "{", LF, "label", single-string, LF, "}", LF ;
+options = "options", "{", LF, "skipDefaultCheckout", "(", ")", LF,
+          "timeout", "(", "time", ":", decimal, ",", "unit", ":",
+          single-string, ")", LF, "}", LF ;
+stages = "stages", "{", LF, stage, "}", LF ;
+stage = "stage", "(", single-string, ")", "{", LF, steps, "}", LF ;
+steps = "steps", "{", LF, "checkout", identifier, LF,
+        "powershell", "(", "encoding", ":", single-string, ",",
+        "script", ":", triple-single-string, ")", LF, "}", LF ;
+single-string = "'", { ordinary-character | "\\'" | "\\\\" }, "'" ;
+triple-single-string = "'''", fixed-script, "'''" ;
+identifier = ( ASCII-letter | "_" ), { ASCII-letter | digit | "_" } ;
+decimal = "0" | ( nonzero-digit, { digit } ) ;
+
+(* Closed semantic constraints:
+   agent label equals independently supplied label matching [A-Za-z0-9_-]{1,64}.
+   timeout=5 and unit='MINUTES'; stage='MemoryOS Policy'; checkout identifier=scm;
+   encoding='UTF-8'. Only one stage and two ordered steps are admitted.
+   Triple script is uninterpolated and has no Groovy escape sequences.
+   It is decoded by a separate token recognizer with the following grammar. *)
+
+fixed-script = LF,
+  "$status", "=", "16", LF,
+  "try", "{", LF,
+  "&", "(", "Join-Path", "$env:MEMORYOS_CI_HOME",
+    "'scripts/Invoke-MemoryOSCI.ps1'", ")",
+    "-Provider", "'jenkins'", "-Workspace", "$env:WORKSPACE",
+    "-ConfigurationDigest", digest-literal,
+    "-DistributionDigest", digest-literal, LF,
+  "$status", "=", "$LASTEXITCODE", LF,
+  "}", "finally", "{", LF,
+  "exit", "$status", LF,
+  "}", LF ;
+digest-literal = "'sha256:", 64 * lower-hex-digit, "'" ;
+
+(* Both digests equal independently supplied pins, in order. SPACE may separate
+   script tokens; every shown LF is required. Added commands, variables, members,
+   arguments, interpolation, comments and escapes fail closed.
+   Native PowerShell Parser.ParseInput is additionally required in parse-only
+   conformance: compare permitted ASTs, never execute submitted script text.
+   Jenkins installation, scheduling, plugins and live execution are outside
+   this grammar's claim. *)

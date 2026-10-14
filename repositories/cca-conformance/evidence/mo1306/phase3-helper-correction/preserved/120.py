@@ -1,0 +1,77 @@
+"""Final read-only GitHub verification after mandatory native STOP."""
+from pathlib import Path
+from datetime import datetime,timezone
+import base64,hashlib,json,sys
+from remote_resolution import ROOT,OUT,OLD,REPO,BRANCH,CANDIDATE,C3AB,MAIN,SETTINGS,credential,get,put,row
+PREFIX='repos/'+REPO
+PREFLIGHT=OUT/'preflight-20260927T104420Z/preflight.json'
+
+def main():
+ preflight=json.loads(PREFLIGHT.read_bytes())
+ stamp=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
+ folder=OUT/('final-readonly-'+stamp)
+ token=credential();responses={}
+ def read(name,path):
+  value=get(path,token)
+  responses[name]=put(folder/(name+'.json'),value)
+  assert value['status']==200,(name,value['status'])
+  return value['body']
+ repo=read('repository',PREFIX)
+ assert repo['id']==preflight['repository']['id'] and repo['full_name']==REPO
+ assert repo['default_branch']=='main'
+ final_settings={key:repo[key] for key in SETTINGS if key in repo}
+ assert final_settings==preflight['repository']['settings'],'Repository settings changed'
+ main_ref=read('main-ref',PREFIX+'/git/ref/heads/main')['object']['sha']
+ cert_ref=read('certification-ref',PREFIX+'/git/ref/heads/'+BRANCH)['object']['sha']
+ assert main_ref==MAIN and cert_ref==CANDIDATE
+ actions=read('actions-permissions',PREFIX+'/actions/permissions')
+ rules=read('rulesets',PREFIX+'/rulesets?includes_parents=true&per_page=100')
+ old_actions=json.loads((ROOT/preflight['responses']['actions-permissions']['path']).read_bytes())['body']
+ old_rules=json.loads((ROOT/preflight['responses']['rulesets']['path']).read_bytes())['body']
+ assert actions==old_actions and rules==old_rules
+ registry=read('workflow-registry',PREFIX+'/actions/workflows?per_page=100')
+ assert registry['total_count']<=100
+ original_registry=json.loads((ROOT/preflight['responses']['workflow-registry']['path']).read_bytes())['body']
+ assert registry==original_registry,'Workflow registry changed'
+ expected=json.loads((OLD/'github/workflow-review.json').read_bytes())['workflows']
+ for entry in expected:
+  case=Path(entry['path']).stem
+  value=read(case,PREFIX+'/contents/'+entry['path']+'?ref='+CANDIDATE)
+  raw=base64.b64decode(value['content'])
+  assert value['type']=='file' and len(raw)==entry['byteLength']
+  assert 'sha256:'+hashlib.sha256(raw).hexdigest()==entry['sha256']
+  assert raw==(ROOT/entry['path']).read_bytes()
+ runs=read('certification-runs',PREFIX+'/actions/runs?branch='+BRANCH+'&per_page=100')
+ assert runs['total_count']==0 and runs['workflow_runs']==[],'Unexpected certification run; STOP'
+ artifacts=[];repo_artifact_count=None
+ for page in range(1,11):
+  listing=read('repository-artifacts-'+str(page),PREFIX+'/actions/artifacts?per_page=100&page='+str(page))
+  if repo_artifact_count is None:repo_artifact_count=listing['total_count']
+  artifacts+=listing['artifacts']
+  if len(artifacts)>=repo_artifact_count:break
+ assert len(artifacts)==repo_artifact_count,'Artifact pagination incomplete'
+ certification_artifacts=[a for a in artifacts if a.get('workflow_run',{}).get('head_branch')==BRANCH
+  or a.get('workflow_run',{}).get('head_sha')==CANDIDATE]
+ assert not certification_artifacts,'Unexpected certification artifact; STOP'
+ campaign_dirs=[str(p.relative_to(ROOT)) for p in OUT.glob('campaign-*') if p.is_dir()]
+ assert not campaign_dirs,'Unexpected executed campaign directory'
+ value={'kind':'MemoryOSPhase3ARResolutionFinalRemoteState','version':'1.0.0','status':'PASS',
+  'scope':'Read-only remote state validation after mandatory native STOP; no hosted certification claim.',
+  'observedUtc':datetime.now(timezone.utc).isoformat(),'defaultBranch':'main','remoteMain':main_ref,
+  'certificationBranch':BRANCH,'certificationCommit':cert_ref,'candidateProductionAuthority':C3AB,
+  'defaultBranchChanged':False,'remoteMutations':[],'dispatches':[],'settingsUnchanged':True,
+  'actionsPermissionsUnchanged':True,'rulesetsUnchanged':True,'workflowRegistryUnchanged':True,
+  'workflows':expected,'workflowBytesUnchanged':True,'certificationRunCount':0,'artifactCount':0,
+  'artifactCountScope':'All repository artifact pages inspected; zero artifacts have workflow_run.head_branch mo1306-certification or workflow_run.head_sha equal to certificationCommit. No runs exist for that branch across event types.',
+  'repositoryArtifactCount':repo_artifact_count,'campaignExecuted':False,'campaignDirectories':campaign_dirs,
+  'nativeDisposition':'MANDATORY_STOP_NATIVE_DEADLINE_BLOCKED','certificationBranchRetained':True,
+  'mainModifiedByTask':False,'newPushes':[],'tagsCreated':[],'releasesCreated':[],
+  'preflight':row(PREFLIGHT),'responses':responses,'harness':row(Path(__file__)),
+  'localOperationScope':'This tool uses GET only; no settings mutation, dispatch, ref update or branch deletion is callable.'}
+ target=OUT/'final-state.json'
+ receipt=put(target,value)
+ print(json.dumps({'status':'PASS','receipt':receipt,'defaultBranch':'main','remoteMain':main_ref,
+  'certificationCommit':cert_ref,'certificationRunCount':0,'artifactCount':0,
+  'repositoryArtifactCount':repo_artifact_count,'remoteMutations':0}))
+if __name__=='__main__':main()
+

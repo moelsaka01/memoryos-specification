@@ -1,0 +1,59 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import Module from 'node:module';
+import {pathToFileURL} from 'node:url';
+import http from 'node:http';import https from 'node:https';import net from 'node:net';import tls from 'node:tls';
+const [root,bundlePath]=process.argv.slice(2);
+const hash=b=>'sha256:'+createHash('sha256').update(b).digest('hex');
+const raw=fs.readFileSync(bundlePath);assert.equal(hash(raw),'sha256:eea594941d8ee535974e0fbc03bbdf567f3abc78194f224b93f2df9a887ee2e9');
+const source=raw.toString('utf8');
+const cache=path.join(root,'.cache/phase3b-r2/undici');
+const upstream=fs.readFileSync(path.join(root,'repositories/cca-conformance/evidence/mo1306/phase3b-r2/undici-sources/upstream-6.23.0-client-h1.js'),'utf8');
+const acornSource=process.binding('natives')['internal/deps/acorn/acorn/dist/acorn'];
+const pm=new Module('r2-acorn');pm._compile(acornSource,'r2-acorn.cjs');const acorn=pm.exports;
+const fn=(s,name)=>{const ast=acorn.parse(s,{ecmaVersion:'latest',sourceType:'module'});let out=[];function walk(n){if(!n||typeof n!=='object')return;if(n.type==='FunctionDeclaration'&&n.id?.name===name)out.push(s.slice(n.start,n.end));for(const [k,v]of Object.entries(n)){if(k==='start'||k==='end')continue;if(Array.isArray(v))v.forEach(walk);else if(v&&typeof v==='object')walk(v);}}walk(ast);assert.equal(out.length,1);return out[0];};
+const resume=fn(source,'resumeH1'),upResume=fn(upstream,'resumeH1');assert.equal(resume,upResume);
+// Execute only the exact vulnerable resume function with synthetic in-memory
+// socket state. No server, response traffic, exhaustion or complete exploit.
+const keys=['kSocket','kSize','kNoRef','kParser','kKeepAliveTimeoutValue','kRunning','kQueue','kRunningIdx','kHeadersTimeout'];
+const syms=Object.fromEntries(keys.map(k=>[k,Symbol(k)]));let reads=0,timers=0;
+const socket={destroyed:false,[syms.kParser]:{statusCode:0,timeoutType:0,setTimeout(){timers++;},readMore(){reads++;}}};
+const client={[syms.kSocket]:socket,[syms.kSize]:1,[syms.kRunning]:0};
+new Function(...keys,'TIMEOUT_KEEP_ALIVE','TIMEOUT_HEADERS',`return (${resume});`)(...keys.map(k=>syms[k]),1,2)(client);
+assert.equal(reads,0);assert.equal(timers,0);
+let attempts=0;const denied=()=>{attempts++;throw new Error('R2_NETWORK_DISABLED');};
+http.request=https.request=net.connect=tls.connect=denied;
+for(const k of Object.keys(process.env))if(/proxy|token|github_|actions_|input_|node_options|node_path/i.test(k))delete process.env[k];
+Object.assign(process.env,{GITHUB_API_URL:'https://api.example.invalid',GITHUB_SERVER_URL:'https://github.com',GITHUB_REPOSITORY:'offline/review',GITHUB_RUN_ID:'1',ACTIONS_RESULTS_URL:'https://results.example.invalid',ACTIONS_RUNTIME_TOKEN:'header.'+Buffer.from(JSON.stringify({scp:'Actions.Results:11111111-1111-1111-1111-111111111111:22222222-2222-2222-2222-222222222222'})).toString('base64url')+'.signature'});
+const ending='run().catch(error => {\n    setFailed(error.message);\n});';assert.equal(source.split(ending).length,2);
+const exposed='export {run,undici,getProxyFetch,lib_HttpClient,ArtifactHttpClient,NodeHttpClient,BlobClient,defaultHttpClient_createDefaultHttpClient};';
+const derived=path.join(cache,'witness-bundle.mjs');fs.writeFileSync(derived,source.replace(ending,exposed));
+const api=await import(pathToFileURL(derived).href);
+let undiciCalls=0;api.undici.fetch=async()=>{undiciCalls++;return{sentinel:true};};
+const rpc=new api.ArtifactHttpClient('r2',1);assert.equal(rpc.httpClient._keepAlive,false);
+assert.ok(rpc.httpClient._getAgent(new URL('https://results.example.invalid')) instanceof https.Agent);
+assert.ok(api.defaultHttpClient_createDefaultHttpClient() instanceof api.NodeHttpClient);
+const endpoints=[];
+const savedPost=api.lib_HttpClient.prototype.post;
+api.lib_HttpClient.prototype.post=async function(url,data){
+ endpoints.push({url,method:'POST',body:JSON.parse(data),nativeClient:this instanceof api.lib_HttpClient,keepAlive:this._keepAlive});
+ const body=url.endsWith('/CreateArtifact')?{ok:true,signedUploadUrl:'https://azure.example.invalid/frozen',artifactId:'123'}:{ok:true,artifactId:'123'};
+ return{message:{statusCode:200,headers:{}},readBody:async()=>JSON.stringify(body)};
+};
+const savedGet=api.BlobClient.prototype.getBlockBlobClient;let blobs=0,bytes=0;
+api.BlobClient.prototype.getBlockBlobClient=function(){return{uploadStream:async(stream,buffer,concurrency,opts)=>{blobs++;for await(const chunk of stream)bytes+=chunk.length;opts.onProgress({loadedBytes:bytes});return{};}};};
+const inputDir=path.join(cache,'witness-input');fs.mkdirSync(inputDir,{recursive:true});
+const names=['evaluation-identity.json','memoryos-ci-artifacts.json','memoryos-ci-complete.json','memoryos-ci-evidence.json','memoryos-ci-result.json','policy-outcome.json'];
+for(const name of names)fs.writeFileSync(path.join(inputDir,name),'{}\n');
+Object.assign(process.env,{'INPUT_NAME':'memoryos-ci-1-1','INPUT_PATH':names.map(n=>path.join(inputDir,n)).join('\n'),'INPUT_IF-NO-FILES-FOUND':'error','INPUT_RETENTION-DAYS':'7','INPUT_COMPRESSION-LEVEL':'6','INPUT_OVERWRITE':'false','INPUT_INCLUDE-HIDDEN-FILES':'true','INPUT_ARCHIVE':'true'});
+await api.run();
+assert.equal(endpoints.length,2);assert.ok(endpoints[0].url.endsWith('/CreateArtifact'));assert.ok(endpoints[1].url.endsWith('/FinalizeArtifact'));assert.equal(blobs,1);assert.ok(bytes>0);assert.equal(undiciCalls,0);assert.equal(attempts,0);
+api.lib_HttpClient.prototype.post=savedPost;api.BlobClient.prototype.getBlockBlobClient=savedGet;
+// Sentinel positive control establishes that an actual use of the bundled
+// Octokit wrapper would be counted, unlike import or closure construction.
+const wrapper=api.getProxyFetch('https://api.example.invalid');assert.equal(undiciCalls,0);assert.equal((await wrapper('https://api.example.invalid',{})).sentinel,true);assert.equal(undiciCalls,1);
+const result={kind:'MemoryOSPhase3BR2UndiciWitness',status:'PASS',bundle:hash(raw),node:process.version,parser:hash(acornSource),networkAttempts:attempts,exactAffectedFunction:{name:'resumeH1',bundleMatchesUpstreamByteForByte:true,sourceSha256:hash(resume),syntheticPendingIdleSocketReadMoreCalls:reads,limitation:'Source contract witness demonstrates absent idle validation; not a complete queue-poisoning exploit.'},frozenActionEntryPoint:{runCalled:true,fileCount:6,overwrite:false,archive:true,rpcEndpoints:endpoints,azureUploads:blobs,zipBytes:bytes,undiciCalls:0,substitutions:['bundle autorun replaced only by exports','native HttpClient.post local service response','BlobClient.getBlockBlobClient local streaming sink','Undici.fetch sentinel','network entrypoints deny all']},positiveControl:{explicitOctokitWrapperCalls:1,undiciCalls:1},rpcFactory:{nativeHttpsAgent:true,keepAlive:false},azureFactory:{class:'NodeHttpClient',nativeNodeHttp:true},heapLimitMiB:256,maxInputBytes:18};
+fs.writeFileSync(path.join(root,'repositories/cca-conformance/evidence/mo1306/phase3b-r2/undici-witness.json'),JSON.stringify(result)+'\n');
+console.log(JSON.stringify(result));
