@@ -1,0 +1,437 @@
+{
+  "schema": "MemoryOS-1.1-EngineeringBenchmark-1",
+  "generatedAt": "2026-08-23T09:23:28.585Z",
+  "environment": {
+    "platform": "win32",
+    "architecture": "x64",
+    "node": "v24.14.0",
+    "v8": "13.6.233.17-node.41",
+    "cpu": "Intel64 Family 6 Model 140 Stepping 1, GenuineIntel",
+    "garbageCollectionExposed": true,
+    "startupToBenchmarkMs": 60.871
+  },
+  "configuration": {
+    "samples": 5,
+    "nodeCounts": [
+      100,
+      500,
+      1000,
+      5000,
+      10000
+    ],
+    "deterministicLayout": true,
+    "rendererMeasure": "renderer-state preparation; browser DOM benchmark is reported separately"
+  },
+  "results": [
+    {
+      "nodeCount": 100,
+      "edgeCount": 152,
+      "traceSteps": 15,
+      "comparativeMoments": 15,
+      "retainedHeapMiB": 0.284,
+      "sequenceAlignment": {
+        "identical": {
+          "samples": 5,
+          "minimumMs": 0.015,
+          "medianMs": 0.019,
+          "p95Ms": 0.084,
+          "maximumMs": 0.084
+        },
+        "insertion": {
+          "samples": 5,
+          "minimumMs": 0.021,
+          "medianMs": 0.028,
+          "p95Ms": 0.155,
+          "maximumMs": 0.155
+        },
+        "reordered": {
+          "samples": 5,
+          "minimumMs": 0.825,
+          "medianMs": 1.402,
+          "p95Ms": 1.62,
+          "maximumMs": 1.62
+        },
+        "measuredReorderedArrayBufferMiB": 0.003
+      },
+      "latency": {
+        "acceptedObservation": {
+          "samples": 5,
+          "minimumMs": 5.85,
+          "medianMs": 6.616,
+          "p95Ms": 14.392,
+          "maximumMs": 14.392
+        },
+        "traceGeneration": {
+          "samples": 5,
+          "minimumMs": 6.934,
+          "medianMs": 7.089,
+          "p95Ms": 11.224,
+          "maximumMs": 11.224
+        },
+        "replay": {
+          "samples": 5,
+          "minimumMs": 0.221,
+          "medianMs": 0.273,
+          "p95Ms": 0.709,
+          "maximumMs": 0.709
+        },
+        "evolution": {
+          "samples": 5,
+          "minimumMs": 0.479,
+          "medianMs": 0.548,
+          "p95Ms": 0.7,
+          "maximumMs": 0.7
+        },
+        "comparativeReconstruction": {
+          "samples": 5,
+          "minimumMs": 1.433,
+          "medianMs": 1.625,
+          "p95Ms": 1.755,
+          "maximumMs": 1.755
+        },
+        "comparativeReplay": {
+          "samples": 5,
+          "minimumMs": 3.88,
+          "medianMs": 4.029,
+          "p95Ms": 5.851,
+          "maximumMs": 5.851
+        },
+        "rendererPreparation": {
+          "samples": 5,
+          "minimumMs": 3.672,
+          "medianMs": 4.137,
+          "p95Ms": 5.788,
+          "maximumMs": 5.788
+        }
+      }
+    },
+    {
+      "nodeCount": 500,
+      "edgeCount": 552,
+      "traceSteps": 15,
+      "comparativeMoments": 15,
+      "retainedHeapMiB": 0.972,
+      "sequenceAlignment": {
+        "identical": {
+          "samples": 5,
+          "minimumMs": 0.123,
+          "medianMs": 0.129,
+          "p95Ms": 0.15,
+          "maximumMs": 0.15
+        },
+        "insertion": {
+          "samples": 5,
+          "minimumMs": 0.029,
+          "medianMs": 0.07,
+          "p95Ms": 0.11,
+          "maximumMs": 0.11
+        },
+        "reordered": {
+          "samples": 5,
+          "minimumMs": 2.874,
+          "medianMs": 3.045,
+          "p95Ms": 3.203,
+          "maximumMs": 3.203
+        },
+        "measuredReorderedArrayBufferMiB": 0
+      },
+      "latency": {
+        "acceptedObservation": {
+          "samples": 5,
+          "minimumMs": 16.142,
+          "medianMs": 19.756,
+          "p95Ms": 21.098,
+          "maximumMs": 21.098
+        },
+        "traceGeneration": {
+          "samples": 5,
+          "minimumMs": 20.13,
+          "medianMs": 22.804,
+          "p95Ms": 30.772,
+          "maximumMs": 30.772
+        },
+        "replay": {
+          "samples": 5,
+          "minimumMs": 0.158,
+          "medianMs": 0.185,
+          "p95Ms": 0.264,
+          "maximumMs": 0.264
+        },
+        "evolution": {
+          "samples": 5,
+          "minimumMs": 0.971,
+          "medianMs": 1.102,
+          "p95Ms": 1.181,
+          "maximumMs": 1.181
+        },
+        "comparativeReconstruction": {
+          "samples": 5,
+          "minimumMs": 2.015,
+          "medianMs": 2.274,
+          "p95Ms": 2.89,
+          "maximumMs": 2.89
+        },
+        "comparativeReplay": {
+          "samples": 5,
+          "minimumMs": 3.959,
+          "medianMs": 4.265,
+          "p95Ms": 5.333,
+          "maximumMs": 5.333
+        },
+        "rendererPreparation": {
+          "samples": 5,
+          "minimumMs": 4.518,
+          "medianMs": 4.83,
+          "p95Ms": 4.872,
+          "maximumMs": 4.872
+        }
+      }
+    },
+    {
+      "nodeCount": 1000,
+      "edgeCount": 1052,
+      "traceSteps": 15,
+      "comparativeMoments": 15,
+      "retainedHeapMiB": 1.864,
+      "sequenceAlignment": {
+        "identical": {
+          "samples": 5,
+          "minimumMs": 0.127,
+          "medianMs": 0.151,
+          "p95Ms": 0.275,
+          "maximumMs": 0.275
+        },
+        "insertion": {
+          "samples": 5,
+          "minimumMs": 0.052,
+          "medianMs": 0.115,
+          "p95Ms": 0.155,
+          "maximumMs": 0.155
+        },
+        "reordered": {
+          "samples": 5,
+          "minimumMs": 12.147,
+          "medianMs": 13.279,
+          "p95Ms": 15.653,
+          "maximumMs": 15.653
+        },
+        "measuredReorderedArrayBufferMiB": 0
+      },
+      "latency": {
+        "acceptedObservation": {
+          "samples": 5,
+          "minimumMs": 30.749,
+          "medianMs": 33.358,
+          "p95Ms": 35.438,
+          "maximumMs": 35.438
+        },
+        "traceGeneration": {
+          "samples": 5,
+          "minimumMs": 37.274,
+          "medianMs": 41.833,
+          "p95Ms": 43.7,
+          "maximumMs": 43.7
+        },
+        "replay": {
+          "samples": 5,
+          "minimumMs": 0.341,
+          "medianMs": 0.363,
+          "p95Ms": 0.407,
+          "maximumMs": 0.407
+        },
+        "evolution": {
+          "samples": 5,
+          "minimumMs": 4.141,
+          "medianMs": 4.318,
+          "p95Ms": 5.543,
+          "maximumMs": 5.543
+        },
+        "comparativeReconstruction": {
+          "samples": 5,
+          "minimumMs": 3.957,
+          "medianMs": 4.582,
+          "p95Ms": 5.258,
+          "maximumMs": 5.258
+        },
+        "comparativeReplay": {
+          "samples": 5,
+          "minimumMs": 3.723,
+          "medianMs": 3.882,
+          "p95Ms": 6.032,
+          "maximumMs": 6.032
+        },
+        "rendererPreparation": {
+          "samples": 5,
+          "minimumMs": 4.499,
+          "medianMs": 4.759,
+          "p95Ms": 4.907,
+          "maximumMs": 4.907
+        }
+      }
+    },
+    {
+      "nodeCount": 5000,
+      "edgeCount": 5052,
+      "traceSteps": 15,
+      "comparativeMoments": 15,
+      "retainedHeapMiB": 8.948,
+      "sequenceAlignment": {
+        "identical": {
+          "samples": 5,
+          "minimumMs": 0.365,
+          "medianMs": 0.457,
+          "p95Ms": 1.499,
+          "maximumMs": 1.499
+        },
+        "insertion": {
+          "samples": 5,
+          "minimumMs": 0.387,
+          "medianMs": 0.454,
+          "p95Ms": 0.647,
+          "maximumMs": 0.647
+        },
+        "reordered": {
+          "samples": 5,
+          "minimumMs": 393.178,
+          "medianMs": 452.616,
+          "p95Ms": 483.087,
+          "maximumMs": 483.087
+        },
+        "measuredReorderedArrayBufferMiB": 5.96
+      },
+      "latency": {
+        "acceptedObservation": {
+          "samples": 5,
+          "minimumMs": 151,
+          "medianMs": 222.416,
+          "p95Ms": 241.658,
+          "maximumMs": 241.658
+        },
+        "traceGeneration": {
+          "samples": 5,
+          "minimumMs": 292.92,
+          "medianMs": 323.22,
+          "p95Ms": 406.508,
+          "maximumMs": 406.508
+        },
+        "replay": {
+          "samples": 5,
+          "minimumMs": 0.406,
+          "medianMs": 0.57,
+          "p95Ms": 0.655,
+          "maximumMs": 0.655
+        },
+        "evolution": {
+          "samples": 5,
+          "minimumMs": 9.354,
+          "medianMs": 10.507,
+          "p95Ms": 11.065,
+          "maximumMs": 11.065
+        },
+        "comparativeReconstruction": {
+          "samples": 5,
+          "minimumMs": 16.275,
+          "medianMs": 23.135,
+          "p95Ms": 29.087,
+          "maximumMs": 29.087
+        },
+        "comparativeReplay": {
+          "samples": 5,
+          "minimumMs": 4.106,
+          "medianMs": 4.752,
+          "p95Ms": 6.572,
+          "maximumMs": 6.572
+        },
+        "rendererPreparation": {
+          "samples": 5,
+          "minimumMs": 6.736,
+          "medianMs": 9.424,
+          "p95Ms": 10.611,
+          "maximumMs": 10.611
+        }
+      }
+    },
+    {
+      "nodeCount": 10000,
+      "edgeCount": 10052,
+      "traceSteps": 15,
+      "comparativeMoments": 15,
+      "retainedHeapMiB": 18.467,
+      "sequenceAlignment": {
+        "identical": {
+          "samples": 5,
+          "minimumMs": 0.867,
+          "medianMs": 1.075,
+          "p95Ms": 2.636,
+          "maximumMs": 2.636
+        },
+        "insertion": {
+          "samples": 5,
+          "minimumMs": 0.756,
+          "medianMs": 1.161,
+          "p95Ms": 1.728,
+          "maximumMs": 1.728
+        },
+        "reordered": {
+          "samples": 5,
+          "minimumMs": 2094.56,
+          "medianMs": 2108.378,
+          "p95Ms": 2629.297,
+          "maximumMs": 2629.297
+        },
+        "measuredReorderedArrayBufferMiB": 23.842
+      },
+      "latency": {
+        "acceptedObservation": {
+          "samples": 5,
+          "minimumMs": 445.554,
+          "medianMs": 514.329,
+          "p95Ms": 535.37,
+          "maximumMs": 535.37
+        },
+        "traceGeneration": {
+          "samples": 5,
+          "minimumMs": 575.579,
+          "medianMs": 657.623,
+          "p95Ms": 717.559,
+          "maximumMs": 717.559
+        },
+        "replay": {
+          "samples": 5,
+          "minimumMs": 0.289,
+          "medianMs": 0.489,
+          "p95Ms": 0.671,
+          "maximumMs": 0.671
+        },
+        "evolution": {
+          "samples": 5,
+          "minimumMs": 18.052,
+          "medianMs": 20.157,
+          "p95Ms": 27.953,
+          "maximumMs": 27.953
+        },
+        "comparativeReconstruction": {
+          "samples": 5,
+          "minimumMs": 29.126,
+          "medianMs": 41.921,
+          "p95Ms": 50.995,
+          "maximumMs": 50.995
+        },
+        "comparativeReplay": {
+          "samples": 5,
+          "minimumMs": 4.219,
+          "medianMs": 4.876,
+          "p95Ms": 6.821,
+          "maximumMs": 6.821
+        },
+        "rendererPreparation": {
+          "samples": 5,
+          "minimumMs": 11.593,
+          "medianMs": 15.346,
+          "p95Ms": 18.585,
+          "maximumMs": 18.585
+        }
+      }
+    }
+  ]
+}

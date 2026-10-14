@@ -1,0 +1,53 @@
+"""Stable MemoryOS SDK diagnostics."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Any
+
+from ._immutable import FrozenMap, freeze
+
+
+@dataclass(frozen=True, slots=True)
+class Diagnostic:
+    """One deterministic diagnostic returned by the Investigation Core."""
+
+    code: str
+    operation: str
+    message: str
+    details: FrozenMap
+
+    @classmethod
+    def from_value(cls, value: dict[str, Any]) -> "Diagnostic":
+        details = {
+            key: item
+            for key, item in value.items()
+            if key not in {"code", "operation", "message"}
+        }
+        return cls(
+            code=str(value.get("code", "BINDING_FAILURE")),
+            operation=str(value.get("operation", "binding")),
+            message=str(value.get("message", "MemoryOS operation failed.")),
+            details=freeze(details),
+        )
+
+
+class MemoryOSError(RuntimeError):
+    """Structured failure reported by the authoritative Investigation Core."""
+
+    def __init__(
+        self,
+        code: str,
+        operation: str,
+        message: str,
+        diagnostics: tuple[Diagnostic, ...] = (),
+    ) -> None:
+        super().__init__(message)
+        self.code = code
+        self.operation = operation
+        self.diagnostics = diagnostics
+
+
+class MemoryOSBindingError(MemoryOSError):
+    """Failure of the private local binding rather than investigation behavior."""
+

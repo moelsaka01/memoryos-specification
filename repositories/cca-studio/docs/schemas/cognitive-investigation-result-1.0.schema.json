@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://memoryos.dev/schemas/cognitive-investigation-result-1.0.schema.json",
+  "title": "MemoryOS Cognitive Investigation Result 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "version",
+    "identifier",
+    "regressionIdentifier",
+    "workspaceIdentifier",
+    "query",
+    "status",
+    "matchCount",
+    "matches"
+  ],
+  "properties": {
+    "kind": { "const": "MemoryOSCognitiveInvestigationResult" },
+    "version": { "const": "1.0.0" },
+    "identifier": { "type": "string", "pattern": "^explorer:[0-9a-f]{64}$" },
+    "regressionIdentifier": { "type": "string", "pattern": "^regression:[0-9a-f]{64}$" },
+    "workspaceIdentifier": { "type": "string", "minLength": 1 },
+    "query": { "$ref": "#/$defs/query" },
+    "status": { "enum": ["matched", "empty"] },
+    "matchCount": { "type": "integer", "minimum": 0 },
+    "matches": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/match" }
+    }
+  },
+  "$defs": {
+    "category": {
+      "enum": [
+        "replay",
+        "reflection",
+        "evidence",
+        "retrieval",
+        "evolution",
+        "verification",
+        "transition",
+        "lifecycle"
+      ]
+    },
+    "query": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category", "reflectionIdentifier", "transition"],
+      "properties": {
+        "category": { "oneOf": [{ "$ref": "#/$defs/category" }, { "type": "null" }] },
+        "reflectionIdentifier": {
+          "oneOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }]
+        },
+        "transition": {
+          "oneOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }]
+        }
+      }
+    },
+    "endpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["digest", "pointer", "sourceIdentifier", "sourceKind"],
+      "properties": {
+        "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "pointer": { "type": "string", "pattern": "^/categories/[0-9]+/differences/[0-9]+/(before|after)Digest$" },
+        "sourceIdentifier": { "type": "string", "minLength": 1 },
+        "sourceKind": { "enum": ["native", "mip"] }
+      }
+    },
+    "match": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["index", "category", "change", "subject", "baseline", "candidate"],
+      "properties": {
+        "index": { "type": "integer", "minimum": 0 },
+        "category": { "$ref": "#/$defs/category" },
+        "change": { "enum": ["added", "removed", "modified"] },
+        "subject": { "type": "object", "minProperties": 1 },
+        "baseline": { "oneOf": [{ "$ref": "#/$defs/endpoint" }, { "type": "null" }] },
+        "candidate": { "oneOf": [{ "$ref": "#/$defs/endpoint" }, { "type": "null" }] }
+      }
+    }
+  }
+}

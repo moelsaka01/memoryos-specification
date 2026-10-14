@@ -1,0 +1,78 @@
+{
+  "schema": "MemoryOS-1.1-BrowserRendererBenchmark-1",
+  "generatedAt": "2026-08-23T10:04:34.026Z",
+  "environment": {
+    "browser": "Chrome 151",
+    "platform": "Windows 10 x64",
+    "hardwareConcurrency": 8,
+    "deviceMemoryGiB": 16,
+    "viewport": {
+      "width": 1280,
+      "height": 720,
+      "devicePixelRatio": 1.5
+    }
+  },
+  "notes": {
+    "frameDelivery": "Elapsed from render invocation to the next requestAnimationFrame callback.",
+    "visualSettle": "Measured task boundary after cold frame delivery, allowing initial SVG paint before interaction.",
+    "interaction": "Steady-state semantic-node click through synchronous delta emphasis and next frame delivery.",
+    "outlier": "The 100-node visual-settle measurement was 1336.2 ms. It is retained without filtering; the subsequent steady-state interaction frame was 0.546 ms."
+  },
+  "results": [
+    {
+      "nodeCount": 100,
+      "domElements": 2446,
+      "projectionMs": 7.7,
+      "domConstructionMs": 28.7,
+      "frameDeliveryMs": 117.6,
+      "visualSettleMs": 1336.2,
+      "interactionSynchronousMs": 1.1,
+      "interactionFrameMs": 0.546,
+      "usedJSHeapMiB": 4.925
+    },
+    {
+      "nodeCount": 500,
+      "domElements": 1643,
+      "projectionMs": 10.3,
+      "domConstructionMs": 28.9,
+      "frameDeliveryMs": 264.9,
+      "visualSettleMs": 110.4,
+      "interactionSynchronousMs": 0.5,
+      "interactionFrameMs": 1.8,
+      "usedJSHeapMiB": 3.884
+    },
+    {
+      "nodeCount": 1000,
+      "domElements": 3143,
+      "projectionMs": 12.5,
+      "domConstructionMs": 54.4,
+      "frameDeliveryMs": 104.9,
+      "visualSettleMs": 120.1,
+      "interactionSynchronousMs": 0.6,
+      "interactionFrameMs": 36.0,
+      "usedJSHeapMiB": 6.444
+    },
+    {
+      "nodeCount": 5000,
+      "domElements": 15143,
+      "projectionMs": 72.9,
+      "domConstructionMs": 281.6,
+      "frameDeliveryMs": 764.3,
+      "visualSettleMs": 103.0,
+      "interactionSynchronousMs": 1.9,
+      "interactionFrameMs": 120.8,
+      "usedJSHeapMiB": 19.806
+    },
+    {
+      "nodeCount": 10000,
+      "domElements": 30143,
+      "projectionMs": 405.0,
+      "domConstructionMs": 1391.4,
+      "frameDeliveryMs": 2473.3,
+      "visualSettleMs": 145.2,
+      "interactionSynchronousMs": 4.5,
+      "interactionFrameMs": 318.1,
+      "usedJSHeapMiB": 31.798
+    }
+  ]
+}
