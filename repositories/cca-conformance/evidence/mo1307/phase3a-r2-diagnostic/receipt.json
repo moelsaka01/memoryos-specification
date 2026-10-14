@@ -1,0 +1,205 @@
+{
+  "kind": "MO1307Phase3AR2DiagnosticReceipt",
+  "version": "1.0.0",
+  "evidenceClass": "R2_DIAGNOSTIC_EVIDENCE_ONLY",
+  "baseline": "4a1de6f00788e3c52a647d6f25aa1dbd2d5d5d97",
+  "productionAuthority": "defe93989efc6501b1a730b82e79e705884b269b",
+  "plan": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-r2-diagnostic/plan.json",
+    "byteLength": 70025,
+    "sha256": "sha256:430680c536173640c9c654a7ec35d3a8383dab53136394eddf77f7fcfae59e48"
+  },
+  "claim": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-r2-diagnostic/execution-claimed.json",
+    "byteLength": 1882,
+    "sha256": "sha256:a9f8ce2e3ca9b9f064d4fa11e2c4df0c486558dc529710a76cba5bdbd0307cb7"
+  },
+  "startedAtUtc": "2026-09-29T20:24:31.353Z",
+  "endedAtUtc": "2026-09-29T20:24:34.692Z",
+  "result": "DIAGNOSTIC_SEMANTIC_OR_OBSERVATION_ERROR",
+  "error": null,
+  "validationError": null,
+  "actualLaunchAttempts": 1,
+  "actualHelperExecutions": 1,
+  "pid": 18832,
+  "configuredLimits": {
+    "helperWholeLifecycleMs": 5000,
+    "cleanupMs": 2000,
+    "aggregateHelperMs": 20000,
+    "cliMs": 30000,
+    "apiWorkerMs": 10000,
+    "stderrBytes": 4096
+  },
+  "identities": {
+    "helper": {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "byteLength": 30210,
+      "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+    },
+    "node": {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1304-phase3-toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "byteLength": 93580104,
+      "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+    },
+    "powershell": {
+      "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "byteLength": 495616,
+      "sha256": "sha256:8bb6fa8c283b4d92120b1ef249a9b311b0f804d4cabbe9981159976c8be76a5e"
+    },
+    "request": {
+      "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-characterization/requests/D.request.bin",
+      "byteLength": 2128,
+      "sha256": "sha256:0767b86a4750d2b031c8d923824beb26bc0c7e89f05cf11ba2a21379b755a08e"
+    }
+  },
+  "engineeringCopy": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-r2-diagnostic/windows-inspect.instrumented.ps1",
+    "byteLength": 35097,
+    "sha256": "sha256:91b1c99a65876c5910a358e01115777ec720ae0f0abbcd6b41aae1dcef741b82"
+  },
+  "request": {
+    "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-characterization/requests/D.request.bin",
+    "byteLength": 2128,
+    "sha256": "sha256:0767b86a4750d2b031c8d923824beb26bc0c7e89f05cf11ba2a21379b755a08e"
+  },
+  "response": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-r2-diagnostic/response.bin",
+    "byteLength": 253,
+    "sha256": "sha256:7a3f3c864e04852a37da4c47cb698a85b5245d95dbf601f81d50e7e7de0d775b"
+  },
+  "markers": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-r2-diagnostic/markers.stderr.bin",
+    "byteLength": 422,
+    "sha256": "sha256:b89c4c61d0cab615e5c830e48cb50e485916d6f015f1cd6078dad9072b4bb63d"
+  },
+  "responseObservation": {
+    "status": "ERROR",
+    "code": "MO1307_FILESYSTEM_BOUNDARY",
+    "fileCount": 0,
+    "rootCount": 0
+  },
+  "responseValidation": "VALID_PROTOCOL_ERROR_NOT_SUCCESS",
+  "stdoutBytes": 253,
+  "stderrBytes": 422,
+  "pipes": {
+    "stdin": true,
+    "stdout": true,
+    "stderr": true
+  },
+  "events": [
+    {
+      "event": "spawn",
+      "at": 3003.426
+    },
+    {
+      "event": "stdin-finish",
+      "at": 3988.787
+    },
+    {
+      "event": "stdin-close",
+      "at": 3990.2628
+    },
+    {
+      "event": "stdout-close",
+      "at": 5063.2502
+    },
+    {
+      "event": "stderr-close",
+      "at": 5063.2909
+    },
+    {
+      "event": "exit",
+      "at": 5073.1644,
+      "code": 0,
+      "signal": null
+    },
+    {
+      "event": "close",
+      "at": 5073.2205,
+      "code": 0,
+      "signal": null
+    }
+  ],
+  "nodeTimeOriginUnixMs": 1790713468367.955,
+  "times": {
+    "origin": 2982.3207,
+    "originMethod": "ACTUAL_SUPERVISOR_DEADLINE_MINUS_5000",
+    "exchangeBegin": 2980.5421,
+    "spawnEntered": 2983.1059,
+    "spawnReturned": 3002.059,
+    "firstMarkerReceipt": 3796.6166,
+    "firstResponseByte": 5039.8905,
+    "lastResponseByte": 5040.3835,
+    "transportSettled": 5074.2149
+  },
+  "durations": {
+    "wholeTransportSettlementMs": 2091.8941999999997,
+    "exchangeMs": 2093.6728,
+    "supervisorHelperActiveMs": 2091.8279,
+    "firstResponseByteMs": 2057.5698,
+    "terminalMs": null
+  },
+  "supervisor": {
+    "kind": "cli",
+    "deadline": 32979.0735,
+    "helpers": 1,
+    "workers": 0,
+    "helperUsedMs": 2091.8279,
+    "activeRole": null,
+    "cleanupConfirmed": true,
+    "publication": null,
+    "terminalCode": null,
+    "terminalAt": null,
+    "cleanupDeadline": null,
+    "events": [
+      {
+        "type": "start",
+        "at": 2982.4351,
+        "role": "helper",
+        "deadline": 7982.3207,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 3002.5202,
+        "role": "helper",
+        "pid": 18832,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 5074.1586,
+        "role": "helper",
+        "ordinal": 1
+      }
+    ]
+  },
+  "cleanupConfirmed": true,
+  "independentConsoleExitProof": "NOT_COLLECTED",
+  "productionAndBoundInputsUnchanged": true,
+  "preservationFailures": [],
+  "repositoryStateAfter": {
+    "main": "4a1de6f00788e3c52a647d6f25aa1dbd2d5d5d97",
+    "branch": "main",
+    "mainStatus": "?? repositories/cca-conformance/evidence/mo1307/phase3a-r2-diagnostic/\n?? repositories/cca-conformance/tools/mo1307-phase3a-r2/",
+    "r3a": "defe93989efc6501b1a730b82e79e705884b269b",
+    "r3aStatus": "M .gitattributes\n?? docs/mo1307-phase3a-refresh-final.md\n?? docs/mo1307-phase3a-refresh-localization.md\n?? docs/mo1307-phase3a-refresh.md\n?? repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/\n?? repositories/cca-conformance/evidence/mo1307/phase3a-refresh-localization/\n?? repositories/cca-conformance/evidence/mo1307/phase3a-refresh/\n?? repositories/cca-conformance/tools/mo1307-phase3a-refresh-final/\n?? repositories/cca-conformance/tools/mo1307-phase3a-refresh-localization/\n?? repositories/cca-conformance/tools/mo1307-phase3a-refresh/"
+  },
+  "certification": false,
+  "historicalStepGCauseEstablished": false,
+  "deadlineCharacterization": false,
+  "replacementH": "NOT_ESTABLISHED",
+  "privateSequenceExecuted": false,
+  "additionalObserverProcesses": 0,
+  "warmups": 0,
+  "retries": 0,
+  "replacementExecutions": 0,
+  "limitations": [
+    "One instrumented surrogate workload; not historical Step G replay.",
+    "Stopwatch reads, marker writes, added script parsing and parent listeners add uncalibrated overhead; none is subtracted.",
+    "No native external process observer; missing product quiescence remains unconfirmed.",
+    "Child and parent clocks are retained separately; marker receipt includes pipe/event-loop delay.",
+    "Execution token/access-policy parity with previous accepted runs has not been established."
+  ],
+  "furtherExecutionAuthorized": false
+}

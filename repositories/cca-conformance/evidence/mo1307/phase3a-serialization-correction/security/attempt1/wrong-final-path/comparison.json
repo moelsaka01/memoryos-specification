@@ -1,0 +1,169 @@
+{
+  "name": "wrong-final-path",
+  "result": "PASS",
+  "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+  "tags": [
+    "wrong final path"
+  ],
+  "mutation": "final-path",
+  "expectedCode": "MO1307_FILESYSTEM_BOUNDARY",
+  "expectedStatus": "ERROR",
+  "expectedRootId": null,
+  "exactResponseEqual": true,
+  "code": "MO1307_FILESYSTEM_BOUNDARY",
+  "status": "ERROR",
+  "request": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/wrong-final-path/request.bin",
+    "byteLength": 386,
+    "sha256": "sha256:8ac379a2943f17930239dd89b296a748fbafe3754abbbd89ad136a9d30915149"
+  },
+  "c3rb": {
+    "code": 0,
+    "signal": null,
+    "pid": 17808,
+    "elapsedMs": 3315.744100000011,
+    "exitMs": 3315.7176000000036,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "launchError": null,
+    "capViolation": null,
+    "totalStdoutBytesObserved": 253,
+    "totalStderrBytesObserved": 0,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/wrong-final-path/c3rb.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/wrong-final-path/c3rb.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/wrong-final-path/c3rb-instrumented.ps1",
+      "byteLength": 33339,
+      "sha256": "sha256:28300a3e4639714a3b930e284d2fc67da02ad0c8a2db475fd0ec7a3fac831854"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\repositories\\cca-conformance\\evidence\\mo1307\\phase3a-serialization-correction\\security\\attempt1\\wrong-final-path\\c3rb-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true,
+    "cleanupScope": "Direct helper exit and stdio close plus source-bound unchanged console-quiescence prerequisite to valid response emission; no separate native console census or product supervisor timing claim."
+  },
+  "candidate": {
+    "code": 0,
+    "signal": null,
+    "pid": 21932,
+    "elapsedMs": 2783.637000000017,
+    "exitMs": 2783.611200000014,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "launchError": null,
+    "capViolation": null,
+    "totalStdoutBytesObserved": 253,
+    "totalStderrBytesObserved": 0,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/wrong-final-path/candidate.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/wrong-final-path/candidate.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/wrong-final-path/candidate-instrumented.ps1",
+      "byteLength": 36447,
+      "sha256": "sha256:0b701bfec4debc48cba8dcdb0198b77cb2bfb613c93574d24f4ff007af82af4f"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\repositories\\cca-conformance\\evidence\\mo1307\\phase3a-serialization-correction\\security\\attempt1\\wrong-final-path\\candidate-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true,
+    "cleanupScope": "Direct helper exit and stdio close plus source-bound unchanged console-quiescence prerequisite to valid response emission; no separate native console census or product supervisor timing claim."
+  },
+  "nativeObservationCountsEqual": true,
+  "telemetry": {
+    "c3rb": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 21,
+        "initial:GetFileInformationByHandle": 21,
+        "post-read:Open-Native": 10,
+        "initial:GetFinalPathNameByHandleW": 21,
+        "post-read:GetFileInformationByHandle": 21,
+        "post-read:GetFinalPathNameByHandleW": 21,
+        "initial:Read-Identity": 21,
+        "initial:Assert-SameIdentity": 10,
+        "post-read:Read-Identity": 21,
+        "initial:Open-Native": 21
+      },
+      "mutations": 1,
+      "mutation": "final-path",
+      "workingSet64": 126115840,
+      "peakWorkingSet64": 129519616,
+      "managedBytes": 45559648,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/wrong-final-path/c3rb-telemetry.json",
+        "byteLength": 488,
+        "sha256": "sha256:71c670518a5ff11db7aa37afbc1cd03f96c5bde554640a6298526052452943c3"
+      }
+    },
+    "candidate": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 21,
+        "initial:GetFileInformationByHandle": 21,
+        "post-read:Open-Native": 10,
+        "initial:GetFinalPathNameByHandleW": 21,
+        "post-read:GetFileInformationByHandle": 21,
+        "post-read:GetFinalPathNameByHandleW": 21,
+        "initial:Read-Identity": 21,
+        "initial:Assert-SameIdentity": 10,
+        "post-read:Read-Identity": 21,
+        "initial:Open-Native": 21
+      },
+      "mutations": 1,
+      "mutation": "final-path",
+      "workingSet64": 130707456,
+      "peakWorkingSet64": 130707456,
+      "managedBytes": 19887032,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/wrong-final-path/candidate-telemetry.json",
+        "byteLength": 488,
+        "sha256": "sha256:47a62676e36ce00a077117d6acd99bf119cfc7322ae4439960387e9e09f09bb6"
+      }
+    }
+  }
+}

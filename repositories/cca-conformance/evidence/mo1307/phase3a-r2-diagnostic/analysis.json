@@ -1,0 +1,233 @@
+{
+  "kind": "MO1307Phase3AR2DiagnosticAnalysis",
+  "version": "1.0.0",
+  "createdAtUtc": "2026-09-29T20:27:51.190Z",
+  "evidenceClass": "R2_DIAGNOSTIC_EVIDENCE_ONLY",
+  "receipt": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-r2-diagnostic/receipt.json",
+    "byteLength": 7224,
+    "sha256": "sha256:6f0cada14ec63fbae717560524a1858bd80880a14330a83703d37694b50e76fb"
+  },
+  "markers": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-r2-diagnostic/markers.stderr.bin",
+    "byteLength": 422,
+    "sha256": "sha256:b89c4c61d0cab615e5c830e48cb50e485916d6f015f1cd6078dad9072b4bb63d"
+  },
+  "productionAuthority": "defe93989efc6501b1a730b82e79e705884b269b",
+  "helperExecutions": 1,
+  "expectedSuccessfulDMarkers": 37,
+  "actualMarkers": 14,
+  "observedMarkers": [
+    {
+      "label": "ENTRY",
+      "tick": "2082222307462",
+      "values": [
+        "2082222097581",
+        "10000000"
+      ],
+      "millisecondsSinceFirstScriptTick": 20.9881
+    },
+    {
+      "label": "DEFINITIONS",
+      "tick": "2082222575265",
+      "values": [],
+      "millisecondsSinceFirstScriptTick": 47.7684
+    },
+    {
+      "label": "NATIVE_BEGIN",
+      "tick": "2082222690883",
+      "values": [],
+      "millisecondsSinceFirstScriptTick": 59.3302
+    },
+    {
+      "label": "CONSOLE_BEGIN",
+      "tick": "2082223400089",
+      "values": [],
+      "millisecondsSinceFirstScriptTick": 130.2508
+    },
+    {
+      "label": "CONSOLE_END",
+      "tick": "2082224260547",
+      "values": [],
+      "millisecondsSinceFirstScriptTick": 216.2966
+    },
+    {
+      "label": "NATIVE_END",
+      "tick": "2082224262109",
+      "values": [],
+      "millisecondsSinceFirstScriptTick": 216.4528
+    },
+    {
+      "label": "REQUEST_BEGIN",
+      "tick": "2082224267687",
+      "values": [],
+      "millisecondsSinceFirstScriptTick": 217.0106
+    },
+    {
+      "label": "REQUEST_READ",
+      "tick": "2082224472696",
+      "values": [],
+      "millisecondsSinceFirstScriptTick": 237.5115
+    },
+    {
+      "label": "REQUEST_VALID",
+      "tick": "2082233192754",
+      "values": [],
+      "millisecondsSinceFirstScriptTick": 1109.5173
+    },
+    {
+      "label": "ROOT_BEGIN",
+      "tick": "2082233346211",
+      "values": [],
+      "millisecondsSinceFirstScriptTick": 1124.863
+    },
+    {
+      "label": "ENCODE_BEGIN",
+      "tick": "2082234539371",
+      "values": [],
+      "millisecondsSinceFirstScriptTick": 1244.179
+    },
+    {
+      "label": "ENCODE_END",
+      "tick": "2082234670913",
+      "values": [],
+      "millisecondsSinceFirstScriptTick": 1257.3332
+    },
+    {
+      "label": "PREWRITE",
+      "tick": "2082234904498",
+      "values": [],
+      "millisecondsSinceFirstScriptTick": 1280.6917
+    },
+    {
+      "label": "FLUSHED",
+      "tick": "2082234971174",
+      "values": [],
+      "millisecondsSinceFirstScriptTick": 1287.3593
+    }
+  ],
+  "missingMarkers": [
+    "ROOT_END",
+    "FILE",
+    "FINAL_ROOT_BEGIN",
+    "FINAL_ROOT_END",
+    "ALGORITHM_END"
+  ],
+  "fileProgressRows": 0,
+  "completedFileCounters": null,
+  "stopwatchFrequency": "10000000",
+  "phases": [
+    {
+      "id": "observer_entry_setup",
+      "ms": 20.9881,
+      "status": "OBSERVED",
+      "meaning": "First script timestamp to ENTRY timestamp; added observation setup, not production startup."
+    },
+    {
+      "id": "entry_to_definitions",
+      "ms": 26.7803,
+      "status": "OBSERVED",
+      "meaning": "Includes ENTRY marker overhead and original initial statements/function definitions."
+    },
+    {
+      "id": "native_initialization_inclusive",
+      "ms": 157.1226,
+      "status": "OBSERVED",
+      "meaning": "Includes fixed signature construction and console proof; observer overhead is included."
+    },
+    {
+      "id": "console_proof_nested",
+      "ms": 86.0458,
+      "status": "OBSERVED_NESTED",
+      "meaning": "Nested within native initialization; must not be added again."
+    },
+    {
+      "id": "request_frame_and_eof",
+      "ms": 20.5009,
+      "status": "OBSERVED",
+      "meaning": "Original frame acquisition and EOF; includes marker overhead and possible waiting."
+    },
+    {
+      "id": "request_parsing_and_validation",
+      "ms": 872.0058,
+      "status": "OBSERVED",
+      "meaning": "UTF-8/depth/canonical JSON/schema/path/cap checks together; no subphase attribution."
+    },
+    {
+      "id": "initial_root_acquisition",
+      "ms": null,
+      "status": "INCOMPLETE",
+      "meaning": "ROOT_END absent. No completed root-acquisition timing is available."
+    },
+    {
+      "id": "root_start_to_error_serialization",
+      "ms": 119.316,
+      "status": "OBSERVED_FAILURE_BRACKET",
+      "meaning": "Failed initial root work plus unwinding, error handling and response construction; not pure native cost."
+    },
+    {
+      "id": "response_serialization_and_utf8",
+      "ms": 13.1542,
+      "status": "OBSERVED_ERROR_RESPONSE_ONLY",
+      "meaning": "Canonical serialization and UTF-8 encoding of the 253-byte framed empty ERROR response, not the successful READ_SET payload."
+    },
+    {
+      "id": "prewrite_to_flushed",
+      "ms": 6.6676,
+      "status": "OBSERVED",
+      "meaning": "Includes PREWRITE marker overhead and original response writes/flush."
+    }
+  ],
+  "parentLifecycle": {
+    "wholeTransportSettlementMs": 2091.8941999999997,
+    "exchangeMs": 2093.6728,
+    "supervisorHelperActiveMs": 2091.8279,
+    "firstResponseByteMs": 2057.5698,
+    "terminalMs": null
+  },
+  "parentIntervals": {
+    "launchToFirstMarkerReceiptMs": 814.2958999999996,
+    "spawnCallReturnMs": 18.953100000000177,
+    "firstResponseByteToSettlementMs": 34.324399999999514,
+    "firstToLastResponseByteMs": 0.4929999999994834
+  },
+  "attribution": "Initial root-chain acquisition refused before entering file processing. Exact component, native call and Win32 cause are not observed.",
+  "incompletePhases": [
+    "completed root acquisition",
+    "per-file acquisition/read",
+    "post-read held/fresh validation",
+    "base64 successful-file snapshot construction",
+    "final root revalidation",
+    "successful READ_SET response serialization"
+  ],
+  "instrumentationOverhead": "UNMEASURED_NOT_SUBTRACTED",
+  "childParentClockMapping": "NOT_ESTABLISHED; child intervals and parent event intervals are reported separately",
+  "cleanup": {
+    "supervisorConfirmed": true,
+    "allPipesClosed": true,
+    "childExit": {
+      "event": "exit",
+      "at": 5073.1644,
+      "code": 0,
+      "signal": null
+    },
+    "validResponseNativeConsoleProof": true,
+    "independentExternalConsoleObservation": false,
+    "failureCleanupNeeded": false
+  },
+  "candidateSelection": "D_NO_DEFENSIBLE_PRODUCTION_CORRECTION_SELECTED_FROM_THIS_OBSERVATION",
+  "recommendedProductionCorrection": null,
+  "interpretation": [
+    "Neither bounded file-buffer reuse nor successful response serialization was exercised meaningfully; do not select either from this run.",
+    "Request parsing/validation is a sizeable completed instrumented span, but no specific redundant implementation or production correction is established.",
+    "The early filesystem refusal does not establish its cause or the historical Step G cause.",
+    "Instrumented metadata/pipe work can perturb scheduling, allocation and parsing. All durations are observations only.",
+    "This is not certification, a timing campaign, reliability evidence, production performance, or replacement-H evidence."
+  ],
+  "certification": false,
+  "phase3APassed": false,
+  "historicalStepGCauseEstablished": false,
+  "replacementH": "NOT_ESTABLISHED",
+  "preservationVerified": true,
+  "furtherExecutions": 0
+}

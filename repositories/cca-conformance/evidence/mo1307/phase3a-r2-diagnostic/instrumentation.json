@@ -1,0 +1,298 @@
+{
+  "kind": "MO1307Phase3AR2InsertOnlyInstrumentation",
+  "version": "1.0.0",
+  "engineeringOnly": true,
+  "production": {
+    "commit": "defe93989efc6501b1a730b82e79e705884b269b",
+    "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+    "byteLength": 30210,
+    "sha256": "35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+  },
+  "engineeringCopy": {
+    "byteLength": 35097,
+    "sha256": "91b1c99a65876c5910a358e01115777ec720ae0f0abbcd6b41aae1dcef741b82"
+  },
+  "insertionOnly": true,
+  "removedOriginalBytes": 0,
+  "reorderedOriginalBytes": 0,
+  "expressionSplits": 0,
+  "maximumStderrBytes": 4096,
+  "maximumMarkerRows": 50,
+  "authorizedWorkload": "helper-deadline-characterization/requests/D.request.bin; 19 files; exactly one root-owned execution",
+  "successfulDExpectedRows": 37,
+  "markerFormat": {
+    "encoding": "ASCII with one LF per row",
+    "clock": "absolute Stopwatch.GetTimestamp ticks, same helper process",
+    "ordinary": "R2 LABEL absoluteTick",
+    "entry": "R2 ENTRY absoluteTick firstScriptTick StopwatchFrequency",
+    "file": "R2 FILE absoluteTick filesCompleted bytesCompleted cumulativeTick[0] ... cumulativeTick[5]",
+    "counters": [
+      "file_checked_acquisition_before_buffer",
+      "file_buffer_and_stream_preparation",
+      "file_stream_read_and_disposal",
+      "file_post_read_size_and_security_validation",
+      "file_base64_chunking_and_response_row",
+      "file_chain_close"
+    ],
+    "labels": [
+      "ENTRY",
+      "DEFINITIONS",
+      "NATIVE_BEGIN",
+      "CONSOLE_BEGIN",
+      "CONSOLE_END",
+      "NATIVE_END",
+      "REQUEST_BEGIN",
+      "REQUEST_READ",
+      "REQUEST_VALID",
+      "ROOT_BEGIN",
+      "ROOT_END",
+      "FILE",
+      "FINAL_ROOT_BEGIN",
+      "FINAL_ROOT_END",
+      "ALGORITHM_END",
+      "ENCODE_BEGIN",
+      "ENCODE_END",
+      "PREWRITE",
+      "FLUSHED"
+    ]
+  },
+  "limitations": [
+    "Engineering timestamps/counters and synchronous bounded stderr writes add uncalibrated overhead; no mathematical overhead subtraction is authorized.",
+    "Script entry is after process launch, PowerShell startup and script parsing. Parent transport observations are needed for the earlier/later lifecycle.",
+    "ENCODE is the original unsplit expression: canonical serialization plus UTF-8 construction/encoding. It does not isolate either cost.",
+    "FILE rows preserve only completed per-file cumulative counters; interrupted spans and unreported current-file work are incomplete, never zero.",
+    "Counter intervals exclude some marker/counter bookkeeping; milestone differences include observer effects. Counters and enclosing spans must not be double-counted.",
+    "Marker write failure or bounds exhaustion silently stops/suppresses markers only; missing markers do not establish that the production operation did not happen.",
+    "No per-identity instrumentation, native-call substitution, observation caching, reordered checks, early response, deadline change or cleanup change.",
+    "One D-workload engineering execution cannot establish historical Step G cause, latency distribution, reliability, replacement H, or certification compliance."
+  ],
+  "insertions": [
+    {
+      "id": "001",
+      "sourceByteOffset": 0,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 001\n",
+      "end": "# MO1307-R2-OBSERVATION END 001\n",
+      "byteLength": 1766,
+      "sha256": "daf14e062ae0fc1010e6524e31dd7c4d7b53f63576deb68c89e4ff3a6f912f82",
+      "description": "First script clock, bounded saved stderr, observation-only function and counters"
+    },
+    {
+      "id": "005",
+      "sourceByteOffset": 7120,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 005\n",
+      "end": "# MO1307-R2-OBSERVATION END 005\n",
+      "byteLength": 102,
+      "sha256": "97bfd88d81d729944981385169ad3ac4fa60e6ca9cae80d771d8fa21514ff7c5",
+      "description": "Fixed native signatures created; before original console proof"
+    },
+    {
+      "id": "006",
+      "sourceByteOffset": 7150,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 006\n",
+      "end": "# MO1307-R2-OBSERVATION END 006\n",
+      "byteLength": 100,
+      "sha256": "9a03f2cd2af8493ce311b106b18af945ec243863f2ce3da036168aa41ea0a4dd",
+      "description": "Original console proof returned, including already-detached branch"
+    },
+    {
+      "id": "010",
+      "sourceByteOffset": 17045,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 010\n",
+      "end": "# MO1307-R2-OBSERVATION END 010\n",
+      "byteLength": 99,
+      "sha256": "7379aa7b687bc0eb9c32795bf48d9865e0e7c791e75a0356087a3af9744b1a6a",
+      "description": "Before original root-chain acquisition"
+    },
+    {
+      "id": "011",
+      "sourceByteOffset": 17314,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 011\n",
+      "end": "# MO1307-R2-OBSERVATION END 011\n",
+      "byteLength": 97,
+      "sha256": "446801eb8e6d3730c3bf9447a40017382b2372f7ccf029f4dc0355bcf4c57e4c",
+      "description": "All original root chains acquired"
+    },
+    {
+      "id": "012",
+      "sourceByteOffset": 17358,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 012\n",
+      "end": "# MO1307-R2-OBSERVATION END 012\n",
+      "byteLength": 127,
+      "sha256": "d8e17c719c7feb8c39b36b05ec4b54f5e71a576775f6823b6a1d850a6d43a387",
+      "description": "Start per-file checked acquisition counter"
+    },
+    {
+      "id": "013",
+      "sourceByteOffset": 18168,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 013\n",
+      "end": "# MO1307-R2-OBSERVATION END 013\n",
+      "byteLength": 212,
+      "sha256": "1a892b2acd225b6daf66577dd2210f13df48b95d0a195e0c1418b7bc30df8de3",
+      "description": "End checked acquisition; begin original allocation/stream setup"
+    },
+    {
+      "id": "014",
+      "sourceByteOffset": 18603,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 014\n",
+      "end": "# MO1307-R2-OBSERVATION END 014\n",
+      "byteLength": 212,
+      "sha256": "c50c151b8a1f0460ae798574004752a8f79bada56a07cb60c9ad2abd4ff7f9c7",
+      "description": "End allocation/stream setup; begin original bounded read"
+    },
+    {
+      "id": "015",
+      "sourceByteOffset": 18973,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 015\n",
+      "end": "# MO1307-R2-OBSERVATION END 015\n",
+      "byteLength": 212,
+      "sha256": "0d49dcfa6e36cab6686c58fa4e921fceaf707f1a09afd7b4dec32454051fb447",
+      "description": "Read and borrowed stream disposal completed; begin size/security checks"
+    },
+    {
+      "id": "016",
+      "sourceByteOffset": 19243,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 016\n",
+      "end": "# MO1307-R2-OBSERVATION END 016\n",
+      "byteLength": 212,
+      "sha256": "635d1d753755a3f4503485aa5057d4d1dd2a8c563591d179afce3733900c30da",
+      "description": "Original held/reopened post-read checks completed; begin base64/chunking"
+    },
+    {
+      "id": "017",
+      "sourceByteOffset": 19714,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 017\n",
+      "end": "# MO1307-R2-OBSERVATION END 017\n",
+      "byteLength": 212,
+      "sha256": "cea59b2b0ae7a3fb7b4892fb7d9b7b019a283ae7b22179278eb835e09b9fee5b",
+      "description": "Original response file row completed; begin chain close"
+    },
+    {
+      "id": "018",
+      "sourceByteOffset": 19759,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 018\n",
+      "end": "# MO1307-R2-OBSERVATION END 018\n",
+      "byteLength": 228,
+      "sha256": "ef66a51de84f44487035b5bfc3f57f1f2cdfbe95aa48c8b234e74f6553716497",
+      "description": "Closed file chain; emit cumulative counters only after complete original file processing"
+    },
+    {
+      "id": "019",
+      "sourceByteOffset": 19769,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 019\n",
+      "end": "# MO1307-R2-OBSERVATION END 019\n",
+      "byteLength": 105,
+      "sha256": "1fa489e305a0cf779cac1bb25e1ff53b502a0aeffa0a7fb112d54848c42f41a3",
+      "description": "Before original final root held/reopened checks"
+    },
+    {
+      "id": "020",
+      "sourceByteOffset": 19846,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 020\n",
+      "end": "# MO1307-R2-OBSERVATION END 020\n",
+      "byteLength": 103,
+      "sha256": "1bd3e7104850df4b1a8831cb0f073a2eccd918ab6a6b602a37f0c7a65edb7fb3",
+      "description": "Original final root held/reopened checks completed"
+    },
+    {
+      "id": "002",
+      "sourceByteOffset": 21218,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 002\n",
+      "end": "# MO1307-R2-OBSERVATION END 002\n",
+      "byteLength": 100,
+      "sha256": "3f2054d4aad82f74f242b26421e8c5756a98531b8fbc46703c4083b69e4faa17",
+      "description": "Original declarations/functions completed"
+    },
+    {
+      "id": "003",
+      "sourceByteOffset": 21700,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 003\n",
+      "end": "# MO1307-R2-OBSERVATION END 003\n",
+      "byteLength": 101,
+      "sha256": "c0d2c8fe1d15396dac03605e71bae9a9c66a20104126240e839d2d9532fa0f62",
+      "description": "Before original native initialization"
+    },
+    {
+      "id": "004",
+      "sourceByteOffset": 21722,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 004\n",
+      "end": "# MO1307-R2-OBSERVATION END 004\n",
+      "byteLength": 99,
+      "sha256": "aca3a0140312bcb49605dca007bed8bef8bbeab778f87bc7aaf77731346aafc8",
+      "description": "Original native initialization and console proof returned"
+    },
+    {
+      "id": "007",
+      "sourceByteOffset": 21905,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 007\n",
+      "end": "# MO1307-R2-OBSERVATION END 007\n",
+      "byteLength": 102,
+      "sha256": "2fd7fabb0363a7cc61eb3b5d70c820e054f1b17ee76c8132986f6dfcc7ef76b3",
+      "description": "Before original framed request reads"
+    },
+    {
+      "id": "008",
+      "sourceByteOffset": 22584,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 008\n",
+      "end": "# MO1307-R2-OBSERVATION END 008\n",
+      "byteLength": 101,
+      "sha256": "f69af79e9f5ff1688672b34b69c3320d5910030496b395bb8d055264b03a8525",
+      "description": "Original complete request frame/EOF accepted"
+    },
+    {
+      "id": "009",
+      "sourceByteOffset": 28387,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 009\n",
+      "end": "# MO1307-R2-OBSERVATION END 009\n",
+      "byteLength": 102,
+      "sha256": "9458ee520ce0ce73f8a2401644b21de7570d11c72695ac10de15e9684ddfedf3",
+      "description": "Original parsing/canonical/path/schema validation completed"
+    },
+    {
+      "id": "021",
+      "sourceByteOffset": 28561,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 021\n",
+      "end": "# MO1307-R2-OBSERVATION END 021\n",
+      "byteLength": 102,
+      "sha256": "0222a00ec857085221e5595033302873dbf9df6b1dd44a25c9488b8854843379",
+      "description": "Original operation returned, including its original finally disposal"
+    },
+    {
+      "id": "022",
+      "sourceByteOffset": 29339,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 022\n",
+      "end": "# MO1307-R2-OBSERVATION END 022\n",
+      "byteLength": 101,
+      "sha256": "8d5d8d0a95fef7aab967a4080d59db398f54dc0c73049aa2e4074d93fdbe7a52",
+      "description": "Before unchanged canonical response and UTF-8 expression"
+    },
+    {
+      "id": "023",
+      "sourceByteOffset": 29439,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 023\n",
+      "end": "# MO1307-R2-OBSERVATION END 023\n",
+      "byteLength": 99,
+      "sha256": "a675a9f765c19c52e94d03a0d0729fd0ebc32a666057dae5c9483d1bf70e4af7",
+      "description": "Unchanged canonical response and UTF-8 expression completed"
+    },
+    {
+      "id": "024",
+      "sourceByteOffset": 30103,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 024\n",
+      "end": "# MO1307-R2-OBSERVATION END 024\n",
+      "byteLength": 97,
+      "sha256": "60679aa86345ce70732157a522c0e5cf7b63881e0d162f0179261759f14fd0d5",
+      "description": "Immediately before original first stdout write"
+    },
+    {
+      "id": "025",
+      "sourceByteOffset": 30203,
+      "begin": "# MO1307-R2-OBSERVATION BEGIN 025\n",
+      "end": "# MO1307-R2-OBSERVATION END 025\n",
+      "byteLength": 96,
+      "sha256": "e86e52d351395b5420945b50e97c84bbcd190a6e450ef1faf9bac12105e1758c",
+      "description": "Original final stdout flush returned"
+    }
+  ],
+  "exactOriginalBytesRecovered": true,
+  "restoredSha256": "35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+}

@@ -85,6 +85,59 @@ function Encode-Value($Value, [int] $Depth = 1) {
     Reject-Protocol
 }
 
+# Closed response shapes only. The general encoder above remains the request
+# canonicalization authority. Dynamic strings retain its canonical escaping;
+# file chunks come only from the checked ToBase64String/slicing path below.
+function Encode-Identity($Identity) {
+    $writer = [Text.StringBuilder]::new()
+    [void] $writer.Append('{"attributes":').Append((Encode-Value $Identity.attributes))
+    [void] $writer.Append(',"byteLength":').Append((Encode-Value $Identity.byteLength))
+    [void] $writer.Append(',"fileId":').Append((Encode-String $Identity.fileId))
+    [void] $writer.Append(',"finalPath":').Append((Encode-String $Identity.finalPath))
+    [void] $writer.Append(',"isDirectory":').Append((Encode-Value $Identity.isDirectory))
+    [void] $writer.Append(',"linkCount":').Append((Encode-Value $Identity.linkCount))
+    [void] $writer.Append(',"volumeSerial":').Append((Encode-String $Identity.volumeSerial)).Append('}')
+    return $writer.ToString()
+}
+function Encode-Response($Response) {
+    $writer = [Text.StringBuilder]::new()
+    [void] $writer.Append('{"code":').Append((Encode-Value $Response.code)).Append(',"files":[')
+    $firstFile = $true
+    foreach ($file in $Response.files) {
+        if (-not $firstFile) { [void] $writer.Append(',') }; $firstFile = $false
+        [void] $writer.Append('{"bytes":[')
+        $firstChunk = $true
+        foreach ($chunk in $file.bytes) {
+            if ($chunk.Length -gt 4096) { Reject-Protocol 'MO1307_RESOURCE_LIMIT' }
+            if (-not $firstChunk) { [void] $writer.Append(',') }; $firstChunk = $false
+            [void] $writer.Append('"').Append($chunk).Append('"')
+        }
+        [void] $writer.Append('],"id":').Append((Encode-String $file.id))
+        [void] $writer.Append(',"identity":').Append((Encode-Identity $file.identity)).Append('}')
+    }
+    [void] $writer.Append('],"kind":"MemoryOSReadinessHelperResponse","operation":').Append((Encode-String $Response.operation)).Append(',"roots":[')
+    $firstRoot = $true
+    foreach ($root in $Response.roots) {
+        if (-not $firstRoot) { [void] $writer.Append(',') }; $firstRoot = $false
+        if ($Response.operation -ceq 'READ_SET') {
+            [void] $writer.Append('{"id":').Append((Encode-String $root.id))
+            [void] $writer.Append(',"identity":').Append((Encode-Identity $root.identity)).Append('}')
+        } else {
+            [void] $writer.Append('{"chain":[')
+            $firstIdentity = $true
+            foreach ($identity in $root.chain) {
+                if (-not $firstIdentity) { [void] $writer.Append(',') }; $firstIdentity = $false
+                [void] $writer.Append((Encode-Identity $identity))
+            }
+            [void] $writer.Append('],"id":').Append((Encode-String $root.id)).Append('}')
+        }
+    }
+    [void] $writer.Append('],"sequence":').Append((Encode-Value $Response.sequence))
+    [void] $writer.Append(',"session":').Append((Encode-String $Response.session))
+    [void] $writer.Append(',"status":').Append((Encode-String $Response.status)).Append(',"version":"2.0.0"}')
+    return $writer.ToString()
+}
+
 # Fixed Win32 signatures are emitted in memory. No C# compiler, temporary source,
 # external assembly, module, executable or caller-selected native symbol exists.
 function Initialize-Native {
@@ -482,7 +535,7 @@ try {
     if ($null -eq $code -and $null -ne $nativeResult) {
         $response.files = $nativeResult.files; $response.roots = $nativeResult.roots; $response.status = $nativeResult.status
     }
-    $replyBytes = [Text.UTF8Encoding]::new($false, $true).GetBytes((Encode-Value $response) + "`n")
+    $replyBytes = [Text.UTF8Encoding]::new($false, $true).GetBytes((Encode-Response $response) + "`n")
     if ($replyBytes.Length + 4 -gt $responseCeiling) { Reject-Protocol 'MO1307_RESOURCE_LIMIT' }
 } catch {
     $reply = '{"code":"MO1307_RESOURCE_LIMIT","files":[],"kind":"MemoryOSReadinessHelperResponse","operation":"' + $operation +

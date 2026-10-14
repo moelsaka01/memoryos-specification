@@ -1,0 +1,63 @@
+{
+  "kind": "MO1307SerializationCorrectionRegression",
+  "result": "PASS",
+  "group": "package",
+  "runtime": {
+    "version": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+  },
+  "commands": [
+    {
+      "id": "tests",
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1304-phase3-toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "repositories/cca-conformance/tests/mo1307_phase1_package_test.mjs"
+      ],
+      "exit": 0,
+      "error": null,
+      "elapsedMs": 5948.894499999999,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/regressions/package/tests.stdout.txt",
+        "byteLength": 1666,
+        "sha256": "sha256:6c5a76d26fd2666ef1249c17f5be8748aa979adf9f2b254feccbf4f58c051e53"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/regressions/package/tests.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 8,
+        "pass": 8,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "testNames": [
+        "package metadata and deterministic nonrecursive bindings",
+        "unexpected member is rejected without refreshing the binding",
+        "changed shipped source fails exact distribution binding",
+        "schema drift cannot be hidden by rebuilding manifests",
+        "constants drift cannot be hidden by rebuilding manifests",
+        "dependencies, lifecycle hooks, extra exports and traversal allowlist are rejected",
+        "network and external imports are rejected before manifest regeneration",
+        "missing fixed helper and mutated manifest rows are rejected"
+      ]
+    }
+  ],
+  "expectedTests": 8,
+  "exactVectors": 0,
+  "sourceBindings": 758,
+  "sourcesUnchanged": true,
+  "scope": "Deterministic shared shape/package checks and exact selected2A/2B vectors; no certification campaign.",
+  "network": false,
+  "predecessorCampaignsRun": false,
+  "sourceWorktreesWritten": false
+}

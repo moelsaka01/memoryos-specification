@@ -1,0 +1,83 @@
+{
+  "kind": "MO1307SerializationCorrectionCertificationImpact",
+  "version": "1.0.0",
+  "certification": false,
+  "productionBaseline": "defe93989efc6501b1a730b82e79e705884b269b",
+  "changedProductionMembers": [
+    {
+      "path": "repositories/memoryos-readiness/distribution-manifest.json",
+      "byteLength": 12631,
+      "sha256": "sha256:e0483d8a0e995e5ee62501cd5c153dd6476e1890f6bf77a86d3499852ebf93cb"
+    },
+    {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "byteLength": 33313,
+      "sha256": "sha256:d9874969f1d02065cd2df0b8a978bfaf0b27a6840fb168acf0af8e3a113f2c7d"
+    },
+    {
+      "path": "repositories/memoryos-readiness/sbom.spdx.json",
+      "byteLength": 47328,
+      "sha256": "sha256:acf057a767354e9305a8f5926e404d4e23c5d033c0b3c7b4aa193dfa84b3919f"
+    }
+  ],
+  "phase3A": {
+    "status": "FRESH_INSTALLED_CERTIFICATION_REQUIRED",
+    "historicalDisposition": "BLOCKED / incomplete",
+    "requiredWork": "Separately authorized fresh installed native runtime/process/resource certification against actual accepted C3SB. Scoped correction evidence and successful subsets do not substitute; preserve all historical failures."
+  },
+  "phase3B": {
+    "status": "TARGETED_REFRESH_REQUIRED",
+    "acceptedAuthority": "5cb213eeab8a6deec39a8f8f93ea13a70e053231",
+    "acceptedScope": "Exact C3RB; retained unchanged.",
+    "reason": "Helper and dependent SPDX/distribution identities change. Existing archive/installed/member/provenance identity cannot certify C3S.",
+    "requiredWork": [
+      "Actual new candidate/member and helper identities",
+      "Dependent SPDX checksums/document namespace/package verification code",
+      "Distribution closure and actual archive binding",
+      "Two independent assemblies and fresh offline installation with before/after inventories",
+      "Installed public API/CLI smoke within artifact scope and source independence",
+      "Provenance and exact candidate binding"
+    ],
+    "reuseOnlyAfterDependencyChecks": [
+      "Unchanged89-member allowlist",
+      "Unchanged53 contract members and52 schemas",
+      "Unchanged package/contract versions and runtime pins",
+      "Zero production dependencies and unchanged licensing/notices disclosures"
+    ]
+  },
+  "phase3C": {
+    "status": "TARGETED_REFRESH_REQUIRED",
+    "acceptedAuthority": "f4ed5873969ab6b627941dc20d5823c5e853b9fe",
+    "acceptedScope": "Exact C3RB; retained unchanged.",
+    "requiredWork": [
+      "Independent closed-writer review: shape completeness, canonical order, dynamic escaping and internally generated Base64 provenance",
+      "Frame byte equivalence, size boundaries, RESOURCE_LIMIT fallback and no partial output",
+      "Memory/resource behavior and exact changed helper/package evidence binding",
+      "Confirm unchanged request/native/security/lifecycle source and dependency completeness"
+    ],
+    "reusableOnlyByExplicitDependencyAnalysis": [
+      "Unchanged request parser and canonicalization",
+      "Unchanged native signatures, fresh path/identity observations, held/reopened handles and TOCTOU rules",
+      "Unchanged console ownership, cancellation, cleanup, publication and process topology",
+      "Unchanged JS readiness/evidence/history/qualification/provider/decision/tag semantics"
+    ],
+    "correctionSecurityEvidence": "44-pair scoped engineering equivalence; does not grant Phase3C certification"
+  },
+  "phase3D": {
+    "status": "GATED",
+    "reason": "Requires accepted complete current-candidate3A plus appropriate3B/3C refreshes and all failure dispositions."
+  },
+  "providerSemantics": "Unchanged; no new hosted/live provider execution or certification.",
+  "replacementH": "NOT_ESTABLISHED",
+  "limits": {
+    "helper": 5000,
+    "aggregateHelperActive": 20000,
+    "cliAdmission": 30000,
+    "apiWorker": 10000,
+    "failureCleanup": 2000
+  },
+  "phase2DDisposition": "P2D_DISCREPANCY_HISTORICAL_ONLY",
+  "phase2DReopened": false,
+  "push": false,
+  "tag": false
+}

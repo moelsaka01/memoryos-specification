@@ -1,0 +1,26 @@
+{
+  "kind": "MO1307SerializationCorrectionSourceEquivalence",
+  "version": "1.0.0",
+  "result": "PASS",
+  "baseline": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/oracle/c3rb-windows-inspect.ps1",
+    "byteLength": 30210,
+    "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+  },
+  "candidate": {
+    "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+    "byteLength": 33313,
+    "sha256": "sha256:d9874969f1d02065cd2df0b8a978bfaf0b27a6840fb168acf0af8e3a113f2c7d"
+  },
+  "change": "Two added closed serialization functions and exactly one final response encoder call replacement.",
+  "removingAddedBlockAndRestoringCallRecoversExactC3RB": true,
+  "requestCanonicalizationUnchanged": true,
+  "nativeAcquisitionFunctionsUnchanged": true,
+  "consoleProofAndCleanupUnchanged": true,
+  "base64ConversionAndChunkingUnchanged": true,
+  "responseConstructionUnchanged": true,
+  "utf8FrameSizeFallbackAndOutputBlockUnchanged": true,
+  "limitsUnchanged": true,
+  "bufferReuseImplemented": false,
+  "limitation": "Static exact-source comparison; native security equivalence and regressions remain required."
+}

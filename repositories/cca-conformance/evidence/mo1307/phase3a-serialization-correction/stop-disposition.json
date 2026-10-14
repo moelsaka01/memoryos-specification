@@ -1,0 +1,134 @@
+{
+  "kind": "MO1307SerializationCorrectionStopDisposition",
+  "version": "1.0.0",
+  "result": "STOPPED_REQUIRED_REGRESSION_FAILURE",
+  "C3SAccepted": false,
+  "C3SCommit": null,
+  "C3SBCommit": null,
+  "bindingSucceeded": false,
+  "main": "4a1de6f00788e3c52a647d6f25aa1dbd2d5d5d97",
+  "productionAuthority": "defe93989efc6501b1a730b82e79e705884b269b",
+  "failure": {
+    "group": "phase2c",
+    "tests": 219,
+    "pass": 218,
+    "fail": 1,
+    "test": "F22 read-only verification timeout is bounded and late handle completion only closes",
+    "assertion": "performance.now() >= publicationStatus(item.token).dispositionDeadline",
+    "location": "repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs:206",
+    "wholeTestDurationMs": 2029.4944,
+    "clockValuesAtFailure": "NOT_RECORDED",
+    "rootCause": "NOT_ESTABLISHED",
+    "receipt": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/regressions/phase2c/receipt.json",
+      "byteLength": 19264,
+      "sha256": "sha256:2ae803f20d402a89337d839c4b5fb34bedf440fdfceba5d679d82e2e660d2223"
+    },
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/regressions/phase2c/tests.stdout.txt",
+      "byteLength": 52642,
+      "sha256": "sha256:7bc6674ff19fc9f6342ba612f182ef07d5bb6b8d0e757ecb3b4e0c2bc7b46e14"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/regressions/phase2c/tests.stderr.txt",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "unchangedAuthorities": [
+      {
+        "path": "repositories/memoryos-readiness/src/publication.mjs",
+        "byteLength": 13610,
+        "sha256": "sha256:dcba8a23b848ceede6c5a9deb10e46b2ef795ae9573755bc78d44abd5943236b",
+        "exactC3RBBytes": true
+      },
+      {
+        "path": "repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs",
+        "byteLength": 17108,
+        "sha256": "sha256:63bebd85b33ce9d23442c347b6e322ec0f8b47733152d2da680fd2d8de8ad420",
+        "exactC3RBBytes": true
+      }
+    ]
+  },
+  "passingEvidence": {
+    "serializer": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/serialization/attempt1/receipt.json",
+      "byteLength": 41037,
+      "sha256": "sha256:9b823ae62bb0f86bb52641f793992345287d940690de4718fda68a53f69387cf"
+    },
+    "security": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/receipt.json",
+      "byteLength": 295951,
+      "sha256": "sha256:806ca4e348ed86db412aba809de097b3e58c2dac3b14573f2278c3e117eba8e0"
+    },
+    "securitySummary": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security-summary.json",
+      "byteLength": 30344,
+      "sha256": "sha256:feb8759d219985d3959e67224e90feba0789438f1e2d7886f613080740605730"
+    },
+    "cheap": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/regressions/cheap/receipt.json",
+      "byteLength": 31056,
+      "sha256": "sha256:3c1c0bfc895ee6568bb7ec71ab13d8d3691dabe751a8fbec36d659e8ea33182a"
+    },
+    "package": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/regressions/package/receipt.json",
+      "byteLength": 2376,
+      "sha256": "sha256:a36b408ec4b47a823f06680bfb35d4bb6b948ce04753ce10a7b8eec9a5e63015"
+    },
+    "phase1Native": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/regressions/phase1-native/receipt.json",
+      "byteLength": 3684,
+      "sha256": "sha256:58612761289c9d89d0d5deb1dc0d2b77148cdc6806569896fae0517d9d65355d"
+    }
+  },
+  "notRun": [
+    "Phase2D regressions",
+    "16 selected vectors",
+    "Serialization performance observations",
+    "READY product performance witness",
+    "MO1306 product performance witness",
+    "Final acceptance validation",
+    "C3S implementation commit",
+    "C3SB binding commit",
+    "Phase3 certification"
+  ],
+  "performanceBenefit": "NOT_ESTABLISHED",
+  "candidateProductionFiles": [
+    {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "byteLength": 33313,
+      "sha256": "sha256:d9874969f1d02065cd2df0b8a978bfaf0b27a6840fb168acf0af8e3a113f2c7d"
+    },
+    {
+      "path": "repositories/memoryos-readiness/sbom.spdx.json",
+      "byteLength": 47328,
+      "sha256": "sha256:acf057a767354e9305a8f5926e404d4e23c5d033c0b3c7b4aa193dfa84b3919f"
+    },
+    {
+      "path": "repositories/memoryos-readiness/distribution-manifest.json",
+      "byteLength": 12631,
+      "sha256": "sha256:e0483d8a0e995e5ee62501cd5c153dd6476e1890f6bf77a86d3499852ebf93cb"
+    }
+  ],
+  "preservation": {
+    "R2Files": 15,
+    "exactBytesPreserved": true,
+    "stillUntracked": true,
+    "adoptionPerformed": false,
+    "r3aHEADAndStatusUnchanged": true,
+    "record": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/preservation.json",
+      "byteLength": 42880,
+      "sha256": "sha256:195c0c776dca4bf2c002745301dee943460a9a9c616727253142b4d895ca6796"
+    }
+  },
+  "phase3A": "BLOCKED / incomplete",
+  "phase3D": "GATED",
+  "H": "NOT_ESTABLISHED",
+  "noLimitChange": true,
+  "noProductionDependencyAdded": true,
+  "stagedFiles": 0,
+  "push": false,
+  "tag": false,
+  "nextAction": "Separate human disposition of the preserved F22 regression failure; no retry, unrelated production fix or acceptance waiver under this stopped correction."
+}

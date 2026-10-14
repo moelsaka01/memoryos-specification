@@ -1,0 +1,757 @@
+{
+  "kind": "MO1307SerializationSecurityFreshnessSummary",
+  "version": "1.0.0",
+  "result": "PASS",
+  "receipt": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/receipt.json",
+    "byteLength": 295951,
+    "sha256": "sha256:806ca4e348ed86db412aba809de097b3e58c2dac3b14573f2278c3e117eba8e0"
+  },
+  "campaign": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/campaign.json",
+    "byteLength": 41392,
+    "sha256": "sha256:d11ada494df1cf192100999abc203625d533c79c2bf958847a5003236d39af04"
+  },
+  "baselineProductionCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+  "c3rb": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/oracle/c3rb-windows-inspect.ps1",
+    "byteLength": 30210,
+    "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+  },
+  "candidate": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/candidate-windows-inspect.ps1",
+    "byteLength": 33313,
+    "sha256": "sha256:d9874969f1d02065cd2df0b8a978bfaf0b27a6840fb168acf0af8e3a113f2c7d"
+  },
+  "checker": {
+    "path": "repositories/cca-conformance/tools/mo1307-phase3a-serialization-correction/check-security.mjs",
+    "byteLength": 11921,
+    "sha256": "sha256:b7470d9713be2364e1dae29e301bdb653fbc937380751b9bbd9a61f8961a3bdd"
+  },
+  "runtime": {
+    "node": {
+      "path": "C:/Users/melsa/Documents/Codex/cca-workspace/.cache/mo1304-phase3-toolchain/node-v24.21.0-win-x64/node.exe",
+      "byteLength": 93580104,
+      "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+    },
+    "nodeVersion": "v24.21.0",
+    "powershell": {
+      "path": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "byteLength": 495616,
+      "sha256": "sha256:8bb6fa8c283b4d92120b1ef249a9b311b0f804d4cabbe9981159976c8be76a5e"
+    }
+  },
+  "counts": {
+    "cases": 44,
+    "nativeHelperInvocations": 88,
+    "successCases": 12,
+    "negativeCases": 32,
+    "instrumentedComparisons": 19,
+    "controlledMutationComparisons": 17,
+    "securityCategoryCount": 22,
+    "freshnessCategoryCount": 6
+  },
+  "securityCategories": [
+    {
+      "category": "ordinary READ_SET success",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "ordinary",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/ordinary/comparison.json",
+            "byteLength": 4510,
+            "sha256": "sha256:d6039effc00a9f01839a344d63c402b24af1e92f4c83185f7388ddb9c41d682b"
+          }
+        }
+      ]
+    },
+    {
+      "category": "MO-1306 65-file READ_SET",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "mo1306-exact",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/mo1306-exact/comparison.json",
+            "byteLength": 4550,
+            "sha256": "sha256:37fd7dc24d0770ca2e3f277ad7370ab6ad06a663eb98278451e4d1c14ce3763d"
+          }
+        }
+      ]
+    },
+    {
+      "category": "READY READ_SET",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "ready-exact",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/ready-exact/comparison.json",
+            "byteLength": 4531,
+            "sha256": "sha256:345b527f32b5688df0ff43f7484fe838de5508a96800d03f743c59614711fc23"
+          }
+        }
+      ]
+    },
+    {
+      "category": "wrong root",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "wrong-root",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/wrong-root/comparison.json",
+            "byteLength": 4571,
+            "sha256": "sha256:27460e19684eb0d30fe92c2936671a4229b56ce84fbd734244421c3c97449f34"
+          }
+        }
+      ]
+    },
+    {
+      "category": "traversal",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "traversal",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/traversal/comparison.json",
+            "byteLength": 4564,
+            "sha256": "sha256:f5b3c1d7f43d4e2c1f5e26cf0397a48ba6205627954fcf359e084dae7693234f"
+          }
+        }
+      ]
+    },
+    {
+      "category": "drive-relative",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "drive-relative",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/drive-relative/comparison.json",
+            "byteLength": 4597,
+            "sha256": "sha256:9043c077fc2989874fe3bc277928d20a3c85516acf86361b7f418c6597bf3e1f"
+          }
+        }
+      ]
+    },
+    {
+      "category": "UNC",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "unc",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/unc/comparison.json",
+            "byteLength": 4522,
+            "sha256": "sha256:473f16a89c37708caf1f670d65a1de35a83371b52942d3dcf258dae6c601c402"
+          }
+        }
+      ]
+    },
+    {
+      "category": "device path",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "device",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/device/comparison.json",
+            "byteLength": 4541,
+            "sha256": "sha256:ed296e34a068d0b339d329df89f8dfa3c8df7341ab87d377d088f075ca0b38d4"
+          }
+        }
+      ]
+    },
+    {
+      "category": "ADS",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "ads",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/ads/comparison.json",
+            "byteLength": 4519,
+            "sha256": "sha256:46afe0a75c87afb6b78685cf233e30ec3b72f7f8518f41f2425a226f1d50e6c7"
+          }
+        }
+      ]
+    },
+    {
+      "category": "file symlink",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "file-symlink",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/file-symlink/comparison.json",
+            "byteLength": 4582,
+            "sha256": "sha256:8a4ad9fff754eb352ebb28c29707ab1b87c3e329996230dd645a5138c4f77fb3"
+          }
+        }
+      ]
+    },
+    {
+      "category": "directory junction/reparse",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "directory-junction",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/directory-junction/comparison.json",
+            "byteLength": 4634,
+            "sha256": "sha256:70ac6f376c10676d7f70437d30646d50d43b3931d86cc0b84adc863f1741b352"
+          }
+        }
+      ]
+    },
+    {
+      "category": "hardlink",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "hardlink",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/hardlink/comparison.json",
+            "byteLength": 4554,
+            "sha256": "sha256:362ff47ce2ccfc2b3a17ee216da8539f7045329ff124c70ad29f6bb45c8ca834"
+          }
+        }
+      ]
+    },
+    {
+      "category": "wrong type",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "wrong-type",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/wrong-type/comparison.json",
+            "byteLength": 4571,
+            "sha256": "sha256:43ded26affcaa1602967ba90b76c6b6dc80a311fa15aa9cd0e855ee94386d72d"
+          }
+        }
+      ]
+    },
+    {
+      "category": "changed identity",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "changed-identity",
+          "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/changed-identity/comparison.json",
+            "byteLength": 6795,
+            "sha256": "sha256:1a2b9305bdc6afe2b0cfc2349efc218bfafae644975e16570aea9ad3c3835bfe"
+          }
+        },
+        {
+          "name": "native-file-replacement",
+          "scope": "ENGINEERING_CONTROLLED_FILESYSTEM_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/native-file-replacement/comparison.json",
+            "byteLength": 6872,
+            "sha256": "sha256:b9453b7d551e84de4ac2e1d831b148e65967250ee5352a600e5f610840c42362"
+          }
+        }
+      ]
+    },
+    {
+      "category": "wrong final path",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "wrong-final-path",
+          "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/wrong-final-path/comparison.json",
+            "byteLength": 6805,
+            "sha256": "sha256:66529b7a157b795c13ed495967835be15ee03902e79a9fb3af8aeb9eed59cfbe"
+          }
+        },
+        {
+          "name": "observed-final-ads",
+          "scope": "ENGINEERING_NATIVE_FINAL_PATH_VALUE_PERTURBATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/observed-final-ads/comparison.json",
+            "byteLength": 6850,
+            "sha256": "sha256:d5fdf6e2cdd687d938b6d9bee0a1170d700ea2b3cd13ced783f3edb7e7ef1615"
+          }
+        },
+        {
+          "name": "observed-final-trailing-dot",
+          "scope": "ENGINEERING_NATIVE_FINAL_PATH_VALUE_PERTURBATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/observed-final-trailing-dot/comparison.json",
+            "byteLength": 6994,
+            "sha256": "sha256:b4220af2ef556503e1f36babcf14bbcaae1b728934c528d0d2ef2408fb695a74"
+          }
+        },
+        {
+          "name": "observed-final-trailing-space",
+          "scope": "ENGINEERING_NATIVE_FINAL_PATH_VALUE_PERTURBATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/observed-final-trailing-space/comparison.json",
+            "byteLength": 7022,
+            "sha256": "sha256:23b5f45e4f9464744378463959066aeb867931cd6dff52b43f45e093e8e50265"
+          }
+        },
+        {
+          "name": "observed-final-separator",
+          "scope": "ENGINEERING_NATIVE_FINAL_PATH_VALUE_PERTURBATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/observed-final-separator/comparison.json",
+            "byteLength": 6949,
+            "sha256": "sha256:0238050d51686eedd8fa195fae1690572e15898e1270f969dd89be7a7b5a7c03"
+          }
+        },
+        {
+          "name": "observed-final-control",
+          "scope": "ENGINEERING_NATIVE_FINAL_PATH_VALUE_PERTURBATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/observed-final-control/comparison.json",
+            "byteLength": 6918,
+            "sha256": "sha256:d4fa682c733aecaecc09b3ed43b4c5b373f2c524fcea2730f8d6719fe0a310c3"
+          }
+        }
+      ]
+    },
+    {
+      "category": "wrong volume/identity where safely representable",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "wrong-volume",
+          "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/wrong-volume/comparison.json",
+            "byteLength": 6778,
+            "sha256": "sha256:6fa9fab5cdd2b0127d33a55dfe1c10babe57b217220e898f8c5f6637262d2e14"
+          }
+        }
+      ]
+    },
+    {
+      "category": "missing file",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "missing-file",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/missing-file/comparison.json",
+            "byteLength": 4555,
+            "sha256": "sha256:ac9990e70d1e6aa6ebf0f23545b3218ca3ab79964392c2414cbe0376076459ee"
+          }
+        }
+      ]
+    },
+    {
+      "category": "file mutation between observations",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "changed-attributes-observation",
+          "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/changed-attributes-observation/comparison.json",
+            "byteLength": 6994,
+            "sha256": "sha256:1287ebc585e43ce35a858466fc551fd46165767113f12390d1f459e964debdf9"
+          }
+        },
+        {
+          "name": "native-size-mutation",
+          "scope": "ENGINEERING_CONTROLLED_FILESYSTEM_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/native-size-mutation/comparison.json",
+            "byteLength": 6867,
+            "sha256": "sha256:20d2d003f4951551ce0dbfd2a96765ef839408a2003aec50f53d10888db827ce"
+          }
+        }
+      ]
+    },
+    {
+      "category": "malformed request",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "malformed-request",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/malformed-request/comparison.json",
+            "byteLength": 4588,
+            "sha256": "sha256:35389e34d7fd4b75c13edfb627dd772f471bdf81c5a6872c415d3fcfec2c6d89"
+          }
+        }
+      ]
+    },
+    {
+      "category": "wrong session",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "wrong-session",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/wrong-session/comparison.json",
+            "byteLength": 4563,
+            "sha256": "sha256:03587c1457f76cabf92832cde663e3b57cc1b08eee39788c7ddb1b5d00034556"
+          }
+        }
+      ]
+    },
+    {
+      "category": "wrong sequence",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "wrong-sequence",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/wrong-sequence/comparison.json",
+            "byteLength": 4571,
+            "sha256": "sha256:c30ade4a15fc564bd4414ced86a01bee28173dc2a216be050c8df2c6726a8753"
+          }
+        }
+      ]
+    },
+    {
+      "category": "wrong operation",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "wrong-operation",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/wrong-operation/comparison.json",
+            "byteLength": 4577,
+            "sha256": "sha256:afc3d92d649f2dd1d70c520f57fce65d1471c2dbc706059e114e7d6761339344"
+          }
+        }
+      ]
+    }
+  ],
+  "freshnessCategories": [
+    {
+      "category": "file changes between initial and post-read identity",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "changed-attributes-observation",
+          "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/changed-attributes-observation/comparison.json",
+            "byteLength": 6994,
+            "sha256": "sha256:1287ebc585e43ce35a858466fc551fd46165767113f12390d1f459e964debdf9"
+          }
+        },
+        {
+          "name": "native-size-mutation",
+          "scope": "ENGINEERING_CONTROLLED_FILESYSTEM_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/native-size-mutation/comparison.json",
+            "byteLength": 6867,
+            "sha256": "sha256:20d2d003f4951551ce0dbfd2a96765ef839408a2003aec50f53d10888db827ce"
+          }
+        }
+      ]
+    },
+    {
+      "category": "ancestor identity changes where safely testable",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "changed-ancestor-identity",
+          "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/changed-ancestor-identity/comparison.json",
+            "byteLength": 6845,
+            "sha256": "sha256:a1ab07a9d1799c0638285ecfdba121f86f6879d7114df622f63bb3e8403df705"
+          }
+        },
+        {
+          "name": "native-ancestor-replacement",
+          "scope": "ENGINEERING_CONTROLLED_FILESYSTEM_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/native-ancestor-replacement/comparison.json",
+            "byteLength": 6975,
+            "sha256": "sha256:7dec4604d7af31d1d7c62b3b40ca1f3a98fd53a88e36226fa858ca4e4427bd00"
+          }
+        }
+      ]
+    },
+    {
+      "category": "file is replaced",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "changed-identity",
+          "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/changed-identity/comparison.json",
+            "byteLength": 6795,
+            "sha256": "sha256:1a2b9305bdc6afe2b0cfc2349efc218bfafae644975e16570aea9ad3c3835bfe"
+          }
+        },
+        {
+          "name": "native-file-replacement",
+          "scope": "ENGINEERING_CONTROLLED_FILESYSTEM_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/native-file-replacement/comparison.json",
+            "byteLength": 6872,
+            "sha256": "sha256:b9453b7d551e84de4ac2e1d831b148e65967250ee5352a600e5f610840c42362"
+          }
+        }
+      ]
+    },
+    {
+      "category": "link/reparse state changes",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "changed-link-observation",
+          "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/changed-link-observation/comparison.json",
+            "byteLength": 6893,
+            "sha256": "sha256:8466977fac6a8ba559dfb8351dd38194945b919a206e18645ee6aadf5386475a"
+          }
+        },
+        {
+          "name": "native-reparse-mutation",
+          "scope": "ENGINEERING_CONTROLLED_FILESYSTEM_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/native-reparse-mutation/comparison.json",
+            "byteLength": 6880,
+            "sha256": "sha256:e501ea63af7911eb3fbd916e991d1b3d8faf44fd66639b2b8c6f7271d792eade"
+          }
+        }
+      ]
+    },
+    {
+      "category": "size changes",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "changed-size-observation",
+          "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/changed-size-observation/comparison.json",
+            "byteLength": 6879,
+            "sha256": "sha256:ecf42840b3e8db08dcfa406e3104104edba5aa67685a7a2269e18e7ce2b86b4a"
+          }
+        },
+        {
+          "name": "native-size-mutation",
+          "scope": "ENGINEERING_CONTROLLED_FILESYSTEM_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/native-size-mutation/comparison.json",
+            "byteLength": 6867,
+            "sha256": "sha256:20d2d003f4951551ce0dbfd2a96765ef839408a2003aec50f53d10888db827ce"
+          }
+        }
+      ]
+    },
+    {
+      "category": "final-path expectation changes",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "changed-final-expectation",
+          "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/changed-final-expectation/comparison.json",
+            "byteLength": 6936,
+            "sha256": "sha256:c5808971459eb9db86920f067c9d93002d2bc547ff7423d8fda966fbbb82861a"
+          }
+        }
+      ]
+    }
+  ],
+  "inspections": [
+    {
+      "operation": "CHECK_OUTPUT",
+      "name": "inspection-check-output",
+      "status": "ABSENT",
+      "result": "PASS",
+      "comparison": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/inspection-check-output/comparison.json",
+        "byteLength": 4633,
+        "sha256": "sha256:6eba686125a28be782221b15c0703d6bf8abea8fa925803da4004a6788feb3ae"
+      }
+    },
+    {
+      "operation": "INSPECT_OUTPUT_ROOT",
+      "name": "inspection-inspect-output-root",
+      "status": "OK",
+      "result": "PASS",
+      "comparison": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/inspection-inspect-output-root/comparison.json",
+        "byteLength": 4657,
+        "sha256": "sha256:3aa7ce857bae87d8e8a9f660872e0514b6da7b3774211010ba04f826c8bb3740"
+      }
+    },
+    {
+      "operation": "CHECK_STAGE_ROOT",
+      "name": "inspection-check-stage-root",
+      "status": "OK",
+      "result": "PASS",
+      "comparison": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/inspection-check-stage-root/comparison.json",
+        "byteLength": 4638,
+        "sha256": "sha256:5279f3c36ac3f4692d10cd70282a8e242b683b9bfa89e24536ca0585a3f66947"
+      }
+    },
+    {
+      "operation": "INSPECT_PENDING",
+      "name": "inspection-inspect-pending",
+      "status": "OK",
+      "result": "PASS",
+      "comparison": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/inspection-inspect-pending/comparison.json",
+        "byteLength": 4640,
+        "sha256": "sha256:69473b171e96766a65fc68413ebcf66dbc5f9ed5fd67012cca788c7194957e84"
+      }
+    },
+    {
+      "operation": "CHECK_FINALIZATION",
+      "name": "inspection-check-finalization",
+      "status": "FINAL_ABSENT",
+      "result": "PASS",
+      "comparison": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/inspection-check-finalization/comparison.json",
+        "byteLength": 4681,
+        "sha256": "sha256:80522ca5f4f501534ef60926bc122a4a45bb3160d109c1ab256674f42c62a59a"
+      }
+    }
+  ],
+  "nativeObservations": {
+    "c3rb": {
+      "phase": "root-post",
+      "counters": {
+        "initial:Open-Native": 724,
+        "root-post:GetFileInformationByHandle": 18,
+        "post-read:GetFileInformationByHandle": 1430,
+        "post-read:Open-Native": 715,
+        "root-post:Assert-SameIdentity": 18,
+        "root-post:Read-Identity": 18,
+        "post-read:Read-Identity": 1430,
+        "root-post:GetFinalPathNameByHandleW": 18,
+        "post-read:Assert-SameIdentity": 1430,
+        "post-read:GetFinalPathNameByHandleW": 1430,
+        "root-post:Open-Native": 9,
+        "initial:Read-Identity": 724,
+        "initial:Assert-SameIdentity": 585,
+        "initial:GetFinalPathNameByHandleW": 724,
+        "initial:GetFileInformationByHandle": 724
+      },
+      "mutations": 0,
+      "mutation": "",
+      "workingSet64": 117198848,
+      "peakWorkingSet64": 137224192,
+      "managedBytes": 33183776,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/mo1306-native-counters/c3rb-telemetry.json",
+        "byteLength": 665,
+        "sha256": "sha256:537c61153b56ebd2d1fd651095741abd0aa4b55ab50a3be999d655b02964a8f6"
+      }
+    },
+    "candidate": {
+      "phase": "root-post",
+      "counters": {
+        "initial:Open-Native": 724,
+        "root-post:GetFileInformationByHandle": 18,
+        "post-read:GetFileInformationByHandle": 1430,
+        "post-read:Open-Native": 715,
+        "root-post:Assert-SameIdentity": 18,
+        "root-post:Read-Identity": 18,
+        "post-read:Read-Identity": 1430,
+        "root-post:GetFinalPathNameByHandleW": 18,
+        "post-read:Assert-SameIdentity": 1430,
+        "post-read:GetFinalPathNameByHandleW": 1430,
+        "root-post:Open-Native": 9,
+        "initial:Read-Identity": 724,
+        "initial:Assert-SameIdentity": 585,
+        "initial:GetFinalPathNameByHandleW": 724,
+        "initial:GetFileInformationByHandle": 724
+      },
+      "mutations": 0,
+      "mutation": "",
+      "workingSet64": 129486848,
+      "peakWorkingSet64": 133410816,
+      "managedBytes": 32904368,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/mo1306-native-counters/candidate-telemetry.json",
+        "byteLength": 665,
+        "sha256": "sha256:ba9acdd929f244e8fb6c05c1917f796c863e8db494284e91289060f87b153a1c"
+      }
+    }
+  },
+  "memory": [
+    {
+      "case": "ordinary-native-counters",
+      "c3rb": {
+        "workingSet64": 125050880,
+        "peakWorkingSet64": 142315520,
+        "managedBytes": 38789648
+      },
+      "candidate": {
+        "workingSet64": 96075776,
+        "peakWorkingSet64": 135647232,
+        "managedBytes": 15116600
+      },
+      "observedPeakWorkingSetDelta": -6668288,
+      "observedManagedBytesDelta": -23673048,
+      "comparison": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/ordinary-native-counters/comparison.json",
+        "byteLength": 7260,
+        "sha256": "sha256:7c029100702286091cc2001c31ecebb8de010a7ef762a57e63bb66403cbda414"
+      }
+    },
+    {
+      "case": "mo1306-native-counters",
+      "c3rb": {
+        "workingSet64": 117198848,
+        "peakWorkingSet64": 137224192,
+        "managedBytes": 33183776
+      },
+      "candidate": {
+        "workingSet64": 129486848,
+        "peakWorkingSet64": 133410816,
+        "managedBytes": 32904368
+      },
+      "observedPeakWorkingSetDelta": -3813376,
+      "observedManagedBytesDelta": -279408,
+      "comparison": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/security/attempt1/mo1306-native-counters/comparison.json",
+        "byteLength": 7285,
+        "sha256": "sha256:a33f91d3ec7a42accbe9d54fa19c6adf66621d0c94c79c74d4c5f30ed85f811a"
+      }
+    }
+  ],
+  "memoryInterpretation": "Separate instrumented-process observations include engine, GC and observer overhead; observed deltas are not isolated optimization allocations. No zero-allocation or isolated serialization-cost conclusion is made.",
+  "limitations": [
+    "Native observations remain real and counted. Explicit observation-field injections are synthetic and labeled. Controlled filesystem replacement/size/reparse tests release the checked leaf in engineering copies solely to permit mutations that production read-sharing normally blocks; no such hook exists in production. Ancestor replacement preserves held ancestor handles.",
+    "Instrumented process current/peak working set and managed bytes are observations including observer overhead; no hard RSS enforcement or isolated allocation attribution claimed.",
+    "The 20-second engineering guard produces exact C3RB oracle frames; this corpus does not establish compliance with the unchanged 5-second production deadline.",
+    "Controlled native mutation hooks only exist in reversible engineering source copies. Production sharing and observations remain unchanged."
+  ],
+  "historicalCertification": "BLOCKED; unchanged by this engineering equivalence campaign",
+  "network": false,
+  "recertification": false
+}

@@ -1,0 +1,27 @@
+// Exact C3S implementation and C3SB binding child; no future-hash references.
+import assert from 'node:assert/strict';
+import {evidence,baseline,productionBaseline,str,record,write,blobs,json,check,preservedR2,implementationSubject,bindingSubject} from './common.mjs';
+import {packageFiles,checkPackage} from '../mo1307-phase1/package.mjs';
+assert.equal(str('branch','--show-current'),'main');
+assert.equal(str('merge-base',productionBaseline,baseline),productionBaseline);
+const r2=preservedR2(),r2Names=new Set(r2.map(m=>m.path));
+const inventoryPath=evidence+'/changed-file-inventory.json',validationPath=evidence+'/final-validation/receipt.json';
+const product='repositories/memoryos-readiness/';
+const allowed=p=>[product+'helpers/windows-inspect.ps1',product+'sbom.spdx.json',product+'distribution-manifest.json','docs/mo1307-phase3a-serialization-correction.md','.gitattributes'].includes(p)||r2Names.has(p)||p.startsWith(evidence+'/')||p.startsWith('repositories/cca-conformance/tools/mo1307-phase3a-serialization-correction/')||p.startsWith('repositories/cca-conformance/tests/mo1307_phase3a_serialization_');
+function requireNames(names){for(const p of names)assert.ok(allowed(p),p);for(const p of r2Names)assert.ok(names.includes(p),'Preserved R2 evidence must be adopted exactly: '+p);}
+function validation(){const value=json(validationPath);assert.equal(value.result,'PASS');return record(validationPath);}
+if(process.argv[2]==='inventory'){
+ assert.equal(process.argv.length,3);assert.equal(str('rev-parse','HEAD'),baseline);assert.equal(str('diff','--cached','--name-only'),'');const acceptedValidation=validation();
+ const names=[...new Set([...str('diff','--name-only',baseline).split('\n'),...str('ls-files','--others','--exclude-standard').split('\n')].filter(Boolean))].sort();assert.ok(names.length>0);assert.ok(!names.includes(inventoryPath));requireNames(names);
+ write(inventoryPath,{kind:'MO1307SerializationCorrectionChangedFileInventory',version:'1.0.0',baseline,productionBaseline,members:names.map(p=>record(p)),preservedR2:r2,finalValidation:acceptedValidation,exclusions:['This inventory excludes itself. C3SB binds its actual C3S bytes and all changed implementation files.'],implementationSubject,bindingSubject,implementationIdentity:'Only bound after the actual C3S exists; no future hash.',certification:false});console.log(JSON.stringify({result:'PASS',members:names.length,preservedR2:r2.length}));
+}else if(process.argv[2]==='stage-check'){
+ assert.equal(process.argv.length,3);assert.equal(str('rev-parse','HEAD'),baseline);const inventory=json(inventoryPath);assert.equal(inventory.baseline,baseline);assert.equal(inventory.productionBaseline,productionBaseline);assert.deepEqual(inventory.preservedR2,r2);check(inventory.finalValidation);validation();
+ const members=[...inventory.members,record(inventoryPath)].sort((a,b)=>a.path<b.path?-1:1);requireNames(members.map(m=>m.path));assert.deepEqual(str('diff','--cached','--name-only').split('\n').filter(Boolean).sort(),members.map(m=>m.path));assert.equal(str('diff','--name-only'),'');assert.equal(str('ls-files','--others','--exclude-standard'),'');const bytes=blobs('',members.map(m=>m.path));members.forEach((m,i)=>{check(m,bytes[i]);check(m);});console.log(JSON.stringify({result:'PASS',exactStagedBlobs:members.length,preservedR2:r2.length}));
+}else if(process.argv[2]==='bind'){
+ assert.equal(process.argv.length,3);const commit=str('rev-parse','HEAD');assert.deepEqual(str('show','-s','--format=%P',commit).split(' '),[baseline]);assert.equal(str('show','-s','--format=%s',commit),implementationSubject);assert.equal(str('status','--porcelain'),'');
+ const names=str('diff-tree','--no-commit-id','--name-only','-r',commit).split('\n').filter(Boolean).sort(),bytes=blobs(commit,names);requireNames(names);
+ const inventory=json(inventoryPath);assert.equal(inventory.baseline,baseline);assert.equal(inventory.productionBaseline,productionBaseline);assert.deepEqual(inventory.members.map(m=>m.path),names.filter(p=>p!==inventoryPath));for(const m of inventory.members)check(m);assert.deepEqual(inventory.preservedR2,r2);check(inventory.finalValidation);
+ const finalValidation=validation(),packageCheck=checkPackage();assert.equal(packageCheck.members,89);assert.equal(packageCheck.contractMembers,53);assert.equal(packageCheck.externalProductionDependencies,0);
+ const packagePaths=packageFiles.map(p=>product+p),packageBytes=blobs(commit,packagePaths),packageMembers=packagePaths.map((p,i)=>record(p,packageBytes[i]));packageMembers.forEach(m=>check(m));
+ write(evidence+'/binding.json',{kind:'MO1307SerializationCorrectionBinding',version:'1.0.0',implementation:{commit,parent:baseline,tree:str('rev-parse',commit+'^{tree}'),subject:implementationSubject},productionBaseline,production:{tree:str('rev-parse',commit+':repositories/memoryos-readiness'),helper:record(product+'helpers/windows-inspect.ps1'),packageMembers,packageCheck},members:names.map((p,i)=>record(p,bytes[i])),preservedR2:r2,finalValidation,bindingSubject,productionChangesInBindingCommit:false,selfReference:'Only actual existing C3S commit/tree/blobs are bound. No future C3SB identity is embedded.',certification:false,followUp:'Fresh current-candidate installed Phase3A and dependency-scoped Phase3B/Phase3C refresh are required; no certification is started here.'});console.log(JSON.stringify({result:'PASS',C3S:commit,members:names.length,packageMembers:packageMembers.length,preservedR2:r2.length}));
+}else throw Error('Use inventory, stage-check or bind');

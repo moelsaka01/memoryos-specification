@@ -1,0 +1,54 @@
+{
+  "kind": "MO1307Phase3AR2StaticPreexecutionReview",
+  "reviewedAtUtc": "2026-09-29T20:24:00.621Z",
+  "plan": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-r2-diagnostic/plan.json",
+    "byteLength": 70025,
+    "sha256": "sha256:430680c536173640c9c654a7ec35d3a8383dab53136394eddf77f7fcfae59e48"
+  },
+  "tooling": [
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3a-r2/profile-once.mjs",
+      "byteLength": 17213,
+      "sha256": "sha256:6393248aa221309aea0830f81711168cc127658738f49245aaa0731f59b95237"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3a-r2/instrument.mjs",
+      "byteLength": 13113,
+      "sha256": "sha256:3e11e5f15e99300496e3b712e5815f399b35a4bfe9462a17ef51383094fb9fa4"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-r2-diagnostic/windows-inspect.instrumented.ps1",
+      "byteLength": 35097,
+      "sha256": "sha256:91b1c99a65876c5910a358e01115777ec720ae0f0abbcd6b41aae1dcef741b82"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-r2-diagnostic/instrumentation.json",
+      "byteLength": 12226,
+      "sha256": "sha256:23010be9a1f6ae3faf5eaaff3072ac136a80db24b37cc4ca89132130b1e724cd"
+    }
+  ],
+  "checks": {
+    "originalTransportAndSupervisorReused": true,
+    "onlyScriptArgumentSubstituted": true,
+    "noThrowingAssertionsAfterSpawnBeforeReturn": true,
+    "oneShotCreateNewClaim": true,
+    "exactDOnly": true,
+    "insertOnlyOriginalBytesRecovered": true,
+    "originalNativeErrorCaptureAdjacencyPreserved": true,
+    "originalChecksAndResponseStatementsUnchanged": true,
+    "stderrCap4096": true,
+    "expectedMarkers37": true,
+    "sourceRuntimeRequestInputsMatch": true
+  },
+  "helperExecutionsDuringPreparation": 0,
+  "syntaxChecks": "Node --check on both tool modules; no PowerShell syntax process or helper preflight",
+  "independentStaticReview": "Parent review plus released_binding_audit; no blocking finding",
+  "limitations": [
+    "One instrumented surrogate workload; not historical Step G replay.",
+    "Stopwatch reads, marker writes, added script parsing and parent listeners add uncalibrated overhead; none is subtracted.",
+    "No native external process observer; missing product quiescence remains unconfirmed.",
+    "Child and parent clocks are retained separately; marker receipt includes pipe/event-loop delay.",
+    "Execution token/access-policy parity with previous accepted runs has not been established."
+  ]
+}

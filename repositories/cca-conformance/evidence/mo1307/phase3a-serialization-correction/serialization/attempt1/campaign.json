@@ -1,0 +1,1913 @@
+{
+  "kind": "MO1307C3SSerializerEquivalencePlan",
+  "version": "1.0.0",
+  "declaredAt": "2026-09-29T22:00:18.807Z",
+  "sourceBindings": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-serialization-correction/oracle/c3rb-windows-inspect.ps1",
+      "byteLength": 30210,
+      "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+    },
+    {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "byteLength": 33313,
+      "sha256": "sha256:d9874969f1d02065cd2df0b8a978bfaf0b27a6840fb168acf0af8e3a113f2c7d"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3a-serialization-correction/serialization-equivalence.mjs",
+      "byteLength": 24389,
+      "sha256": "sha256:838bdc8e578293ba8177dee9471af405a73f1536c493c5437ad529f8821810ad"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3a-serialization-correction/serialization-cases.ps1",
+      "byteLength": 8868,
+      "sha256": "sha256:12df8fe22b90a292966e84ca86b0d0e602ee41f947ab87e9bf4a40f54eadf645"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/canonical.mjs",
+      "byteLength": 6813,
+      "sha256": "sha256:b0e22be147436b7fd962c00825f9f5c1e581825653baa0af4a68a9832a0b9805"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/errors.mjs",
+      "byteLength": 1823,
+      "sha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/constants.mjs",
+      "byteLength": 16791,
+      "sha256": "sha256:987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+      "byteLength": 17308,
+      "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/windows-paths.mjs",
+      "byteLength": 5990,
+      "sha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/foundation.mjs",
+      "byteLength": 22098,
+      "sha256": "sha256:19008f20e562376cd76161d26f18169bb46eded4e480b71d1832307e1db8280d"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/schema.mjs",
+      "byteLength": 4308,
+      "sha256": "sha256:9b18aead5802688195a3539ef504395f374a8779580650eec7b03058100b98b7"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/schema-data.mjs",
+      "byteLength": 98556,
+      "sha256": "sha256:467fa7479b88eff13d90cfb8d8984b26b5cd4b7cd1aadd8f5b3416c6ed3b6f11"
+    }
+  ],
+  "runtimeBindings": [
+    {
+      "path": "C:/Users/melsa/Documents/Codex/cca-workspace/.cache/mo1304-phase3-toolchain/node-v24.21.0-win-x64/node.exe",
+      "byteLength": 93580104,
+      "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+    },
+    {
+      "path": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "byteLength": 495616,
+      "sha256": "sha256:8bb6fa8c283b4d92120b1ef249a9b311b0f804d4cabbe9981159976c8be76a5e"
+    }
+  ],
+  "caseCount": 90,
+  "expectedCases": 90,
+  "cases": [
+    {
+      "id": "operation-read-set",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "operation-check-output",
+      "operation": "CHECK_OUTPUT",
+      "sequence": 4,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "operation-inspect-output-root",
+      "operation": "INSPECT_OUTPUT_ROOT",
+      "sequence": 6,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "operation-check-stage-root",
+      "operation": "CHECK_STAGE_ROOT",
+      "sequence": 7,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "operation-inspect-pending",
+      "operation": "INSPECT_PENDING",
+      "sequence": 8,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "operation-check-finalization",
+      "operation": "CHECK_FINALIZATION",
+      "sequence": 9,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "read-set-no-files",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "read-set-two-roots-order",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input",
+        "result"
+      ],
+      "fileLengths": [
+        1,
+        2,
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "inspection-chain-one",
+      "operation": "INSPECT_OUTPUT_ROOT",
+      "sequence": 6,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 1,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "inspection-chain-120",
+      "operation": "INSPECT_OUTPUT_ROOT",
+      "sequence": 6,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 120,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_ENCODER_BOUNDARY_NOT_NATIVE_ACQUISITION"
+    },
+    {
+      "id": "payload-0",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        0
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "payload-1",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        1
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "payload-2",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        2
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "payload-3",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "payload-3071",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3071
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "payload-3072",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3072
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "payload-3073",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3073
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "payload-6143",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        6143
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "payload-6144",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        6144
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "payload-6145",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        6145
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "payload-65535",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        65535
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "payload-65536",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        65536
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "payload-65537",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        65537
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "payload-2097151",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        2097151
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "payload-2097152",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        2097152
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "payload-4194303",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        4194303
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "payload-4194304",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        4194304
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "aggregate-8388608",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        2097152,
+        2097152,
+        2097152,
+        2097152
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-read-set-input",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_INPUT",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-read-set-filesystem-boundary",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_FILESYSTEM_BOUNDARY",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-read-set-resource-limit",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_RESOURCE_LIMIT",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-read-set-internal",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_INTERNAL",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-check-output-input",
+      "operation": "CHECK_OUTPUT",
+      "sequence": 4,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_INPUT",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-check-output-filesystem-boundary",
+      "operation": "CHECK_OUTPUT",
+      "sequence": 4,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_FILESYSTEM_BOUNDARY",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-check-output-resource-limit",
+      "operation": "CHECK_OUTPUT",
+      "sequence": 4,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_RESOURCE_LIMIT",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-check-output-internal",
+      "operation": "CHECK_OUTPUT",
+      "sequence": 4,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_INTERNAL",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-inspect-output-root-input",
+      "operation": "INSPECT_OUTPUT_ROOT",
+      "sequence": 6,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_INPUT",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-inspect-output-root-filesystem-boundary",
+      "operation": "INSPECT_OUTPUT_ROOT",
+      "sequence": 6,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_FILESYSTEM_BOUNDARY",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-inspect-output-root-resource-limit",
+      "operation": "INSPECT_OUTPUT_ROOT",
+      "sequence": 6,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_RESOURCE_LIMIT",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-inspect-output-root-internal",
+      "operation": "INSPECT_OUTPUT_ROOT",
+      "sequence": 6,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_INTERNAL",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-check-stage-root-input",
+      "operation": "CHECK_STAGE_ROOT",
+      "sequence": 7,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_INPUT",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-check-stage-root-filesystem-boundary",
+      "operation": "CHECK_STAGE_ROOT",
+      "sequence": 7,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_FILESYSTEM_BOUNDARY",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-check-stage-root-resource-limit",
+      "operation": "CHECK_STAGE_ROOT",
+      "sequence": 7,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_RESOURCE_LIMIT",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-check-stage-root-internal",
+      "operation": "CHECK_STAGE_ROOT",
+      "sequence": 7,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_INTERNAL",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-inspect-pending-input",
+      "operation": "INSPECT_PENDING",
+      "sequence": 8,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_INPUT",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-inspect-pending-filesystem-boundary",
+      "operation": "INSPECT_PENDING",
+      "sequence": 8,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_FILESYSTEM_BOUNDARY",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-inspect-pending-resource-limit",
+      "operation": "INSPECT_PENDING",
+      "sequence": 8,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_RESOURCE_LIMIT",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-inspect-pending-internal",
+      "operation": "INSPECT_PENDING",
+      "sequence": 8,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_INTERNAL",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-check-finalization-input",
+      "operation": "CHECK_FINALIZATION",
+      "sequence": 9,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_INPUT",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-check-finalization-filesystem-boundary",
+      "operation": "CHECK_FINALIZATION",
+      "sequence": 9,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_FILESYSTEM_BOUNDARY",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-check-finalization-resource-limit",
+      "operation": "CHECK_FINALIZATION",
+      "sequence": 9,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_RESOURCE_LIMIT",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "error-check-finalization-internal",
+      "operation": "CHECK_FINALIZATION",
+      "sequence": 9,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_INTERNAL",
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "early-default-error",
+      "operation": "READ_SET",
+      "sequence": 1,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_INPUT",
+      "earlyDefaults": true,
+      "mutation": null,
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "dynamic-final-path-ascii",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "finalPath",
+        "kind": "string",
+        "value": "ascii"
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_STRING_ENCODER_EDGE_NOT_NATIVE_PATH"
+    },
+    {
+      "id": "dynamic-final-path-quotes",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "finalPath",
+        "kind": "string",
+        "value": "quotes"
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_STRING_ENCODER_EDGE_NOT_NATIVE_PATH"
+    },
+    {
+      "id": "dynamic-final-path-backslashes",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "finalPath",
+        "kind": "string",
+        "value": "backslashes"
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_STRING_ENCODER_EDGE_NOT_NATIVE_PATH"
+    },
+    {
+      "id": "dynamic-final-path-empty",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "finalPath",
+        "kind": "string",
+        "value": "empty"
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_STRING_ENCODER_EDGE_NOT_NATIVE_PATH"
+    },
+    {
+      "id": "dynamic-final-path-unicode",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "finalPath",
+        "kind": "string",
+        "value": "unicode"
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_STRING_ENCODER_EDGE_NOT_NATIVE_PATH"
+    },
+    {
+      "id": "dynamic-final-path-paired-surrogate",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "finalPath",
+        "kind": "string",
+        "value": "paired-surrogate"
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_STRING_ENCODER_EDGE_NOT_NATIVE_PATH"
+    },
+    {
+      "id": "dynamic-final-path-lone-high",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "finalPath",
+        "kind": "string",
+        "value": "lone-high"
+      },
+      "frameFill": null,
+      "expectedFallback": true,
+      "scope": "SYNTHETIC_STRING_ENCODER_EDGE_NOT_NATIVE_PATH"
+    },
+    {
+      "id": "dynamic-final-path-lone-low",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "finalPath",
+        "kind": "string",
+        "value": "lone-low"
+      },
+      "frameFill": null,
+      "expectedFallback": true,
+      "scope": "SYNTHETIC_STRING_ENCODER_EDGE_NOT_NATIVE_PATH"
+    },
+    {
+      "id": "dynamic-final-path-nul",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "finalPath",
+        "kind": "string",
+        "value": "nul"
+      },
+      "frameFill": null,
+      "expectedFallback": true,
+      "scope": "SYNTHETIC_STRING_ENCODER_EDGE_NOT_NATIVE_PATH"
+    },
+    {
+      "id": "dynamic-final-path-control",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "finalPath",
+        "kind": "string",
+        "value": "control"
+      },
+      "frameFill": null,
+      "expectedFallback": true,
+      "scope": "SYNTHETIC_STRING_ENCODER_EDGE_NOT_NATIVE_PATH"
+    },
+    {
+      "id": "dynamic-final-path-newline",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "finalPath",
+        "kind": "string",
+        "value": "newline"
+      },
+      "frameFill": null,
+      "expectedFallback": true,
+      "scope": "SYNTHETIC_STRING_ENCODER_EDGE_NOT_NATIVE_PATH"
+    },
+    {
+      "id": "dynamic-final-path-del",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "finalPath",
+        "kind": "string",
+        "value": "del"
+      },
+      "frameFill": null,
+      "expectedFallback": true,
+      "scope": "SYNTHETIC_STRING_ENCODER_EDGE_NOT_NATIVE_PATH"
+    },
+    {
+      "id": "dynamic-final-path-length-4096",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "finalPath",
+        "kind": "string",
+        "value": "length-4096"
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_STRING_ENCODER_EDGE_NOT_NATIVE_PATH"
+    },
+    {
+      "id": "dynamic-final-path-length-4097",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "finalPath",
+        "kind": "string",
+        "value": "length-4097"
+      },
+      "frameFill": null,
+      "expectedFallback": true,
+      "scope": "SYNTHETIC_STRING_ENCODER_EDGE_NOT_NATIVE_PATH"
+    },
+    {
+      "id": "dynamic-file-id",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "file",
+        "field": "id",
+        "kind": "string",
+        "value": "quotes"
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_DYNAMIC_STRING_FIELD"
+    },
+    {
+      "id": "dynamic-root-id",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "root",
+        "field": "id",
+        "kind": "string",
+        "value": "quotes"
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_DYNAMIC_STRING_FIELD"
+    },
+    {
+      "id": "dynamic-fileidentity-fileid",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "fileId",
+        "kind": "string",
+        "value": "quotes"
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_DYNAMIC_STRING_FIELD"
+    },
+    {
+      "id": "dynamic-fileidentity-volumeserial",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "volumeSerial",
+        "kind": "string",
+        "value": "quotes"
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_DYNAMIC_STRING_FIELD"
+    },
+    {
+      "id": "dynamic-outer-operation",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": "MO1307_INPUT",
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "outer",
+        "field": "operation",
+        "kind": "string",
+        "value": "quotes"
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_DYNAMIC_STRING_FIELD"
+    },
+    {
+      "id": "dynamic-outer-session",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "outer",
+        "field": "session",
+        "kind": "string",
+        "value": "quotes"
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_DYNAMIC_STRING_FIELD"
+    },
+    {
+      "id": "dynamic-outer-code",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "outer",
+        "field": "code",
+        "kind": "string",
+        "value": "quotes"
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_DYNAMIC_STRING_FIELD"
+    },
+    {
+      "id": "dynamic-nativeresult-status",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "nativeResult",
+        "field": "status",
+        "kind": "string",
+        "value": "quotes"
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_DYNAMIC_STRING_FIELD"
+    },
+    {
+      "id": "integer-0",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "byteLength",
+        "kind": "integer",
+        "value": "0"
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_INTEGER_ENCODER_EDGE"
+    },
+    {
+      "id": "integer-2147483647",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "byteLength",
+        "kind": "integer",
+        "value": "2147483647"
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_INTEGER_ENCODER_EDGE"
+    },
+    {
+      "id": "integer-2147483648",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "byteLength",
+        "kind": "integer",
+        "value": "2147483648"
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_INTEGER_ENCODER_EDGE"
+    },
+    {
+      "id": "integer-4294967295",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "byteLength",
+        "kind": "integer",
+        "value": "4294967295"
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_INTEGER_ENCODER_EDGE"
+    },
+    {
+      "id": "integer-9007199254740991",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "byteLength",
+        "kind": "integer",
+        "value": "9007199254740991"
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_INTEGER_ENCODER_EDGE"
+    },
+    {
+      "id": "integer-negative-1",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "byteLength",
+        "kind": "integer",
+        "value": "-1"
+      },
+      "frameFill": null,
+      "expectedFallback": true,
+      "scope": "SYNTHETIC_INTEGER_ENCODER_EDGE"
+    },
+    {
+      "id": "integer-9007199254740992",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "byteLength",
+        "kind": "integer",
+        "value": "9007199254740992"
+      },
+      "frameFill": null,
+      "expectedFallback": true,
+      "scope": "SYNTHETIC_INTEGER_ENCODER_EDGE"
+    },
+    {
+      "id": "double-1",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "byteLength",
+        "kind": "double",
+        "value": "1"
+      },
+      "frameFill": null,
+      "expectedFallback": true,
+      "scope": "SYNTHETIC_UNSUPPORTED_CLR_TYPE"
+    },
+    {
+      "id": "double-1-5",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "byteLength",
+        "kind": "double",
+        "value": "1.5"
+      },
+      "frameFill": null,
+      "expectedFallback": true,
+      "scope": "SYNTHETIC_UNSUPPORTED_CLR_TYPE"
+    },
+    {
+      "id": "boolean-false",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "isDirectory",
+        "kind": "boolean",
+        "value": false
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "boolean-true",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "fileIdentity",
+        "field": "isDirectory",
+        "kind": "boolean",
+        "value": true
+      },
+      "frameFill": null,
+      "expectedFallback": false,
+      "scope": "PURE_CLOSED_RESPONSE_ENCODER"
+    },
+    {
+      "id": "chunk-length-4097-refusal",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        3
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": {
+        "target": "chunk",
+        "field": "bytes",
+        "kind": "string",
+        "value": "length-4097"
+      },
+      "frameFill": null,
+      "expectedFallback": true,
+      "scope": "SYNTHETIC_INTERNAL_CHUNK_LENGTH_FAILURE"
+    },
+    {
+      "id": "frame-ceiling-minus-one",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        0
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": {
+        "fullChunks": 4092,
+        "tailChars": 3520,
+        "pathPadding": 1,
+        "targetFrameBytes": 16777215
+      },
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_SERIALIZER_SIZE_BOUNDARY_NOT_NATIVE_ADMISSIBLE_PAYLOAD"
+    },
+    {
+      "id": "frame-ceiling-exact",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        0
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": {
+        "fullChunks": 4092,
+        "tailChars": 3520,
+        "pathPadding": 2,
+        "targetFrameBytes": 16777216
+      },
+      "expectedFallback": false,
+      "scope": "SYNTHETIC_SERIALIZER_SIZE_BOUNDARY_NOT_NATIVE_ADMISSIBLE_PAYLOAD"
+    },
+    {
+      "id": "frame-ceiling-plus-one",
+      "operation": "READ_SET",
+      "sequence": 3,
+      "rootIds": [
+        "input"
+      ],
+      "fileLengths": [
+        0
+      ],
+      "chainLength": 3,
+      "code": null,
+      "earlyDefaults": false,
+      "mutation": null,
+      "frameFill": {
+        "fullChunks": 4092,
+        "tailChars": 3520,
+        "pathPadding": 3,
+        "targetFrameBytes": 16777217
+      },
+      "expectedFallback": true,
+      "scope": "SYNTHETIC_SERIALIZER_SIZE_BOUNDARY_NOT_NATIVE_ADMISSIBLE_PAYLOAD"
+    }
+  ],
+  "engineSources": {
+    "oracle": {
+      "path": ".cache/mo1307/phase3a-serialization-correction/serialization-equivalence/attempt1/oracle-engine.ps1",
+      "byteLength": 3782,
+      "sha256": "sha256:2b7494cc49c41ebf170035ccc55c18560134b6462a76a59cc861821e7b56c7b2"
+    },
+    "candidate": {
+      "path": ".cache/mo1307/phase3a-serialization-correction/serialization-equivalence/attempt1/candidate-engine.ps1",
+      "byteLength": 6656,
+      "sha256": "sha256:7bfcf696aa565ac0358b7a21f84d4b87fdb2e805f1a7254c425105040229ffa1"
+    }
+  },
+  "engineeringGuardMs": 240000,
+  "replyGuardMs": 90000,
+  "processCount": 1,
+  "nativeHelperLaunches": 0,
+  "productClocksUsed": false,
+  "retries": 0,
+  "stopOnFirstMismatch": true,
+  "rawFrames": ".cache/mo1307/phase3a-serialization-correction/serialization-equivalence/attempt1/frames",
+  "scope": "Actual extracted serializer functions and production response construction/fallback/frame writes, captured only in an engineering MemoryStream. Synthetic encoder cases do not claim native-path admission or runtime certification."
+}
