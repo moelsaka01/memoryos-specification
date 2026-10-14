@@ -1,0 +1,27 @@
+{
+  "name": "ready",
+  "decision": "APPROVE",
+  "mismatch": "proofBindingDigest",
+  "result": "PASS",
+  "input": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a/semantics/api-attempt1/decisions/7/decision.data",
+    "byteLength": 531,
+    "sha256": "sha256:38e80f9f0926d5b871e1759011fbab19ab7e70261e3235c7098c738833b97cbe"
+  },
+  "operation": {
+    "operation": "verify",
+    "expectedError": "MO1307_DECISION_MISMATCH",
+    "startedAt": "2026-09-29T09:26:30.741Z",
+    "result": "PASS",
+    "elapsedMs": 433.7327000000005,
+    "error": {
+      "name": "ReadinessError",
+      "code": "MO1307_DECISION_MISMATCH",
+      "stage": "VERIFICATION",
+      "message": "MO1307_DECISION_MISMATCH",
+      "stack": "ReadinessError: MO1307_DECISION_MISMATCH\n    at finish (file:///C:/Users/melsa/Documents/Codex/cca-mo1307-3a/.cache/mo1307-phase3a/install/node_modules/memoryos-readiness/src/runtime.mjs:170:63)\n    at ReadableWorkerStdio.<anonymous> (file:///C:/Users/melsa/Documents/Codex/cca-mo1307-3a/.cache/mo1307-phase3a/install/node_modules/memoryos-readiness/src/runtime.mjs:181:60)\n    at ReadableWorkerStdio.wrapper (node:events:639:12)\n    at ReadableWorkerStdio.emit (node:events:526:24)\n    at endReadableNT (node:internal/streams/readable:1764:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)"
+    },
+    "rejectedAsExpected": true
+  },
+  "readinessUnaffected": false
+}

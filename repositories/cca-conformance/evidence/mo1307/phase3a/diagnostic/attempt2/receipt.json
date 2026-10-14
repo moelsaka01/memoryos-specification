@@ -1,0 +1,200 @@
+{
+  "kind": "MO1307Phase3AInstalledDiagnostic",
+  "result": "FAIL",
+  "failure": {
+    "code": "MO1307_TIMEOUT",
+    "stage": "ACQUISITION",
+    "message": "MO1307_TIMEOUT"
+  },
+  "outcome": null,
+  "scope": "INTRUSIVE_DEBUGGER_SOURCE_LOCATION_DIAGNOSTIC",
+  "timingAcceptance": false,
+  "successAcceptance": false,
+  "standaloneBinCertified": false,
+  "attemptCount": 2,
+  "productionElapsedMs": 7982.759900000001,
+  "observerElapsedMs": 8474.7659,
+  "timeOrigin": 1790674416219.726,
+  "inputSizes": {
+    "manifestFiles": 65,
+    "manifestBytes": 2004208
+  },
+  "requests": [
+    {
+      "sequence": 1,
+      "operation": "READ_SET",
+      "session": "a926baa967f3c3826f017b527fcd812a84e8257e8c36b324735394473333ee76",
+      "fileCount": 2,
+      "startedAt": 954.7449,
+      "utcMs": 1790674417174.556,
+      "request": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a/diagnostic/attempt2/01.request.bin",
+        "byteLength": 443,
+        "sha256": "sha256:480f99c0583bde8c13fc1eb38356620faf0ab9d1c645e18a4ff5b911f754c8db"
+      },
+      "response": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a/diagnostic/attempt2/01.response.bin",
+        "byteLength": 84489,
+        "sha256": "sha256:c20894d55b27277203bd2de63054e3812e2fc7fbe4d4b045c6f4c7696d60eb94"
+      },
+      "status": "OK",
+      "exitConfirmed": true,
+      "finishedAt": 2439.5189,
+      "elapsedMs": 1484.774
+    },
+    {
+      "sequence": 2,
+      "operation": "READ_SET",
+      "session": "a926baa967f3c3826f017b527fcd812a84e8257e8c36b324735394473333ee76",
+      "fileCount": 2,
+      "startedAt": 2472.2139,
+      "utcMs": 1790674418691.9426,
+      "request": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a/diagnostic/attempt2/02.request.bin",
+        "byteLength": 440,
+        "sha256": "sha256:bf9bebd657376305b4c23769ed0e8c36282b33804ffd0c6b502a2eb41acf865b"
+      },
+      "response": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a/diagnostic/attempt2/02.response.bin",
+        "byteLength": 89816,
+        "sha256": "sha256:bc9bc81ba11573ed17f85977f2f953deb46b0cbf224398078324d8f99bb3f451"
+      },
+      "status": "OK",
+      "exitConfirmed": true,
+      "finishedAt": 3871.3673,
+      "elapsedMs": 1399.1533999999997
+    },
+    {
+      "sequence": 3,
+      "operation": "READ_SET",
+      "session": "a926baa967f3c3826f017b527fcd812a84e8257e8c36b324735394473333ee76",
+      "fileCount": 65,
+      "startedAt": 3907.9284,
+      "utcMs": 1790674420127.657,
+      "request": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a/diagnostic/attempt2/03.request.bin",
+        "byteLength": 7579,
+        "sha256": "sha256:4e27a17de5fdeeb5a912a52fd93beefe411c5e6dbc4b3430c2e704fe6a2be2bd"
+      },
+      "error": {
+        "code": "MO1307_TIMEOUT",
+        "stage": "ACQUISITION",
+        "message": "MO1307_TIMEOUT"
+      },
+      "finishedAt": 8933.8823,
+      "elapsedMs": 5025.9538999999995
+    }
+  ],
+  "snapshot": {
+    "kind": "cli",
+    "deadline": 30950.0567,
+    "helpers": 3,
+    "workers": 0,
+    "helperUsedMs": 2876.1865000000003,
+    "activeRole": "helper",
+    "cleanupConfirmed": false,
+    "publication": null,
+    "terminalCode": "MO1307_TIMEOUT",
+    "terminalAt": 8913.3471,
+    "cleanupDeadline": 10913.3471,
+    "events": [
+      {
+        "type": "start",
+        "at": 956.4532,
+        "role": "helper",
+        "deadline": 5956.3814999999995,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 968.973,
+        "role": "helper",
+        "pid": 14964,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 2436.8245,
+        "role": "helper",
+        "ordinal": 1
+      },
+      {
+        "type": "start",
+        "at": 2473.4267,
+        "role": "helper",
+        "deadline": 7473.4119,
+        "ordinal": 2
+      },
+      {
+        "type": "observation",
+        "at": 2485.5677,
+        "role": "helper",
+        "pid": 11272,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 3869.1707,
+        "role": "helper",
+        "ordinal": 2
+      },
+      {
+        "type": "start",
+        "at": 3909.7548,
+        "role": "helper",
+        "deadline": 8909.739300000001,
+        "ordinal": 3
+      },
+      {
+        "type": "observation",
+        "at": 3923.4985,
+        "role": "helper",
+        "pid": 23184,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "terminal",
+        "at": 8913.3904,
+        "code": "MO1307_TIMEOUT",
+        "stage": "ACQUISITION"
+      },
+      {
+        "type": "cleanup",
+        "at": 8933.8179,
+        "role": "helper",
+        "confirmed": false
+      }
+    ]
+  },
+  "namespace": {
+    "outputRootExists": false,
+    "names": []
+  },
+  "exactResult": false,
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a/diagnostic/attempt2/stdout.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "observer": {
+    "exit": 0,
+    "error": null,
+    "log": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a/diagnostic/attempt2/source-locations.json",
+      "byteLength": 3707,
+      "sha256": "sha256:d208fb74b519b86a6f1f4032cc3c962d83302cd437e34e86fc944fede2ca6f62"
+    },
+    "completeProcessCoverageClaim": false,
+    "debuggerPerturbation": true
+  },
+  "transportEvents": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a/diagnostic/attempt2/transport-events.json",
+    "byteLength": 7171,
+    "sha256": "sha256:bdd23b0fae39e1c5e84595211e5def721af3418a0099c1ef1b1773a0dc9035c3"
+  },
+  "installedIntegrityUnchanged": true,
+  "sourceBytesChanged": false,
+  "frozenLimitsChanged": false,
+  "rootCause": "MEASUREMENT_ANALYSIS_REQUIRED",
+  "certificationClaim": false
+}

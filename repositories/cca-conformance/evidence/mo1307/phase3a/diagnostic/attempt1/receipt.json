@@ -1,0 +1,197 @@
+{
+  "kind": "MO1307Phase3AInstalledDiagnostic",
+  "result": "FAIL",
+  "failure": {
+    "code": "MO1307_TIMEOUT",
+    "stage": "ACQUISITION",
+    "message": "MO1307_TIMEOUT"
+  },
+  "outcome": null,
+  "scope": "FRESH_INSTALLED_PRIVATE_ORCHESTRATOR_DIAGNOSTIC",
+  "standaloneBinCertified": false,
+  "attemptCount": 1,
+  "productionElapsedMs": 9162.596599999999,
+  "observerElapsedMs": 9231.695,
+  "timeOrigin": 1790673899341.726,
+  "inputSizes": {
+    "manifestFiles": 65,
+    "manifestBytes": 2004208
+  },
+  "requests": [
+    {
+      "sequence": 1,
+      "operation": "READ_SET",
+      "session": "6cee5ae33da5aacece9e225e3cfd2b8cc9dad787bdfc9f6ffafd47cf715ab66e",
+      "fileCount": 2,
+      "startedAt": 1152.5362,
+      "utcMs": 1790673900494.3118,
+      "request": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a/diagnostic/attempt1/01.request.bin",
+        "byteLength": 443,
+        "sha256": "sha256:7473fdaac9c6690fc96691df0d56156205c6b75e4510866b9cff59ea9a0c62e1"
+      },
+      "response": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a/diagnostic/attempt1/01.response.bin",
+        "byteLength": 84489,
+        "sha256": "sha256:3dfcdb5bc564d7287e58166fab02ff4f8acf50c03a17cc9410691dc4fdc4875d"
+      },
+      "status": "OK",
+      "exitConfirmed": true,
+      "finishedAt": 3141.276,
+      "elapsedMs": 1988.7397999999998
+    },
+    {
+      "sequence": 2,
+      "operation": "READ_SET",
+      "session": "6cee5ae33da5aacece9e225e3cfd2b8cc9dad787bdfc9f6ffafd47cf715ab66e",
+      "fileCount": 2,
+      "startedAt": 3213.0629,
+      "utcMs": 1790673902554.7922,
+      "request": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a/diagnostic/attempt1/02.request.bin",
+        "byteLength": 440,
+        "sha256": "sha256:93f17da1edebcf938ab1d0891ccf4c0a06a12d940ce914a834fe3de5c9b955a1"
+      },
+      "response": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a/diagnostic/attempt1/02.response.bin",
+        "byteLength": 89816,
+        "sha256": "sha256:ab7679388b4a033c76272954b42e2aee8a542f1f1d14544f7b4b7d541b5f0631"
+      },
+      "status": "OK",
+      "exitConfirmed": true,
+      "finishedAt": 5192.1791,
+      "elapsedMs": 1979.1162000000004
+    },
+    {
+      "sequence": 3,
+      "operation": "READ_SET",
+      "session": "6cee5ae33da5aacece9e225e3cfd2b8cc9dad787bdfc9f6ffafd47cf715ab66e",
+      "fileCount": 65,
+      "startedAt": 5277.7785,
+      "utcMs": 1790673904619.5088,
+      "request": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a/diagnostic/attempt1/03.request.bin",
+        "byteLength": 7579,
+        "sha256": "sha256:f880661fdd2efc69b6aa7c8c1f9d8c48512fc5fb941e672cfb296bd8b2d0e9b8"
+      },
+      "error": {
+        "code": "MO1307_TIMEOUT",
+        "stage": "ACQUISITION",
+        "message": "MO1307_TIMEOUT"
+      },
+      "finishedAt": 10311.0473,
+      "elapsedMs": 5033.2688
+    }
+  ],
+  "snapshot": {
+    "kind": "cli",
+    "deadline": 31147.2099,
+    "helpers": 3,
+    "workers": 0,
+    "helperUsedMs": 3951.7393,
+    "activeRole": "helper",
+    "cleanupConfirmed": false,
+    "publication": null,
+    "terminalCode": "MO1307_TIMEOUT",
+    "terminalAt": 10291.3836,
+    "cleanupDeadline": 12291.3836,
+    "events": [
+      {
+        "type": "start",
+        "at": 1154.2563,
+        "role": "helper",
+        "deadline": 6154.1267,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 1167.2779,
+        "role": "helper",
+        "pid": 4008,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 3133.5177,
+        "role": "helper",
+        "ordinal": 1
+      },
+      {
+        "type": "start",
+        "at": 3215.0697,
+        "role": "helper",
+        "deadline": 8215.033,
+        "ordinal": 2
+      },
+      {
+        "type": "observation",
+        "at": 3233.265,
+        "role": "helper",
+        "pid": 19920,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 5187.403,
+        "role": "helper",
+        "ordinal": 2
+      },
+      {
+        "type": "start",
+        "at": 5282.3007,
+        "role": "helper",
+        "deadline": 10282.252700000001,
+        "ordinal": 3
+      },
+      {
+        "type": "observation",
+        "at": 5298.313,
+        "role": "helper",
+        "pid": 10724,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "terminal",
+        "at": 10291.4451,
+        "code": "MO1307_TIMEOUT",
+        "stage": "ACQUISITION"
+      },
+      {
+        "type": "cleanup",
+        "at": 10310.9498,
+        "role": "helper",
+        "confirmed": false
+      }
+    ]
+  },
+  "namespace": {
+    "outputRootExists": false,
+    "names": []
+  },
+  "exactResult": false,
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a/diagnostic/attempt1/stdout.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "observer": {
+    "exit": 0,
+    "error": null,
+    "log": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a/diagnostic/attempt1/observer.jsonl",
+      "byteLength": 954972,
+      "sha256": "sha256:571a7b56249d299314b3bced54dbbed3e0b42a54ac42692b941fa19815dec593"
+    },
+    "completeProcessCoverageClaim": false
+  },
+  "transportEvents": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a/diagnostic/attempt1/transport-events.json",
+    "byteLength": 7173,
+    "sha256": "sha256:2064dfb5568dac8b551fc73a3f08b0da6208ca95d13718d8ca90d72597f24af1"
+  },
+  "installedIntegrityUnchanged": true,
+  "sourceBytesChanged": false,
+  "frozenLimitsChanged": false,
+  "rootCause": "MEASUREMENT_ANALYSIS_REQUIRED",
+  "certificationClaim": false
+}

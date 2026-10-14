@@ -1,0 +1,58 @@
+{
+  "kind": "MO1307DebuggerObserverEngineeringValidation",
+  "version": "1.0.0",
+  "productDiagnosticAttempts": 0,
+  "productOrHelperLaunches": 0,
+  "attachments": 0,
+  "source": {
+    "path": "repositories/cca-conformance/tools/mo1307-phase3a/debugger-observer.ps1",
+    "byteLength": 13634,
+    "sha256": "sha256:08c0342d6debf4451451e6c18d7c0a91facd23b5fe21c1a6736a6fd8c4f305c2"
+  },
+  "attempts": [
+    {
+      "id": "compile-only-1",
+      "recording": "Retrospectively retained actual tool output. No invented original timestamp or altered failure disposition.",
+      "exitCode": 1,
+      "result": "FAIL",
+      "command": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File <absolute observer source> -CompileOnly",
+      "compilerDiagnostic": "c:\\Users\\melsa\\appdata\\Local\\Temp\\jsypprej.0.cs(83) : 'System.Management.Automation.PSVersionInfo' is inaccessible due to its protection level",
+      "compilerSourceLine": "result.powerShellVersion = PSVersionInfo.PSVersion.ToString();",
+      "temporaryDirectoryDisposition": "Inherited ambient TEMP/TMP for this engineering-only compile. No product/helper executed.",
+      "correction": "Pass the already checked $PSVersionTable.PSVersion.ToString() from PowerShell into the C# Run method; remove internal PSVersionInfo reference."
+    },
+    {
+      "id": "compile-only-2",
+      "recording": "Retrospectively retained actual tool output. No invented original timestamp.",
+      "exitCode": 0,
+      "result": "PASS",
+      "stdout": "COMPILE_ONLY_PASS\r\n",
+      "stderr": "",
+      "temporaryDirectoryDisposition": "Inherited ambient TEMP/TMP for this engineering-only compile. No product/helper executed."
+    },
+    {
+      "id": "compile-only-3-task-temp",
+      "recording": "Retrospectively retained actual tool output. No invented original timestamp.",
+      "exitCode": 1,
+      "result": "FAIL",
+      "classification": "ENGINEERING_ENVIRONMENT_BLOCKER",
+      "compilerDiagnostic": "Add-Type : Access to the path 'C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3a\\.cache\\mo1307-phase3a\\yu35r4vy.tmp' is denied.",
+      "temporaryDirectory": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3a\\.cache\\mo1307-phase3a",
+      "separateEvidenceWriteFailure": "The same sandboxed command was also denied creating debugger-engineering-validation.json. No evidence file was created by that failed shell write; this file preserves the output using the authorized file editing tool.",
+      "correction": "Use approved worktree-write execution permission for engineering-only compilation and retained evidence. Product source and launch remain unchanged."
+    },
+    {
+      "id": "compile-only-4-task-temp-authorized",
+      "startedAt": "2026-09-29T09:34:45.8795987Z",
+      "elapsedMs": 1439.6665,
+      "exitCode": 0,
+      "result": "PASS",
+      "stdout": "COMPILE_ONLY_PASS\r\n",
+      "stderr": "",
+      "temporaryDirectory": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3a\\.cache\\mo1307-phase3a",
+      "hiddenWindow": true,
+      "productDiagnosticAttempts": 0
+    }
+  ],
+  "limits": "Compile-only validates Windows PowerShell 5.1 syntax and C# API references, not named-pipe attach, remote debugger runtime behavior or product functionality. Actual observation remains perturbative and cannot certify timing or runtime success."
+}

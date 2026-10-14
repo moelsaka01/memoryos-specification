@@ -1,0 +1,24 @@
+{
+  "taskStartedAt": "2026-09-29T09:14:00Z",
+  "hardStop": "2026-09-29T12:14:00Z",
+  "diagnosticAttempts": {
+    "initial": 1,
+    "additionalMaximum": 2,
+    "additionalOnlyForSpecificMissingObservation": true,
+    "retryUntilPass": false
+  },
+  "budgets": {
+    "helper": 5000,
+    "helperAggregate": 20000,
+    "cliAdmission": 30000,
+    "worker": 10000,
+    "cleanup": 2000
+  },
+  "productionEdits": false,
+  "stopIfProductChangeNecessary": "PRODUCT_DEFECT",
+  "commitOnlyIfAllRequiredGatesPass": true,
+  "scope": "Native installed Phase3A; no Phase3B supply-chain or Phase3C adversarial campaign",
+  "network": "Offline npm; no product provider/network execution; no OS-wide isolation claim",
+  "initialDiagnostic": "Actual unchanged installed orchestrator plus external process counters and held-handle cleanup observations; one MO1306 invocation",
+  "remainingGates": "API, native semantic parity, decisions, tag stages, determinism, lifecycle/deadlines/finalization/filesystem/environment/resource/interruption gates only as candidate remains certifiable"
+}

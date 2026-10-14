@@ -1,0 +1,50 @@
+[
+  {
+    "name": "ready",
+    "suppliedObservationOnly": true,
+    "gitExecuted": false,
+    "expectedCheckCode": null,
+    "result": "PASS",
+    "stage": "PRE_TAG_READINESS"
+  },
+  {
+    "name": "post-tag-ready",
+    "suppliedObservationOnly": true,
+    "gitExecuted": false,
+    "expectedCheckCode": null,
+    "result": "PASS",
+    "stage": "POST_TAG_VERIFICATION"
+  },
+  {
+    "name": "pre-tag-present",
+    "suppliedObservationOnly": true,
+    "gitExecuted": false,
+    "expectedCheckCode": "TAG_PRESENCE",
+    "result": "PASS",
+    "stage": "PRE_TAG_READINESS"
+  },
+  {
+    "name": "post-tag-absent",
+    "suppliedObservationOnly": true,
+    "gitExecuted": false,
+    "expectedCheckCode": "TAG_PRESENCE",
+    "result": "PASS",
+    "stage": "POST_TAG_VERIFICATION"
+  },
+  {
+    "name": "post-tag-lightweight",
+    "suppliedObservationOnly": true,
+    "gitExecuted": false,
+    "expectedCheckCode": "TAG_ANNOTATION",
+    "result": "PASS",
+    "stage": "POST_TAG_VERIFICATION"
+  },
+  {
+    "name": "post-tag-wrong-target",
+    "suppliedObservationOnly": true,
+    "gitExecuted": false,
+    "expectedCheckCode": "TAG_TARGET",
+    "result": "PASS",
+    "stage": "POST_TAG_VERIFICATION"
+  }
+]

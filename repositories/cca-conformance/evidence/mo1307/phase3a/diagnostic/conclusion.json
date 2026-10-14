@@ -1,0 +1,35 @@
+{
+  "kind": "MO1307Phase3ADiagnosticConclusion",
+  "totalAttempts": 3,
+  "maximumAllowedAttempts": 3,
+  "retriesRemaining": 0,
+  "attempts": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a/diagnostic/attempt1/receipt.json",
+      "byteLength": 5892,
+      "sha256": "sha256:f357f62aaf80da327d19452ad5a4658e5d1099452e2b64d3fe083f8bf409b301"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a/diagnostic/attempt2/receipt.json",
+      "byteLength": 6001,
+      "sha256": "sha256:9d172c977f4efca46ea1138891ea9a9032e5acd0262c74fc50be315ab1f99d1e"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a/diagnostic/attempt3/receipt.json",
+      "byteLength": 2584,
+      "sha256": "sha256:9ae89695a6ed18903e3876b965ca8487fdc9a7e3a45955ca683f6622ef752179"
+    }
+  ],
+  "measuredLimitingBudget": "5000 ms per helper (attempt1)",
+  "measuredStage": "Attempt1 aggregate I/O counters match all manifest prefixes0..51, consistent with incomplete sequential READ_SET acquisition of65files/2004208bytes.",
+  "specificMissingObservations": {
+    "attempt2": "Source-level substage: attachment succeeded but zero source-location snapshots. Effective Debug-Runspace monitoring not established; async debug command errors not inspected.",
+    "attempt3": "Observer dependence: unchanged standalone installed CLI failed TIMEOUT29 without any observer/debugger,8465.2111ms; no per-slot trace."
+  },
+  "mechanismClassification": "INCOMPLETE_READ_SET_SUPPORTED_BY_COUNTERS; EXACT_INNER_SUBSTAGE_UNESTABLISHED",
+  "causalLimit": "Cannot apportion native identity/path checks, filesystem read latency, PowerShell allocation/base64, GC or host scheduling. No intrinsic product-capacity or environment attribution.",
+  "cleanup": "Direct held-process-object signaled witnesses for observed helper10724 and conhost14128; helper proof +41.0584ms after terminal using same-host UTC correlation. Sampling not complete and product cleanupConfirmed remains false.",
+  "productDefectCorrectionAttempted": false,
+  "productionBytesChanged": false,
+  "certificationBlocker": "Mandatory MO1306 native completion failed; standalone READY also failed. No frozen qualification permits waiver."
+}

@@ -1,0 +1,4727 @@
+{
+  "kind": "MO1307ReadSetEngineeringTimingAnalysis",
+  "case": "ready-comparison",
+  "certificationEvidence": false,
+  "telemetry": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-diagnostic/ready-telemetry.jsonl",
+    "sha256": "sha256:aeb13256b450d540bd90318cbb509068e1918714ac915b8924c98f177a6c0ba3"
+  },
+  "frequency": 10000000,
+  "helperPid": 10452,
+  "clockBoundary": "Stopwatch ticks are helper-local monotonic; Node performance.now is parent-local monotonic. No subtraction across these clock domains. UTC meta timestamps are informational only.",
+  "stageTotals": {
+    "initialize_native_inclusive": {
+      "ms": 112.6431,
+      "calls": 1
+    },
+    "console_quiescence_inclusive": {
+      "ms": 70.694,
+      "calls": 1
+    },
+    "assert_root_inclusive": {
+      "ms": 319.7113,
+      "calls": 735
+    },
+    "assert_relative_inclusive": {
+      "ms": 3.7328,
+      "calls": 19
+    },
+    "open_native_inclusive": {
+      "ms": 33.2913,
+      "calls": 476
+    },
+    "read_identity_inclusive": {
+      "ms": 480.4714,
+      "calls": 714
+    },
+    "open_chain_inclusive": {
+      "ms": 284.6906,
+      "calls": 20
+    },
+    "assert_chain_stable_inclusive": {
+      "ms": 426.5171,
+      "calls": 20
+    },
+    "readset_inclusive": {
+      "ms": 841.7228,
+      "calls": 1
+    },
+    "create_file_and_error_capture": {
+      "ms": 29.711,
+      "calls": 476
+    },
+    "get_file_information_native_and_branch": {
+      "ms": 10.6748,
+      "calls": 714
+    },
+    "identity_buffer_and_field_decode": {
+      "ms": 13.6461,
+      "calls": 714
+    },
+    "identity_attributes_and_get_file_type": {
+      "ms": 5.3172,
+      "calls": 714
+    },
+    "get_final_path_native_buffer_and_count_check": {
+      "ms": 34.9178,
+      "calls": 714
+    },
+    "identity_final_path_validation_inclusive": {
+      "ms": 377.3005,
+      "calls": 714
+    },
+    "identity_result_construction": {
+      "ms": 29.351,
+      "calls": 714
+    },
+    "open_chain_root_lexical_validation": {
+      "ms": 16.7331,
+      "calls": 20
+    },
+    "open_chain_ancestor_preparation": {
+      "ms": 6.1858,
+      "calls": 20
+    },
+    "stable_chain_held_identity_inclusive": {
+      "ms": 190.0865,
+      "calls": 238
+    },
+    "stable_chain_fresh_open_inclusive": {
+      "ms": 34.6733,
+      "calls": 238
+    },
+    "stable_chain_fresh_identity_and_dispose_inclusive": {
+      "ms": 199.7011,
+      "calls": 238
+    },
+    "console_final_native_wait": {
+      "ms": 4.8731,
+      "calls": 1
+    },
+    "readset_collection_initialization": {
+      "ms": 2.2927,
+      "calls": 1
+    },
+    "readset_root_acquisition": {
+      "ms": 78.4197,
+      "calls": 1
+    },
+    "file_path_preparation": {
+      "ms": 0.1645,
+      "calls": 19
+    },
+    "file_open_chain_inclusive": {
+      "ms": 219.6157,
+      "calls": 19
+    },
+    "file_pre_read_identity_and_limits": {
+      "ms": 26.1493,
+      "calls": 19
+    },
+    "file_buffer_and_stream_preparation": {
+      "ms": 11.8603,
+      "calls": 19
+    },
+    "file_stream_read_and_dispose": {
+      "ms": 5.2549,
+      "calls": 19
+    },
+    "file_post_read_size_checks": {
+      "ms": 1.4834,
+      "calls": 19
+    },
+    "file_post_read_chain_verification_inclusive": {
+      "ms": 413.866,
+      "calls": 19
+    },
+    "file_base64_encoding": {
+      "ms": 9.98,
+      "calls": 19
+    },
+    "file_base64_chunking": {
+      "ms": 4.456,
+      "calls": 19
+    },
+    "file_result_construction": {
+      "ms": 1.8596,
+      "calls": 19
+    },
+    "file_chain_close": {
+      "ms": 7.0611,
+      "calls": 19
+    },
+    "readset_final_root_verification_inclusive": {
+      "ms": 19.4188,
+      "calls": 1
+    },
+    "readset_aggregate_result_construction": {
+      "ms": 1.2925,
+      "calls": 1
+    },
+    "request_framing_and_read": {
+      "ms": 15.5899,
+      "calls": 1
+    },
+    "request_utf8_decode": {
+      "ms": 3.3252,
+      "calls": 1
+    },
+    "request_depth_scan": {
+      "ms": 6.9914,
+      "calls": 1
+    },
+    "request_json_decode": {
+      "ms": 104.9072,
+      "calls": 1
+    },
+    "request_canonical_reencode_and_equality": {
+      "ms": 115.3116,
+      "calls": 1
+    },
+    "request_roots_validation": {
+      "ms": 12.75,
+      "calls": 1
+    },
+    "request_paths_validation": {
+      "ms": 22.4677,
+      "calls": 1
+    },
+    "request_semantic_validation_inclusive": {
+      "ms": 58.2256,
+      "calls": 1
+    },
+    "response_envelope_construction": {
+      "ms": 5.7026,
+      "calls": 1
+    },
+    "response_canonical_serialization": {
+      "ms": 46.1519,
+      "calls": 1
+    },
+    "response_utf8_encoding": {
+      "ms": 0.9478,
+      "calls": 1
+    },
+    "response_frame_header_encoding": {
+      "ms": 3.8428,
+      "calls": 1
+    },
+    "stdout_write_and_flush": {
+      "ms": 4.5898,
+      "calls": 1
+    }
+  },
+  "topLevelDisjointRegions": [
+    {
+      "stage": "initialize_native_inclusive",
+      "ms": 112.6431,
+      "calls": 1
+    },
+    {
+      "stage": "request_framing_and_read",
+      "ms": 15.5899,
+      "calls": 1
+    },
+    {
+      "stage": "request_utf8_decode",
+      "ms": 3.3252,
+      "calls": 1
+    },
+    {
+      "stage": "request_depth_scan",
+      "ms": 6.9914,
+      "calls": 1
+    },
+    {
+      "stage": "request_json_decode",
+      "ms": 104.9072,
+      "calls": 1
+    },
+    {
+      "stage": "request_canonical_reencode_and_equality",
+      "ms": 115.3116,
+      "calls": 1
+    },
+    {
+      "stage": "request_semantic_validation_inclusive",
+      "ms": 58.2256,
+      "calls": 1
+    },
+    {
+      "stage": "readset_inclusive",
+      "ms": 841.7228,
+      "calls": 1
+    },
+    {
+      "stage": "response_envelope_construction",
+      "ms": 5.7026,
+      "calls": 1
+    },
+    {
+      "stage": "response_canonical_serialization",
+      "ms": 46.1519,
+      "calls": 1
+    },
+    {
+      "stage": "response_utf8_encoding",
+      "ms": 0.9478,
+      "calls": 1
+    },
+    {
+      "stage": "response_frame_header_encoding",
+      "ms": 3.8428,
+      "calls": 1
+    },
+    {
+      "stage": "stdout_write_and_flush",
+      "ms": 4.5898,
+      "calls": 1
+    }
+  ],
+  "topLevelDisjointMs": 1319.9516999999998,
+  "perFileDisjointRegions": [
+    {
+      "stage": "file_path_preparation",
+      "ms": 0.1645,
+      "calls": 19
+    },
+    {
+      "stage": "file_open_chain_inclusive",
+      "ms": 219.6157,
+      "calls": 19
+    },
+    {
+      "stage": "file_pre_read_identity_and_limits",
+      "ms": 26.1493,
+      "calls": 19
+    },
+    {
+      "stage": "file_buffer_and_stream_preparation",
+      "ms": 11.8603,
+      "calls": 19
+    },
+    {
+      "stage": "file_stream_read_and_dispose",
+      "ms": 5.2549,
+      "calls": 19
+    },
+    {
+      "stage": "file_post_read_size_checks",
+      "ms": 1.4834,
+      "calls": 19
+    },
+    {
+      "stage": "file_post_read_chain_verification_inclusive",
+      "ms": 413.866,
+      "calls": 19
+    },
+    {
+      "stage": "file_base64_encoding",
+      "ms": 9.98,
+      "calls": 19
+    },
+    {
+      "stage": "file_base64_chunking",
+      "ms": 4.456,
+      "calls": 19
+    },
+    {
+      "stage": "file_result_construction",
+      "ms": 1.8596,
+      "calls": 19
+    },
+    {
+      "stage": "file_chain_close",
+      "ms": 7.0611,
+      "calls": 19
+    }
+  ],
+  "perFileDisjointMs": 701.7508,
+  "identityDisjointChildren": [
+    {
+      "stage": "get_file_information_native_and_branch",
+      "ms": 10.6748,
+      "calls": 714
+    },
+    {
+      "stage": "identity_buffer_and_field_decode",
+      "ms": 13.6461,
+      "calls": 714
+    },
+    {
+      "stage": "identity_attributes_and_get_file_type",
+      "ms": 5.3172,
+      "calls": 714
+    },
+    {
+      "stage": "get_final_path_native_buffer_and_count_check",
+      "ms": 34.9178,
+      "calls": 714
+    },
+    {
+      "stage": "identity_final_path_validation_inclusive",
+      "ms": 377.3005,
+      "calls": 714
+    },
+    {
+      "stage": "identity_result_construction",
+      "ms": 29.351,
+      "calls": 714
+    }
+  ],
+  "identityUnassignedResidualMs": 9.26400000000001,
+  "aggregate": {
+    "requestDecodeMs": 230.53539999999998,
+    "initialPerPathValidationMs": 19.698100000000004,
+    "allRootAndRelativeLexicalMs": 323.4441,
+    "nativeCallExpressionMs": 80.6208,
+    "initialFileChainMs": 219.6157,
+    "postReadFileChainMs": 413.866,
+    "identityFinalPathValidationMs": 377.3005,
+    "base64AndChunksMs": 14.436,
+    "resultConstructionMs": 8.854700000000001,
+    "encodingFrameMs": 4.7905999999999995,
+    "readSetMs": 841.7228,
+    "fileReadMs": 5.2549,
+    "serializationMs": 46.1519,
+    "stdoutMs": 4.5898
+  },
+  "milestones": [
+    {
+      "kind": "console_quiescence_proved",
+      "scriptElapsedMs": 148.1772,
+      "consolePid": 5516,
+      "heldHandleWaitConfirmed": true,
+      "remainingConsoleProcesses": 0
+    },
+    {
+      "kind": "request_framing_started",
+      "scriptElapsedMs": 150.6951
+    },
+    {
+      "kind": "request_framing_completed",
+      "scriptElapsedMs": 166.5027
+    },
+    {
+      "kind": "request_decoded",
+      "scriptElapsedMs": 397.2632
+    },
+    {
+      "kind": "request_validated",
+      "scriptElapsedMs": 455.7642
+    },
+    {
+      "kind": "algorithm_complete",
+      "scriptElapsedMs": 1310.3624
+    },
+    {
+      "kind": "response_constructed",
+      "scriptElapsedMs": 1316.381
+    },
+    {
+      "kind": "serialization_completed",
+      "scriptElapsedMs": 1362.6708
+    },
+    {
+      "kind": "utf8_encoded",
+      "scriptElapsedMs": 1363.7646
+    },
+    {
+      "kind": "stdout_written_flushed",
+      "scriptElapsedMs": 1372.3769
+    },
+    {
+      "kind": "script_exit_ready",
+      "scriptElapsedMs": 1372.5872
+    }
+  ],
+  "parentLifecycle": {
+    "processExitMs": 1803.0544,
+    "processCloseMs": 1803.1165,
+    "firstStdoutMs": 1781.9607999999998,
+    "lastStdoutMs": 1782.5810000000001,
+    "elapsedMs": 1803.2703000000001,
+    "guardTriggered": false,
+    "cleanupExpired": false
+  },
+  "slowestFiles": [
+    {
+      "ordinal": 1,
+      "id": "authority.fixture",
+      "byteLength": 92,
+      "durationMs": 93.4551,
+      "initialChainMs": 13.2948,
+      "postReadChainMs": 33.5323,
+      "fileReadMs": 2.8673,
+      "lexicalRootMs": 20.4346
+    },
+    {
+      "ordinal": 2,
+      "id": "envelope.artifact",
+      "byteLength": 1169,
+      "durationMs": 52.1735,
+      "initialChainMs": 16.7663,
+      "postReadChainMs": 33.7957,
+      "fileReadMs": 0.1236,
+      "lexicalRootMs": 25.2976
+    },
+    {
+      "ordinal": 18,
+      "id": "envelope.windows",
+      "byteLength": 1333,
+      "durationMs": 43.758,
+      "initialChainMs": 12.9072,
+      "postReadChainMs": 29.465,
+      "fileReadMs": 0.1161,
+      "lexicalRootMs": 20.2557
+    },
+    {
+      "ordinal": 17,
+      "id": "envelope.tag",
+      "byteLength": 585,
+      "durationMs": 42.9864,
+      "initialChainMs": 12.0844,
+      "postReadChainMs": 28.0469,
+      "fileReadMs": 0.1314,
+      "lexicalRootMs": 19.6495
+    },
+    {
+      "ordinal": 19,
+      "id": "fixture.source",
+      "byteLength": 108,
+      "durationMs": 42.4718,
+      "initialChainMs": 15.2467,
+      "postReadChainMs": 25.4064,
+      "fileReadMs": 0.405,
+      "lexicalRootMs": 19.7569
+    }
+  ],
+  "progress": {
+    "filesCompleted": 19,
+    "bytesCompleted": 19711,
+    "file51": null,
+    "historicalCounterBoundary": "Old51/65 and1525139bytes was an observed read prefix. New completion counters advance only after identity checks, encoding, result insertion and handle closure; these are distinct progress boundaries."
+  },
+  "observer": {
+    "logWriteMs": 7.1131,
+    "fileLogPreparationInclusiveMs": 34.1281,
+    "unknownTimestampCounterAndWrapperOverhead": true,
+    "nesting": "Logging timers overlap; do not add them as independent observer costs. Stage timings include uncalibrated timestamp/counter/wrapper overhead."
+  },
+  "interpretation": {
+    "nestedTotalsOverlap": true,
+    "pureKernelLatencyEstablished": false,
+    "algorithmUnchanged": true,
+    "instrumentationOnly": true,
+    "wirePayloadHashValidation": {
+      "result": "PASS",
+      "status": "OK",
+      "files": 19,
+      "exactInputPayloadHashes": true,
+      "frameBytes": 32295
+    }
+  },
+  "pathValidation": [
+    {
+      "ordinal": 1,
+      "id": "authority.fixture",
+      "stableIdentifier": "file-1",
+      "startScriptElapsedMs": 415.7049,
+      "endScriptElapsedMs": 424.3085,
+      "durationMs": 8.6036
+    },
+    {
+      "ordinal": 2,
+      "id": "envelope.artifact",
+      "stableIdentifier": "file-2",
+      "startScriptElapsedMs": 425.064,
+      "endScriptElapsedMs": 427.6779,
+      "durationMs": 2.6139
+    },
+    {
+      "ordinal": 3,
+      "id": "envelope.binding",
+      "stableIdentifier": "file-3",
+      "startScriptElapsedMs": 427.8092,
+      "endScriptElapsedMs": 428.3416,
+      "durationMs": 0.5324
+    },
+    {
+      "ordinal": 4,
+      "id": "envelope.history",
+      "stableIdentifier": "file-4",
+      "startScriptElapsedMs": 428.4438,
+      "endScriptElapsedMs": 428.925,
+      "durationMs": 0.4812
+    },
+    {
+      "ordinal": 5,
+      "id": "envelope.provenance",
+      "stableIdentifier": "file-5",
+      "startScriptElapsedMs": 429.0259,
+      "endScriptElapsedMs": 429.4823,
+      "durationMs": 0.4564
+    },
+    {
+      "ordinal": 6,
+      "id": "envelope.provider.azure",
+      "stableIdentifier": "file-6",
+      "startScriptElapsedMs": 429.5733,
+      "endScriptElapsedMs": 430.0301,
+      "durationMs": 0.4568
+    },
+    {
+      "ordinal": 7,
+      "id": "envelope.provider.generic",
+      "stableIdentifier": "file-7",
+      "startScriptElapsedMs": 430.1263,
+      "endScriptElapsedMs": 430.5935,
+      "durationMs": 0.4672
+    },
+    {
+      "ordinal": 8,
+      "id": "envelope.provider.github",
+      "stableIdentifier": "file-8",
+      "startScriptElapsedMs": 430.6876,
+      "endScriptElapsedMs": 431.1608,
+      "durationMs": 0.4732
+    },
+    {
+      "ordinal": 9,
+      "id": "envelope.provider.gitlab",
+      "stableIdentifier": "file-9",
+      "startScriptElapsedMs": 431.2603,
+      "endScriptElapsedMs": 431.7151,
+      "durationMs": 0.4548
+    },
+    {
+      "ordinal": 10,
+      "id": "envelope.provider.jenkins",
+      "stableIdentifier": "file-10",
+      "startScriptElapsedMs": 431.8217,
+      "endScriptElapsedMs": 432.3162,
+      "durationMs": 0.4945
+    },
+    {
+      "ordinal": 11,
+      "id": "envelope.resources",
+      "stableIdentifier": "file-11",
+      "startScriptElapsedMs": 432.4182,
+      "endScriptElapsedMs": 432.9097,
+      "durationMs": 0.4915
+    },
+    {
+      "ordinal": 12,
+      "id": "envelope.sbom",
+      "stableIdentifier": "file-12",
+      "startScriptElapsedMs": 433.083,
+      "endScriptElapsedMs": 433.7076,
+      "durationMs": 0.6246
+    },
+    {
+      "ordinal": 13,
+      "id": "envelope.scope",
+      "stableIdentifier": "file-13",
+      "startScriptElapsedMs": 433.8235,
+      "endScriptElapsedMs": 434.3268,
+      "durationMs": 0.5033
+    },
+    {
+      "ordinal": 14,
+      "id": "envelope.security",
+      "stableIdentifier": "file-14",
+      "startScriptElapsedMs": 434.4229,
+      "endScriptElapsedMs": 434.8949,
+      "durationMs": 0.472
+    },
+    {
+      "ordinal": 15,
+      "id": "envelope.semantic",
+      "stableIdentifier": "file-15",
+      "startScriptElapsedMs": 434.9934,
+      "endScriptElapsedMs": 435.4673,
+      "durationMs": 0.4739
+    },
+    {
+      "ordinal": 16,
+      "id": "envelope.supply",
+      "stableIdentifier": "file-16",
+      "startScriptElapsedMs": 435.5643,
+      "endScriptElapsedMs": 436.0396,
+      "durationMs": 0.4753
+    },
+    {
+      "ordinal": 17,
+      "id": "envelope.tag",
+      "stableIdentifier": "file-17",
+      "startScriptElapsedMs": 436.1678,
+      "endScriptElapsedMs": 436.6989,
+      "durationMs": 0.5311
+    },
+    {
+      "ordinal": 18,
+      "id": "envelope.windows",
+      "stableIdentifier": "file-18",
+      "startScriptElapsedMs": 436.8173,
+      "endScriptElapsedMs": 437.3203,
+      "durationMs": 0.503
+    },
+    {
+      "ordinal": 19,
+      "id": "fixture.source",
+      "stableIdentifier": "file-19",
+      "startScriptElapsedMs": 437.426,
+      "endScriptElapsedMs": 438.0154,
+      "durationMs": 0.5894
+    }
+  ],
+  "files": [
+    {
+      "ordinal": 1,
+      "id": "authority.fixture",
+      "stableIdentifier": "file-1",
+      "byteLength": 92,
+      "startScriptElapsedMs": 549.2366,
+      "endScriptElapsedMs": 642.6917,
+      "durationMs": 93.4551,
+      "filesCompleted": 1,
+      "bytesCompleted": 92,
+      "stages": {
+        "initialize_native_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "console_quiescence_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "assert_root_inclusive": {
+          "ms": 20.4346,
+          "calls": 37
+        },
+        "assert_relative_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "open_native_inclusive": {
+          "ms": 1.8552,
+          "calls": 24
+        },
+        "read_identity_inclusive": {
+          "ms": 30.8988,
+          "calls": 36
+        },
+        "open_chain_inclusive": {
+          "ms": 13.1924,
+          "calls": 1
+        },
+        "assert_chain_stable_inclusive": {
+          "ms": 31.534,
+          "calls": 1
+        },
+        "readset_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "create_file_and_error_capture": {
+          "ms": 1.5604,
+          "calls": 24
+        },
+        "get_file_information_native_and_branch": {
+          "ms": 0.6193,
+          "calls": 36
+        },
+        "identity_buffer_and_field_decode": {
+          "ms": 0.4897,
+          "calls": 36
+        },
+        "identity_attributes_and_get_file_type": {
+          "ms": 0.2146,
+          "calls": 36
+        },
+        "get_final_path_native_buffer_and_count_check": {
+          "ms": 1.993,
+          "calls": 36
+        },
+        "identity_final_path_validation_inclusive": {
+          "ms": 25.0832,
+          "calls": 36
+        },
+        "identity_result_construction": {
+          "ms": 1.7944,
+          "calls": 36
+        },
+        "open_chain_root_lexical_validation": {
+          "ms": 0.7009,
+          "calls": 1
+        },
+        "open_chain_ancestor_preparation": {
+          "ms": 0.042,
+          "calls": 1
+        },
+        "stable_chain_held_identity_inclusive": {
+          "ms": 13.9206,
+          "calls": 12
+        },
+        "stable_chain_fresh_open_inclusive": {
+          "ms": 2.3626,
+          "calls": 12
+        },
+        "stable_chain_fresh_identity_and_dispose_inclusive": {
+          "ms": 14.638,
+          "calls": 12
+        },
+        "console_final_native_wait": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_collection_initialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_root_acquisition": {
+          "ms": 0,
+          "calls": 0
+        },
+        "file_path_preparation": {
+          "ms": 0.0129,
+          "calls": 1
+        },
+        "file_open_chain_inclusive": {
+          "ms": 13.2948,
+          "calls": 1
+        },
+        "file_pre_read_identity_and_limits": {
+          "ms": 11.9689,
+          "calls": 1
+        },
+        "file_buffer_and_stream_preparation": {
+          "ms": 11.1921,
+          "calls": 1
+        },
+        "file_stream_read_and_dispose": {
+          "ms": 2.8673,
+          "calls": 1
+        },
+        "file_post_read_size_checks": {
+          "ms": 1.2887,
+          "calls": 1
+        },
+        "file_post_read_chain_verification_inclusive": {
+          "ms": 33.5323,
+          "calls": 1
+        },
+        "file_base64_encoding": {
+          "ms": 9.8445,
+          "calls": 1
+        },
+        "file_base64_chunking": {
+          "ms": 4.2664,
+          "calls": 1
+        },
+        "file_result_construction": {
+          "ms": 1.188,
+          "calls": 1
+        },
+        "file_chain_close": {
+          "ms": 2.679,
+          "calls": 1
+        },
+        "readset_final_root_verification_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_aggregate_result_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_framing_and_read": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_utf8_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_depth_scan": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_json_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_canonical_reencode_and_equality": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_roots_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_paths_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_semantic_validation_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_envelope_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_canonical_serialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_utf8_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_frame_header_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "stdout_write_and_flush": {
+          "ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "ordinal": 2,
+      "id": "envelope.artifact",
+      "stableIdentifier": "file-2",
+      "byteLength": 1169,
+      "startScriptElapsedMs": 673.1835,
+      "endScriptElapsedMs": 725.357,
+      "durationMs": 52.1735,
+      "filesCompleted": 2,
+      "bytesCompleted": 1261,
+      "stages": {
+        "initialize_native_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "console_quiescence_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "assert_root_inclusive": {
+          "ms": 25.2976,
+          "calls": 37
+        },
+        "assert_relative_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "open_native_inclusive": {
+          "ms": 1.867,
+          "calls": 24
+        },
+        "read_identity_inclusive": {
+          "ms": 36.4079,
+          "calls": 36
+        },
+        "open_chain_inclusive": {
+          "ms": 16.6358,
+          "calls": 1
+        },
+        "assert_chain_stable_inclusive": {
+          "ms": 33.6943,
+          "calls": 1
+        },
+        "readset_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "create_file_and_error_capture": {
+          "ms": 1.7417,
+          "calls": 24
+        },
+        "get_file_information_native_and_branch": {
+          "ms": 0.7132,
+          "calls": 36
+        },
+        "identity_buffer_and_field_decode": {
+          "ms": 0.5786,
+          "calls": 36
+        },
+        "identity_attributes_and_get_file_type": {
+          "ms": 0.228,
+          "calls": 36
+        },
+        "get_final_path_native_buffer_and_count_check": {
+          "ms": 2.3076,
+          "calls": 36
+        },
+        "identity_final_path_validation_inclusive": {
+          "ms": 29.3951,
+          "calls": 36
+        },
+        "identity_result_construction": {
+          "ms": 2.2575,
+          "calls": 36
+        },
+        "open_chain_root_lexical_validation": {
+          "ms": 1.1585,
+          "calls": 1
+        },
+        "open_chain_ancestor_preparation": {
+          "ms": 0.0457,
+          "calls": 1
+        },
+        "stable_chain_held_identity_inclusive": {
+          "ms": 12.1822,
+          "calls": 12
+        },
+        "stable_chain_fresh_open_inclusive": {
+          "ms": 2.2063,
+          "calls": 12
+        },
+        "stable_chain_fresh_identity_and_dispose_inclusive": {
+          "ms": 19.1154,
+          "calls": 12
+        },
+        "console_final_native_wait": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_collection_initialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_root_acquisition": {
+          "ms": 0,
+          "calls": 0
+        },
+        "file_path_preparation": {
+          "ms": 0.0165,
+          "calls": 1
+        },
+        "file_open_chain_inclusive": {
+          "ms": 16.7663,
+          "calls": 1
+        },
+        "file_pre_read_identity_and_limits": {
+          "ms": 0.7916,
+          "calls": 1
+        },
+        "file_buffer_and_stream_preparation": {
+          "ms": 0.0344,
+          "calls": 1
+        },
+        "file_stream_read_and_dispose": {
+          "ms": 0.1236,
+          "calls": 1
+        },
+        "file_post_read_size_checks": {
+          "ms": 0.0073,
+          "calls": 1
+        },
+        "file_post_read_chain_verification_inclusive": {
+          "ms": 33.7957,
+          "calls": 1
+        },
+        "file_base64_encoding": {
+          "ms": 0.0082,
+          "calls": 1
+        },
+        "file_base64_chunking": {
+          "ms": 0.0106,
+          "calls": 1
+        },
+        "file_result_construction": {
+          "ms": 0.0619,
+          "calls": 1
+        },
+        "file_chain_close": {
+          "ms": 0.3429,
+          "calls": 1
+        },
+        "readset_final_root_verification_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_aggregate_result_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_framing_and_read": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_utf8_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_depth_scan": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_json_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_canonical_reencode_and_equality": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_roots_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_paths_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_semantic_validation_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_envelope_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_canonical_serialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_utf8_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_frame_header_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "stdout_write_and_flush": {
+          "ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "ordinal": 3,
+      "id": "envelope.binding",
+      "stableIdentifier": "file-3",
+      "byteLength": 571,
+      "startScriptElapsedMs": 725.6294,
+      "endScriptElapsedMs": 759.5453,
+      "durationMs": 33.9159,
+      "filesCompleted": 3,
+      "bytesCompleted": 1832,
+      "stages": {
+        "initialize_native_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "console_quiescence_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "assert_root_inclusive": {
+          "ms": 14.796,
+          "calls": 37
+        },
+        "assert_relative_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "open_native_inclusive": {
+          "ms": 1.5274,
+          "calls": 24
+        },
+        "read_identity_inclusive": {
+          "ms": 21.4301,
+          "calls": 36
+        },
+        "open_chain_inclusive": {
+          "ms": 13.6783,
+          "calls": 1
+        },
+        "assert_chain_stable_inclusive": {
+          "ms": 18.7964,
+          "calls": 1
+        },
+        "readset_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "create_file_and_error_capture": {
+          "ms": 1.4193,
+          "calls": 24
+        },
+        "get_file_information_native_and_branch": {
+          "ms": 0.4781,
+          "calls": 36
+        },
+        "identity_buffer_and_field_decode": {
+          "ms": 0.2855,
+          "calls": 36
+        },
+        "identity_attributes_and_get_file_type": {
+          "ms": 0.1179,
+          "calls": 36
+        },
+        "get_final_path_native_buffer_and_count_check": {
+          "ms": 1.6655,
+          "calls": 36
+        },
+        "identity_final_path_validation_inclusive": {
+          "ms": 17.1362,
+          "calls": 36
+        },
+        "identity_result_construction": {
+          "ms": 1.3571,
+          "calls": 36
+        },
+        "open_chain_root_lexical_validation": {
+          "ms": 1.4066,
+          "calls": 1
+        },
+        "open_chain_ancestor_preparation": {
+          "ms": 0.0492,
+          "calls": 1
+        },
+        "stable_chain_held_identity_inclusive": {
+          "ms": 9.0834,
+          "calls": 12
+        },
+        "stable_chain_fresh_open_inclusive": {
+          "ms": 1.6024,
+          "calls": 12
+        },
+        "stable_chain_fresh_identity_and_dispose_inclusive": {
+          "ms": 8.0308,
+          "calls": 12
+        },
+        "console_final_native_wait": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_collection_initialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_root_acquisition": {
+          "ms": 0,
+          "calls": 0
+        },
+        "file_path_preparation": {
+          "ms": 0.0102,
+          "calls": 1
+        },
+        "file_open_chain_inclusive": {
+          "ms": 13.8029,
+          "calls": 1
+        },
+        "file_pre_read_identity_and_limits": {
+          "ms": 0.6584,
+          "calls": 1
+        },
+        "file_buffer_and_stream_preparation": {
+          "ms": 0.0303,
+          "calls": 1
+        },
+        "file_stream_read_and_dispose": {
+          "ms": 0.095,
+          "calls": 1
+        },
+        "file_post_read_size_checks": {
+          "ms": 0.0076,
+          "calls": 1
+        },
+        "file_post_read_chain_verification_inclusive": {
+          "ms": 18.9015,
+          "calls": 1
+        },
+        "file_base64_encoding": {
+          "ms": 0.006,
+          "calls": 1
+        },
+        "file_base64_chunking": {
+          "ms": 0.0146,
+          "calls": 1
+        },
+        "file_result_construction": {
+          "ms": 0.0296,
+          "calls": 1
+        },
+        "file_chain_close": {
+          "ms": 0.2043,
+          "calls": 1
+        },
+        "readset_final_root_verification_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_aggregate_result_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_framing_and_read": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_utf8_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_depth_scan": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_json_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_canonical_reencode_and_equality": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_roots_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_paths_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_semantic_validation_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_envelope_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_canonical_serialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_utf8_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_frame_header_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "stdout_write_and_flush": {
+          "ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "ordinal": 4,
+      "id": "envelope.history",
+      "stableIdentifier": "file-4",
+      "byteLength": 857,
+      "startScriptElapsedMs": 759.7233,
+      "endScriptElapsedMs": 788.0966,
+      "durationMs": 28.3733,
+      "filesCompleted": 4,
+      "bytesCompleted": 2689,
+      "stages": {
+        "initialize_native_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "console_quiescence_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "assert_root_inclusive": {
+          "ms": 13.3743,
+          "calls": 37
+        },
+        "assert_relative_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "open_native_inclusive": {
+          "ms": 1.0972,
+          "calls": 24
+        },
+        "read_identity_inclusive": {
+          "ms": 19.249,
+          "calls": 36
+        },
+        "open_chain_inclusive": {
+          "ms": 9.4098,
+          "calls": 1
+        },
+        "assert_chain_stable_inclusive": {
+          "ms": 17.7023,
+          "calls": 1
+        },
+        "readset_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "create_file_and_error_capture": {
+          "ms": 1.0212,
+          "calls": 24
+        },
+        "get_file_information_native_and_branch": {
+          "ms": 0.3746,
+          "calls": 36
+        },
+        "identity_buffer_and_field_decode": {
+          "ms": 0.228,
+          "calls": 36
+        },
+        "identity_attributes_and_get_file_type": {
+          "ms": 0.079,
+          "calls": 36
+        },
+        "get_final_path_native_buffer_and_count_check": {
+          "ms": 1.32,
+          "calls": 36
+        },
+        "identity_final_path_validation_inclusive": {
+          "ms": 15.8435,
+          "calls": 36
+        },
+        "identity_result_construction": {
+          "ms": 1.1259,
+          "calls": 36
+        },
+        "open_chain_root_lexical_validation": {
+          "ms": 0.6367,
+          "calls": 1
+        },
+        "open_chain_ancestor_preparation": {
+          "ms": 0.0306,
+          "calls": 1
+        },
+        "stable_chain_held_identity_inclusive": {
+          "ms": 8.6145,
+          "calls": 12
+        },
+        "stable_chain_fresh_open_inclusive": {
+          "ms": 1.3262,
+          "calls": 12
+        },
+        "stable_chain_fresh_identity_and_dispose_inclusive": {
+          "ms": 7.7059,
+          "calls": 12
+        },
+        "console_final_native_wait": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_collection_initialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_root_acquisition": {
+          "ms": 0,
+          "calls": 0
+        },
+        "file_path_preparation": {
+          "ms": 0.0061,
+          "calls": 1
+        },
+        "file_open_chain_inclusive": {
+          "ms": 9.4872,
+          "calls": 1
+        },
+        "file_pre_read_identity_and_limits": {
+          "ms": 0.6102,
+          "calls": 1
+        },
+        "file_buffer_and_stream_preparation": {
+          "ms": 0.0294,
+          "calls": 1
+        },
+        "file_stream_read_and_dispose": {
+          "ms": 0.1083,
+          "calls": 1
+        },
+        "file_post_read_size_checks": {
+          "ms": 0.0149,
+          "calls": 1
+        },
+        "file_post_read_chain_verification_inclusive": {
+          "ms": 17.7847,
+          "calls": 1
+        },
+        "file_base64_encoding": {
+          "ms": 0.0057,
+          "calls": 1
+        },
+        "file_base64_chunking": {
+          "ms": 0.0107,
+          "calls": 1
+        },
+        "file_result_construction": {
+          "ms": 0.0285,
+          "calls": 1
+        },
+        "file_chain_close": {
+          "ms": 0.1872,
+          "calls": 1
+        },
+        "readset_final_root_verification_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_aggregate_result_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_framing_and_read": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_utf8_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_depth_scan": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_json_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_canonical_reencode_and_equality": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_roots_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_paths_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_semantic_validation_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_envelope_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_canonical_serialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_utf8_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_frame_header_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "stdout_write_and_flush": {
+          "ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "ordinal": 5,
+      "id": "envelope.provenance",
+      "stableIdentifier": "file-5",
+      "byteLength": 1245,
+      "startScriptElapsedMs": 788.2927,
+      "endScriptElapsedMs": 820.6649,
+      "durationMs": 32.3722,
+      "filesCompleted": 5,
+      "bytesCompleted": 3934,
+      "stages": {
+        "initialize_native_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "console_quiescence_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "assert_root_inclusive": {
+          "ms": 14.5557,
+          "calls": 37
+        },
+        "assert_relative_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "open_native_inclusive": {
+          "ms": 1.4853,
+          "calls": 24
+        },
+        "read_identity_inclusive": {
+          "ms": 21.7542,
+          "calls": 36
+        },
+        "open_chain_inclusive": {
+          "ms": 12.291,
+          "calls": 1
+        },
+        "assert_chain_stable_inclusive": {
+          "ms": 18.5552,
+          "calls": 1
+        },
+        "readset_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "create_file_and_error_capture": {
+          "ms": 1.3967,
+          "calls": 24
+        },
+        "get_file_information_native_and_branch": {
+          "ms": 0.4687,
+          "calls": 36
+        },
+        "identity_buffer_and_field_decode": {
+          "ms": 0.255,
+          "calls": 36
+        },
+        "identity_attributes_and_get_file_type": {
+          "ms": 0.0918,
+          "calls": 36
+        },
+        "get_final_path_native_buffer_and_count_check": {
+          "ms": 1.5314,
+          "calls": 36
+        },
+        "identity_final_path_validation_inclusive": {
+          "ms": 17.8262,
+          "calls": 36
+        },
+        "identity_result_construction": {
+          "ms": 1.2732,
+          "calls": 36
+        },
+        "open_chain_root_lexical_validation": {
+          "ms": 0.6842,
+          "calls": 1
+        },
+        "open_chain_ancestor_preparation": {
+          "ms": 0.0214,
+          "calls": 1
+        },
+        "stable_chain_held_identity_inclusive": {
+          "ms": 7.8829,
+          "calls": 12
+        },
+        "stable_chain_fresh_open_inclusive": {
+          "ms": 1.8404,
+          "calls": 12
+        },
+        "stable_chain_fresh_identity_and_dispose_inclusive": {
+          "ms": 8.7712,
+          "calls": 12
+        },
+        "console_final_native_wait": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_collection_initialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_root_acquisition": {
+          "ms": 0,
+          "calls": 0
+        },
+        "file_path_preparation": {
+          "ms": 0.0069,
+          "calls": 1
+        },
+        "file_open_chain_inclusive": {
+          "ms": 12.3979,
+          "calls": 1
+        },
+        "file_pre_read_identity_and_limits": {
+          "ms": 0.754,
+          "calls": 1
+        },
+        "file_buffer_and_stream_preparation": {
+          "ms": 0.0368,
+          "calls": 1
+        },
+        "file_stream_read_and_dispose": {
+          "ms": 0.1336,
+          "calls": 1
+        },
+        "file_post_read_size_checks": {
+          "ms": 0.0079,
+          "calls": 1
+        },
+        "file_post_read_chain_verification_inclusive": {
+          "ms": 18.6698,
+          "calls": 1
+        },
+        "file_base64_encoding": {
+          "ms": 0.0061,
+          "calls": 1
+        },
+        "file_base64_chunking": {
+          "ms": 0.0106,
+          "calls": 1
+        },
+        "file_result_construction": {
+          "ms": 0.0278,
+          "calls": 1
+        },
+        "file_chain_close": {
+          "ms": 0.2051,
+          "calls": 1
+        },
+        "readset_final_root_verification_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_aggregate_result_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_framing_and_read": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_utf8_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_depth_scan": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_json_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_canonical_reencode_and_equality": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_roots_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_paths_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_semantic_validation_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_envelope_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_canonical_serialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_utf8_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_frame_header_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "stdout_write_and_flush": {
+          "ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "ordinal": 6,
+      "id": "envelope.provider.azure",
+      "stableIdentifier": "file-6",
+      "byteLength": 1340,
+      "startScriptElapsedMs": 820.8352,
+      "endScriptElapsedMs": 849.0457,
+      "durationMs": 28.2105,
+      "filesCompleted": 6,
+      "bytesCompleted": 5274,
+      "stages": {
+        "initialize_native_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "console_quiescence_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "assert_root_inclusive": {
+          "ms": 12.1586,
+          "calls": 37
+        },
+        "assert_relative_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "open_native_inclusive": {
+          "ms": 1.0582,
+          "calls": 24
+        },
+        "read_identity_inclusive": {
+          "ms": 18.7277,
+          "calls": 36
+        },
+        "open_chain_inclusive": {
+          "ms": 9.8335,
+          "calls": 1
+        },
+        "assert_chain_stable_inclusive": {
+          "ms": 17.0828,
+          "calls": 1
+        },
+        "readset_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "create_file_and_error_capture": {
+          "ms": 0.9909,
+          "calls": 24
+        },
+        "get_file_information_native_and_branch": {
+          "ms": 0.355,
+          "calls": 36
+        },
+        "identity_buffer_and_field_decode": {
+          "ms": 0.227,
+          "calls": 36
+        },
+        "identity_attributes_and_get_file_type": {
+          "ms": 0.0792,
+          "calls": 36
+        },
+        "get_final_path_native_buffer_and_count_check": {
+          "ms": 1.3423,
+          "calls": 36
+        },
+        "identity_final_path_validation_inclusive": {
+          "ms": 15.2663,
+          "calls": 36
+        },
+        "identity_result_construction": {
+          "ms": 1.1691,
+          "calls": 36
+        },
+        "open_chain_root_lexical_validation": {
+          "ms": 0.6382,
+          "calls": 1
+        },
+        "open_chain_ancestor_preparation": {
+          "ms": 0.0205,
+          "calls": 1
+        },
+        "stable_chain_held_identity_inclusive": {
+          "ms": 7.8228,
+          "calls": 12
+        },
+        "stable_chain_fresh_open_inclusive": {
+          "ms": 1.409,
+          "calls": 12
+        },
+        "stable_chain_fresh_identity_and_dispose_inclusive": {
+          "ms": 7.7972,
+          "calls": 12
+        },
+        "console_final_native_wait": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_collection_initialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_root_acquisition": {
+          "ms": 0,
+          "calls": 0
+        },
+        "file_path_preparation": {
+          "ms": 0.0071,
+          "calls": 1
+        },
+        "file_open_chain_inclusive": {
+          "ms": 9.9101,
+          "calls": 1
+        },
+        "file_pre_read_identity_and_limits": {
+          "ms": 0.6086,
+          "calls": 1
+        },
+        "file_buffer_and_stream_preparation": {
+          "ms": 0.0275,
+          "calls": 1
+        },
+        "file_stream_read_and_dispose": {
+          "ms": 0.0933,
+          "calls": 1
+        },
+        "file_post_read_size_checks": {
+          "ms": 0.0069,
+          "calls": 1
+        },
+        "file_post_read_chain_verification_inclusive": {
+          "ms": 17.1908,
+          "calls": 1
+        },
+        "file_base64_encoding": {
+          "ms": 0.0064,
+          "calls": 1
+        },
+        "file_base64_chunking": {
+          "ms": 0.0097,
+          "calls": 1
+        },
+        "file_result_construction": {
+          "ms": 0.0277,
+          "calls": 1
+        },
+        "file_chain_close": {
+          "ms": 0.2299,
+          "calls": 1
+        },
+        "readset_final_root_verification_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_aggregate_result_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_framing_and_read": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_utf8_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_depth_scan": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_json_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_canonical_reencode_and_equality": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_roots_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_paths_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_semantic_validation_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_envelope_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_canonical_serialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_utf8_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_frame_header_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "stdout_write_and_flush": {
+          "ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "ordinal": 7,
+      "id": "envelope.provider.generic",
+      "stableIdentifier": "file-7",
+      "byteLength": 1352,
+      "startScriptElapsedMs": 849.2163,
+      "endScriptElapsedMs": 879.7073,
+      "durationMs": 30.491,
+      "filesCompleted": 7,
+      "bytesCompleted": 6626,
+      "stages": {
+        "initialize_native_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "console_quiescence_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "assert_root_inclusive": {
+          "ms": 13.6157,
+          "calls": 37
+        },
+        "assert_relative_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "open_native_inclusive": {
+          "ms": 1.0983,
+          "calls": 24
+        },
+        "read_identity_inclusive": {
+          "ms": 20.0541,
+          "calls": 36
+        },
+        "open_chain_inclusive": {
+          "ms": 9.4063,
+          "calls": 1
+        },
+        "assert_chain_stable_inclusive": {
+          "ms": 19.7546,
+          "calls": 1
+        },
+        "readset_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "create_file_and_error_capture": {
+          "ms": 1.0241,
+          "calls": 24
+        },
+        "get_file_information_native_and_branch": {
+          "ms": 0.4333,
+          "calls": 36
+        },
+        "identity_buffer_and_field_decode": {
+          "ms": 0.2215,
+          "calls": 36
+        },
+        "identity_attributes_and_get_file_type": {
+          "ms": 0.0804,
+          "calls": 36
+        },
+        "get_final_path_native_buffer_and_count_check": {
+          "ms": 1.469,
+          "calls": 36
+        },
+        "identity_final_path_validation_inclusive": {
+          "ms": 16.3854,
+          "calls": 36
+        },
+        "identity_result_construction": {
+          "ms": 1.169,
+          "calls": 36
+        },
+        "open_chain_root_lexical_validation": {
+          "ms": 0.6814,
+          "calls": 1
+        },
+        "open_chain_ancestor_preparation": {
+          "ms": 0.021,
+          "calls": 1
+        },
+        "stable_chain_held_identity_inclusive": {
+          "ms": 8.6926,
+          "calls": 12
+        },
+        "stable_chain_fresh_open_inclusive": {
+          "ms": 1.53,
+          "calls": 12
+        },
+        "stable_chain_fresh_identity_and_dispose_inclusive": {
+          "ms": 9.4691,
+          "calls": 12
+        },
+        "console_final_native_wait": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_collection_initialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_root_acquisition": {
+          "ms": 0,
+          "calls": 0
+        },
+        "file_path_preparation": {
+          "ms": 0.0067,
+          "calls": 1
+        },
+        "file_open_chain_inclusive": {
+          "ms": 9.4899,
+          "calls": 1
+        },
+        "file_pre_read_identity_and_limits": {
+          "ms": 0.6075,
+          "calls": 1
+        },
+        "file_buffer_and_stream_preparation": {
+          "ms": 0.0261,
+          "calls": 1
+        },
+        "file_stream_read_and_dispose": {
+          "ms": 0.0847,
+          "calls": 1
+        },
+        "file_post_read_size_checks": {
+          "ms": 0.0064,
+          "calls": 1
+        },
+        "file_post_read_chain_verification_inclusive": {
+          "ms": 19.8622,
+          "calls": 1
+        },
+        "file_base64_encoding": {
+          "ms": 0.0082,
+          "calls": 1
+        },
+        "file_base64_chunking": {
+          "ms": 0.013,
+          "calls": 1
+        },
+        "file_result_construction": {
+          "ms": 0.0389,
+          "calls": 1
+        },
+        "file_chain_close": {
+          "ms": 0.251,
+          "calls": 1
+        },
+        "readset_final_root_verification_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_aggregate_result_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_framing_and_read": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_utf8_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_depth_scan": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_json_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_canonical_reencode_and_equality": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_roots_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_paths_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_semantic_validation_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_envelope_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_canonical_serialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_utf8_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_frame_header_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "stdout_write_and_flush": {
+          "ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "ordinal": 8,
+      "id": "envelope.provider.github",
+      "stableIdentifier": "file-8",
+      "byteLength": 1393,
+      "startScriptElapsedMs": 879.9325,
+      "endScriptElapsedMs": 911.7853,
+      "durationMs": 31.8528,
+      "filesCompleted": 8,
+      "bytesCompleted": 8019,
+      "stages": {
+        "initialize_native_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "console_quiescence_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "assert_root_inclusive": {
+          "ms": 13.8262,
+          "calls": 37
+        },
+        "assert_relative_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "open_native_inclusive": {
+          "ms": 1.5309,
+          "calls": 24
+        },
+        "read_identity_inclusive": {
+          "ms": 20.3829,
+          "calls": 36
+        },
+        "open_chain_inclusive": {
+          "ms": 9.6707,
+          "calls": 1
+        },
+        "assert_chain_stable_inclusive": {
+          "ms": 20.4471,
+          "calls": 1
+        },
+        "readset_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "create_file_and_error_capture": {
+          "ms": 1.4432,
+          "calls": 24
+        },
+        "get_file_information_native_and_branch": {
+          "ms": 0.4475,
+          "calls": 36
+        },
+        "identity_buffer_and_field_decode": {
+          "ms": 0.2388,
+          "calls": 36
+        },
+        "identity_attributes_and_get_file_type": {
+          "ms": 0.0866,
+          "calls": 36
+        },
+        "get_final_path_native_buffer_and_count_check": {
+          "ms": 1.5087,
+          "calls": 36
+        },
+        "identity_final_path_validation_inclusive": {
+          "ms": 16.3894,
+          "calls": 36
+        },
+        "identity_result_construction": {
+          "ms": 1.4146,
+          "calls": 36
+        },
+        "open_chain_root_lexical_validation": {
+          "ms": 0.7364,
+          "calls": 1
+        },
+        "open_chain_ancestor_preparation": {
+          "ms": 0.0294,
+          "calls": 1
+        },
+        "stable_chain_held_identity_inclusive": {
+          "ms": 9.2257,
+          "calls": 12
+        },
+        "stable_chain_fresh_open_inclusive": {
+          "ms": 2.0871,
+          "calls": 12
+        },
+        "stable_chain_fresh_identity_and_dispose_inclusive": {
+          "ms": 9.0581,
+          "calls": 12
+        },
+        "console_final_native_wait": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_collection_initialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_root_acquisition": {
+          "ms": 0,
+          "calls": 0
+        },
+        "file_path_preparation": {
+          "ms": 0.0098,
+          "calls": 1
+        },
+        "file_open_chain_inclusive": {
+          "ms": 9.7686,
+          "calls": 1
+        },
+        "file_pre_read_identity_and_limits": {
+          "ms": 0.576,
+          "calls": 1
+        },
+        "file_buffer_and_stream_preparation": {
+          "ms": 0.0291,
+          "calls": 1
+        },
+        "file_stream_read_and_dispose": {
+          "ms": 0.0953,
+          "calls": 1
+        },
+        "file_post_read_size_checks": {
+          "ms": 0.0062,
+          "calls": 1
+        },
+        "file_post_read_chain_verification_inclusive": {
+          "ms": 20.6128,
+          "calls": 1
+        },
+        "file_base64_encoding": {
+          "ms": 0.0148,
+          "calls": 1
+        },
+        "file_base64_chunking": {
+          "ms": 0.0223,
+          "calls": 1
+        },
+        "file_result_construction": {
+          "ms": 0.0824,
+          "calls": 1
+        },
+        "file_chain_close": {
+          "ms": 0.5027,
+          "calls": 1
+        },
+        "readset_final_root_verification_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_aggregate_result_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_framing_and_read": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_utf8_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_depth_scan": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_json_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_canonical_reencode_and_equality": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_roots_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_paths_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_semantic_validation_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_envelope_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_canonical_serialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_utf8_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_frame_header_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "stdout_write_and_flush": {
+          "ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "ordinal": 9,
+      "id": "envelope.provider.gitlab",
+      "stableIdentifier": "file-9",
+      "byteLength": 1342,
+      "startScriptElapsedMs": 912.264,
+      "endScriptElapsedMs": 945.3419,
+      "durationMs": 33.0779,
+      "filesCompleted": 9,
+      "bytesCompleted": 9361,
+      "stages": {
+        "initialize_native_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "console_quiescence_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "assert_root_inclusive": {
+          "ms": 15.1939,
+          "calls": 37
+        },
+        "assert_relative_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "open_native_inclusive": {
+          "ms": 1.3529,
+          "calls": 24
+        },
+        "read_identity_inclusive": {
+          "ms": 22.1636,
+          "calls": 36
+        },
+        "open_chain_inclusive": {
+          "ms": 10.8014,
+          "calls": 1
+        },
+        "assert_chain_stable_inclusive": {
+          "ms": 20.4906,
+          "calls": 1
+        },
+        "readset_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "create_file_and_error_capture": {
+          "ms": 1.2578,
+          "calls": 24
+        },
+        "get_file_information_native_and_branch": {
+          "ms": 0.4706,
+          "calls": 36
+        },
+        "identity_buffer_and_field_decode": {
+          "ms": 0.2474,
+          "calls": 36
+        },
+        "identity_attributes_and_get_file_type": {
+          "ms": 0.0897,
+          "calls": 36
+        },
+        "get_final_path_native_buffer_and_count_check": {
+          "ms": 1.5644,
+          "calls": 36
+        },
+        "identity_final_path_validation_inclusive": {
+          "ms": 18.1458,
+          "calls": 36
+        },
+        "identity_result_construction": {
+          "ms": 1.3305,
+          "calls": 36
+        },
+        "open_chain_root_lexical_validation": {
+          "ms": 0.8722,
+          "calls": 1
+        },
+        "open_chain_ancestor_preparation": {
+          "ms": 0.0258,
+          "calls": 1
+        },
+        "stable_chain_held_identity_inclusive": {
+          "ms": 9.027,
+          "calls": 12
+        },
+        "stable_chain_fresh_open_inclusive": {
+          "ms": 1.6576,
+          "calls": 12
+        },
+        "stable_chain_fresh_identity_and_dispose_inclusive": {
+          "ms": 9.7395,
+          "calls": 12
+        },
+        "console_final_native_wait": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_collection_initialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_root_acquisition": {
+          "ms": 0,
+          "calls": 0
+        },
+        "file_path_preparation": {
+          "ms": 0.0153,
+          "calls": 1
+        },
+        "file_open_chain_inclusive": {
+          "ms": 10.9878,
+          "calls": 1
+        },
+        "file_pre_read_identity_and_limits": {
+          "ms": 0.651,
+          "calls": 1
+        },
+        "file_buffer_and_stream_preparation": {
+          "ms": 0.0338,
+          "calls": 1
+        },
+        "file_stream_read_and_dispose": {
+          "ms": 0.1611,
+          "calls": 1
+        },
+        "file_post_read_size_checks": {
+          "ms": 0.0067,
+          "calls": 1
+        },
+        "file_post_read_chain_verification_inclusive": {
+          "ms": 20.5929,
+          "calls": 1
+        },
+        "file_base64_encoding": {
+          "ms": 0.0069,
+          "calls": 1
+        },
+        "file_base64_chunking": {
+          "ms": 0.0219,
+          "calls": 1
+        },
+        "file_result_construction": {
+          "ms": 0.0283,
+          "calls": 1
+        },
+        "file_chain_close": {
+          "ms": 0.2435,
+          "calls": 1
+        },
+        "readset_final_root_verification_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_aggregate_result_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_framing_and_read": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_utf8_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_depth_scan": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_json_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_canonical_reencode_and_equality": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_roots_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_paths_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_semantic_validation_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_envelope_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_canonical_serialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_utf8_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_frame_header_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "stdout_write_and_flush": {
+          "ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "ordinal": 10,
+      "id": "envelope.provider.jenkins",
+      "stableIdentifier": "file-10",
+      "byteLength": 1344,
+      "startScriptElapsedMs": 945.5537,
+      "endScriptElapsedMs": 978.0997,
+      "durationMs": 32.546,
+      "filesCompleted": 10,
+      "bytesCompleted": 10705,
+      "stages": {
+        "initialize_native_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "console_quiescence_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "assert_root_inclusive": {
+          "ms": 15.6448,
+          "calls": 37
+        },
+        "assert_relative_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "open_native_inclusive": {
+          "ms": 1.2559,
+          "calls": 24
+        },
+        "read_identity_inclusive": {
+          "ms": 22.3403,
+          "calls": 36
+        },
+        "open_chain_inclusive": {
+          "ms": 13.0838,
+          "calls": 1
+        },
+        "assert_chain_stable_inclusive": {
+          "ms": 18.0126,
+          "calls": 1
+        },
+        "readset_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "create_file_and_error_capture": {
+          "ms": 1.1738,
+          "calls": 24
+        },
+        "get_file_information_native_and_branch": {
+          "ms": 0.4458,
+          "calls": 36
+        },
+        "identity_buffer_and_field_decode": {
+          "ms": 0.2652,
+          "calls": 36
+        },
+        "identity_attributes_and_get_file_type": {
+          "ms": 0.1053,
+          "calls": 36
+        },
+        "get_final_path_native_buffer_and_count_check": {
+          "ms": 1.5029,
+          "calls": 36
+        },
+        "identity_final_path_validation_inclusive": {
+          "ms": 18.4576,
+          "calls": 36
+        },
+        "identity_result_construction": {
+          "ms": 1.2449,
+          "calls": 36
+        },
+        "open_chain_root_lexical_validation": {
+          "ms": 0.7239,
+          "calls": 1
+        },
+        "open_chain_ancestor_preparation": {
+          "ms": 0.0305,
+          "calls": 1
+        },
+        "stable_chain_held_identity_inclusive": {
+          "ms": 8.4812,
+          "calls": 12
+        },
+        "stable_chain_fresh_open_inclusive": {
+          "ms": 1.4297,
+          "calls": 12
+        },
+        "stable_chain_fresh_identity_and_dispose_inclusive": {
+          "ms": 8.0412,
+          "calls": 12
+        },
+        "console_final_native_wait": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_collection_initialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_root_acquisition": {
+          "ms": 0,
+          "calls": 0
+        },
+        "file_path_preparation": {
+          "ms": 0.0073,
+          "calls": 1
+        },
+        "file_open_chain_inclusive": {
+          "ms": 13.1757,
+          "calls": 1
+        },
+        "file_pre_read_identity_and_limits": {
+          "ms": 0.6727,
+          "calls": 1
+        },
+        "file_buffer_and_stream_preparation": {
+          "ms": 0.0332,
+          "calls": 1
+        },
+        "file_stream_read_and_dispose": {
+          "ms": 0.1146,
+          "calls": 1
+        },
+        "file_post_read_size_checks": {
+          "ms": 0.0071,
+          "calls": 1
+        },
+        "file_post_read_chain_verification_inclusive": {
+          "ms": 18.1227,
+          "calls": 1
+        },
+        "file_base64_encoding": {
+          "ms": 0.0103,
+          "calls": 1
+        },
+        "file_base64_chunking": {
+          "ms": 0.0229,
+          "calls": 1
+        },
+        "file_result_construction": {
+          "ms": 0.0366,
+          "calls": 1
+        },
+        "file_chain_close": {
+          "ms": 0.2345,
+          "calls": 1
+        },
+        "readset_final_root_verification_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_aggregate_result_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_framing_and_read": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_utf8_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_depth_scan": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_json_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_canonical_reencode_and_equality": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_roots_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_paths_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_semantic_validation_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_envelope_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_canonical_serialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_utf8_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_frame_header_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "stdout_write_and_flush": {
+          "ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "ordinal": 11,
+      "id": "envelope.resources",
+      "stableIdentifier": "file-11",
+      "byteLength": 1170,
+      "startScriptElapsedMs": 978.2807,
+      "endScriptElapsedMs": 1006.7096,
+      "durationMs": 28.4289,
+      "filesCompleted": 11,
+      "bytesCompleted": 11875,
+      "stages": {
+        "initialize_native_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "console_quiescence_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "assert_root_inclusive": {
+          "ms": 11.9201,
+          "calls": 37
+        },
+        "assert_relative_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "open_native_inclusive": {
+          "ms": 1.1157,
+          "calls": 24
+        },
+        "read_identity_inclusive": {
+          "ms": 18.5072,
+          "calls": 36
+        },
+        "open_chain_inclusive": {
+          "ms": 9.8138,
+          "calls": 1
+        },
+        "assert_chain_stable_inclusive": {
+          "ms": 17.3334,
+          "calls": 1
+        },
+        "readset_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "create_file_and_error_capture": {
+          "ms": 1.0449,
+          "calls": 24
+        },
+        "get_file_information_native_and_branch": {
+          "ms": 0.394,
+          "calls": 36
+        },
+        "identity_buffer_and_field_decode": {
+          "ms": 0.216,
+          "calls": 36
+        },
+        "identity_attributes_and_get_file_type": {
+          "ms": 0.0784,
+          "calls": 36
+        },
+        "get_final_path_native_buffer_and_count_check": {
+          "ms": 1.3543,
+          "calls": 36
+        },
+        "identity_final_path_validation_inclusive": {
+          "ms": 15.0476,
+          "calls": 36
+        },
+        "identity_result_construction": {
+          "ms": 1.1425,
+          "calls": 36
+        },
+        "open_chain_root_lexical_validation": {
+          "ms": 0.6759,
+          "calls": 1
+        },
+        "open_chain_ancestor_preparation": {
+          "ms": 0.0212,
+          "calls": 1
+        },
+        "stable_chain_held_identity_inclusive": {
+          "ms": 8.212,
+          "calls": 12
+        },
+        "stable_chain_fresh_open_inclusive": {
+          "ms": 1.3933,
+          "calls": 12
+        },
+        "stable_chain_fresh_identity_and_dispose_inclusive": {
+          "ms": 7.6706,
+          "calls": 12
+        },
+        "console_final_native_wait": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_collection_initialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_root_acquisition": {
+          "ms": 0,
+          "calls": 0
+        },
+        "file_path_preparation": {
+          "ms": 0.0071,
+          "calls": 1
+        },
+        "file_open_chain_inclusive": {
+          "ms": 9.8993,
+          "calls": 1
+        },
+        "file_pre_read_identity_and_limits": {
+          "ms": 0.6217,
+          "calls": 1
+        },
+        "file_buffer_and_stream_preparation": {
+          "ms": 0.0291,
+          "calls": 1
+        },
+        "file_stream_read_and_dispose": {
+          "ms": 0.0866,
+          "calls": 1
+        },
+        "file_post_read_size_checks": {
+          "ms": 0.0064,
+          "calls": 1
+        },
+        "file_post_read_chain_verification_inclusive": {
+          "ms": 17.4298,
+          "calls": 1
+        },
+        "file_base64_encoding": {
+          "ms": 0.0067,
+          "calls": 1
+        },
+        "file_base64_chunking": {
+          "ms": 0.0052,
+          "calls": 1
+        },
+        "file_result_construction": {
+          "ms": 0.0303,
+          "calls": 1
+        },
+        "file_chain_close": {
+          "ms": 0.1845,
+          "calls": 1
+        },
+        "readset_final_root_verification_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_aggregate_result_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_framing_and_read": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_utf8_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_depth_scan": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_json_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_canonical_reencode_and_equality": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_roots_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_paths_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_semantic_validation_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_envelope_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_canonical_serialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_utf8_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_frame_header_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "stdout_write_and_flush": {
+          "ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "ordinal": 12,
+      "id": "envelope.sbom",
+      "stableIdentifier": "file-12",
+      "byteLength": 1084,
+      "startScriptElapsedMs": 1006.88,
+      "endScriptElapsedMs": 1035.6073,
+      "durationMs": 28.7273,
+      "filesCompleted": 12,
+      "bytesCompleted": 12959,
+      "stages": {
+        "initialize_native_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "console_quiescence_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "assert_root_inclusive": {
+          "ms": 13.7926,
+          "calls": 37
+        },
+        "assert_relative_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "open_native_inclusive": {
+          "ms": 1.0729,
+          "calls": 24
+        },
+        "read_identity_inclusive": {
+          "ms": 19.6137,
+          "calls": 36
+        },
+        "open_chain_inclusive": {
+          "ms": 10.0535,
+          "calls": 1
+        },
+        "assert_chain_stable_inclusive": {
+          "ms": 17.4477,
+          "calls": 1
+        },
+        "readset_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "create_file_and_error_capture": {
+          "ms": 1.0044,
+          "calls": 24
+        },
+        "get_file_information_native_and_branch": {
+          "ms": 0.3661,
+          "calls": 36
+        },
+        "identity_buffer_and_field_decode": {
+          "ms": 0.2116,
+          "calls": 36
+        },
+        "identity_attributes_and_get_file_type": {
+          "ms": 0.0796,
+          "calls": 36
+        },
+        "get_final_path_native_buffer_and_count_check": {
+          "ms": 1.2843,
+          "calls": 36
+        },
+        "identity_final_path_validation_inclusive": {
+          "ms": 16.2884,
+          "calls": 36
+        },
+        "identity_result_construction": {
+          "ms": 1.1067,
+          "calls": 36
+        },
+        "open_chain_root_lexical_validation": {
+          "ms": 0.6359,
+          "calls": 1
+        },
+        "open_chain_ancestor_preparation": {
+          "ms": 0.0358,
+          "calls": 1
+        },
+        "stable_chain_held_identity_inclusive": {
+          "ms": 7.4331,
+          "calls": 12
+        },
+        "stable_chain_fresh_open_inclusive": {
+          "ms": 1.4001,
+          "calls": 12
+        },
+        "stable_chain_fresh_identity_and_dispose_inclusive": {
+          "ms": 8.5585,
+          "calls": 12
+        },
+        "console_final_native_wait": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_collection_initialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_root_acquisition": {
+          "ms": 0,
+          "calls": 0
+        },
+        "file_path_preparation": {
+          "ms": 0.0063,
+          "calls": 1
+        },
+        "file_open_chain_inclusive": {
+          "ms": 10.133,
+          "calls": 1
+        },
+        "file_pre_read_identity_and_limits": {
+          "ms": 0.6151,
+          "calls": 1
+        },
+        "file_buffer_and_stream_preparation": {
+          "ms": 0.0309,
+          "calls": 1
+        },
+        "file_stream_read_and_dispose": {
+          "ms": 0.0883,
+          "calls": 1
+        },
+        "file_post_read_size_checks": {
+          "ms": 0.0069,
+          "calls": 1
+        },
+        "file_post_read_chain_verification_inclusive": {
+          "ms": 17.5299,
+          "calls": 1
+        },
+        "file_base64_encoding": {
+          "ms": 0.0062,
+          "calls": 1
+        },
+        "file_base64_chunking": {
+          "ms": 0.0049,
+          "calls": 1
+        },
+        "file_result_construction": {
+          "ms": 0.0299,
+          "calls": 1
+        },
+        "file_chain_close": {
+          "ms": 0.1829,
+          "calls": 1
+        },
+        "readset_final_root_verification_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_aggregate_result_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_framing_and_read": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_utf8_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_depth_scan": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_json_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_canonical_reencode_and_equality": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_roots_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_paths_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_semantic_validation_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_envelope_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_canonical_serialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_utf8_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_frame_header_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "stdout_write_and_flush": {
+          "ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "ordinal": 13,
+      "id": "envelope.scope",
+      "stableIdentifier": "file-13",
+      "byteLength": 875,
+      "startScriptElapsedMs": 1035.7839,
+      "endScriptElapsedMs": 1068.9536,
+      "durationMs": 33.1697,
+      "filesCompleted": 13,
+      "bytesCompleted": 13834,
+      "stages": {
+        "initialize_native_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "console_quiescence_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "assert_root_inclusive": {
+          "ms": 13.9612,
+          "calls": 37
+        },
+        "assert_relative_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "open_native_inclusive": {
+          "ms": 1.3612,
+          "calls": 24
+        },
+        "read_identity_inclusive": {
+          "ms": 20.7261,
+          "calls": 36
+        },
+        "open_chain_inclusive": {
+          "ms": 9.9079,
+          "calls": 1
+        },
+        "assert_chain_stable_inclusive": {
+          "ms": 21.0296,
+          "calls": 1
+        },
+        "readset_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "create_file_and_error_capture": {
+          "ms": 1.2786,
+          "calls": 24
+        },
+        "get_file_information_native_and_branch": {
+          "ms": 0.4623,
+          "calls": 36
+        },
+        "identity_buffer_and_field_decode": {
+          "ms": 0.243,
+          "calls": 36
+        },
+        "identity_attributes_and_get_file_type": {
+          "ms": 0.0901,
+          "calls": 36
+        },
+        "get_final_path_native_buffer_and_count_check": {
+          "ms": 1.5611,
+          "calls": 36
+        },
+        "identity_final_path_validation_inclusive": {
+          "ms": 16.7982,
+          "calls": 36
+        },
+        "identity_result_construction": {
+          "ms": 1.2567,
+          "calls": 36
+        },
+        "open_chain_root_lexical_validation": {
+          "ms": 0.6587,
+          "calls": 1
+        },
+        "open_chain_ancestor_preparation": {
+          "ms": 0.0198,
+          "calls": 1
+        },
+        "stable_chain_held_identity_inclusive": {
+          "ms": 8.9039,
+          "calls": 12
+        },
+        "stable_chain_fresh_open_inclusive": {
+          "ms": 1.8644,
+          "calls": 12
+        },
+        "stable_chain_fresh_identity_and_dispose_inclusive": {
+          "ms": 10.1768,
+          "calls": 12
+        },
+        "console_final_native_wait": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_collection_initialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_root_acquisition": {
+          "ms": 0,
+          "calls": 0
+        },
+        "file_path_preparation": {
+          "ms": 0.0069,
+          "calls": 1
+        },
+        "file_open_chain_inclusive": {
+          "ms": 10.0081,
+          "calls": 1
+        },
+        "file_pre_read_identity_and_limits": {
+          "ms": 1.2096,
+          "calls": 1
+        },
+        "file_buffer_and_stream_preparation": {
+          "ms": 0.0713,
+          "calls": 1
+        },
+        "file_stream_read_and_dispose": {
+          "ms": 0.2502,
+          "calls": 1
+        },
+        "file_post_read_size_checks": {
+          "ms": 0.0478,
+          "calls": 1
+        },
+        "file_post_read_chain_verification_inclusive": {
+          "ms": 21.1779,
+          "calls": 1
+        },
+        "file_base64_encoding": {
+          "ms": 0.0066,
+          "calls": 1
+        },
+        "file_base64_chunking": {
+          "ms": 0.0059,
+          "calls": 1
+        },
+        "file_result_construction": {
+          "ms": 0.0342,
+          "calls": 1
+        },
+        "file_chain_close": {
+          "ms": 0.2198,
+          "calls": 1
+        },
+        "readset_final_root_verification_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_aggregate_result_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_framing_and_read": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_utf8_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_depth_scan": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_json_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_canonical_reencode_and_equality": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_roots_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_paths_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_semantic_validation_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_envelope_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_canonical_serialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_utf8_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_frame_header_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "stdout_write_and_flush": {
+          "ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "ordinal": 14,
+      "id": "envelope.security",
+      "stableIdentifier": "file-14",
+      "byteLength": 1144,
+      "startScriptElapsedMs": 1069.1552,
+      "endScriptElapsedMs": 1098.8542,
+      "durationMs": 29.699,
+      "filesCompleted": 14,
+      "bytesCompleted": 14978,
+      "stages": {
+        "initialize_native_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "console_quiescence_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "assert_root_inclusive": {
+          "ms": 13.0018,
+          "calls": 37
+        },
+        "assert_relative_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "open_native_inclusive": {
+          "ms": 1.159,
+          "calls": 24
+        },
+        "read_identity_inclusive": {
+          "ms": 19.3708,
+          "calls": 36
+        },
+        "open_chain_inclusive": {
+          "ms": 10.6532,
+          "calls": 1
+        },
+        "assert_chain_stable_inclusive": {
+          "ms": 17.6263,
+          "calls": 1
+        },
+        "readset_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "create_file_and_error_capture": {
+          "ms": 1.0866,
+          "calls": 24
+        },
+        "get_file_information_native_and_branch": {
+          "ms": 0.4676,
+          "calls": 36
+        },
+        "identity_buffer_and_field_decode": {
+          "ms": 0.2274,
+          "calls": 36
+        },
+        "identity_attributes_and_get_file_type": {
+          "ms": 0.0835,
+          "calls": 36
+        },
+        "get_final_path_native_buffer_and_count_check": {
+          "ms": 1.5116,
+          "calls": 36
+        },
+        "identity_final_path_validation_inclusive": {
+          "ms": 15.6211,
+          "calls": 36
+        },
+        "identity_result_construction": {
+          "ms": 1.156,
+          "calls": 36
+        },
+        "open_chain_root_lexical_validation": {
+          "ms": 0.6586,
+          "calls": 1
+        },
+        "open_chain_ancestor_preparation": {
+          "ms": 0.0234,
+          "calls": 1
+        },
+        "stable_chain_held_identity_inclusive": {
+          "ms": 7.6228,
+          "calls": 12
+        },
+        "stable_chain_fresh_open_inclusive": {
+          "ms": 1.4294,
+          "calls": 12
+        },
+        "stable_chain_fresh_identity_and_dispose_inclusive": {
+          "ms": 8.5133,
+          "calls": 12
+        },
+        "console_final_native_wait": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_collection_initialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_root_acquisition": {
+          "ms": 0,
+          "calls": 0
+        },
+        "file_path_preparation": {
+          "ms": 0.007,
+          "calls": 1
+        },
+        "file_open_chain_inclusive": {
+          "ms": 10.7412,
+          "calls": 1
+        },
+        "file_pre_read_identity_and_limits": {
+          "ms": 0.6393,
+          "calls": 1
+        },
+        "file_buffer_and_stream_preparation": {
+          "ms": 0.0646,
+          "calls": 1
+        },
+        "file_stream_read_and_dispose": {
+          "ms": 0.1098,
+          "calls": 1
+        },
+        "file_post_read_size_checks": {
+          "ms": 0.0204,
+          "calls": 1
+        },
+        "file_post_read_chain_verification_inclusive": {
+          "ms": 17.7624,
+          "calls": 1
+        },
+        "file_base64_encoding": {
+          "ms": 0.0064,
+          "calls": 1
+        },
+        "file_base64_chunking": {
+          "ms": 0.0054,
+          "calls": 1
+        },
+        "file_result_construction": {
+          "ms": 0.0304,
+          "calls": 1
+        },
+        "file_chain_close": {
+          "ms": 0.2063,
+          "calls": 1
+        },
+        "readset_final_root_verification_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_aggregate_result_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_framing_and_read": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_utf8_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_depth_scan": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_json_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_canonical_reencode_and_equality": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_roots_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_paths_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_semantic_validation_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_envelope_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_canonical_serialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_utf8_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_frame_header_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "stdout_write_and_flush": {
+          "ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "ordinal": 15,
+      "id": "envelope.semantic",
+      "stableIdentifier": "file-15",
+      "byteLength": 1327,
+      "startScriptElapsedMs": 1099.058,
+      "endScriptElapsedMs": 1130.1174,
+      "durationMs": 31.0594,
+      "filesCompleted": 15,
+      "bytesCompleted": 16305,
+      "stages": {
+        "initialize_native_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "console_quiescence_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "assert_root_inclusive": {
+          "ms": 12.9542,
+          "calls": 37
+        },
+        "assert_relative_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "open_native_inclusive": {
+          "ms": 1.2384,
+          "calls": 24
+        },
+        "read_identity_inclusive": {
+          "ms": 19.4329,
+          "calls": 36
+        },
+        "open_chain_inclusive": {
+          "ms": 9.5545,
+          "calls": 1
+        },
+        "assert_chain_stable_inclusive": {
+          "ms": 20.0577,
+          "calls": 1
+        },
+        "readset_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "create_file_and_error_capture": {
+          "ms": 1.165,
+          "calls": 24
+        },
+        "get_file_information_native_and_branch": {
+          "ms": 0.3985,
+          "calls": 36
+        },
+        "identity_buffer_and_field_decode": {
+          "ms": 0.243,
+          "calls": 36
+        },
+        "identity_attributes_and_get_file_type": {
+          "ms": 0.0865,
+          "calls": 36
+        },
+        "get_final_path_native_buffer_and_count_check": {
+          "ms": 1.4242,
+          "calls": 36
+        },
+        "identity_final_path_validation_inclusive": {
+          "ms": 15.7708,
+          "calls": 36
+        },
+        "identity_result_construction": {
+          "ms": 1.2022,
+          "calls": 36
+        },
+        "open_chain_root_lexical_validation": {
+          "ms": 0.6199,
+          "calls": 1
+        },
+        "open_chain_ancestor_preparation": {
+          "ms": 0.0211,
+          "calls": 1
+        },
+        "stable_chain_held_identity_inclusive": {
+          "ms": 9.2796,
+          "calls": 12
+        },
+        "stable_chain_fresh_open_inclusive": {
+          "ms": 1.8749,
+          "calls": 12
+        },
+        "stable_chain_fresh_identity_and_dispose_inclusive": {
+          "ms": 8.8367,
+          "calls": 12
+        },
+        "console_final_native_wait": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_collection_initialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_root_acquisition": {
+          "ms": 0,
+          "calls": 0
+        },
+        "file_path_preparation": {
+          "ms": 0.0068,
+          "calls": 1
+        },
+        "file_open_chain_inclusive": {
+          "ms": 9.6497,
+          "calls": 1
+        },
+        "file_pre_read_identity_and_limits": {
+          "ms": 0.6983,
+          "calls": 1
+        },
+        "file_buffer_and_stream_preparation": {
+          "ms": 0.027,
+          "calls": 1
+        },
+        "file_stream_read_and_dispose": {
+          "ms": 0.1048,
+          "calls": 1
+        },
+        "file_post_read_size_checks": {
+          "ms": 0.0057,
+          "calls": 1
+        },
+        "file_post_read_chain_verification_inclusive": {
+          "ms": 20.1615,
+          "calls": 1
+        },
+        "file_base64_encoding": {
+          "ms": 0.0084,
+          "calls": 1
+        },
+        "file_base64_chunking": {
+          "ms": 0.0068,
+          "calls": 1
+        },
+        "file_result_construction": {
+          "ms": 0.0396,
+          "calls": 1
+        },
+        "file_chain_close": {
+          "ms": 0.2281,
+          "calls": 1
+        },
+        "readset_final_root_verification_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_aggregate_result_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_framing_and_read": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_utf8_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_depth_scan": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_json_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_canonical_reencode_and_equality": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_roots_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_paths_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_semantic_validation_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_envelope_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_canonical_serialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_utf8_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_frame_header_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "stdout_write_and_flush": {
+          "ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "ordinal": 16,
+      "id": "envelope.supply",
+      "stableIdentifier": "file-16",
+      "byteLength": 1380,
+      "startScriptElapsedMs": 1130.2963,
+      "endScriptElapsedMs": 1159.0291,
+      "durationMs": 28.7328,
+      "filesCompleted": 16,
+      "bytesCompleted": 17685,
+      "stages": {
+        "initialize_native_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "console_quiescence_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "assert_root_inclusive": {
+          "ms": 13.4025,
+          "calls": 37
+        },
+        "assert_relative_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "open_native_inclusive": {
+          "ms": 1.1638,
+          "calls": 24
+        },
+        "read_identity_inclusive": {
+          "ms": 19.4998,
+          "calls": 36
+        },
+        "open_chain_inclusive": {
+          "ms": 9.7772,
+          "calls": 1
+        },
+        "assert_chain_stable_inclusive": {
+          "ms": 17.724,
+          "calls": 1
+        },
+        "readset_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "create_file_and_error_capture": {
+          "ms": 1.0926,
+          "calls": 24
+        },
+        "get_file_information_native_and_branch": {
+          "ms": 0.4342,
+          "calls": 36
+        },
+        "identity_buffer_and_field_decode": {
+          "ms": 0.2231,
+          "calls": 36
+        },
+        "identity_attributes_and_get_file_type": {
+          "ms": 0.1135,
+          "calls": 36
+        },
+        "get_final_path_native_buffer_and_count_check": {
+          "ms": 1.3211,
+          "calls": 36
+        },
+        "identity_final_path_validation_inclusive": {
+          "ms": 15.9395,
+          "calls": 36
+        },
+        "identity_result_construction": {
+          "ms": 1.1955,
+          "calls": 36
+        },
+        "open_chain_root_lexical_validation": {
+          "ms": 0.639,
+          "calls": 1
+        },
+        "open_chain_ancestor_preparation": {
+          "ms": 0.0213,
+          "calls": 1
+        },
+        "stable_chain_held_identity_inclusive": {
+          "ms": 8.4368,
+          "calls": 12
+        },
+        "stable_chain_fresh_open_inclusive": {
+          "ms": 1.407,
+          "calls": 12
+        },
+        "stable_chain_fresh_identity_and_dispose_inclusive": {
+          "ms": 7.8056,
+          "calls": 12
+        },
+        "console_final_native_wait": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_collection_initialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_root_acquisition": {
+          "ms": 0,
+          "calls": 0
+        },
+        "file_path_preparation": {
+          "ms": 0.0077,
+          "calls": 1
+        },
+        "file_open_chain_inclusive": {
+          "ms": 9.8649,
+          "calls": 1
+        },
+        "file_pre_read_identity_and_limits": {
+          "ms": 0.5941,
+          "calls": 1
+        },
+        "file_buffer_and_stream_preparation": {
+          "ms": 0.0284,
+          "calls": 1
+        },
+        "file_stream_read_and_dispose": {
+          "ms": 0.0859,
+          "calls": 1
+        },
+        "file_post_read_size_checks": {
+          "ms": 0.0057,
+          "calls": 1
+        },
+        "file_post_read_chain_verification_inclusive": {
+          "ms": 17.8208,
+          "calls": 1
+        },
+        "file_base64_encoding": {
+          "ms": 0.0068,
+          "calls": 1
+        },
+        "file_base64_chunking": {
+          "ms": 0.0055,
+          "calls": 1
+        },
+        "file_result_construction": {
+          "ms": 0.0308,
+          "calls": 1
+        },
+        "file_chain_close": {
+          "ms": 0.1844,
+          "calls": 1
+        },
+        "readset_final_root_verification_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_aggregate_result_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_framing_and_read": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_utf8_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_depth_scan": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_json_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_canonical_reencode_and_equality": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_roots_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_paths_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_semantic_validation_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_envelope_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_canonical_serialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_utf8_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_frame_header_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "stdout_write_and_flush": {
+          "ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "ordinal": 17,
+      "id": "envelope.tag",
+      "stableIdentifier": "file-17",
+      "byteLength": 585,
+      "startScriptElapsedMs": 1159.2575,
+      "endScriptElapsedMs": 1202.2439,
+      "durationMs": 42.9864,
+      "filesCompleted": 17,
+      "bytesCompleted": 18270,
+      "stages": {
+        "initialize_native_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "console_quiescence_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "assert_root_inclusive": {
+          "ms": 19.6495,
+          "calls": 37
+        },
+        "assert_relative_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "open_native_inclusive": {
+          "ms": 1.4785,
+          "calls": 24
+        },
+        "read_identity_inclusive": {
+          "ms": 27.3596,
+          "calls": 36
+        },
+        "open_chain_inclusive": {
+          "ms": 11.977,
+          "calls": 1
+        },
+        "assert_chain_stable_inclusive": {
+          "ms": 27.9254,
+          "calls": 1
+        },
+        "readset_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "create_file_and_error_capture": {
+          "ms": 1.3864,
+          "calls": 24
+        },
+        "get_file_information_native_and_branch": {
+          "ms": 0.6139,
+          "calls": 36
+        },
+        "identity_buffer_and_field_decode": {
+          "ms": 0.3037,
+          "calls": 36
+        },
+        "identity_attributes_and_get_file_type": {
+          "ms": 0.1121,
+          "calls": 36
+        },
+        "get_final_path_native_buffer_and_count_check": {
+          "ms": 1.9428,
+          "calls": 36
+        },
+        "identity_final_path_validation_inclusive": {
+          "ms": 22.3162,
+          "calls": 36
+        },
+        "identity_result_construction": {
+          "ms": 1.6565,
+          "calls": 36
+        },
+        "open_chain_root_lexical_validation": {
+          "ms": 1.8116,
+          "calls": 1
+        },
+        "open_chain_ancestor_preparation": {
+          "ms": 0.0265,
+          "calls": 1
+        },
+        "stable_chain_held_identity_inclusive": {
+          "ms": 13.5207,
+          "calls": 12
+        },
+        "stable_chain_fresh_open_inclusive": {
+          "ms": 2.1172,
+          "calls": 12
+        },
+        "stable_chain_fresh_identity_and_dispose_inclusive": {
+          "ms": 12.1956,
+          "calls": 12
+        },
+        "console_final_native_wait": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_collection_initialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_root_acquisition": {
+          "ms": 0,
+          "calls": 0
+        },
+        "file_path_preparation": {
+          "ms": 0.0068,
+          "calls": 1
+        },
+        "file_open_chain_inclusive": {
+          "ms": 12.0844,
+          "calls": 1
+        },
+        "file_pre_read_identity_and_limits": {
+          "ms": 2.1956,
+          "calls": 1
+        },
+        "file_buffer_and_stream_preparation": {
+          "ms": 0.0432,
+          "calls": 1
+        },
+        "file_stream_read_and_dispose": {
+          "ms": 0.1314,
+          "calls": 1
+        },
+        "file_post_read_size_checks": {
+          "ms": 0.0103,
+          "calls": 1
+        },
+        "file_post_read_chain_verification_inclusive": {
+          "ms": 28.0469,
+          "calls": 1
+        },
+        "file_base64_encoding": {
+          "ms": 0.0076,
+          "calls": 1
+        },
+        "file_base64_chunking": {
+          "ms": 0.0068,
+          "calls": 1
+        },
+        "file_result_construction": {
+          "ms": 0.0408,
+          "calls": 1
+        },
+        "file_chain_close": {
+          "ms": 0.2801,
+          "calls": 1
+        },
+        "readset_final_root_verification_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_aggregate_result_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_framing_and_read": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_utf8_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_depth_scan": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_json_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_canonical_reencode_and_equality": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_roots_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_paths_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_semantic_validation_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_envelope_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_canonical_serialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_utf8_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_frame_header_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "stdout_write_and_flush": {
+          "ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "ordinal": 18,
+      "id": "envelope.windows",
+      "stableIdentifier": "file-18",
+      "byteLength": 1333,
+      "startScriptElapsedMs": 1202.4842,
+      "endScriptElapsedMs": 1246.2422,
+      "durationMs": 43.758,
+      "filesCompleted": 18,
+      "bytesCompleted": 19603,
+      "stages": {
+        "initialize_native_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "console_quiescence_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "assert_root_inclusive": {
+          "ms": 20.2557,
+          "calls": 37
+        },
+        "assert_relative_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "open_native_inclusive": {
+          "ms": 1.428,
+          "calls": 24
+        },
+        "read_identity_inclusive": {
+          "ms": 30.228,
+          "calls": 36
+        },
+        "open_chain_inclusive": {
+          "ms": 12.7806,
+          "calls": 1
+        },
+        "assert_chain_stable_inclusive": {
+          "ms": 29.3607,
+          "calls": 1
+        },
+        "readset_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "create_file_and_error_capture": {
+          "ms": 1.3262,
+          "calls": 24
+        },
+        "get_file_information_native_and_branch": {
+          "ms": 0.5478,
+          "calls": 36
+        },
+        "identity_buffer_and_field_decode": {
+          "ms": 0.3021,
+          "calls": 36
+        },
+        "identity_attributes_and_get_file_type": {
+          "ms": 0.1195,
+          "calls": 36
+        },
+        "get_final_path_native_buffer_and_count_check": {
+          "ms": 1.871,
+          "calls": 36
+        },
+        "identity_final_path_validation_inclusive": {
+          "ms": 23.9785,
+          "calls": 36
+        },
+        "identity_result_construction": {
+          "ms": 1.6779,
+          "calls": 36
+        },
+        "open_chain_root_lexical_validation": {
+          "ms": 1.0258,
+          "calls": 1
+        },
+        "open_chain_ancestor_preparation": {
+          "ms": 0.0357,
+          "calls": 1
+        },
+        "stable_chain_held_identity_inclusive": {
+          "ms": 12.5093,
+          "calls": 12
+        },
+        "stable_chain_fresh_open_inclusive": {
+          "ms": 1.9837,
+          "calls": 12
+        },
+        "stable_chain_fresh_identity_and_dispose_inclusive": {
+          "ms": 14.7744,
+          "calls": 12
+        },
+        "console_final_native_wait": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_collection_initialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_root_acquisition": {
+          "ms": 0,
+          "calls": 0
+        },
+        "file_path_preparation": {
+          "ms": 0.0092,
+          "calls": 1
+        },
+        "file_open_chain_inclusive": {
+          "ms": 12.9072,
+          "calls": 1
+        },
+        "file_pre_read_identity_and_limits": {
+          "ms": 0.763,
+          "calls": 1
+        },
+        "file_buffer_and_stream_preparation": {
+          "ms": 0.0343,
+          "calls": 1
+        },
+        "file_stream_read_and_dispose": {
+          "ms": 0.1161,
+          "calls": 1
+        },
+        "file_post_read_size_checks": {
+          "ms": 0.008,
+          "calls": 1
+        },
+        "file_post_read_chain_verification_inclusive": {
+          "ms": 29.465,
+          "calls": 1
+        },
+        "file_base64_encoding": {
+          "ms": 0.0079,
+          "calls": 1
+        },
+        "file_base64_chunking": {
+          "ms": 0.0065,
+          "calls": 1
+        },
+        "file_result_construction": {
+          "ms": 0.0363,
+          "calls": 1
+        },
+        "file_chain_close": {
+          "ms": 0.2507,
+          "calls": 1
+        },
+        "readset_final_root_verification_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_aggregate_result_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_framing_and_read": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_utf8_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_depth_scan": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_json_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_canonical_reencode_and_equality": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_roots_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_paths_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_semantic_validation_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_envelope_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_canonical_serialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_utf8_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_frame_header_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "stdout_write_and_flush": {
+          "ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "ordinal": 19,
+      "id": "fixture.source",
+      "stableIdentifier": "file-19",
+      "byteLength": 108,
+      "startScriptElapsedMs": 1246.4571,
+      "endScriptElapsedMs": 1288.9289,
+      "durationMs": 42.4718,
+      "filesCompleted": 19,
+      "bytesCompleted": 19711,
+      "stages": {
+        "initialize_native_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "console_quiescence_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "assert_root_inclusive": {
+          "ms": 19.7569,
+          "calls": 37
+        },
+        "assert_relative_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "open_native_inclusive": {
+          "ms": 1.632,
+          "calls": 24
+        },
+        "read_identity_inclusive": {
+          "ms": 28.7803,
+          "calls": 36
+        },
+        "open_chain_inclusive": {
+          "ms": 15.1101,
+          "calls": 1
+        },
+        "assert_chain_stable_inclusive": {
+          "ms": 25.2785,
+          "calls": 1
+        },
+        "readset_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "create_file_and_error_capture": {
+          "ms": 1.5183,
+          "calls": 24
+        },
+        "get_file_information_native_and_branch": {
+          "ms": 0.5706,
+          "calls": 36
+        },
+        "identity_buffer_and_field_decode": {
+          "ms": 0.3117,
+          "calls": 36
+        },
+        "identity_attributes_and_get_file_type": {
+          "ms": 0.1175,
+          "calls": 36
+        },
+        "get_final_path_native_buffer_and_count_check": {
+          "ms": 1.9956,
+          "calls": 36
+        },
+        "identity_final_path_validation_inclusive": {
+          "ms": 23.486,
+          "calls": 36
+        },
+        "identity_result_construction": {
+          "ms": 1.8216,
+          "calls": 36
+        },
+        "open_chain_root_lexical_validation": {
+          "ms": 0.8736,
+          "calls": 1
+        },
+        "open_chain_ancestor_preparation": {
+          "ms": 0.0264,
+          "calls": 1
+        },
+        "stable_chain_held_identity_inclusive": {
+          "ms": 11.8913,
+          "calls": 12
+        },
+        "stable_chain_fresh_open_inclusive": {
+          "ms": 2.0627,
+          "calls": 12
+        },
+        "stable_chain_fresh_identity_and_dispose_inclusive": {
+          "ms": 11.24,
+          "calls": 12
+        },
+        "console_final_native_wait": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_collection_initialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_root_acquisition": {
+          "ms": 0,
+          "calls": 0
+        },
+        "file_path_preparation": {
+          "ms": 0.0079,
+          "calls": 1
+        },
+        "file_open_chain_inclusive": {
+          "ms": 15.2467,
+          "calls": 1
+        },
+        "file_pre_read_identity_and_limits": {
+          "ms": 0.9137,
+          "calls": 1
+        },
+        "file_buffer_and_stream_preparation": {
+          "ms": 0.0588,
+          "calls": 1
+        },
+        "file_stream_read_and_dispose": {
+          "ms": 0.405,
+          "calls": 1
+        },
+        "file_post_read_size_checks": {
+          "ms": 0.0125,
+          "calls": 1
+        },
+        "file_post_read_chain_verification_inclusive": {
+          "ms": 25.4064,
+          "calls": 1
+        },
+        "file_base64_encoding": {
+          "ms": 0.0063,
+          "calls": 1
+        },
+        "file_base64_chunking": {
+          "ms": 0.0063,
+          "calls": 1
+        },
+        "file_result_construction": {
+          "ms": 0.0376,
+          "calls": 1
+        },
+        "file_chain_close": {
+          "ms": 0.2442,
+          "calls": 1
+        },
+        "readset_final_root_verification_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "readset_aggregate_result_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_framing_and_read": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_utf8_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_depth_scan": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_json_decode": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_canonical_reencode_and_equality": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_roots_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_paths_validation": {
+          "ms": 0,
+          "calls": 0
+        },
+        "request_semantic_validation_inclusive": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_envelope_construction": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_canonical_serialization": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_utf8_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "response_frame_header_encoding": {
+          "ms": 0,
+          "calls": 0
+        },
+        "stdout_write_and_flush": {
+          "ms": 0,
+          "calls": 0
+        }
+      }
+    }
+  ]
+}

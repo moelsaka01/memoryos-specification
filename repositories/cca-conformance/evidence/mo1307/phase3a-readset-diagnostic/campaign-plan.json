@@ -1,0 +1,31 @@
+{
+  "kind": "MO1307Phase3AReadSetEngineeringDiagnosticPlan",
+  "certificationExecution": false,
+  "productionCorrection": false,
+  "productionBytesChanged": false,
+  "previousAttemptsPreserved": 3,
+  "primary": {
+    "request": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a/diagnostic/attempt1/03.request.bin",
+      "byteLength": 7579,
+      "sha256": "sha256:f880661fdd2efc69b6aa7c8c1f9d8c48512fc5fb941e672cfb296bd8b2d0e9b8"
+    },
+    "engineeringGuardMs": 20000,
+    "guardIncludes": "Child launch through termination and bounded transport closure; not a product deadline.",
+    "inputRootsMoved": false,
+    "exactFunctionalAlgorithm": true,
+    "onlyLaunchDifference": "Engineering-only instrumented helper copy path; fixed PS5.1 argv/env/cwd otherwise retained."
+  },
+  "additionalRunRule": "A second diagnosis only for a concrete missing observation documented before execution; third only if second harness defect requires obtaining already-authorized observation. Maximum3 new executions including any READY comparison.",
+  "readyComparison": "At most1 only if MO1306 identifies clear expensive stage; separate engineering comparison, no certification.",
+  "stopRule": "Stop when bounded stage/cost established sufficiently to choose next engineering decision; no optimization, caching, parallelism, skipped checks or protocol redesign.",
+  "frozenProductBudgets": {
+    "helper": 5000,
+    "aggregateHelper": 20000,
+    "cliAdmission": 30000
+  },
+  "taskStartedAt": "2026-09-29T10:19:03Z",
+  "targetMinutes": 45,
+  "normalCeilingMinutes": 75,
+  "hardStopMinutes": 90
+}

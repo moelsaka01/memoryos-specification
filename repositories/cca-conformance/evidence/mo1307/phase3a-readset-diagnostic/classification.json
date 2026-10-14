@@ -1,0 +1,87 @@
+{
+  "kind": "MO1307ReadSetRootCauseClassification",
+  "B2": "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+  "disposition": "ROOT_CAUSE_ESTABLISHED",
+  "scope": "MO1306 exact slot3 request, bounded elapsed-cost operation class in unchanged-algorithm engineering replay; not certification and not exact historical wall-time attribution.",
+  "previousCertificationDisposition": "MO-1307 PHASE 3A CERTIFICATION BLOCKED",
+  "previousDiagnosticCount": 3,
+  "newDiagnosticCount": 2,
+  "newExecutions": [
+    "mo1306-primary",
+    "ready-comparison"
+  ],
+  "moreMeasurementsAuthorizedOrNeededHere": false,
+  "stopReason": "Primary limiting bounded operation class is sufficiently established to choose an unchanged-contract implementation optimization. One conditional READY comparison completed; no additional measurement for completeness.",
+  "primary": "POST_READ_VERIFICATION / PATH_VALIDATION: repeated full-ancestor held/fresh identity checks with final-path lexical validation.",
+  "secondary": [
+    "Initial checked-chain acquisition",
+    "Canonical response serialization for eventual response completion",
+    "Request decode and process initialization"
+  ],
+  "classification": "MULTIPLE_CONTRIBUTORS",
+  "established": {
+    "readSetMs": 4782.9163,
+    "initialFileChainMs": 1470.716,
+    "postReadChainMs": 2823.8579,
+    "checkedChainShareOfReadSet": 0.8978986105192768,
+    "identityCalls": 2172,
+    "openCalls": 1448,
+    "rootValidationCalls": 2239,
+    "identityInclusiveMs": 2938.2227,
+    "identityFinalPathValidationMs": 2340.6,
+    "globalRootValidationMs": 1935.2129,
+    "fileReadMs": 23.2219,
+    "canonicalResponseSerializationMs": 1349.2988
+  },
+  "mechanism": "For each of65 files, Open-Chain inspects all11 components; post-read Assert-ChainStable inspects each held handle and each freshly reopened handle again. The9-component root chain is acquired and reverified. This yields724 chain entries,2172 identity inspections and1448 opens. Every identity inspection again validates its returned full path with Assert-Root. Cost accumulates across required repeated checks, not one large payload read.",
+  "historicalInference": "The same request, roots, file bytes, original statements and operation counts, together with the old 51/65 read-prefix observation, support repeated acquisition verification as the historical timeout mechanism at bounded operation-class resolution. Exact cost apportionment and the final internal state of the old uninstrumented run were not directly observed. The old progress supports incomplete acquisition before serialization; response serialization is not a demonstrated immediate cause of that historical timeout.",
+  "confidenceBoundary": [
+    "High confidence in the measured expensive operation class for this exact replay.",
+    "Uncalibrated measurement overhead; no exact uninstrumented stage budget or guaranteed speedup.",
+    "No CPU-vs-scheduling isolation or pure filesystem/kernel latency claim.",
+    "No generalization to every host or input shape.",
+    "READY historical failing operation remains unlocalized."
+  ],
+  "ready": {
+    "files": 19,
+    "bytes": 19711,
+    "parentExitMs": 1803.0544,
+    "readSetMs": 841.7228,
+    "initialPlusPostReadChainMs": 633.4817,
+    "identityFinalPathValidationMs": 377.3005,
+    "fileReadMs": 5.2549,
+    "conclusion": "Same validation-heavy shape; slot3 timeout not reproduced. Equivalent request reconstructed from unchanged historical root/manifest with fresh engineering session. Cannot explain or restamp historical standalone READY TIMEOUT/29."
+  },
+  "filesystem": {
+    "inputRootsMoved": false,
+    "readOnlyComparisonsExecuted": 0,
+    "reason": "Observed file-read time and native-call composite time do not establish filesystem latency as limiting; no filesystem/environment comparison is warranted for this decision.",
+    "securityProductsChanged": false,
+    "registryChanged": false,
+    "tuning": false,
+    "adminRequired": false
+  },
+  "nextAuthorityClass": "IMPLEMENTATION_OPTIMIZATION_WITH_UNCHANGED_CONTRACT",
+  "notJustifiedAtThisPoint": [
+    "CONTRACT_LIMIT_RECONSIDERATION",
+    "INPUT_BATCHING_OR_PROTOCOL_REDESIGN",
+    "ENVIRONMENT_QUALIFICATION"
+  ],
+  "recommendation": "Separately authorize optimization of repeated PowerShell checked-chain final-path validation, focusing on Read-Identity/Assert-Root, with canonical response serialization as a secondary concern. Preserve every native identity/reopen/post-read check, ordering, rejection behavior and canonical wire bytes; retain5000/20000/30000ms budgets. Validate improvement with bounded uninstrumented native execution on unchanged roots under that future authority. Preserve historical failures and obtain separate authority to restart certification. READY localization remains a separate unresolved matter if its old failure must be explained.",
+  "frozenProductLimits": {
+    "helperMs": 5000,
+    "aggregateHelperMs": 20000,
+    "cliAdmissionMs": 30000
+  },
+  "engineeringGuardMs": 20000,
+  "contractChanged": false,
+  "productionChanged": false,
+  "phase3ACertified": false,
+  "phase3DStarted": false,
+  "productCorrectionImplemented": false,
+  "push": false,
+  "tag": false,
+  "linuxUbuntuWSL": false,
+  "vm": false,
+  "providerAccounts": false
+}

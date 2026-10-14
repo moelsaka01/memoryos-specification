@@ -1,0 +1,61 @@
+{
+  "kind": "MO1307EngineeringInstrumentationReview",
+  "proofs": [
+    {
+      "case": "mo1306",
+      "source": {
+        "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "byteLength": 29771,
+        "sha256": "sha256:ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b"
+      },
+      "engineeringHelper": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3a-readset-diagnostic/helper-engineering-mo1306.ps1",
+        "byteLength": 52107,
+        "sha256": "sha256:762615cb9bb386eda131c08734385dd03f4dcbdd33eb2c061174b0ba8fb743d4"
+      },
+      "delta": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-diagnostic/mo1306-instrumentation.json",
+        "byteLength": 42529,
+        "sha256": "sha256:aa64979f7a2d51e2cd199d99387641b279cdbf60708992054535b0c2372b0429"
+      },
+      "insertionBlocks": 104,
+      "expressionSplits": 1,
+      "stageCount": 50,
+      "exactBytesRecovered": true
+    },
+    {
+      "case": "ready",
+      "source": {
+        "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "byteLength": 29771,
+        "sha256": "sha256:ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b"
+      },
+      "engineeringHelper": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3a-readset-diagnostic/helper-engineering-ready.ps1",
+        "byteLength": 52106,
+        "sha256": "sha256:6cde54480c17b7d022b60951ab2eba85798905586688e4ca8f48a1d5d0beb54b"
+      },
+      "delta": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-diagnostic/ready-instrumentation.json",
+        "byteLength": 42528,
+        "sha256": "sha256:c7c840dc677121b4a7e5c762a1614b71cbb42ad7f9b0d97c0de233d8b3fb87a2"
+      },
+      "insertionBlocks": 104,
+      "expressionSplits": 1,
+      "stageCount": 50,
+      "exactBytesRecovered": true
+    }
+  ],
+  "independentStaticReview": "PASS: no critical defect found. Original checks/order/native signatures retained; CreateFileW/GetLastWin32Error adjacency retained; only canonical-serialization/UTF8 expression split preserves evaluation order; writer returns no protocol output.",
+  "syntax": "Both generated helpers parsed successfully by fixed Windows PowerShell5.1 AST parser before their one execution. No parser invocation evaluated helper code.",
+  "semanticBoundary": "Exact inverse establishes preserved original source bytes; static review plus successful65/19 payload hash comparisons support measurement-only behavior. It is not a formal semantic equivalence proof.",
+  "knownInstrumentationLimitations": [
+    "Inclusive timings overlap.",
+    "Timers/counters/wrappers and logging alter runtime; no complete calibrated overhead bound.",
+    "Stopwatch wall time does not distinguish CPU from descheduling.",
+    "Native-call spans include PowerShell binding, native calls and existing checks.",
+    "Global Assert-Root includes2172Read-Identity+66Open-Chain+1request-root calls in MO1306.",
+    "No pure kernel, filesystem latency, AV or scheduler root cause established.",
+    "File-complete counters advance after verification, encoding, result insertion and handle closure; old counters were a read prefix."
+  ]
+}
