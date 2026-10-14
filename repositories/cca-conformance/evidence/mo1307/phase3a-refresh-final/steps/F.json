@@ -1,0 +1,817 @@
+{
+  "step": "F",
+  "result": "PASS",
+  "failure": null,
+  "cases": [
+    {
+      "name": "ready-approve",
+      "result": "PASS",
+      "nativeVerifyExit": 0,
+      "expectedError": null,
+      "decision": {
+        "decision": "APPROVE",
+        "consistency": "CONSISTENT",
+        "authenticity": "NOT_VERIFIED_BY_MEMORYOS"
+      },
+      "computedReadinessUnchanged": true,
+      "primaryStep": "B"
+    },
+    {
+      "name": "ready-reject",
+      "result": "PASS",
+      "nativeVerifyExit": 0,
+      "expectedError": null,
+      "decision": {
+        "decision": "REJECT",
+        "consistency": "CONSISTENT",
+        "authenticity": "NOT_VERIFIED_BY_MEMORYOS"
+      },
+      "computedReadinessUnchanged": true,
+      "primaryStep": "B"
+    },
+    {
+      "name": "qualified-approve",
+      "result": "PASS",
+      "nativeVerifyExit": 0,
+      "expectedError": null,
+      "decision": {
+        "decision": "APPROVE",
+        "consistency": "CONSISTENT",
+        "authenticity": "NOT_VERIFIED_BY_MEMORYOS"
+      },
+      "computedReadinessUnchanged": true,
+      "primaryStep": "A"
+    },
+    {
+      "name": "not-ready-attempted-approve",
+      "result": "PASS",
+      "nativeVerifyExit": 0,
+      "expectedError": null,
+      "decision": {
+        "decision": "APPROVE",
+        "consistency": "CONTRARY_TO_READINESS",
+        "authenticity": "NOT_VERIFIED_BY_MEMORYOS"
+      },
+      "computedReadinessUnchanged": true,
+      "primaryStep": "C"
+    },
+    {
+      "name": "candidate-mismatch",
+      "result": "PASS",
+      "nativeVerifyExit": 27,
+      "expectedError": "MO1307_DECISION_MISMATCH",
+      "decision": null,
+      "computedReadinessUnchanged": true,
+      "primaryStep": "B"
+    },
+    {
+      "name": "readiness-mismatch",
+      "result": "PASS",
+      "nativeVerifyExit": 27,
+      "expectedError": "MO1307_DECISION_MISMATCH",
+      "decision": null,
+      "computedReadinessUnchanged": true,
+      "primaryStep": "B"
+    },
+    {
+      "name": "proof-mismatch",
+      "result": "PASS",
+      "nativeVerifyExit": 27,
+      "expectedError": "MO1307_DECISION_MISMATCH",
+      "decision": null,
+      "computedReadinessUnchanged": true,
+      "primaryStep": "B"
+    }
+  ],
+  "rows": [
+    {
+      "name": "ready-approve",
+      "operation": "verify",
+      "elapsedMs": 6754.3532,
+      "exit": 0,
+      "signal": null,
+      "error": null,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/ready-approve/verify/stdout.data",
+        "byteLength": 438,
+        "sha256": "sha256:2b819bb7752f78370ac63f29ca49cd35606e81792462347fce088c0bb509f875"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/ready-approve/verify/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "observation": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/ready-approve/verify/observation.json",
+        "byteLength": 21809,
+        "sha256": "sha256:2b1d8f3c2b865657882b32fedf587f8f0b7d3733c2869055bc57ba94f65dca4b"
+      },
+      "helperUsedMs": 5263.649300000001,
+      "productLifecycleElapsedMs": 5718.3723,
+      "summary": {
+        "blockerCount": 0,
+        "cneCount": 0,
+        "decision": {
+          "authenticity": "NOT_VERIFIED_BY_MEMORYOS",
+          "consistency": "CONSISTENT",
+          "decision": "APPROVE"
+        },
+        "kind": "MemoryOSReadinessSummary",
+        "operation": "verify",
+        "proofBindingDigest": "sha256:397770af834aa5fe0fe0958075e059a03f2f7fdd383a66ed7027dd5c19a8f157",
+        "qualificationCount": 0,
+        "readiness": "READY",
+        "readinessDigest": "sha256:7dc59aef2472df2959b88aa6532740bc03c7dacd4c5b8763c9a1306d80ac4532",
+        "version": "1.0.0"
+      },
+      "preservedResult": {
+        "result": "PASS",
+        "byteLength": 59987,
+        "sha256": "sha256:8ec1375f09103b8d1b791985065c3589bdf8ba2a4ed661dcc081d48468049fa7",
+        "gates": 22,
+        "readiness": "READY",
+        "readinessDigest": "sha256:7dc59aef2472df2959b88aa6532740bc03c7dacd4c5b8763c9a1306d80ac4532",
+        "proofBindingDigest": "sha256:397770af834aa5fe0fe0958075e059a03f2f7fdd383a66ed7027dd5c19a8f157",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      }
+    },
+    {
+      "name": "ready-approve",
+      "operation": "public-api-verify",
+      "elapsedMs": 512.2611999999999,
+      "result": "PASS",
+      "parity": {
+        "result": "PASS",
+        "byteLength": 59987,
+        "sha256": "sha256:8ec1375f09103b8d1b791985065c3589bdf8ba2a4ed661dcc081d48468049fa7",
+        "gates": 22,
+        "readiness": "READY",
+        "readinessDigest": "sha256:7dc59aef2472df2959b88aa6532740bc03c7dacd4c5b8763c9a1306d80ac4532",
+        "proofBindingDigest": "sha256:397770af834aa5fe0fe0958075e059a03f2f7fdd383a66ed7027dd5c19a8f157",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      },
+      "resultBytes": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/ready-approve/api-verify-result.data",
+        "byteLength": 59987,
+        "sha256": "sha256:8ec1375f09103b8d1b791985065c3589bdf8ba2a4ed661dcc081d48468049fa7"
+      },
+      "decision": {
+        "decision": "APPROVE",
+        "consistency": "CONSISTENT",
+        "authenticity": "NOT_VERIFIED_BY_MEMORYOS"
+      }
+    },
+    {
+      "name": "ready-reject",
+      "operation": "verify",
+      "elapsedMs": 6227.847,
+      "exit": 0,
+      "signal": null,
+      "error": null,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/ready-reject/verify/stdout.data",
+        "byteLength": 437,
+        "sha256": "sha256:82ebc6b2a72fa3b9a8b83033fc15ff66ac9152a80cf913b7bd2da73b1c7d7e60"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/ready-reject/verify/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "observation": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/ready-reject/verify/observation.json",
+        "byteLength": 21806,
+        "sha256": "sha256:a98c5cc6c9266b0a9bd42da80269256fcb0fcc4134e78da22b3be914810415e7"
+      },
+      "helperUsedMs": 4846.9313,
+      "productLifecycleElapsedMs": 5234.3907,
+      "summary": {
+        "blockerCount": 0,
+        "cneCount": 0,
+        "decision": {
+          "authenticity": "NOT_VERIFIED_BY_MEMORYOS",
+          "consistency": "CONSISTENT",
+          "decision": "REJECT"
+        },
+        "kind": "MemoryOSReadinessSummary",
+        "operation": "verify",
+        "proofBindingDigest": "sha256:397770af834aa5fe0fe0958075e059a03f2f7fdd383a66ed7027dd5c19a8f157",
+        "qualificationCount": 0,
+        "readiness": "READY",
+        "readinessDigest": "sha256:7dc59aef2472df2959b88aa6532740bc03c7dacd4c5b8763c9a1306d80ac4532",
+        "version": "1.0.0"
+      },
+      "preservedResult": {
+        "result": "PASS",
+        "byteLength": 59987,
+        "sha256": "sha256:8ec1375f09103b8d1b791985065c3589bdf8ba2a4ed661dcc081d48468049fa7",
+        "gates": 22,
+        "readiness": "READY",
+        "readinessDigest": "sha256:7dc59aef2472df2959b88aa6532740bc03c7dacd4c5b8763c9a1306d80ac4532",
+        "proofBindingDigest": "sha256:397770af834aa5fe0fe0958075e059a03f2f7fdd383a66ed7027dd5c19a8f157",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      }
+    },
+    {
+      "name": "ready-reject",
+      "operation": "public-api-verify",
+      "elapsedMs": 373.8866999999991,
+      "result": "PASS",
+      "parity": {
+        "result": "PASS",
+        "byteLength": 59987,
+        "sha256": "sha256:8ec1375f09103b8d1b791985065c3589bdf8ba2a4ed661dcc081d48468049fa7",
+        "gates": 22,
+        "readiness": "READY",
+        "readinessDigest": "sha256:7dc59aef2472df2959b88aa6532740bc03c7dacd4c5b8763c9a1306d80ac4532",
+        "proofBindingDigest": "sha256:397770af834aa5fe0fe0958075e059a03f2f7fdd383a66ed7027dd5c19a8f157",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      },
+      "resultBytes": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/ready-reject/api-verify-result.data",
+        "byteLength": 59987,
+        "sha256": "sha256:8ec1375f09103b8d1b791985065c3589bdf8ba2a4ed661dcc081d48468049fa7"
+      },
+      "decision": {
+        "decision": "REJECT",
+        "consistency": "CONSISTENT",
+        "authenticity": "NOT_VERIFIED_BY_MEMORYOS"
+      }
+    },
+    {
+      "name": "qualified-approve",
+      "operation": "verify",
+      "elapsedMs": 9349.454,
+      "exit": 0,
+      "signal": null,
+      "error": null,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/qualified-approve/verify/stdout.data",
+        "byteLength": 459,
+        "sha256": "sha256:bfe3fa26eb3768da10dc739e235051c5a84f0b0cbd1ba2b9236ceeb7f42fada3"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/qualified-approve/verify/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "observation": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/qualified-approve/verify/observation.json",
+        "byteLength": 21814,
+        "sha256": "sha256:11f4e7e36268541e65729a59d16b303d0d6b65571d61c02c8ca6c3bac3d5d3c2"
+      },
+      "helperUsedMs": 6702.677100000001,
+      "productLifecycleElapsedMs": 8291.83,
+      "summary": {
+        "blockerCount": 0,
+        "cneCount": 0,
+        "decision": {
+          "authenticity": "NOT_VERIFIED_BY_MEMORYOS",
+          "consistency": "CONSISTENT",
+          "decision": "APPROVE"
+        },
+        "kind": "MemoryOSReadinessSummary",
+        "operation": "verify",
+        "proofBindingDigest": "sha256:410c64d7ed4dcbaefc105e2fa784aaf2d106075759bb43ef20b96bd2456a1421",
+        "qualificationCount": 10,
+        "readiness": "READY_WITH_QUALIFICATIONS",
+        "readinessDigest": "sha256:e5addcc82bed243a59d31fa72068e1e2e672581f2c501eb8e9bacb5fbf3b2490",
+        "version": "1.0.0"
+      },
+      "preservedResult": {
+        "result": "PASS",
+        "byteLength": 303620,
+        "sha256": "sha256:c1aac6fcbc8a6b301c939d55a0181abc51edf4ecd07828dc791128c47996d2fe",
+        "gates": 22,
+        "readiness": "READY_WITH_QUALIFICATIONS",
+        "readinessDigest": "sha256:e5addcc82bed243a59d31fa72068e1e2e672581f2c501eb8e9bacb5fbf3b2490",
+        "proofBindingDigest": "sha256:410c64d7ed4dcbaefc105e2fa784aaf2d106075759bb43ef20b96bd2456a1421",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      }
+    },
+    {
+      "name": "qualified-approve",
+      "operation": "public-api-verify",
+      "elapsedMs": 1287.0992000000006,
+      "result": "PASS",
+      "parity": {
+        "result": "PASS",
+        "byteLength": 303620,
+        "sha256": "sha256:c1aac6fcbc8a6b301c939d55a0181abc51edf4ecd07828dc791128c47996d2fe",
+        "gates": 22,
+        "readiness": "READY_WITH_QUALIFICATIONS",
+        "readinessDigest": "sha256:e5addcc82bed243a59d31fa72068e1e2e672581f2c501eb8e9bacb5fbf3b2490",
+        "proofBindingDigest": "sha256:410c64d7ed4dcbaefc105e2fa784aaf2d106075759bb43ef20b96bd2456a1421",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      },
+      "resultBytes": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/qualified-approve/api-verify-result.data",
+        "byteLength": 303620,
+        "sha256": "sha256:c1aac6fcbc8a6b301c939d55a0181abc51edf4ecd07828dc791128c47996d2fe"
+      },
+      "decision": {
+        "decision": "APPROVE",
+        "consistency": "CONSISTENT",
+        "authenticity": "NOT_VERIFIED_BY_MEMORYOS"
+      }
+    },
+    {
+      "name": "not-ready-attempted-approve",
+      "operation": "verify",
+      "elapsedMs": 6496.975399999999,
+      "exit": 0,
+      "signal": null,
+      "error": null,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/not-ready-attempted-approve/verify/stdout.data",
+        "byteLength": 453,
+        "sha256": "sha256:d05b4cf7b6772db0856b325b213822fa7c1a77054dfd148f6b23572d9914f22f"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/not-ready-attempted-approve/verify/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "observation": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/not-ready-attempted-approve/verify/observation.json",
+        "byteLength": 21823,
+        "sha256": "sha256:9dd8f9f0fdc727beeb4657302ff38f5c9644db8ff5c46f81ce00ef54364263e6"
+      },
+      "helperUsedMs": 4962.3837,
+      "productLifecycleElapsedMs": 5453.7779,
+      "summary": {
+        "blockerCount": 1,
+        "cneCount": 0,
+        "decision": {
+          "authenticity": "NOT_VERIFIED_BY_MEMORYOS",
+          "consistency": "CONTRARY_TO_READINESS",
+          "decision": "APPROVE"
+        },
+        "kind": "MemoryOSReadinessSummary",
+        "operation": "verify",
+        "proofBindingDigest": "sha256:264f7c6e2cbfcea2c99183cb07a3b67d9b74baa22b030342a2cf5bd52e72ec2e",
+        "qualificationCount": 0,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:a306e1aef26ce5415918e191bb0a4e6c4c1bd77d9de8ebb707e943cab64f4f4b",
+        "version": "1.0.0"
+      },
+      "preservedResult": {
+        "result": "PASS",
+        "byteLength": 60504,
+        "sha256": "sha256:dd2f679e97b8e1d994ea2f949af5ec6988f587ed3e3c91ab402f20d483947051",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:a306e1aef26ce5415918e191bb0a4e6c4c1bd77d9de8ebb707e943cab64f4f4b",
+        "proofBindingDigest": "sha256:264f7c6e2cbfcea2c99183cb07a3b67d9b74baa22b030342a2cf5bd52e72ec2e",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      }
+    },
+    {
+      "name": "not-ready-attempted-approve",
+      "operation": "public-api-verify",
+      "elapsedMs": 390.4457000000002,
+      "result": "PASS",
+      "parity": {
+        "result": "PASS",
+        "byteLength": 60504,
+        "sha256": "sha256:dd2f679e97b8e1d994ea2f949af5ec6988f587ed3e3c91ab402f20d483947051",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:a306e1aef26ce5415918e191bb0a4e6c4c1bd77d9de8ebb707e943cab64f4f4b",
+        "proofBindingDigest": "sha256:264f7c6e2cbfcea2c99183cb07a3b67d9b74baa22b030342a2cf5bd52e72ec2e",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      },
+      "resultBytes": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/not-ready-attempted-approve/api-verify-result.data",
+        "byteLength": 60504,
+        "sha256": "sha256:dd2f679e97b8e1d994ea2f949af5ec6988f587ed3e3c91ab402f20d483947051"
+      },
+      "decision": {
+        "decision": "APPROVE",
+        "consistency": "CONTRARY_TO_READINESS",
+        "authenticity": "NOT_VERIFIED_BY_MEMORYOS"
+      }
+    },
+    {
+      "name": "candidate-mismatch",
+      "operation": "verify",
+      "elapsedMs": 6395.4899000000005,
+      "exit": 27,
+      "signal": null,
+      "error": null,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/candidate-mismatch/verify/stdout.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/candidate-mismatch/verify/stderr.data",
+        "byteLength": 132,
+        "sha256": "sha256:ad54121dea1ecfb68149d7fbd119a684dc023174bfada4e18ae4a9117e2539dd"
+      },
+      "result": "PASS",
+      "observation": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/candidate-mismatch/verify/observation.json",
+        "byteLength": 22868,
+        "sha256": "sha256:e5ec599d133a4b783ee408560fb105139f074e6beed8b21421a0400a7ba71728"
+      },
+      "helperUsedMs": 4888.855,
+      "productLifecycleElapsedMs": 5360.3487000000005,
+      "diagnostic": {
+        "code": "MO1307_DECISION_MISMATCH",
+        "kind": "MemoryOSReadinessError",
+        "reference": "decision",
+        "stage": "VERIFICATION",
+        "version": "1.0.0"
+      },
+      "preservedResult": {
+        "result": "PASS",
+        "byteLength": 59987,
+        "sha256": "sha256:8ec1375f09103b8d1b791985065c3589bdf8ba2a4ed661dcc081d48468049fa7",
+        "gates": 22,
+        "readiness": "READY",
+        "readinessDigest": "sha256:7dc59aef2472df2959b88aa6532740bc03c7dacd4c5b8763c9a1306d80ac4532",
+        "proofBindingDigest": "sha256:397770af834aa5fe0fe0958075e059a03f2f7fdd383a66ed7027dd5c19a8f157",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      }
+    },
+    {
+      "name": "candidate-mismatch",
+      "operation": "public-api-verify",
+      "elapsedMs": 512.845699999998,
+      "result": "PASS",
+      "error": {
+        "name": "ReadinessError",
+        "code": "MO1307_DECISION_MISMATCH",
+        "stage": "VERIFICATION",
+        "reference": "decision",
+        "message": "MO1307_DECISION_MISMATCH",
+        "stack": "ReadinessError: MO1307_DECISION_MISMATCH\n    at finish (file:///C:/Users/melsa/Documents/Codex/r3a/.cache/m7r/install/node_modules/memoryos-readiness/src/runtime.mjs:170:63)\n    at ReadableWorkerStdio.<anonymous> (file:///C:/Users/melsa/Documents/Codex/r3a/.cache/m7r/install/node_modules/memoryos-readiness/src/runtime.mjs:181:60)\n    at ReadableWorkerStdio.wrapper (node:events:639:12)\n    at ReadableWorkerStdio.emit (node:events:526:24)\n    at endReadableNT (node:internal/streams/readable:1764:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)"
+      }
+    },
+    {
+      "name": "readiness-mismatch",
+      "operation": "verify",
+      "elapsedMs": 6461.233899999999,
+      "exit": 27,
+      "signal": null,
+      "error": null,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/readiness-mismatch/verify/stdout.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/readiness-mismatch/verify/stderr.data",
+        "byteLength": 132,
+        "sha256": "sha256:ad54121dea1ecfb68149d7fbd119a684dc023174bfada4e18ae4a9117e2539dd"
+      },
+      "result": "PASS",
+      "observation": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/readiness-mismatch/verify/observation.json",
+        "byteLength": 22918,
+        "sha256": "sha256:bff9fa4a86d78a9a833fe572cd24436de8cec476d657962d4177d1530acbc331"
+      },
+      "helperUsedMs": 4917.706700000001,
+      "productLifecycleElapsedMs": 5392.1562,
+      "diagnostic": {
+        "code": "MO1307_DECISION_MISMATCH",
+        "kind": "MemoryOSReadinessError",
+        "reference": "decision",
+        "stage": "VERIFICATION",
+        "version": "1.0.0"
+      },
+      "preservedResult": {
+        "result": "PASS",
+        "byteLength": 59987,
+        "sha256": "sha256:8ec1375f09103b8d1b791985065c3589bdf8ba2a4ed661dcc081d48468049fa7",
+        "gates": 22,
+        "readiness": "READY",
+        "readinessDigest": "sha256:7dc59aef2472df2959b88aa6532740bc03c7dacd4c5b8763c9a1306d80ac4532",
+        "proofBindingDigest": "sha256:397770af834aa5fe0fe0958075e059a03f2f7fdd383a66ed7027dd5c19a8f157",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      }
+    },
+    {
+      "name": "readiness-mismatch",
+      "operation": "public-api-verify",
+      "elapsedMs": 418.52270000000135,
+      "result": "PASS",
+      "error": {
+        "name": "ReadinessError",
+        "code": "MO1307_DECISION_MISMATCH",
+        "stage": "VERIFICATION",
+        "reference": "decision",
+        "message": "MO1307_DECISION_MISMATCH",
+        "stack": "ReadinessError: MO1307_DECISION_MISMATCH\n    at finish (file:///C:/Users/melsa/Documents/Codex/r3a/.cache/m7r/install/node_modules/memoryos-readiness/src/runtime.mjs:170:63)\n    at ReadableWorkerStdio.<anonymous> (file:///C:/Users/melsa/Documents/Codex/r3a/.cache/m7r/install/node_modules/memoryos-readiness/src/runtime.mjs:181:60)\n    at ReadableWorkerStdio.wrapper (node:events:639:12)\n    at ReadableWorkerStdio.emit (node:events:526:24)\n    at endReadableNT (node:internal/streams/readable:1764:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)"
+      }
+    },
+    {
+      "name": "proof-mismatch",
+      "operation": "verify",
+      "elapsedMs": 6463.577400000002,
+      "exit": 27,
+      "signal": null,
+      "error": null,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/proof-mismatch/verify/stdout.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/proof-mismatch/verify/stderr.data",
+        "byteLength": 132,
+        "sha256": "sha256:ad54121dea1ecfb68149d7fbd119a684dc023174bfada4e18ae4a9117e2539dd"
+      },
+      "result": "PASS",
+      "observation": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/proof-mismatch/verify/observation.json",
+        "byteLength": 22857,
+        "sha256": "sha256:b0407466fb7d9b1b6ee7211997d7902744e65dae44748b73253b7ee5a831d874"
+      },
+      "helperUsedMs": 4979.655199999999,
+      "productLifecycleElapsedMs": 5415.9527,
+      "diagnostic": {
+        "code": "MO1307_DECISION_MISMATCH",
+        "kind": "MemoryOSReadinessError",
+        "reference": "decision",
+        "stage": "VERIFICATION",
+        "version": "1.0.0"
+      },
+      "preservedResult": {
+        "result": "PASS",
+        "byteLength": 59987,
+        "sha256": "sha256:8ec1375f09103b8d1b791985065c3589bdf8ba2a4ed661dcc081d48468049fa7",
+        "gates": 22,
+        "readiness": "READY",
+        "readinessDigest": "sha256:7dc59aef2472df2959b88aa6532740bc03c7dacd4c5b8763c9a1306d80ac4532",
+        "proofBindingDigest": "sha256:397770af834aa5fe0fe0958075e059a03f2f7fdd383a66ed7027dd5c19a8f157",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      }
+    },
+    {
+      "name": "proof-mismatch",
+      "operation": "public-api-verify",
+      "elapsedMs": 481.9176000000007,
+      "result": "PASS",
+      "error": {
+        "name": "ReadinessError",
+        "code": "MO1307_DECISION_MISMATCH",
+        "stage": "VERIFICATION",
+        "reference": "decision",
+        "message": "MO1307_DECISION_MISMATCH",
+        "stack": "ReadinessError: MO1307_DECISION_MISMATCH\n    at finish (file:///C:/Users/melsa/Documents/Codex/r3a/.cache/m7r/install/node_modules/memoryos-readiness/src/runtime.mjs:170:63)\n    at ReadableWorkerStdio.<anonymous> (file:///C:/Users/melsa/Documents/Codex/r3a/.cache/m7r/install/node_modules/memoryos-readiness/src/runtime.mjs:181:60)\n    at ReadableWorkerStdio.wrapper (node:events:639:12)\n    at ReadableWorkerStdio.emit (node:events:526:24)\n    at endReadableNT (node:internal/streams/readable:1764:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)"
+      }
+    }
+  ],
+  "installedUnchanged": true,
+  "finishedAt": "2026-09-29T14:44:05.279Z",
+  "actualInstalledBinObserved": true,
+  "noRetry": true,
+  "sourceBindings": [
+    {
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3a-refresh-final/common.mjs",
+        "byteLength": 2919,
+        "sha256": "sha256:1edda5f6559621f99352315b7229a7679bcd873491906c995a7f53718a70e3ed"
+      },
+      "preserved": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/executed-sources/common.mjs.data",
+        "byteLength": 2919,
+        "sha256": "sha256:1edda5f6559621f99352315b7229a7679bcd873491906c995a7f53718a70e3ed"
+      }
+    },
+    {
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3a-refresh-final/decisions-tags.mjs",
+        "byteLength": 20567,
+        "sha256": "sha256:639bc07ba9cc050ee98b94d0131c28fa18baf76ce91db28665785ef91aec756e"
+      },
+      "preserved": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/executed-sources/decisions-tags.mjs.data",
+        "byteLength": 20567,
+        "sha256": "sha256:639bc07ba9cc050ee98b94d0131c28fa18baf76ce91db28665785ef91aec756e"
+      }
+    },
+    {
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3a-refresh-final/observer-entry.mjs",
+        "byteLength": 6755,
+        "sha256": "sha256:115d734e670d27d771298c3ca8d9e5fdf78dd4c5c153d64b3433c72d1d9c93bd"
+      },
+      "preserved": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/executed-sources/observer-entry.mjs.data",
+        "byteLength": 6755,
+        "sha256": "sha256:115d734e670d27d771298c3ca8d9e5fdf78dd4c5c153d64b3433c72d1d9c93bd"
+      }
+    },
+    {
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3a-refresh-final/runtime-observer.mjs",
+        "byteLength": 331,
+        "sha256": "sha256:3d89cd943126931be84f3af59ad8cff3acf40bfdab180e3771b4f8cbbe59fa85"
+      },
+      "preserved": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/executed-sources/runtime-observer.mjs.data",
+        "byteLength": 331,
+        "sha256": "sha256:3d89cd943126931be84f3af59ad8cff3acf40bfdab180e3771b4f8cbbe59fa85"
+      }
+    },
+    {
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3a-refresh-final/transport-observer.mjs",
+        "byteLength": 975,
+        "sha256": "sha256:8e7480c4c39662dfceaffd7f5fb799e1beb42e6d919898677762b111ccfd226f"
+      },
+      "preserved": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/executed-sources/transport-observer.mjs.data",
+        "byteLength": 975,
+        "sha256": "sha256:8e7480c4c39662dfceaffd7f5fb799e1beb42e6d919898677762b111ccfd226f"
+      }
+    },
+    {
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3a-refresh-final/errors-observer.mjs",
+        "byteLength": 298,
+        "sha256": "sha256:096d79449c2c2c397516a7ace42169a2d3ea001f102ee4599b6dec69cb031006"
+      },
+      "preserved": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/executed-sources/errors-observer.mjs.data",
+        "byteLength": 298,
+        "sha256": "sha256:096d79449c2c2c397516a7ace42169a2d3ea001f102ee4599b6dec69cb031006"
+      }
+    }
+  ],
+  "noGitSubprocessForTagObservation": true,
+  "noTagMutation": true,
+  "noNetwork": true
+}

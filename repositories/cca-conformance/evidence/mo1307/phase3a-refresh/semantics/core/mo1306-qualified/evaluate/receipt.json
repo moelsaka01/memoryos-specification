@@ -1,0 +1,49 @@
+{
+  "kind": "standalone-installed-cli",
+  "name": "mo1306-qualified",
+  "operation": "evaluate",
+  "decision": null,
+  "args": [
+    "C:\\Users\\melsa\\Documents\\Codex\\r3a\\.cache\\m7r\\install\\node_modules\\memoryos-readiness\\bin\\memoryos-readiness.mjs",
+    "evaluate",
+    "--input-root",
+    "C:\\Users\\melsa\\Documents\\Codex\\r3a\\.cache\\m7r\\vectors\\v0\\i",
+    "--config",
+    "configuration.json",
+    "--authority",
+    "authority.json",
+    "--authority-sha256",
+    "sha256:9ae7f7e73f3a22c6162185686d7139d9a025501832b1475b364df5c7da6bd798",
+    "--candidate-sha256",
+    "sha256:56a5c02db3ae1faecdf13ff564935ea8c65068a835cc75ce9bf4ff5eb629001f",
+    "--output-root",
+    "C:\\Users\\melsa\\Documents\\Codex\\r3a\\.cache\\m7r\\vectors\\v0\\p\\r"
+  ],
+  "cwd": "C:\\Users\\melsa\\Documents\\Codex\\r3a\\.cache\\m7r\\cwd",
+  "environment": {
+    "SystemRoot": "C:\\Windows",
+    "WINDIR": "C:\\Windows"
+  },
+  "elapsedMs": 12250.049299999999,
+  "exit": 29,
+  "signal": null,
+  "error": null,
+  "expectedExit": 2,
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh/semantics/core/mo1306-qualified/evaluate/stdout.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh/semantics/core/mo1306-qualified/evaluate/stderr.data",
+    "byteLength": 115,
+    "sha256": "sha256:b2a2279f168dfef0effe10ad966bda3871750a96ff46dcef570eb48ccf55dcb1"
+  },
+  "result": "FAIL",
+  "failure": {
+    "code": "ERR_ASSERTION",
+    "stage": null,
+    "message": "{\"code\":\"MO1307_TIMEOUT\",\"kind\":\"MemoryOSReadinessError\",\"reference\":null,\"stage\":\"ACQUISITION\",\"version\":\"1.0.0\"}\n\n\n29 !== 2\n",
+    "stack": "AssertionError [ERR_ASSERTION]: {\"code\":\"MO1307_TIMEOUT\",\"kind\":\"MemoryOSReadinessError\",\"reference\":null,\"stage\":\"ACQUISITION\",\"version\":\"1.0.0\"}\n\n\n29 !== 2\n\n    at bin (file:///C:/Users/melsa/Documents/Codex/r3a/repositories/cca-conformance/tools/mo1307-phase3a-refresh/semantics.mjs:30:882)\n    at file:///C:/Users/melsa/Documents/Codex/r3a/repositories/cca-conformance/tools/mo1307-phase3a-refresh/semantics.mjs:34:85\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  }
+}

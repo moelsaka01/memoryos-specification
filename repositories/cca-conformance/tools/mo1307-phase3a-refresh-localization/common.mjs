@@ -1,0 +1,25 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+export const root=fileURLToPath(new URL('../../../../',import.meta.url));
+export const relativeE='repositories/cca-conformance/evidence/mo1307/phase3a-refresh-localization';
+export const E=path.join(root,relativeE),T=path.dirname(fileURLToPath(import.meta.url));
+export const pkg=path.join(root,'.cache/m7r/install/node_modules/memoryos-readiness');
+export const oldE=path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3a-refresh');
+export const HEAD='defe93989efc6501b1a730b82e79e705884b269b';
+export const startedAt='2026-09-29T13:56:23Z', hardStopAt='2026-09-29T14:56:23Z';
+export const env={SystemRoot:'C:\\Windows',WINDIR:'C:\\Windows'};
+export const hash=b=>'sha256:'+createHash('sha256').update(b).digest('hex');
+export const read=p=>fs.readFileSync(path.resolve(root,p));
+export const json=p=>JSON.parse(read(p));
+export const record=p=>{const b=read(p);return {path:path.relative(root,path.resolve(root,p)).replaceAll('\\','/'),byteLength:b.length,sha256:hash(b)};};
+export const check=r=>assert.deepEqual(record(r.path),r);
+export const walk=(p,relative='')=>fs.readdirSync(p,{withFileTypes:true}).sort((a,b)=>a.name<b.name?-1:1).flatMap(d=>{const q=path.join(p,d.name),n=relative?relative+'/'+d.name:d.name;const s=fs.lstatSync(q);return s.isSymbolicLink()?[{path:n,link:fs.readlinkSync(q)}]:s.isDirectory()?walk(q,n):[{...record(q),path:n}];});
+export const put=(name,b)=>{const f=path.resolve(E,name);assert.ok(f.startsWith(E+path.sep));fs.mkdirSync(path.dirname(f),{recursive:true});fs.writeFileSync(f,b,{flag:'wx'});return record(f);};
+export const write=(name,o)=>put(name,Buffer.from(JSON.stringify(o,null,2)+'\n'));
+export const git=(...args)=>{const r=spawnSync('C:\\Program Files\\Git\\cmd\\git.exe',args,{cwd:root,encoding:null,windowsHide:true,timeout:60000,maxBuffer:128*1024*1024});assert.ifError(r.error);assert.equal(r.status,0,r.stderr.toString());return r.stdout;};
+export const str=(...args)=>git(...args).toString().trim();
+export function identity(){assert.equal(process.platform,'win32');assert.equal(process.version,'v24.21.0');assert.equal(process.arch,'x64');assert.equal(hash(read(process.execPath)),'sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32');assert.equal(str('rev-parse','HEAD'),HEAD);}

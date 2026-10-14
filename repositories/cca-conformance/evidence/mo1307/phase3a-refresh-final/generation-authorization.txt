@@ -1,0 +1,1053 @@
+MemoryOS 1.3
+MO-1307 RELEASE GOVERNANCE AND READINESS
+
+PHASE 3A-R
+FINAL FINITE NATIVE RUNTIME CERTIFICATION GENERATION
+EXACT C3RB
+TIMING-VARIANCE-AWARE
+NO PRODUCT CHANGES
+
+==================================================
+0. OBJECTIVE
+==================================================
+
+Perform one final, finite Phase 3A-R certification generation against exact
+C3RB.
+
+This generation is separately authorized because:
+
+the first 3A-R generation failed with an unlocalized acquisition timeout
+
+two subsequent localization executions completed all nine requests and returned
+the expected MO-1306 result
+
+no product regression, specific failing request or specific failing clock was
+established
+
+the correction remains independently security-certified by accepted 3C-R
+
+the corrected artifact remains independently certified by accepted 3B-R.
+
+This is certification.
+
+It is NOT:
+
+a product correction
+
+another root-cause investigation
+
+retry-until-pass
+
+deadline tuning
+
+contract revision
+
+Phase 3D.
+
+Do NOT modify production.
+
+Do NOT change frozen limits.
+
+Do NOT push.
+
+Do NOT tag.
+
+==================================================
+1. WORKSPACE
+==================================================
+
+Continue exclusively in:
+
+C:\Users\melsa\Documents\Codex\r3a
+
+Branch:
+
+codex/mo1307-phase3a-refresh
+
+Expected HEAD:
+
+defe93989efc6501b1a730b82e79e705884b269b
+
+The worktree contains uncommitted:
+
+original 3A-R blocker evidence
+
+localization evidence
+
+associated tooling/reporting.
+
+Preserve every existing byte.
+
+Do not clean/reset/rebase.
+
+==================================================
+2. AUTHORITIES
+==================================================
+
+Read completely:
+
+docs/mo1307-phase3a-refresh.md
+
+docs/mo1307-phase3a-refresh-localization.md
+
+docs/mo1307-phase3a-readset-correction.md
+
+Phase 3A-R blocker receipt
+
+localization receipt
+
+C3R/C3RB correction evidence
+
+Freeze and applicable Phase 2 authorities.
+
+Read accepted Phase 3B-R and 3C-R results read-only where available.
+
+==================================================
+3. PRESERVE PRIOR GENERATIONS
+==================================================
+
+Preserve distinctly:
+
+historical old-B2 Phase 3A blocker
+
+READ_SET root-cause diagnosis
+
+C3R/C3RB correction
+
+first C3RB 3A-R certification generation failure
+
+localization D1
+
+localization D2.
+
+Do not rewrite any prior failure as PASS.
+
+Do not relabel diagnostic executions as certification.
+
+==================================================
+4. EXACT CANDIDATE
+==================================================
+
+Certify exact:
+
+C3RB
+defe93989efc6501b1a730b82e79e705884b269b
+
+Package:
+
+memoryos-readiness@0.1.0
+
+Contract:
+
+memoryos.readiness@1.0.0
+
+Expected refreshed archive:
+
+memoryos-readiness-0.1.0.tgz
+
+112338 bytes
+
+SHA-256:
+341f67e821a56cf88133e8b361e8c670849ff9feaf583ae2732cc3ca61d389a2
+
+Require exact identity before execution.
+
+==================================================
+5. RUNTIME
+==================================================
+
+Use exact trusted:
+
+Node 24.21.0 win-x64
+
+expected executable SHA-256:
+
+ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32
+
+Windows PowerShell 5.1
+
+fixed production helper launch.
+
+No engineering helper copy.
+
+No changed helper bytes.
+
+==================================================
+6. FROZEN CLOCKS
+==================================================
+
+Preserve exactly:
+
+helper:
+5000 ms
+
+aggregate helper-active:
+20000 ms
+
+CLI admission:
+30000 ms
+
+worker:
+10000 ms
+
+API:
+10000 ms
+
+ordinary cleanup:
+2000 ms.
+
+No grace.
+
+No tolerance addition.
+
+No deadline increase.
+
+==================================================
+7. OBSERVATION FROM FIRST INVOCATION
+==================================================
+
+Enable bounded engineering observation around the production lifecycle from the
+first certification invocation.
+
+Observation must not modify invoked production bytes.
+
+For every helper exchange record:
+
+sequence
+
+operation
+
+start
+
+terminal
+
+transport duration
+
+response state
+
+process exit
+
+applicable supervisor charged helper-active time.
+
+Observe worker lifecycle and cleanup as required.
+
+Do not add heavy per-file helper instrumentation.
+
+Do not use the instrumented diagnostic helper.
+
+==================================================
+8. VARIANCE POLICY
+==================================================
+
+Timing variance is expected to exist.
+
+A certification execution PASSES only when every applicable frozen deadline is
+actually satisfied.
+
+No statistical grace.
+
+No averaging.
+
+No discarding slow executions.
+
+A timeout remains a timeout.
+
+However, one timeout does not authorize product modification unless its cause is
+established separately.
+
+==================================================
+9. PREDECLARED GENERATION BUDGET
+==================================================
+
+This certification generation permits:
+
+one primary execution of each mandatory semantic certification vector
+
+plus exactly one repeat of MO-1306 at the end of the successful campaign for
+timing/determinism confirmation.
+
+This is the entire certification generation.
+
+No retry of a failed mandatory vector.
+
+If any mandatory vector fails:
+
+STOP the generation immediately.
+
+Do not rerun it.
+
+Preserve the failure.
+
+The final MO-1306 repeat occurs only if all mandatory vectors have already
+passed.
+
+==================================================
+10. EXECUTION ORDER
+==================================================
+
+Use this fixed order:
+
+A. MO-1306 qualified evaluate + verify
+
+B. READY evaluate + verify
+
+C. NOT_READY evaluate + verify
+
+D. COULD_NOT_EVALUATE evaluate + verify
+
+E. REST-profile required vector + verify
+
+F. required human-decision vectors
+
+G. required tag-stage vectors
+
+H. helper deadline controls
+
+I. worker deadline/cancellation controls
+
+J. cleanup/topology witness
+
+K. finalization lifecycle witnesses
+
+L. affected filesystem/native subset
+
+M. environment isolation subset
+
+N. determinism checks
+
+O. final MO-1306 confirmation evaluate + verify.
+
+Do not reorder based on outcomes.
+
+==================================================
+11. MO-1306 PRIMARY
+==================================================
+
+Run actual installed production CLI evaluate.
+
+Expected:
+
+READY_WITH_QUALIFICATIONS
+
+exit 2
+
+22 gates
+
+10 disclosures
+
+complete publication.
+
+Observe all nine helper requests.
+
+Require each helper:
+
+<5000 ms.
+
+Require charged aggregate helper-active:
+
+<20000 ms.
+
+Require CLI admission:
+
+<30000 ms.
+
+Then run actual verify.
+
+Require exit 0.
+
+No retry.
+
+==================================================
+12. MO-1306 QUALIFICATIONS
+==================================================
+
+Require preservation of all ten disclosures.
+
+No promotion of:
+
+GitHub hosted execution
+
+GitLab live execution
+
+Jenkins live execution
+
+Azure live execution.
+
+Preserve Generic certification state according to authority.
+
+==================================================
+13. READY
+==================================================
+
+Run actual installed production evaluate + verify.
+
+Require:
+
+READY
+
+evaluate exit 0
+
+verify exit 0
+
+complete publication.
+
+Observe all helper clocks.
+
+No retry.
+
+Do not claim the historical old READY timeout's internal stage was resolved.
+
+Only certify current C3RB behavior.
+
+==================================================
+14. NOT_READY
+==================================================
+
+Run actual native evaluate + verify.
+
+Require:
+
+NOT_READY
+
+evaluate exit 3
+
+verify exit 0.
+
+Operational failure is not NOT_READY.
+
+==================================================
+15. CNE
+==================================================
+
+Run actual normative CNE vector.
+
+Require:
+
+COULD_NOT_EVALUATE
+
+evaluate exit 4
+
+verify exit 0.
+
+Operational timeout/error is not CNE.
+
+==================================================
+16. REST
+==================================================
+
+Run required REST-profile native vector.
+
+Require exact normative result and verify parity.
+
+No network service is required.
+
+==================================================
+17. API PARITY
+==================================================
+
+For the selected mandatory vectors compare actual CLI result with public byte
+API.
+
+Require exact normative equality:
+
+candidate
+
+profile
+
+stage
+
+22 gates
+
+blockers
+
+CNE reasons
+
+qualifications
+
+history
+
+provider state
+
+readiness
+
+readiness digest
+
+proof digest
+
+canonical result bytes.
+
+==================================================
+18. HUMAN DECISIONS
+==================================================
+
+Execute required vectors:
+
+READY + APPROVE
+
+READY + REJECT
+
+QUALIFIED + APPROVE
+
+NOT_READY + attempted APPROVE
+
+candidate mismatch
+
+readiness mismatch
+
+proof mismatch.
+
+Computed readiness must not change.
+
+Authenticity remains:
+
+NOT_VERIFIED_BY_MEMORYOS.
+
+==================================================
+19. TAG STAGES
+==================================================
+
+Execute supplied-observation vectors:
+
+PRE_TAG_READINESS
+
+POST_TAG_VERIFICATION
+
+correct annotated target
+
+wrong target
+
+missing/unexpected tag
+
+lightweight where annotation required.
+
+No Git subprocess.
+
+No tag mutation.
+
+==================================================
+20. HELPER DEADLINE CONTROLS
+==================================================
+
+Freshly certify:
+
+timely helper success
+
+helper timeout
+
+late response refusal
+
+aggregate helper-active exhaustion.
+
+Do not use these controls to rerun a failed semantic vector.
+
+==================================================
+21. WORKER CONTROLS
+==================================================
+
+Freshly certify:
+
+worker timeout
+
+worker cancellation
+
+late worker result rejection.
+
+==================================================
+22. CLEANUP
+==================================================
+
+Obtain a fresh direct timeout-cleanup witness.
+
+Observe:
+
+helper process termination
+
+console-host termination where attributable
+
+transport closure
+
+no owned process remains.
+
+The successful localization runs had cleanupConfirmed:true but did not provide a
+fresh timeout-cleanup proof.
+
+This certification must close that gap.
+
+Preserve all historical cleanupConfirmed:false receipts.
+
+==================================================
+23. TOPOLOGY
+==================================================
+
+Observe accepted lifecycle.
+
+Require frozen topology.
+
+Do not treat raw sampler process count as normative if observer attribution adds
+engineering processes.
+
+Separate:
+
+product roles
+
+observer roles.
+
+==================================================
+24. FINALIZATION
+==================================================
+
+Run bounded required witnesses for:
+
+timely commit
+
+pre-admission timeout
+
+pre-admission cancellation
+
+post-admission overrun
+
+post-admission cancellation
+
+rename failure where safely induced
+
+post-commit stdout failure.
+
+Preserve corrected settlement semantics.
+
+==================================================
+25. FILESYSTEM SUBSET
+==================================================
+
+Run the affected native certification subset required after helper correction.
+
+At minimum cover actual:
+
+reparse/junction
+
+hardlink
+
+wrong type
+
+changed identity
+
+file replacement
+
+final-path mismatch
+
+existing output/pending/final.
+
+Reuse accepted 3C-R security evidence only where certification methodology
+permits.
+
+==================================================
+26. ENVIRONMENT
+==================================================
+
+Refresh required runtime isolation:
+
+NODE_OPTIONS
+
+NODE_PATH
+
+preload/import/loader
+
+inspect/debug
+
+proxy
+
+credential sentinel
+
+PATH/PATHEXT.
+
+Fixed PowerShell launch remains required.
+
+==================================================
+27. NETWORK
+==================================================
+
+Zero product network.
+
+No hosted execution.
+
+No provider account.
+
+No GitHub/GitLab/Jenkins/Azure execution.
+
+==================================================
+28. DETERMINISM
+==================================================
+
+Run required deterministic comparisons.
+
+The final MO-1306 confirmation is also a timing/determinism witness but does not
+replace byte-level determinism checks.
+
+==================================================
+29. FINAL MO-1306 CONFIRMATION
+==================================================
+
+Only after every prior mandatory certification gate passes:
+
+run one additional fresh MO-1306 evaluate + verify.
+
+Expected:
+
+READY_WITH_QUALIFICATIONS
+
+2 / verify 0
+
+identical normative bytes/digests to primary MO-1306.
+
+All helper/aggregate/CLI deadlines must again pass.
+
+This is predeclared certification confirmation, not a retry.
+
+If it fails:
+
+certification fails.
+
+Do not run again.
+
+==================================================
+30. TIMING ACCEPTANCE
+==================================================
+
+Report every helper duration from:
+
+primary MO-1306
+
+READY
+
+final MO-1306.
+
+Report:
+
+minimum
+
+maximum
+
+median if useful
+
+deadline margin.
+
+Do not average away a violation.
+
+All individual mandatory helpers must satisfy the frozen deadline.
+
+==================================================
+31. RESOURCES
+==================================================
+
+Record:
+
+product process roles
+
+observer roles separately
+
+longest helper
+
+aggregate helper-active
+
+worker duration
+
+longest CLI
+
+peak observed RSS where available.
+
+No hard RSS claim unless enforced.
+
+==================================================
+32. INSTALLED INTEGRITY
+==================================================
+
+Before and after campaign:
+
+hash all 89 installed members.
+
+Require exact equality.
+
+No production mutation.
+
+==================================================
+33. 3B-R INPUT
+==================================================
+
+Bind accepted:
+
+5cb213eeab8a6deec39a8f8f93ea13a70e053231
+
+Expected disposition:
+
+QUALIFIED_PHASE3BR_PASS_PENDING_PHASE3D.
+
+Do not modify it.
+
+==================================================
+34. 3C-R INPUT
+==================================================
+
+Bind accepted:
+
+f4ed5873969ab6b627941dc20d5823c5e853b9fe
+
+Expected targeted security refresh PASS.
+
+Do not modify it.
+
+==================================================
+35. HISTORICAL GENERATIONS
+==================================================
+
+Final certification receipt must retain:
+
+old B2 failures
+
+root-cause diagnosis
+
+C3R/C3RB correction
+
+failed first 3A-R generation
+
+localization D1
+
+localization D2
+
+this final certification generation.
+
+No erasure.
+
+==================================================
+36. EVIDENCE
+==================================================
+
+Create a distinct scope:
+
+repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/
+
+Do not overwrite prior:
+
+phase3a-refresh
+
+phase3a-refresh-localization.
+
+Include:
+
+generation authorization
+
+execution ledger
+
+per-helper timing
+
+clock state
+
+semantic vectors
+
+API parity
+
+decisions
+
+tags
+
+deadline controls
+
+worker controls
+
+timeout cleanup
+
+topology
+
+finalization
+
+filesystem
+
+environment
+
+determinism
+
+resources
+
+installed integrity
+
+3B-R binding
+
+3C-R binding
+
+historical-generation binding
+
+certification receipt
+
+negative controls.
+
+==================================================
+37. REPORT
+==================================================
+
+Create:
+
+docs/mo1307-phase3a-refresh-final.md
+
+Clearly state this is a new finite certification generation.
+
+==================================================
+38. FAILURE POLICY
+==================================================
+
+If any mandatory vector fails:
+
+STOP immediately.
+
+No retry.
+
+No product correction.
+
+No Phase 3D.
+
+Preserve exact failing request/clock using the already-active observation.
+
+Classify accurately.
+
+==================================================
+39. ACCEPTANCE
+==================================================
+
+Certification passes only if every mandatory gate passes in this generation.
+
+No substitution with localization runs.
+
+No substitution with correction smoke.
+
+No substitution with public API for native CLI.
+
+==================================================
+40. COMMIT
+==================================================
+
+If and only if the complete finite generation passes:
+
+create exactly one certification commit.
+
+Subject exactly:
+
+cert(memoryos-1.3): recertify MO-1307 native runtime
+
+Parent exactly:
+
+defe93989efc6501b1a730b82e79e705884b269b
+
+The commit may include preserved blocker/localization/final certification
+tooling/evidence/report.
+
+No production changes.
+
+No future-hash self-reference.
+
+No push.
+
+No tag.
+
+If blocked:
+
+no success certification commit.
+
+==================================================
+41. TIME
+==================================================
+
+Target <=90 minutes.
+
+Up to 3 hours if the full successful campaign requires it.
+
+Record 90-minute and two-hour checkpoints if reached.
+
+Hard stop 3 hours.
+
+==================================================
+42. FINAL REPORT
+==================================================
+
+Return at least:
+
+1. C3RB
+2. Package identity
+3. Historical old-B2 blocker
+4. Failed first 3A-R generation
+5. Localization D1
+6. Localization D2
+7. Generation execution count
+8. MO-1306 primary result
+9. MO-1306 primary exit
+10. MO-1306 verify
+11. Primary request 1 duration
+12. Primary request 2 duration
+13. Primary request 3 duration
+14. Primary request 4 duration
+15. Primary request 5 duration
+16. Primary request 6 duration
+17. Primary request 7 duration
+18. Primary request 8 duration
+19. Primary request 9 duration
+20. Primary aggregate helper-active
+21. Primary CLI duration
+22. READY result
+23. READY verify
+24. NOT_READY
+25. NOT_READY verify
+26. CNE
+27. CNE verify
+28. REST
+29. REST verify
+30. API parity
+31. Decisions
+32. Tags
+33. Timely helper
+34. Helper timeout
+35. Late helper refusal
+36. Aggregate exhaustion
+37. Worker timeout
+38. Worker cancellation
+39. Timeout cleanup proof
+40. Topology
+41. Finalization
+42. Filesystem
+43. Environment
+44. Network
+45. Determinism
+46. Final MO-1306 result
+47. Final MO-1306 verify
+48. Final request-3 duration
+49. Worst helper duration
+50. Minimum helper deadline margin
+51. Installed integrity
+52. Resources
+53. 3B-R binding
+54. 3C-R binding
+55. Historical preservation
+56. Certification disposition
+57. Production changes
+58. Evidence
+59. Report
+60. Workspace verification
+61. git diff --check
+62. Commit hash
+63. Commit parent
+64. Final Git status
+65. Push
+66. Tag
+67. Linux/Ubuntu/WSL
+68. VM
+69. Provider accounts
+70. Duration
+71. 90-minute checkpoint
+72. Two-hour checkpoint
+73. Hard-stop compliance
+74. Exact Phase 3D handoff
+
+If complete end exactly:
+
+MO-1307 PHASE 3A REFRESH COMPLETE
+READY FOR PHASE 3D INTEGRATION
+
+If blocked end exactly:
+
+MO-1307 PHASE 3A REFRESH BLOCKED
+NOT READY FOR PHASE 3D INTEGRATION

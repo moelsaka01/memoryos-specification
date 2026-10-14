@@ -1,0 +1,170 @@
+{
+  "correctedDirectRequest3": [
+    {
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/performance/mo1306-run1/receipt.json",
+        "byteLength": 37657,
+        "sha256": "sha256:006847e3973abedc1ea85959e654373a7d55b742eb3977415d8857643145123e"
+      },
+      "exchangeMs": 3129.6876,
+      "helperActiveMs": 3127.4022,
+      "marginMs": 1870.3123999999998,
+      "result": "PASS"
+    },
+    {
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/performance/mo1306-run2/receipt.json",
+        "byteLength": 37646,
+        "sha256": "sha256:362ed4e04b5bd7280752e022a77b2e92a95f0c554ec9dc647b32cb14b1befaa7"
+      },
+      "exchangeMs": 2945.6094,
+      "helperActiveMs": 2943.728,
+      "marginMs": 2054.3906,
+      "result": "PASS"
+    },
+    {
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/performance/mo1306-run3/receipt.json",
+        "byteLength": 37647,
+        "sha256": "sha256:7d074952eb3731eab04b3dd2b456728c300685a5af2462ec589512b8cfdc3673"
+      },
+      "exchangeMs": 2783.4989,
+      "helperActiveMs": 2781.4892,
+      "marginMs": 2216.5011,
+      "result": "PASS"
+    }
+  ],
+  "diagnosticRequest3": [
+    {
+      "execution": 1,
+      "externalSampler": true,
+      "sequence": 3,
+      "operation": "READ_SET",
+      "requestBytes": 7579,
+      "fileCount": 65,
+      "rootCount": 1,
+      "declaredFileCapBytes": 105119744,
+      "exchangeStart": 3933.5811,
+      "exchangeTerminal": 7593.3585,
+      "exchangeDurationMs": 3659.7774000000004,
+      "supervisorStartEvent": 3936.101,
+      "effectiveSupervisorDeadline": 8936.06,
+      "supervisorQuiescentAt": 7593.2287,
+      "chargedSupervisorActiveMs": 3657.1553,
+      "transportExchangeMarginTo5000Ms": 1340.2225999999996,
+      "supervisorQuiescenceMarginMs": 1342.8312999999998,
+      "clockWouldLimitAtExpiry": "PER_HELPER_5000_MS",
+      "clockFired": false,
+      "disposition": "RESOLVED",
+      "response": "OK",
+      "responseComplete": true,
+      "responseAcceptedByTransport": true,
+      "responseBytes": 2694360,
+      "pid": 3836,
+      "processExitCode": 0,
+      "processExitedAt": 7528.6788,
+      "processClosedAt": 7528.7368,
+      "transportClosed": true,
+      "nativeProcessDurationMs": 3592.4775999999997,
+      "transportTerminalIsNotSequenceHelperExited": true
+    },
+    {
+      "execution": 2,
+      "externalSampler": false,
+      "sequence": 3,
+      "operation": "READ_SET",
+      "requestBytes": 7579,
+      "fileCount": 65,
+      "rootCount": 1,
+      "declaredFileCapBytes": 105119744,
+      "exchangeStart": 3757.9158,
+      "exchangeTerminal": 8080.4482,
+      "exchangeDurationMs": 4322.5324,
+      "supervisorStartEvent": 3759.1176,
+      "effectiveSupervisorDeadline": 8759.1022,
+      "supervisorQuiescentAt": 8080.375,
+      "chargedSupervisorActiveMs": 4321.2546999999995,
+      "transportExchangeMarginTo5000Ms": 677.4676,
+      "supervisorQuiescenceMarginMs": 678.7271999999994,
+      "clockWouldLimitAtExpiry": "PER_HELPER_5000_MS",
+      "clockFired": false,
+      "disposition": "RESOLVED",
+      "response": "OK",
+      "responseComplete": true,
+      "responseAcceptedByTransport": true,
+      "responseBytes": 2694360,
+      "pid": 16648,
+      "processExitCode": 0,
+      "processExitedAt": 8012.1025,
+      "processClosedAt": 8012.1793,
+      "transportClosed": true,
+      "nativeProcessDurationMs": 4252.925499999999,
+      "transportTerminalIsNotSequenceHelperExited": true
+    }
+  ],
+  "correctionCliSmoke": {
+    "receipt": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/cli-smoke/mo1306/receipt.json",
+      "byteLength": 40538,
+      "sha256": "sha256:9a93c0efd7d04f2e751b1e6ac286a6b5a199e80346210b516b44d0f1d879f43f"
+    },
+    "result": "PASS",
+    "exit": 2,
+    "elapsedMs": 11067.2351,
+    "helperRequests": 9,
+    "standaloneSourcePackageBin": true
+  },
+  "failed3AR": {
+    "receipt": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh/semantics/core/mo1306-qualified/evaluate/receipt.json",
+      "byteLength": 2347,
+      "sha256": "sha256:8d16a2503b5bd795701d93f4e6c1f0ba0fd8b028def7bddecbb37f24d1e51a71"
+    },
+    "exit": 29,
+    "elapsedMs": 12250.0493,
+    "published": false,
+    "request": "NOT_ESTABLISHED",
+    "clock": "NOT_ESTABLISHED"
+  },
+  "freshDiagnostics": [
+    {
+      "execution": 1,
+      "elapsedMs": 16200.7457,
+      "exit": 2,
+      "allNineRequestsSucceeded": true,
+      "externalSampler": true
+    },
+    {
+      "execution": 2,
+      "elapsedMs": 17614.704100000003,
+      "exit": 2,
+      "allNineRequestsSucceeded": true,
+      "externalSampler": false
+    }
+  ],
+  "historicalB2": {
+    "binding": {
+      "path": "docs/mo1307-phase3a-refresh.md",
+      "byteLength": 10159,
+      "sha256": "sha256:a582e576c8e5e8e364d5883f1cec268d294e1ad894082de8c968812e37ee55a4"
+    },
+    "mo1306Standalone": {
+      "exit": 29,
+      "elapsedMs": 8465.2111
+    },
+    "readyStandalone": {
+      "exit": 29,
+      "elapsedMs": 11307.147
+    },
+    "cleanupConfirmed": false,
+    "READ_SETRootCause": "ESTABLISHED historically; not reopened",
+    "oldReadyStageLocalized": false
+  },
+  "comparisonLimits": [
+    "Direct correction helper runs use their bound request/root and omit full CLI lifecycle.",
+    "Standalone process-wall elapsed includes startup; diagnostic lifecycle elapsed starts after imports/observer handshake and ends after disposal. Totals are not identical timing scopes.",
+    "Fresh output roots necessarily differ; input bytes and installed/source package identities remain exact.",
+    "OS cache, scheduling, background load and instrumentation costs are uncontrolled. Two outcomes cannot establish environmental or sampler causation.",
+    "Diagnostic success does not identify the original unobserved failure request/clock or supersede its blocked result."
+  ]
+}

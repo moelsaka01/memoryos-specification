@@ -1,0 +1,51 @@
+{
+  "result": "PARTIAL_CAMPAIGN_STOPPED",
+  "decisionMismatches": [
+    {
+      "name": "candidate-mismatch",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/candidate-mismatch/verify/receipt.json",
+        "byteLength": 1938,
+        "sha256": "sha256:800d0727c1a7e16dfffa416fb8bf2a35899a46f1736a2b284322feffb7a81529"
+      },
+      "result": "PASS",
+      "exit": 27
+    },
+    {
+      "name": "readiness-mismatch",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/readiness-mismatch/verify/receipt.json",
+        "byteLength": 1937,
+        "sha256": "sha256:a672c8c48a31d92b03778fbc73ece1b25e13b41d7d35b3f595cb25073f6a3c2f"
+      },
+      "result": "PASS",
+      "exit": 27
+    },
+    {
+      "name": "proof-mismatch",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/decisions/proof-mismatch/verify/receipt.json",
+        "byteLength": 1921,
+        "sha256": "sha256:3b82dcd2ebcecbacd02cd35c070750bafb3d820b1ebf3120f34bc2a52907529a"
+      },
+      "result": "PASS",
+      "exit": 27
+    }
+  ],
+  "unexpectedPreTagPresence": {
+    "result": "PASS",
+    "exit": 3,
+    "receipt": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/tags/pre-tag-present/evaluate/receipt.json",
+      "byteLength": 2176,
+      "sha256": "sha256:46ce3a1175a2141964e3c10c24075e438d28170a30d3abc4e37999e182e5e441"
+    }
+  },
+  "missingPostTag": {
+    "result": "FAIL",
+    "actualExit": 29,
+    "expectedExit": 3,
+    "operationalFailureNotNormativeNotReady": true
+  },
+  "deadlineWorkerFilesystemEnvironmentNegativeControls": "NOT_RUN_AFTER_FIRST_MANDATORY_FAILURE"
+}

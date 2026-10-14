@@ -1,0 +1,52 @@
+{
+  "result": "SCOPED_SUCCESSFUL_DIAGNOSTIC_OBSERVATION",
+  "rawMaximumRoles": 4,
+  "otherObservedDescendants": [
+    {
+      "identity": {
+        "pid": 21672,
+        "creationTime100ns": 134351642613688130,
+        "executable": "C:\\Windows\\System32\\conhost.exe"
+      },
+      "role": "other_descendant",
+      "parentIdentity": {
+        "pid": 13868,
+        "creationTime100ns": 134351642604364770,
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1304-phase3-toolchain\\node-v24.21.0-win-x64\\node.exe"
+      },
+      "firstObservedAt": {
+        "qpc": 1854118351280,
+        "utc": "2026-09-29T14:04:21.752617+00:00"
+      },
+      "lastSeenAt": {
+        "qpc": 1854281455190,
+        "utc": "2026-09-29T14:04:38.063899+00:00"
+      },
+      "signaledAt": {
+        "qpc": 1854282320246,
+        "utc": "2026-09-29T14:04:38.148525+00:00"
+      },
+      "nativeTimes": {
+        "creationTime100ns": 134351642613688130,
+        "exitTime100ns": 134351642780952370,
+        "kernelTime100ns": 0,
+        "userTime100ns": 156250
+      }
+    }
+  ],
+  "additionalConsole": {
+    "pid": 21672,
+    "parentPid": 13868,
+    "classification": "other_descendant",
+    "image": "C:\\Windows\\System32\\conhost.exe",
+    "scope": "Direct child of diagnostic Node; not silently excluded from raw process count."
+  },
+  "allObservedObjectsSignaled": true,
+  "knownHelperObjects": 9,
+  "knownHelperOwnedConsoleObjects": 9,
+  "identityErrors": 4,
+  "identityErrorAnalysis": "Four QueryFullProcessImageNameW error31 reacquisitions occurred after retained objects were signaled: console6376/request4,helper26288/request4,helper9316/request5,console24292/request9. Existing signaled retained-handle proofs remain evidence; full descendant coverage is not established.",
+  "rawThreeRoleMaximumClaim": false,
+  "noTimeoutCleanupClaim": true,
+  "firstDiagnosticOnly": true
+}

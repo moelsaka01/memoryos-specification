@@ -1,0 +1,114 @@
+{
+  "result": "CERTIFICATION_BLOCKED",
+  "classification": "REQUEST_3_READ_SET_PER_HELPER_DEADLINE_EXCEEDED",
+  "step": "G",
+  "vector": "post-tag-absent",
+  "operation": "evaluate",
+  "actual": {
+    "code": "MO1307_TIMEOUT",
+    "stage": "ACQUISITION",
+    "exit": 29,
+    "productLifecycleMs": 9077.7393,
+    "outerWallMs": 10268.312399999995,
+    "request": 3,
+    "helperOperation": "READ_SET",
+    "files": 19,
+    "responseBytes": 0,
+    "workerCount": 0,
+    "publication": false,
+    "outputRootExists": false
+  },
+  "expected": {
+    "readiness": "NOT_READY",
+    "evaluateExit": 3,
+    "verifyExit": 0
+  },
+  "clock": {
+    "result": "LOCALIZED_FROM_EXISTING_TRACE",
+    "request": 3,
+    "operation": "READ_SET",
+    "fileCount": 19,
+    "actualClock": "SUPERVISOR_PER_HELPER_5000_MS",
+    "deadlineMs": 5000,
+    "launchFromDeadlineMs": 4092.6553999999996,
+    "deadlineAtMs": 9092.6554,
+    "terminalAtMs": 9100.4787,
+    "observedDeadlineOverrunMs": 7.8233000000000175,
+    "helperActiveThroughTerminalMs": 5007.8233,
+    "transportExchangeMs": 5063.578799999999,
+    "transportIncludesCleanup": true,
+    "priorConfirmedHelperChargeMs": 3956.5501,
+    "aggregateCandidateDeadlineAtMs": 20136.1053,
+    "aggregateActiveThroughTerminalMs": 8964.3734,
+    "aggregateFinalChargedMs": 3956.5501,
+    "failedIntervalNotAddedToConfirmedCharge": true,
+    "cliDeadlineAtMs": 30079.8099,
+    "cliElapsedAtTerminalMs": 9020.6688,
+    "workerStarted": false,
+    "apiClockNotApplicableToFailedNativeInvocation": true,
+    "cleanupAllowanceMs": 2000,
+    "cleanupDeadlineAtMs": 11100.4787,
+    "error": {
+      "name": "ReadinessError",
+      "code": "MO1307_TIMEOUT",
+      "stage": "ACQUISITION",
+      "reference": null,
+      "message": "MO1307_TIMEOUT",
+      "stack": "ReadinessError: MO1307_TIMEOUT\n    at checkpoint (file:///C:/Users/melsa/Documents/Codex/r3a/.cache/m7r/install/node_modules/memoryos-readiness/src/runtime.mjs:72:34)\n    at Timeout.<anonymous> (file:///C:/Users/melsa/Documents/Codex/r3a/.cache/m7r/install/node_modules/memoryos-readiness/src/runtime.mjs:81:13)\n    at listOnTimeout (node:internal/timers:685:17)\n    at process.processTimers (node:internal/timers:618:7)"
+    },
+    "trace": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/tags/post-tag-absent/evaluate/observation.json",
+      "byteLength": 18029,
+      "sha256": "sha256:0975273d3c043f2f02aae6739ee8734ad2f8aa3894f35a8a7b8a02c7f2ab5674"
+    }
+  },
+  "cleanup": {
+    "result": "PARTIAL_TIMEOUT_OBSERVATION_COMPLETE_PROOF_NOT_ESTABLISHED",
+    "helperPid": 22068,
+    "exitSignal": "SIGTERM",
+    "exitCode": null,
+    "helperExitAtMs": 9152.6655,
+    "helperExitAfterTerminalMs": 52.186799999999494,
+    "transportCloseAtMs": 9153.1216,
+    "transportCloseAfterTerminalMs": 52.642900000000736,
+    "allThreeStreamsClosed": true,
+    "streamClosures": [
+      {
+        "ordinal": 3,
+        "type": "stream-close",
+        "at": 6087.1316,
+        "stream": "stdin"
+      },
+      {
+        "ordinal": 3,
+        "type": "stream-close",
+        "at": 9103.9569,
+        "stream": "stderr"
+      },
+      {
+        "ordinal": 3,
+        "type": "stream-close",
+        "at": 9104.1432,
+        "stream": "stdout"
+      }
+    ],
+    "observedHelperAndTransportWithin2000Ms": true,
+    "consoleHostExit": "NOT_ESTABLISHED",
+    "completeOwnedDescendantQuiescence": "NOT_ESTABLISHED",
+    "productCleanupConfirmed": false,
+    "productActiveRole": "helper",
+    "dedicatedTimeoutCleanupControl": "NOT_RUN_AFTER_G_FAILURE",
+    "noNewProcessWitnessPerformed": true
+  },
+  "underlyingSlownessCause": "NOT_ESTABLISHED",
+  "internalReadSetPhase": "NOT_ESTABLISHED",
+  "productRegression": "NOT_ESTABLISHED",
+  "relationshipToOriginalUnlocalizedFailure": "NOT_ESTABLISHED",
+  "noRetry": true,
+  "noProductionCorrection": true,
+  "stopAtFirstMandatoryFailure": true,
+  "laterStages": "H-O NOT_RUN",
+  "finalMO1306Confirmation": "NOT_RUN",
+  "phase3D": "NOT_AUTHORIZED",
+  "nextAction": "Separately authorize resolution of this observed request-3 per-helper timeout. Do not retry certification or begin Phase3D on this blocked generation."
+}

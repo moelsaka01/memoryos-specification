@@ -1,0 +1,191 @@
+{
+  "kind": "MO1307Phase3AFinalIndependentRecordedFailureReview",
+  "reviewScope": "Closure documentation only: independent read-only analysis of already recorded failing trace and receipts. No new test, retry, helper execution, process witness or investigation.",
+  "recordedAt": "2026-09-29T14:51:17.5835557Z",
+  "candidate": "defe93989efc6501b1a730b82e79e705884b269b",
+  "generation": "FINAL_FINITE_NATIVE_CERTIFICATION",
+  "bindings": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/tags/post-tag-absent/evaluate/observation.json",
+      "byteLength": 18029,
+      "sha256": "sha256:0975273d3c043f2f02aae6739ee8734ad2f8aa3894f35a8a7b8a02c7f2ab5674"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/tags/post-tag-absent/evaluate/receipt.json",
+      "byteLength": 1526,
+      "sha256": "sha256:eba2cdffacc888f75dd0c89b52ea540a7529c350632d6a8d375ad6d559ccee85"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/tags/receipt.json",
+      "byteLength": 21260,
+      "sha256": "sha256:1c9338ef32535a19ff35b6d48c09e439e3614c84815d9a1c72903c399ca064b9"
+    }
+  ],
+  "disposition": "BLOCKED_MANDATORY_G_FAILURE_NO_RETRY",
+  "classification": "REQUEST_3_READ_SET_PER_HELPER_DEADLINE_EXCEEDED",
+  "case": {
+    "stage": "G",
+    "name": "post-tag-absent",
+    "operation": "evaluate",
+    "expectedReadiness": "NOT_READY",
+    "expectedSemanticExit": 3,
+    "actualCode": "MO1307_TIMEOUT",
+    "actualStage": "ACQUISITION",
+    "actualExit": 29,
+    "semanticResultProduced": false,
+    "operationalTimeoutIsNotNotReady": true,
+    "operationalTimeoutIsNotCouldNotEvaluate": true,
+    "stdoutBytes": 0,
+    "stderrBytes": 115,
+    "requestsStarted": 3,
+    "workerCount": 0,
+    "publication": null,
+    "publicationReached": false
+  },
+  "method": {
+    "actualInstalledBinExecuted": true,
+    "standaloneNodeBinLaunch": false,
+    "description": "Unmodified installed production bin imported through engineering bootstrap with resolve-only observation adapters; original supervisor, helper transport, fixed native helper, worker implementation and production clocks. This is not a direct standalone Node-bin launch.",
+    "externalProcessSamplerForFailingCase": false
+  },
+  "request": {
+    "ordinal": 3,
+    "operation": "READ_SET",
+    "fileCount": 19,
+    "rootCount": 1,
+    "pid": 22068,
+    "requestSha256": "sha256:f4673c49789e3ab25b2469d66fd91d75e35fb43c60eaaa839d55e6b37669a34a",
+    "exchangeEnteredAtMs": 4090.9588,
+    "nativeSpawnAtMs": 4092.7587,
+    "exchangeTerminalAtMs": 9154.5376,
+    "exchangeDurationMs": 5063.578799999999,
+    "responseBytes": 0,
+    "stderrBytes": 0,
+    "responseArrived": false,
+    "responseComplete": false,
+    "responseAcceptedByTransport": false,
+    "disposition": "REJECTED",
+    "errorStackSource": "runtime.mjs:72 checkpoint, invoked from runtime.mjs:81 production timer"
+  },
+  "clockAnalysis": {
+    "unit": "Milliseconds in the failing Node process performance.now clock unless otherwise labeled",
+    "helperLimitMs": 5000,
+    "aggregateHelperLimitMs": 20000,
+    "cliLimitMs": 30000,
+    "ordinaryCleanupLimitMs": 2000,
+    "previousSuccessfullyChargedHelpersMs": 3956.5501,
+    "supervisorHelperStartEventAtMs": 4092.6847,
+    "inferredSupervisorLaunchAtMs": 4092.6553999999996,
+    "launchFormula": "Recorded helper deadline - frozen helper limit = 9092.6554 - 5000 = 4092.6554; the separately logged start event occurs at 4092.6847.",
+    "helperDeadlineAtMs": 9092.6554,
+    "aggregateCandidateDeadlineAtMs": 20136.1053,
+    "aggregateDeadlineFormula": "4092.6554 + 20000 - 3956.5501 = 20136.1053",
+    "cliDeadlineAtMs": 30079.8099,
+    "selectedDeadlineFormula": "min(9092.6554, 20136.1053, 30079.8099) = 9092.6554: per-helper deadline",
+    "supervisorTerminalAtMs": 9100.4787,
+    "terminalAfterDeadlineMs": 7.8233000000000175,
+    "terminalFormula": "9100.4787 - 9092.6554 = 7.8233 ms; timer/checkpoint observation after expiry is not deadline grace.",
+    "estimatedHelperActiveThroughTerminalMs": 8964.3734,
+    "activeFormula": "3956.5501 + (9100.4787 - 4092.6554) = 8964.3734 ms, below 20000 ms. This is a derived active-through-terminal measure, not the recorded charged-success total.",
+    "recordedChargedAfterMs": 3956.5501,
+    "recordedChargedThisFailedExchangeMs": 0,
+    "chargeInterpretation": "The failed exchange is not added to helperUsedMs. A recorded chargedThisExchangeMs of zero does not mean the failed helper used no time.",
+    "exchangeDurationInterpretation": "5063.5788 ms spans observer exchange entry through rejection after cleanup; it is not a replacement for the 5000 ms production admission deadline.",
+    "aggregateWasLimiting": false,
+    "cliWasLimiting": false
+  },
+  "cleanup": {
+    "productCleanupConfirmed": false,
+    "productActiveRole": "helper",
+    "productionTerminalAtMs": 9100.4787,
+    "productionCleanupDeadlineAtMs": 11100.4787,
+    "cleanupDeadlineFormula": "9100.4787 + 2000 = 11100.4787",
+    "helperPid": 22068,
+    "helperExitCode": null,
+    "helperExitSignal": "SIGTERM",
+    "helperExitAtMs": 9152.6655,
+    "helperExitAfterTerminalMs": 52.186799999999494,
+    "helperCloseAtMs": 9153.1216,
+    "helperCloseAfterTerminalMs": 52.642900000000736,
+    "helperExitWithinCleanupDeadline": true,
+    "transportClosed": true,
+    "transportCloseWithinCleanupDeadline": true,
+    "streams": [
+      {
+        "stream": "stdin",
+        "closedAtMs": 6087.1316,
+        "relativeToTerminalMs": -3013.3471,
+        "withinCleanupDeadline": true
+      },
+      {
+        "stream": "stderr",
+        "closedAtMs": 9103.9569,
+        "relativeToTerminalMs": 3.4781999999995605,
+        "withinCleanupDeadline": true
+      },
+      {
+        "stream": "stdout",
+        "closedAtMs": 9104.1432,
+        "relativeToTerminalMs": 3.6645000000007713,
+        "withinCleanupDeadline": true
+      }
+    ],
+    "allThreeStreamsClosedWithinCleanupDeadline": true,
+    "establishedScope": "Recorded child-process exit event for helper PID 22068 and stdin/stdout/stderr plus child transport closure occurred within the unchanged 2000 ms cleanup allowance.",
+    "consoleHostTerminationEstablished": false,
+    "completeOwnedDescendantExitEstablished": false,
+    "freshCompleteTimeoutCleanupWitness": "NOT_ESTABLISHED",
+    "limitation": "No retained attributable console-process object observation accompanies this failing case. Helper process events and transport closure do not establish console-host exit or complete absence of owned descendants. Preserve cleanupConfirmed:false and activeRole:helper; do not promote the product flag."
+  },
+  "timingLabels": {
+    "wrapperElapsedMs": 10268.312399999995,
+    "productLifecycleElapsedMs": 9077.7393,
+    "binImportElapsedMs": 9110.8189,
+    "bootstrapElapsedMs": 9116.6086,
+    "note": "Distinct recorded scopes; do not substitute wrapper wall duration for product lifecycle or helper duration."
+  },
+  "unresolved": {
+    "underlyingSlownessCause": "UNESTABLISHED",
+    "internalReadSetPhase": "UNESTABLISHED",
+    "specificFileCausingDelay": "UNESTABLISHED",
+    "productRegression": "UNESTABLISHED",
+    "relationshipToEarlierUnlocalizedFailure": "UNESTABLISHED",
+    "originalFirst3ARFailingRequestAndClock": "UNRESOLVED",
+    "note": "This generation localizes its own timeout to request 3 and the per-helper clock. It does not establish an internal root cause or retroactively localize a different historical execution."
+  },
+  "stoppedCampaign": {
+    "failedMandatoryVectorRetried": false,
+    "postTagAbsentVerify": "NOT_RUN",
+    "postTagAbsentApiParity": "NOT_RUN",
+    "remainingTagVectors": "NOT_RUN",
+    "stagesHThroughO": "NOT_RUN",
+    "finalMO1306Confirmation": "NOT_RUN",
+    "certificationPass": false,
+    "successCertificationCommitPermitted": false,
+    "phase3DHandoff": "NOT_READY",
+    "historicalPassSubstitution": false
+  },
+  "unexecutedDraftTools": {
+    "status": "UNEXECUTED_PREPARATION_ONLY",
+    "scope": "H-N tooling preparation does not establish certification results. Work stopped when the mandatory G failure was reported.",
+    "knownUnappliedReviewFindings": [
+      "K finalization lock readiness matcher accepted LF only, while Windows PowerShell Console.WriteLine emits CRLF; the proposed CRLF-tolerant matcher was not applied before STOP.",
+      "J proposed stronger existing-B bootstrap-conhost attribution assertion, binding native creation before Node performance.timeOrigin and JS bootstrap/bin import, was not applied before STOP."
+    ],
+    "alreadyAuthoredButUnexecuted": [
+      "H/J exact terminal+2000 native-exit and all-three-stream closure checks.",
+      "N checks prior actual API parity receipt hashes and canonical byte comparisons, disclosing that A-E API bytes were not persisted."
+    ],
+    "noDraftReadinessOrPassClaim": true
+  },
+  "negativeClaims": [
+    "No root-cause determination.",
+    "No product regression determination.",
+    "No claim the expected NOT_READY semantic result was obtained.",
+    "No aggregate or CLI deadline exhaustion claim.",
+    "No complete timeout cleanup or attributable console-host termination claim.",
+    "No ordinary standalone Node-bin launch claim for this observed execution.",
+    "No H-O PASS, executed control, final confirmation or complete certification claim.",
+    "No retry, new native test, new process witness, production modification, push, tag or Phase 3D integration performed by this review."
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "disposition": "CERTIFICATION_VARIANCE_REQUIRES_RERUN_AUTHORITY",
+  "rootCause": "UNRESOLVED",
+  "originalFailedRequest": "NOT_ESTABLISHED",
+  "originalClock": "NOT_ESTABLISHED",
+  "newDiagnostics": "TWO_SUCCESSES_ALL_NINE_REQUESTS",
+  "newFailureRequest": null,
+  "newFailureClock": null,
+  "request3RegressionEstablished": false,
+  "newHelperBottleneckEstablished": false,
+  "aggregateExhaustionEstablished": false,
+  "cliLimitEstablished": false,
+  "workerLimitEstablished": false,
+  "cleanupBlockerEstablished": false,
+  "environmentSpecificCauseEstablished": false,
+  "samplerCausationEstablished": false,
+  "runtimeVarianceConclusion": "An authoritative standalone failure and two separately scoped observed successes coexist. Request3 exchange duration varied by662.7550ms between diagnostics; both remained below5000ms. No current limiting request or expired clock was reproduced.",
+  "firstRequest3Ms": 3659.7774000000004,
+  "secondRequest3Ms": 4322.5324,
+  "stopReason": "Two authorized evaluations exhausted; no limiting request established for direct replay. No third run or completeness execution.",
+  "certificationRemainsBlocked": true,
+  "originalAttemptRestamped": false,
+  "productionFixJustified": false,
+  "productionChanges": 0,
+  "nextTask": "Separately authorize a finite timing-variance resolution and a new Phase3A-R certification generation for exact C3RB, retaining per-request/clock metadata from its first execution and preserving the original failed generation. Current evidence does not authorize a product change or Phase3D.",
+  "ending": [
+    "MO-1307 PHASE 3A-R LOCALIZATION EXHAUSTED",
+    "CERTIFICATION REMAINS BLOCKED"
+  ]
+}

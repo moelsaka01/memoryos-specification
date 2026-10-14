@@ -1,0 +1,25 @@
+{
+  "kind": "MO1307SecondExecutionQuestion",
+  "recordedAt": "2026-09-29T14:08:21.116194+00:00",
+  "question": "Does the acquisition timeout recur, and at which request/clock, when identical metadata tracing remains but the external process sampler is removed to better match the original standalone execution conditions?",
+  "reason": "First diagnostic passed all nine requests; original failure request/clock remains unknown. External sampler recorded 4101.9998 ms sampling-work subtotal, excluding serialization/flush. Remove this specific observational difference while retaining request/clock evidence.",
+  "changedFactor": "External process sampler removed; metadata-only transport trace remains.",
+  "unchanged": [
+    "89 installed members",
+    "source production bytes",
+    "native helper and worker",
+    "semantic input root/bytes",
+    "native runtime and environment",
+    "5000/20000/30000/10000/2000 ms deadlines",
+    "same isolated product cwd"
+  ],
+  "freshOutputRoot": "C:\\Users\\melsa\\Documents\\Codex\\r3a\\.cache\\m7r\\vectors\\v0\\p\\l2",
+  "firstDiagnosticReceiptSha256": "6d9764afd665a9c226e2934667dc2b8603e6a63ef901bfac1ced5ff8067811c9",
+  "execution": 2,
+  "maximumInstalledEvaluations": 2,
+  "thirdExecutionForbidden": true,
+  "certificationRetry": false,
+  "onPass": "Stop at two. Preserve diagnostic successes and original blocked failure; do not infer original request or resume certification.",
+  "onFailure": "Use actual trace to identify current terminal request and clock; stop once sufficient for next action.",
+  "causationLimit": "One comparison cannot establish sampler or environment causation; cache/scheduling are uncontrolled."
+}

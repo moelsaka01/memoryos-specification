@@ -1,0 +1,96 @@
+{
+  "result": "NO_DEADLINE_FIRED_IN_TWO_DIAGNOSTICS",
+  "runs": [
+    {
+      "execution": 1,
+      "perHelperLimitMs": 5000,
+      "allTransportExchangesBelow5000": true,
+      "aggregateHelperLimitMs": 20000,
+      "supervisorHelperActiveMs": 14644.9063,
+      "supervisorAggregateRemainingMs": 5355.093699999999,
+      "sequenceAggregateExactDuration": "NOT_EXPOSED; all production sequence checkpoints passed",
+      "cliAdmissionLimitMs": 30000,
+      "cliStarted": 388.1469,
+      "cliDeadline": 30388.1469,
+      "lifecycleMs": 16200.7457,
+      "cliDeadlineRemainingAtDisposeMs": 13799.2543,
+      "workerLimitMs": 10000,
+      "workerStartEvent": 8784.4396,
+      "workerDeadline": 18784.398999999998,
+      "workerQuiescentAt": 10101.2363,
+      "workerStartEventToQuiescentMs": 1316.7967000000008,
+      "cleanupAllowanceMs": 2000,
+      "cleanupFailureClockStarted": false,
+      "terminalCode": null,
+      "actualClockFired": "NONE",
+      "publication": {
+        "phase": "COMMITTED",
+        "admitted": true,
+        "deadlineExpiredAfterAdmission": false,
+        "cancelledAfterAdmission": false,
+        "namespaceVerified": true,
+        "dispositionDeadline": 18585.1307
+      }
+    },
+    {
+      "execution": 2,
+      "perHelperLimitMs": 5000,
+      "allTransportExchangesBelow5000": true,
+      "aggregateHelperLimitMs": 20000,
+      "supervisorHelperActiveMs": 16073.794900000004,
+      "supervisorAggregateRemainingMs": 3926.2050999999956,
+      "sequenceAggregateExactDuration": "NOT_EXPOSED; all production sequence checkpoints passed",
+      "cliAdmissionLimitMs": 30000,
+      "cliStarted": 357.9681,
+      "cliDeadline": 30357.9681,
+      "lifecycleMs": 17614.704100000003,
+      "cliDeadlineRemainingAtDisposeMs": 12385.295899999997,
+      "workerLimitMs": 10000,
+      "workerStartEvent": 9854.45,
+      "workerDeadline": 19854.4205,
+      "workerQuiescentAt": 11181.5146,
+      "workerStartEventToQuiescentMs": 1327.0645999999997,
+      "cleanupAllowanceMs": 2000,
+      "cleanupFailureClockStarted": false,
+      "terminalCode": null,
+      "actualClockFired": "NONE",
+      "publication": {
+        "phase": "COMMITTED",
+        "admitted": true,
+        "deadlineExpiredAfterAdmission": false,
+        "cancelledAfterAdmission": false,
+        "namespaceVerified": true,
+        "dispositionDeadline": 19970.6841
+      }
+    }
+  ],
+  "originalFailedAttempt": {
+    "actualClock": "NOT_ESTABLISHED",
+    "request": "NOT_ESTABLISHED",
+    "elapsedMs": 12250.0493,
+    "totalTimeNotUsedToInferClock": true
+  },
+  "twoClockSourceBindings": [
+    {
+      "path": ".cache/m7r/install/node_modules/memoryos-readiness/src/runtime.mjs",
+      "byteLength": 16904,
+      "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+    },
+    {
+      "path": ".cache/m7r/install/node_modules/memoryos-readiness/src/helper-protocol.mjs",
+      "byteLength": 17308,
+      "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "path": ".cache/m7r/install/node_modules/memoryos-readiness/src/helper-transport.mjs",
+      "byteLength": 6250,
+      "sha256": "sha256:ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55"
+    },
+    {
+      "path": ".cache/m7r/install/node_modules/memoryos-readiness/src/acquisition.mjs",
+      "byteLength": 6409,
+      "sha256": "sha256:1ecab53426287a92279153903785bd56a38d4a9840696dbdfb3a446a8e83b066"
+    }
+  ],
+  "twoClockDistinction": "Supervisor begins after request decoding and requires process/console/transport quiescence. Sequence starts before request encoding and includes its own response decoding and helperExited checkpoint. Neither clock expired in either diagnostic. Source structure is not a root-cause finding."
+}

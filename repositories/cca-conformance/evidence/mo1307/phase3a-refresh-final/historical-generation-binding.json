@@ -1,0 +1,109 @@
+{
+  "generations": [
+    {
+      "id": "OLD_B2_PHASE3A",
+      "candidate": "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+      "disposition": "CERTIFICATION_BLOCKED",
+      "MO1306": {
+        "exit": 29,
+        "elapsedMs": 8465.2111
+      },
+      "READY": {
+        "exit": 29,
+        "elapsedMs": 11307.147
+      },
+      "cleanupConfirmed": false,
+      "binding": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh/historical-before.json",
+        "byteLength": 994967,
+        "sha256": "sha256:1e5217679dcbb59fb9b69875ef08560edd5ce3295e7f3bbfb1db63d329a57120"
+      }
+    },
+    {
+      "id": "READ_SET_ROOT_CAUSE",
+      "disposition": "ROOT_CAUSE_ESTABLISHED_MULTIPLE_CONTRIBUTORS",
+      "primary": "POST_READ_VERIFICATION_PATH_VALIDATION",
+      "binding": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/diagnostic-binding.json",
+        "byteLength": 70082,
+        "sha256": "sha256:e6d43493c99a7f92b9dba02d984e281d7ec2907577c75be76f3f3f3a8d4d9e6c"
+      },
+      "oldReadyStage": "NOT_ESTABLISHED"
+    },
+    {
+      "id": "C3R_C3RB_CORRECTION",
+      "C3R": "58c98b7eb0aa2d07bab78753ce66b564066aafeb",
+      "C3RB": "defe93989efc6501b1a730b82e79e705884b269b",
+      "disposition": "CORRECTION_VALIDATION_NOT_CERTIFICATION",
+      "binding": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh/correction-binding.json",
+        "byteLength": 3913,
+        "sha256": "sha256:7016fe2dd95b9d9b605b2fa32ffb4e56e98c000000dc879531395995b56cd295"
+      },
+      "report": {
+        "path": "docs/mo1307-phase3a-readset-correction.md",
+        "byteLength": 19683,
+        "sha256": "sha256:f4a178da17deddc64c32ce9ee69528f7f881d679b5ee044805c736594f19da02"
+      }
+    },
+    {
+      "id": "FIRST_C3RB_3AR_CERTIFICATION",
+      "disposition": "CERTIFICATION_BLOCKED",
+      "elapsedMs": 12250.0493,
+      "exit": 29,
+      "code": "MO1307_TIMEOUT",
+      "stage": "ACQUISITION",
+      "request": "NOT_ESTABLISHED",
+      "clock": "NOT_ESTABLISHED",
+      "cleanupProof": "NOT_ESTABLISHED",
+      "binding": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh/certification-receipt.json",
+        "byteLength": 42323,
+        "sha256": "sha256:4a1795afd6a0d6c695ae31c9528f8155a8f6e2d2c9fae46e3f691f63c5b558c2"
+      }
+    },
+    {
+      "id": "LOCALIZATION_D1",
+      "disposition": "DIAGNOSTIC_ONLY_SUCCESS",
+      "exit": 2,
+      "elapsedMs": 16200.7457,
+      "binding": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-localization/diagnostic-1/receipt.json",
+        "byteLength": 41124,
+        "sha256": "sha256:6d9764afd665a9c226e2934667dc2b8603e6a63ef901bfac1ced5ff8067811c9"
+      },
+      "promotedToCertification": false
+    },
+    {
+      "id": "LOCALIZATION_D2",
+      "disposition": "DIAGNOSTIC_ONLY_SUCCESS",
+      "exit": 2,
+      "elapsedMs": 17614.7041,
+      "binding": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-localization/diagnostic-2/receipt.json",
+        "byteLength": 41121,
+        "sha256": "sha256:8e1a6e4a808a1006ae0410b220928d4c011f16ca0e946540aa175826efaff99c"
+      },
+      "promotedToCertification": false
+    },
+    {
+      "id": "FINAL_FINITE_CERTIFICATION",
+      "disposition": "CERTIFICATION_BLOCKED",
+      "failedVector": "post-tag-absent",
+      "request": 3,
+      "clock": "PER_HELPER_5000_MS",
+      "binding": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/failure-classification.json",
+        "byteLength": 4169,
+        "sha256": "sha256:f428d8bbe0fbede4c98a135322ff6a605277d056e4bb336133a5dfbc2b99c71c"
+      }
+    }
+  ],
+  "allPriorBytesPreserved": true,
+  "integrity": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/integrity-after.json",
+    "byteLength": 32211,
+    "sha256": "sha256:c347300c15fb631a44c82a3c15ee927403f4344adc25a3716585393e517772c2"
+  },
+  "failureErasure": false
+}
