@@ -152,7 +152,7 @@ jobs:
       - name: Download exact candidate archive without extraction
         id: download-candidate
         if: steps.prepare.outputs.candidate-artifact-id != ''
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           artifact-ids: ${{ steps.prepare.outputs.candidate-artifact-id }}
           path: ${{ runner.temp }}/memoryos-policy-gate-${{ github.run_id }}-${{ github.run_attempt }}-${{ job.check_run_id }}/candidate-archive
@@ -176,7 +176,7 @@ jobs:
       - name: Download exact Regression baseline archive without extraction
         id: download-baseline
         if: steps.prepare.outputs.baseline-artifact-id != ''
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           artifact-ids: ${{ steps.prepare.outputs.baseline-artifact-id }}
           path: ${{ runner.temp }}/memoryos-policy-gate-${{ github.run_id }}-${{ github.run_attempt }}-${{ job.check_run_id }}/baseline-archive
